@@ -1,0 +1,214 @@
+#!/bin/bash
+
+#read posted param 
+input=`dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -`
+
+echo "Content-Type: text/html"
+echo ""
+
+# load small-shell path
+. ../descriptor/.small_shell_path
+
+# load remote addr
+remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+
+# IP restriction check
+whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
+if [ "$whitelist_chk" ];then
+  for IP in $whitelist_chk
+  do
+    IP=`echo $IP | sed "s/*//g"`
+    if [[ ${remote_addr} == ${IP}* ]];then
+      IP_chk_flag=yes
+      break
+    fi
+  done
+
+  if [ ! "$IP_chk_flag" = "yes" ];then
+    echo "error: your IP{$remote_addr} is not allowed to access"
+    exit 1
+  fi
+fi
+
+param=`date +%s`
+param="$param:$RANDOM"
+count=1
+
+while [ -f ../tmp/${param} ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: please contact to adimin"
+   exit 1
+ fi
+done
+
+# parse QUERY STRING
+echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" |  tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
+
+# parse POST param
+echo $input | sed "s/\`//g" | sed "s/&/\n/g"  | sed -r "s/small_shell_authkey(.*)=/small_shell_authkey=/g" \
+| php -r "echo urldecode(file_get_contents('php://stdin'));"  >> ../tmp/${param}
+cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" |  tr -d \$ | tr -d \` > ../tmp/${param}.load
+
+chmod 755 ../tmp/${param}.load
+
+# load query string
+.  ../tmp/${param}.load
+rm  ../tmp/${param}*
+
+# gen res list
+timestamp=`date +%s%3N`
+
+if [ ! -d  ../tmp/$timestamp ];then
+  mkdir ../tmp/$timestamp
+fi
+
+# gen databox list for left menu
+res_list="$databox `${small_shell_path}/bin/meta get.databox`"
+count=0
+for res in $res_list
+do
+  if [ ! "$databox" = "$res" -o $count -eq 0 ];then
+    echo "<option value=\"./shell.auth?databox=$res\">DataBox:$res</option>"\
+    >> ../tmp/$timestamp/databox_list
+  fi
+  ((count +=1 ))
+done
+
+res_chk=`echo $res_list | sed "s/ //g"`
+if [ ! "$res_chk" ];then
+  echo "<option value=\"./shell.auth?databox=null\">DataBox:null</option>" >> ../tmp/$timestamp/databox_list
+  databox=null
+fi
+
+if [ ! "$databox" ];then
+  databox=`echo $res_list | sed "s/ /\n/g" | head -1`
+fi
+
+
+# For the access with initialize hashkey which contain in query string and create new user_key
+if [ "$initialize" ];then
+  user_id=`echo $initialize | awk -F "," '{print $1}'`
+  initialize_hash_key=`echo $initialize |  awk -F "," '{print $2}'`
+  key_gen=`sudo -u small-shell ${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
+  user_name=`echo $key_gen | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
+  user_key=`echo $key_gen | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+  server=`sudo -u small-shell ${small_shell_path}/bin/meta get.server`
+
+  # render success page
+  if [ "$user_name" -a "$user_key" ];then
+    cat ../descriptor/auth_initialize.html.def | sed "s/^ *</</g"\
+    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/d"\
+    | sed "s/%%IP/$remote_addr/g" \
+    | sed "s/%%user_name/$user_name/g" \
+    | sed "s/%%user_key/$user_key/g" \
+    | sed "s/%%server/$server/g"
+    rm -rf ../tmp/$timestamp
+    exit 0
+  else
+    echo "error: Your initialize URL should be wrong, please contact to your web admin"
+    rm -rf ../tmp/$timestamp
+    exit 1 
+  fi
+fi
+
+# render auth form 
+if [ ! "$small_shell_authkey" ];then
+
+  if [ "$key_placeholder" ];then
+    # render first login form with initialized key
+    cat ../descriptor/auth_form_with_key.html.def | sed "s/^ *</</g"\
+    | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | sed "s/%%auth_form_menu//g"\
+    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/d"\
+    | sed "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | sed "s/%%databox_list//g"\
+    | sed "s/%%key_placeholder/$key_placeholder/g"
+    rm -rf ../tmp/$timestamp
+    exit 0
+
+  else
+
+    # regenerate query string
+    if [ "$databox" ];then
+      databox="databox=`echo $databox`"
+    fi
+
+    if [ "$req" ];then
+      req="\&req=`echo $req`"
+    fi
+
+    if [ "$id" ];then
+      id="\&id=`echo $id`"
+    fi
+
+    if [ "$message" ];then
+      message="<p><b>`echo $message`<\/b><\/p>"
+    fi
+
+    # render standard login form with queyr string and messge
+    cat ../descriptor/auth_form.html.def | sed "s/^ *</</g"\
+    | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | sed "s/%%auth_form_menu//g"\
+    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/d"\
+    | sed "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | sed "s/%%databox_list//g"\
+    | sed "s/%%params/${databox}${req}${id}/g"\
+    | sed "s/%%message/${message}/g" 
+    rm -rf ../tmp/$timestamp
+    exit 0
+  fi
+
+
+fi
+
+# Authentication 
+if [ "$small_shell_authkey" ];then
+  if [[ $small_shell_authkey == *:* ]]; then
+    authkey=`echo $small_shell_authkey | awk -F ":" '{print $2}'`
+  else
+    authkey="$small_shell_authkey"
+  fi
+  auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+  user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
+  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+   
+  if [ "$user_name" -a "$session" -a "$pin" ];then
+
+    if [ ! "$req" ];then
+      req=main
+    fi
+
+    # redirect to controller if key auth is OK
+    if [ "$req" = "get" ];then
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&req=$req&pin=$pin&id=$id\">"
+    elif [ "$req" = "table" ];then
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&pin=$pin&req=$req\">"
+    else
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&pin=$pin&req=$req\">"
+    fi
+    rm -rf ../tmp/$timestamp
+    exit 0
+  else
+    # render standard login form with error message
+    cat ../descriptor/auth_form.html.def | sed "s/^ *</</g"\
+    | sed "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
+    | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | sed "s/%%auth_form_menu//g"\
+    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/d"\
+    | sed "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | sed "s/%%databox_list//g"\
+    | sed "s/%%params//g"
+    rm -rf ../tmp/$timestamp
+    exit 1
+  fi
+  
+fi
+

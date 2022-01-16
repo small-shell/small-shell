@@ -1,0 +1,2636 @@
+#!/bin/bash
+
+#----------------------------------------------------------
+# PARAM FOR GEN
+#----------------------------------------------------------
+# generate data box (gen -databox)
+# generate data box (gen -databox db.def)
+# add column to data box (gen -addcol)
+# delete column of data box (gen -delcol)
+# generate app (gen -app)
+# generate automate shell (gen -job)
+#----------------------------------------------------------
+
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "root" ];then
+  echo "error: user must be root"
+  exit 1
+fi
+
+# user check
+cat /etc/passwd | grep small-shell > /dev/null 2>&1
+if [ ! $? -eq 0 ];then
+  echo "error:small-shell is not existing, please add user beforehand by following command"
+  echo "sudo useradd -s /sbin/nologin small-shell"
+  exit 1
+fi
+
+# global conf load
+SCRIPT_DIR=`dirname $0`
+if [ ! -x ${SCRIPT_DIR}/../global.conf ];then
+  chmod 755 ${SCRIPT_DIR}/../global.conf
+fi
+ . ${SCRIPT_DIR}/../global.conf
+
+# owner check
+shell_owner=`ls -ld $ROOT | awk '{print $3}'`
+if [ ! "$shell_owner" = "small-shell" ];then
+  echo "error: $ROOT is not owned by small-shell. please change owner by following command"
+  echo "sudo chown -R small-shell:small-shell $ROOT"
+  exit 1
+fi
+
+# gen tmpdir
+param=$1
+random=$RANDOM
+while [ -d $ROOT/tmp/gen/$random ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: something is wrong"
+   exit 1
+ fi
+ random=$RANDOM
+done
+mkdir $ROOT/tmp/gen/$random
+tmp_dir="$ROOT/tmp/gen/$random"
+
+# FUNCTIONS
+
+# handle kill signal
+trap 'clear_dialog' SIGINT
+function clear_dialog(){
+  if [ -d "$tmp_dir" ];then
+    echo ""
+    echo "tmp file will be deleted, please try again from beginning"
+    rm -rf $tmp_dir
+    exit 1
+  else
+    echo ""
+    echo "dialog will be ended, please try again from beginning"
+    exit 1
+  fi
+}
+
+# ascii check
+function ascii_check(){
+  input=$1  
+  check=`echo "$input" | file -i - | grep -i ascii`
+  if [ "$check" ]; then
+    echo "NP"
+    return 0
+  else
+    echo "ERROR"
+    return 1
+  fi
+}
+
+function charset_check(){
+  input=$1
+  check=`echo "$input" | file -i - | grep -i -e ascii -e utf`
+  if [ "$check" ]; then
+    echo "NP"
+    return 0
+  else
+    echo "ERROR"
+    return 1
+  fi
+}
+
+
+# CREATE AUTHKEY FOR SYS
+user_name=sys
+user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+
+if [ ! -d $ROOT/users/$user_id ];then
+  mkdir $ROOT/users/$user_id
+  echo "$user_name" > $ROOT/users/$user_id/user_name
+  echo "permission=ro" > $ROOT/users/$user_id/.attr.tmp
+  cat $ROOT/users/$user_id/.attr.tmp > $ROOT/users/$user_id/attr
+  chown small-shell:small-shell $ROOT/users/$user_id/attr
+
+  which openssl  >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    hash_gen_key=`openssl rand -hex 20`
+  else
+    hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+  fi
+
+  hash=`echo "${user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+  echo "$hash" > $ROOT/users/${user_id}/hash
+  chown -R small-shell:small-shell $ROOT/users/$user_id
+  chmod 700 $ROOT/users/${user_id}/hash
+  user_key=`echo "${user_name}:${hash_gen_key}" | base64 -w 0`
+  echo "authkey=\"$user_key\"" > $ROOT/util/scripts/.authkey
+  chown small-shell:small-shell $ROOT/util/scripts/.authkey
+  chmod 700 $ROOT/util/scripts/.authkey
+fi
+
+# GENERATE DATA BOX 
+if [ "$param" = "-databox" ];then
+
+  if [ $2 ];then
+    bat_chk=$2
+    if [ "$bat_chk" = "-bat" ];then
+      bat_flag=yes
+    fi
+  fi
+
+  # command check for databox 
+  sudo -u small-shell which flock >/dev/null 2>&1
+  if [ ! $? -eq 0 ];then
+    echo "error: please install flock command"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  sudo -u small-shell which base64 >/dev/null 2>&1
+  if [ ! $? -eq 0 ];then
+    echo "error: please install base64 command"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  sudo -u small-shell which sha256sum >/dev/null 2>&1
+  if [ ! $? -eq 0 ];then
+    echo "error: please install sha256sum command"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  sudo -u small-shell echo "\n" | sed -z "s/\n//g" >/dev/null 2>&1
+  if [ ! $? -eq 0 ];then
+    echo "error: please install sed command which can use -z option #above version 4.2.2"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  sudo -u small-shell echo "Create" | awk 'IGNORECASE = 1;/^create/;' >/dev/null 2>&1
+  if [ ! $? -eq 0 ];then
+    echo "error: please install awk command which can use INNORECASE option"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  # start dialog 
+  echo -n "databox_name: "
+  read databox
+  ascii_chk_result=`ascii_check $databox`
+  meta_chk_result=$(echo $databox | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+  ls $ROOT/databox/$databox >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    existing_chk_result=existing
+  else
+    existing_chk_result=""
+  fi
+
+  while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o "$existing_chk_result" = "existing" -o ! "$databox" ]
+  do
+
+    if [ ! "$existing_chk_result" = "existing" ];then
+      echo "error: databox name must be ascii text and you can't use meta charactor including space, please try again"
+    else
+      echo "error: databox ${databox} is existing, please try again"
+    fi
+
+    if [ "$bat_flag" = "yes" ];then
+      echo "#databox check error -> failed"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    echo -n "databox_name: "
+    read databox
+    ascii_chk_result=`ascii_check $databox`
+    meta_chk_result=$(echo $databox | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+    ls $ROOT/databox/$databox >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result=existing
+    else
+      existing_chk_result=""
+    fi
+
+  done
+  echo "$databox" > $tmp_dir/databox
+
+  # define primary key 
+  echo -n "primary_key(col1): "
+  read primary_key
+  reserved_chk_result=`echo $primary_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+  eval $primary_key=test >/dev/null 2>&1
+  load_chk=$?
+  meta_chk_result=$(echo $primary_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+  while [ "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
+  do
+    if [ "$reserved_chk_result" ];then
+      echo "error: you can't use {input temp binary_file params} as key, because these are reserved"
+    else
+      echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
+    fi
+
+    if [ "$bat_flag" = "yes" ];then
+      echo "#primary_key check error -> failed"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    echo -n "primary_key: "
+    read primary_key
+    reserved_chk_result=`echo $primary_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+    eval $primary_key=test >/dev/null 2>&1
+    load_chk=$?
+    meta_chk_result=$(echo $primary_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
+  done
+
+  if [ ! "$primary_key" = "hashid" ];then
+    
+    echo -n "primary_key label: "
+    read primary_key_label
+    char_chk_result=`charset_check "$primary_key_label"`
+
+    while [ "$char_chk_result" = "ERROR" ]
+    do
+      echo "error: key label charset seems wrong, please use UTF-8 as charset"
+
+      if [ "$bat_flag" = "yes" ];then
+        echo "#primary_key_label check error -> failed"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+
+      echo -n "primary_key_label: "
+      read primary_key_label
+      char_chk_result=`charset_check "$primary_key_label"`
+    done
+  else
+    primary_key_label=hashid
+  fi
+
+  # escape meta character
+  primary_key_label=`echo "$primary_key_label" | sed "s/\"//g"`
+  
+  # dump primary_key
+  echo "name=\"$primary_key\"" > $tmp_dir/col1
+  echo "label=\"$primary_key_label\"" >> $tmp_dir/col1
+  echo "type=\"text\"" >> $tmp_dir/col1
+  echo "option=\"required\"" >> $tmp_dir/col1
+
+  if [ ! "$primary_key" = "hashid" ];then
+    echo -n "Do you want to add column to dataset ? (yes | no): "
+    read add_col_answer 
+  else
+    add_col_answer=yes
+  fi
+
+  while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
+  do
+    echo "please input yes or no" 
+
+    if [ "$bat_flag" = "yes" ];then
+      echo "#add col answer check error -> failed"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    echo -n "Do you want to add column to dataset ? (yes | no): "
+
+    read add_col_answer 
+  done
+
+  count=2
+
+  while [ "$add_col_answer" = "yes" ]
+  do
+  echo -n "key(col${count}) name: "
+  read add_key 
+  reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+  eval $add_key=test >/dev/null 2>&1
+  load_chk=$?
+  meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+
+  grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    existing_chk_result=existing
+  else
+    existing_chk_result=""
+  fi
+
+    while [ "$existing_chk_result" = "existing" -o "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
+    do
+
+      if [ "$reserved_chk_result" ];then
+        echo "error: you can't use {input temp binary_file params} as key, because these are reserved"
+      fi
+
+      if [ "$existing_chk_result" = "existing" ];then
+        echo "error: key_name is already defined, please try again"
+      fi
+
+      if [ ! "$load_chk" -eq  0 ];then
+        echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
+      fi
+
+      if [ "$bat_flag" = "yes" ];then
+        echo "# col${count} key check error -> failed"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+
+      echo -n "key(col${count}) name: "
+      read add_key
+      reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+      eval $add_key=test >/dev/null 2>&1
+      load_chk=$?
+      meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
+
+      grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        existing_chk_result=existing
+      else
+        existing_chk_result=""
+      fi
+
+    done
+
+    echo -n "key(col${count}) label: "
+    read add_key_label
+    char_chk_result=`charset_check "$add_key_label"`
+
+    while [ "$char_chk_result" = "ERROR" ]
+    do
+      echo "error: key label charset seems wrong, please use UTF-8 as charset"
+
+      if [ "$bat_flag" = "yes" ];then
+        echo "# col${count} key label check error -> failed"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+
+      echo -n "add_key_label: "
+      read add_key_label
+      char_chk_result=`charset_check "$add_key_label"`
+    done
+
+    # escape meta character
+    add_key_label=`echo "$add_key_label" | sed "s/\"//g"`
+
+    echo -n "data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+    read type
+    data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+    -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+
+    if [ "$type" = "file" ];then
+      grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        data_chk_result=""
+        data_chk_flg="file"
+      fi
+    fi
+
+    while [ ! "$data_chk_result" ]
+    do
+      echo "data type is wrong, please try again"
+
+      if [ "$data_chk_flg" = "file" ];then
+        echo "1 dataset could have only 1 file, please do not add file again"
+      fi
+
+      if [ "$bat_flag" = "yes" ];then
+        echo "# col${count} data type check error -> failed"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+
+      echo -n "data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+      read type
+      data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+      -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+
+      data_chk_flg=""
+      if [ "$type" = "file" ];then
+        grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+        if [ $? -eq 0 ];then
+          data_chk_result=""
+          data_chk_flg="file"
+        fi
+      fi
+
+    done   
+
+    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+      echo -n "please define selectable parameter using space as separator: "
+      read params
+      char_chk_result=`charset_check "$params"`
+      while [ "$char_chk_result" = "ERROR" ]
+      do
+        echo "It seems invalid charactor is included, please try again. try to not use backspace as much as possible"
+        echo -n "parameters: "
+        read params
+        char_chk_result=`charset_check "$params"`
+      done
+    fi
+
+    if [ "$type" = "num" ];then
+      type=number
+    fi
+
+    if [ "$type" = "date-time" ];then
+      type="datetime-local"
+    fi
+
+    if [ "$type" = "pdls" ];then
+      echo -n "please input databox name for making pdls(primary value data list): "
+      read pdlsbox
+      while [ "$pdlsbox" -a ! -d $ROOT/databox/$pdlsbox ]
+      do
+        echo -n "databox seems wrong, please try again: "
+        read pdlsbox
+      done     
+    fi
+
+    if [ ! "$type" = "file" -a ! "$type" = "checkbox" ];then
+      echo -n "required to input each time? (yes | no): "
+      read option_answer
+      if [ "$option_answer" = "yes" ];then
+        option=required
+      else
+        option=""
+      fi
+
+      while [ ! "$option_answer" = "yes" -a ! "$option_answer" = "no" ]
+      do
+        echo "please input yes or no"
+ 
+        if [ "$bat_flag" = "yes" ];then
+          echo "# col${count} required check error -> failed"
+          rm -rf $tmp_dir
+          exit 1
+        fi
+
+        echo -n "Is it required to input each time ? (yes | no): "
+        read option_answer
+        if [ "$option_answer" = "yes" ];then
+          option=required
+        else
+          option=""
+        fi
+      done
+    fi
+  
+    # dump add_key
+    echo "name=\"$add_key\"" > $tmp_dir/col${count}
+    echo "label=\"$add_key_label\"" >> $tmp_dir/col${count}
+    echo "type=\"$type\"" >> $tmp_dir/col${count}
+
+    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+      echo "params=\"$params\"" >> $tmp_dir/col${count}
+    fi
+
+    if [ "$type" = "pdls" ];then
+      echo "pdlsbox=\"$pdlsbox\"" >> $tmp_dir/col${count}
+    fi
+
+    echo "option=\"$option\"" >> $tmp_dir/col${count}
+    
+
+    echo -n "Do you want to add more column to dataset ? (yes | no) : "
+    read add_col_answer 
+    while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
+    do
+      echo "please input yes or no" 
+
+      if [ "$bat_flag" = "yes" ];then
+        echo "# col${count} additional check error -> failed"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+
+      echo -n "Do you want to add more column to dataset ? (yes | no): "
+      read add_col_answer 
+    done
+      
+    ((count += 1))  
+  done
+
+  clear
+  echo "Data box will be generated by following order, please check it" 
+  echo "-----------------------------------------------------------------"
+  echo ""
+  echo "databox_name:$databox"
+
+  count=1
+  for column in `ls $tmp_dir/col* | xargs basename -a`
+  do
+    if [ "$column" = "col1" ];then
+      echo "#primary_key"
+    else
+      echo "#column${count}"
+    fi
+    cat $tmp_dir/$column 
+    echo ""
+    ((count += 1))  
+  done
+
+  echo "-----------------------------------------------------------------"
+  echo ""
+
+  echo -n "Is it OK ? (yes | no): "
+  read fin_answer
+  while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+  do
+    echo "please input yes or no"
+
+    if [ "$bat_flag" = "yes" ];then
+      echo "# final check error -> failed"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    echo -n "Are you OK for generating Data box ? (yes | no): "
+    read fin_answer
+  done
+
+  if [ "$fin_answer" = "yes" ];then
+    # cp, chmod, touch
+    mkdir $ROOT/databox/$databox
+    mkdir $ROOT/databox/$databox/log
+    mkdir $ROOT/databox/$databox/data
+    touch $ROOT/databox/$databox/index
+    touch $ROOT/databox/$databox/hashchain
+    mkdir $ROOT/databox/$databox/file
+    touch $ROOT/databox/$databox/log.dump
+    chown -R small-shell:small-shell $ROOT/databox/$databox
+    chmod 700 $ROOT/databox/$databox/data
+    chmod 700 $ROOT/databox/$databox/file
+    chmod 700 $ROOT/databox/$databox/log
+    chmod 700 $ROOT/databox/$databox/index
+    chmod 700 $ROOT/databox/$databox/hashchain
+    chmod 700 $ROOT/databox/$databox/log.dump
+   
+    mkdir $ROOT/databox/${databox}/def
+    cp $tmp_dir/* $ROOT/databox/${databox}/def/
+    rm -f $ROOT/databox/${databox}/def/databox
+    chmod 755 $ROOT/databox/${databox}/def/*
+    chown -R small-shell:small-shell $ROOT/databox/${databox}/def
+
+    echo "databox:$databox created"
+    echo "databox definition is here :$ROOT/databox/${databox}/def"
+  else
+    echo "Plese try again from beginning, #gen -databox"
+  fi
+fi
+
+# ADD COLUMN TO DATABOX
+if [ "$param" = "-addcol" ];then
+
+  # start dialog
+  echo -n "databox_name: "
+  read databox
+
+  ls $ROOT/databox/$databox >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    existing_chk_result=existing
+  else
+    existing_chk_result=""
+  fi
+
+  while [ "$existing_chk_result" = "" -o ! "$databox" ]
+  do
+
+    if [ ! "$existing_chk_result" = "existing" ];then
+      echo "error: databox ${databox} is not existing, please try again"
+    fi
+    echo -n "databox_name: "
+    read databox
+
+    ls $ROOT/databox/$databox >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result=existing
+    else
+      existing_chk_result=""
+    fi
+
+  done
+  echo "$databox" > $tmp_dir/databox
+  add_col_answer=yes
+  
+  count=`ls $ROOT/databox/${databox}/def/col* | wc -l`
+  ((count += 1))
+
+  while [ "$add_col_answer" = "yes" ]
+  do
+    echo -n "key(col${count}) name: "
+    read add_key
+    reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+
+    existing_chk_result=""
+    grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result=existing
+    fi
+
+    grep "name=\"$add_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result=existing
+    fi
+
+    eval $add_key=test
+    load_chk=$?
+    meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+    while [ "$existing_chk_result" = "existing" -o "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
+    do
+
+      if [ "$reserved_chk_result" ];then
+        echo "error: you can't use {input temp binary_file params} as key, because these are reserved"
+      fi
+
+      if [ "$existing_chk_result" = "existing" ];then
+        echo "error: key_name is already defined, please try again"
+      fi
+
+      if [ ! "$load_chk" -eq  0 ];then
+        echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
+      fi
+
+      if [ "$meta_chk_result"  ];then
+        echo "error: key must be  ascii text and you can't use meta charactor or number space, please try again"
+      fi
+
+      echo -n "key(col${count}) name: "
+      read add_key
+      reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+
+      existing_chk_result=""
+      grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        existing_chk_result=existing
+      fi
+
+      grep "name=\"$add_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        existing_chk_result=existing
+      fi
+      
+      eval $add_key=test >/dev/null 2>&1
+      load_chk=$?
+      meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+    done
+
+    echo -n "key (col${count}) label: "
+    read add_key_label
+    char_chk_result=`charset_check "$add_key_label"`
+
+    while [ "$char_chk_result" = "ERROR" ]
+    do
+      echo "error: key label charset seems wrong, please use UTF-8 as charset"
+      echo -n "add_key_label: "
+      read add_key_label
+      char_chk_result=`charset_check "$add_key_label"`
+    done
+
+    # escape meta character
+    add_key_label=`echo "$add_key_label" | sed "s/\"//g"`
+
+    echo -n "data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+    read type
+    data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+     -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+
+    if [ "$type" = "file" ];then
+      grep "type=\"file\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        data_chk_result=""
+        data_chk_flg="file"
+      fi
+      grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        data_chk_result=""
+        data_chk_flg="file"
+      fi
+    fi
+
+    while [ ! "$data_chk_result" ]
+    do
+      echo "data type must be wrong, please try again"
+      if [ "$data_chk_flg" = "file" ];then
+        echo "1 dataset could have only 1 file, please do not add file again"
+      fi
+
+      echo -n "data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+      read type
+      data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+       -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+
+      data_chk_flg=""
+      if [ "$type" = "file" ];then
+        grep "type=\"file\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+        if [ $? -eq 0 ];then
+          data_chk_result=""
+          data_chk_flg="file"
+        fi
+        grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+        if [ $? -eq 0 ];then
+          data_chk_result=""
+          data_chk_flg="file"
+        fi
+      fi
+
+    done
+    
+    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+      echo -n "please define selectable parameter using space as separator: "
+      read params
+      char_chk_result=`charset_check "$params"`
+      while [ "$char_chk_result" = "ERROR" ]
+      do
+        echo "It seems invalid charactor is included, please try again. try to not use backspace as much as possible"
+        echo -n "parameters: "
+        read params
+        char_chk_result=`charset_check "$params"`
+      done
+    fi
+
+    if [ "$type" = "num" ];then
+      type=number
+    fi
+
+    if [ "$type" = "date-time" ];then
+      type="datetime-local"
+    fi
+
+    if [ "$type" = "pdls" ];then
+      echo -n "please input databox name for making pdls(primary value data list): "
+      read pdlsbox
+      while [ "$pdlsbox" -a ! -d $ROOT/databox/$pdlsbox ]
+      do
+        echo -n "databox seems wrong, please try again: "
+        read pdlsbox
+      done     
+    fi
+
+    if [ ! "$type" = "file" -a ! "$type" = "checkbox" ];then
+      echo -n "required to input each time? (yes | no): "
+      read option_answer
+      if [ "$option_answer" = "yes" ];then
+        option=required
+      else
+        option=""
+      fi
+
+      while [ ! "$option_answer" = "yes" -a ! "$option_answer" = "no" ]
+      do
+        echo "please input yes or no"
+        echo -n "Is it required to input each time ? (yes | no): "
+        read option_answer
+        if [ "$option_answer" = "yes" ];then
+          option=required
+        else
+          option=""
+        fi
+      done
+    fi
+
+    # dump add_key
+    echo "name=\"$add_key\"" > $tmp_dir/col${count}
+    echo "label=\"$add_key_label\"" >> $tmp_dir/col${count}
+    echo "type=\"$type\"" >> $tmp_dir/col${count}
+
+    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+      echo "params=\"$params\"" >> $tmp_dir/col${count}
+    fi
+
+    if [ "$type" = "pdls" ];then
+      echo "pdlsbox=\"$pdlsbox\"" >> $tmp_dir/col${count}
+    fi
+
+    echo "option=\"$option\"" >> $tmp_dir/col${count}
+
+    echo -n "Do you want to add more column to dataset ? (yes | no) : "
+    read add_col_answer
+    while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Do you want to add more column to dataset ? (yes | no): "
+      read add_col_answer
+    done
+    ((count += 1))
+  done
+
+  clear
+  echo "Column will be added to the dataset, please check it"
+  echo "-----------------------------------------------------------------"
+  echo ""
+  echo "databox_name:$databox"
+
+  count=`ls $ROOT/databox/${databox}/def/col* | wc -l`
+  ((count += 1))
+  
+  for column in `ls $tmp_dir/col* | xargs basename -a`
+  do
+    echo "#column${count}"
+    cat $tmp_dir/$column
+    echo ""
+    ((count += 1))
+  done
+
+  echo "-----------------------------------------------------------------"
+  echo ""
+
+  echo -n "Is it OK ? (yes | no): "
+  read fin_answer
+  while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+  do
+    echo "please input yes or no"
+    echo -n "Are you OK for adding column to the Data box ? (yes | no): "
+    read fin_answer
+  done
+
+  if [ "$fin_answer" = "yes" ];then
+    cp $tmp_dir/* $ROOT/databox/${databox}/def/
+    rm -f $ROOT/databox/${databox}/def/databox
+    chmod 755 $ROOT/databox/${databox}/def/*
+    chown -R small-shell:small-shell $ROOT/databox/${databox}/def
+    
+    echo "databox definition is here :$ROOT/databox/${databox}/def"
+
+    # rebuild index
+    keys=`grep "name=" $tmp_dir/col* | sort -V | xargs basename -a | awk -F "=" '{print $2}' | sed "s/\"//g" | sed -z "s/\n/,/g" | sed "s/,$//g"`
+    $ROOT/adm/rebuild $databox $keys addcol
+  else
+    echo "Plese try again from beginning, #gen -addcol"
+  fi
+fi
+
+# DEL COLUMN FROM DATABOX
+if [ "$param" = "-delcol" ];then
+
+  # start dialog
+  echo -n "databox_name: "
+  read databox
+
+  ls $ROOT/databox/$databox >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    existing_chk_result=existing
+  else
+    existing_chk_result=""
+  fi
+
+  while [ "$existing_chk_result" = "" -o ! "$databox" ]
+  do
+
+    if [ ! "$existing_chk_result" = "existing" ];then
+      echo "error: databox ${databox} is not existing, please try again"
+    fi
+    echo -n "databox_name: "
+    read databox
+
+    ls $ROOT/databox/$databox >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result=existing
+    else
+      existing_chk_result=""
+    fi
+
+  done
+  del_col_answer=yes
+
+  count=`ls $ROOT/databox/${databox}/def/col* | wc -l`
+  ((count += 1))
+
+  while [ "$del_col_answer" = "yes" ]
+  do
+    echo -n "column's key name: "
+    read del_key
+
+    grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result1=existing
+    else
+      existing_chk_result1=""
+    fi
+
+    ls  $tmp_dir/$del_key >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result2=existing
+    else
+      existing_chk_result2=""
+    fi
+
+    grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col1 >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      primary_key_chk_result=yes
+    else
+      primary_key_chk_result=no
+    fi
+
+    while [ "$existing_chk_result1" = "" -o "$existing_chk_result2" = "existing" -o "$primary_key_chk_result" = "yes" ]
+    do
+ 
+      if [ "$existing_chk_result1" = "" ];then
+        echo "error: key_name is not existing, please try again"
+      fi
+
+      if [ "$existing_chk_result2" = "existing" ];then
+        echo "error: you can not delete same key"
+      fi
+
+      if [ "$primary_key_chk_result" = "yes" ];then
+        echo "error: primary_key(col1) can not be deleted"
+      fi
+
+      echo -n "column's key name: "
+      read del_key
+      
+      grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        existing_chk_result1=existing
+      else
+        existing_chk_result1=""
+      fi
+
+      ls  $tmp_dir/$del_key >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        existing_chk_result2=existing
+      else
+        existing_chk_result2=""
+      fi
+
+      grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col1 >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        primary_key_chk_result=yes
+      else
+        primary_key_chk_result=no
+      fi
+
+    done
+
+
+    # dump del_key
+    touch $tmp_dir/$del_key
+ 
+    echo -n "Do you want to delete more column from dataset ? (yes | no) : "
+    read del_col_answer
+    while [ ! "$del_col_answer" = "yes" -a ! "$del_col_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Do you want to delete more column from dataset ? (yes | no): "
+      read del_col_answer
+    done
+
+    ((count += 1))
+  done
+
+  clear
+  echo "Column will be deleted, please check it"
+  echo "-----------------------------------------------------------------"
+  echo ""
+  echo "databox_name:$databox"
+
+  for key in `ls $tmp_dir/* | xargs basename -a`
+  do
+    echo "key of delete target column:$key"
+  done
+
+  echo ""
+  echo "-----------------------------------------------------------------"
+  echo ""
+
+  echo -n "Is it OK ? (yes | no): "
+  read fin_answer
+  while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+  do
+    echo "please input yes or no"
+    echo -n "Are you OK for generating Data box ? (yes | no): "
+    read fin_answer
+  done
+
+  if [ "$fin_answer" = "yes" ];then
+  
+    for target_key in `ls $tmp_dir | xargs basename -a`
+    do
+      col_name=`grep -l "name=\"$target_key\"" $ROOT/databox/${databox}/def/col* | xargs basename -a`
+
+      if [ ! -f $ROOT/databox/${databox}/def/_${col_name} ];then
+        mv $ROOT/databox/${databox}/def/$col_name $ROOT/databox/${databox}/def/_${col_name}
+      else
+        duplicated=$ROOT/databox/${databox}/def/_${col_name}.duplicated.$RANDOM
+        if [ ! -f "$duplicated" ];then
+          mv $ROOT/databox/${databox}/def/$col_name $ROOT/databox/${databox}/def/_${col_name}.duplicated.$RANDOM
+        else
+          echo "error: failed to mv def file of $key"
+          rm -rf $tmp_dir
+          exit 1
+        fi
+      fi
+      
+      count=1
+      for column in `ls $ROOT/databox/${databox}/def/col* | sort -V | xargs basename -a`
+      do
+        if [ ! "$column" = "col${count}" ];then
+          mv $ROOT/databox/${databox}/def/$column  $ROOT/databox/${databox}/def/col${count}
+        fi
+       ((count += 1))
+      done
+      
+    done
+    
+    chmod 755 $ROOT/databox/${databox}/def/*
+    chown -R small-shell:small-shell $ROOT/databox/${databox}/def
+    echo "databox definition is here :$ROOT/databox/${databox}/def"
+
+    # rebuild index
+    keys=`ls $tmp_dir | sort -V | xargs basename -a | sed "s/ /,/g" | sed -z "s/\n/,/g" | sed "s/,$//g"`
+    $ROOT/adm/rebuild $databox $keys delcol
+  else
+    echo "Plese try again from beginning, #gen -delcol"
+  fi
+fi
+
+# GENERATE APP
+if [ "$param" = "-app" ];then
+
+  # env check
+  selinux_chk=`sestatus 2>/dev/null | grep enforcing` 
+  if [ "$selinux_chk" ];then
+    echo "warn: SE Linux is enforcing, you can't use APP shell"
+    echo "please change SE linux from enforcing to permissive or disabled"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  # start dialog
+  echo -n "Type of APP (1.BASE | 2.FORM | 3.SCRATCH): "
+  read apptype 
+  while [ ! "$apptype" = "1"  -a  ! "$apptype" = "2" -a ! "$apptype" = "3" ]
+  do
+    echo -n "please select number (1.BASE | 2.FORM | 3.SCRATCH) : "
+    read apptype
+  done
+
+  if [ "$apptype" = "1" ];then
+    apptype="1.BASE"
+
+    echo -n "Root directory of web (/var/www): "
+    read www
+    www=`echo $www | sed "s/\/$//g"`
+
+    if [ ! "$www" ];then
+      www=/var/www
+    fi
+    www=`echo $www | sed "s/\/$//g"`
+
+    while [ ! -d $www ]
+    do
+      echo "error: $www is not existing, please set root directory for web APP"
+      echo -n "www directory: "
+      read www
+      if [ ! "$www" ];then
+        www=/var/www
+      fi
+      www=`echo $www | sed "s/\/$//g"`
+    done
+
+    www=`echo $www | sed "s/\/$//g"`
+
+    if [ -f /etc/redhat-release ];then
+      cgi_candidate=/var/www/cgi-bin
+    else
+      cgi_candidate=/usr/lib/cgi-bin
+    fi
+
+    echo -n "CGI directory ($cgi_candidate): "
+    read cgidir
+    cgidir=`echo $cgidir | sed "s/\/$//g"`
+
+    if [ ! "$cgidir" ];then
+      cgidir=$cgi_candidate
+    fi
+    cgidir=`echo $cgidir | sed "s/\/$//g"`
+
+    while [ "$cgidir" = "$www" -o ! -d $cgidir ]
+    do
+      if [ ! -d $cgidir ];then
+        echo "error: $cgidir is not existing, please create CGI directory and then try again"
+      elif [ "$cgidir" = "$www" ];then
+        echo "error: CGI dir:$cgidir must be different directory of WWW dir:$www"
+      fi
+      echo -n "CGI directory: "
+      read cgidir
+      if [ ! "$cgidir" ];then
+        cgidir=/usr/lib/cgi-bin
+      fi
+      cgidir=`echo $cgidir | sed "s/\/$//g"`
+    done
+
+    cgidir_without_path=`echo $cgidir | xargs basename -a`
+
+    echo -n "APP exec user (e.g. www-data or apache or nginx): "
+    read cgiusr
+
+    if [ ! "$cgiusr" ];then
+      cgiusr=www-data
+    fi
+
+    usr_chk_result=$(grep $cgiusr /etc/passwd)
+    sudo_chk_result=$(grep $cgiusr /etc/sudoers | grep small-shell | grep NOPASSWD)
+
+    while [ ! "$usr_chk_result" -o ! "$sudo_chk_result" ]
+    do
+      echo "error: APP exec user seems wrong, please define cgi user which used by web server and please add sudoer setting"
+      echo -n "APP exec user: "
+      read cgiusr
+      usr_chk_result=$(grep $cgiusr /etc/passwd)
+      sudo_chk_result=$(grep $cgiusr /etc/sudoers | grep small-shell | grep NOPASSWD)
+    done
+
+    echo -n "protocol (http | https): "
+    read protocol
+
+    if [ ! "$protocol" ];then
+      protocol=https
+    fi
+
+    while [ ! "$protocol" = "http" -a ! "$protocol" = "https" ]
+    do
+      echo "error: please set http or https as protocol"
+      echo -n "protocol (http | https): "
+      read protocol
+    done
+
+
+    # command check for cgi
+    sudo -u small-shell echo $HOME >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please add small-shell as linux user"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    sudo -u small-shell which jq >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "warning: please install jq command.if you don't add jq command, you will fail to generate json output"
+    fi
+
+    sudo -u small-shell which php >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install php"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    echo -n "WEB Server FQDN or IP addr (e.g. 192.168.10.1): "
+    read server
+
+    ascii_chk_result=`ascii_check $server`
+    meta_chk_result=$(echo $server | grep -e " " -e ","  -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
+    -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+    while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$server" ]
+    do
+      if [ ! "$server" ];then
+        echo "error: please input FQDN or IP addr of web server"
+      else
+        echo "error: server must be ascii text and you can't use meta charactor including space, please try again"
+      fi
+      echo -n "WEB server: "
+      read server
+      ascii_chk_result=`ascii_check $server`
+      meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
+      -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+    done
+
+    if [[ $server == *:* ]];then
+      server="[${server}]"
+    fi
+  
+    base_url="${protocol}://${server}/${cgidir_without_path}/"
+    echo -n "BASE URL for WEB APP is ${base_url} is it OK ? (yes | no): "
+    read base_url_answer
+
+    while [ ! "$base_url_answer" = "yes" -a ! "$base_url_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Is it OK to use $base_url as BASE URL for WEB APP ? (yes | no): "
+      read base_url_answer
+    done
+
+    if [ "$base_url_answer" = "no" ];then
+
+      echo -n "please input base url that defined at web server : "
+      read base_url
+      ascii_chk_result=`ascii_check $base_url`
+      meta_chk_result=$(echo $base_url | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
+      -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+      slash_chk=`echo $base_url | grep \/$`
+      if [ ! "$slash_chk" ];then
+        base_url=`echo $base_url | sed "s/$/\//g"`
+      fi
+
+      while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$base_url" ]
+      do
+        if [ ! "$base_url" ];then
+          echo "error: please input base url"
+        else
+          echo "error: base url must be ascii text and you can't use meta charactor including space, please try again"
+        fi
+        echo -n "base url: "
+        read base_url
+        ascii_chk_result=`ascii_check $base_url`
+        meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
+        -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
+      done
+ 
+    fi
+    clear
+
+    echo "-----------------------------------------------------------------"
+    echo "APP type: $apptype"
+    echo "protocol: $protocol"
+    echo "APP exec user: $cgiusr"
+    echo "Root directory: $www"
+    echo "CGI directory: $cgidir"
+    echo "server: $server"
+    echo "base url: $base_url"
+    echo "-----------------------------------------------------------------"
+
+    echo -n "Is it OK ? (yes | no): "
+    read fin_answer
+    while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Are you OK for generating APP ? (yes | no): "
+      read fin_answer
+    done
+
+    if [ "$fin_answer" = "yes" ];then
+       
+      # gen base info
+      echo "protocol=\"$protocol\"" > $ROOT/web/base
+      echo "server=\"$server\"" >> $ROOT/web/base
+      echo "cgiusr=\"$cgiusr\"" >> $ROOT/web/base
+      echo "cgidir=\"$cgidir\"" >> $ROOT/web/base
+      echo "base_url=\"$base_url\"" >> $ROOT/web/base
+      chown small-shell:small-shell $ROOT/web/base
+      chmod 700 $ROOT/web/base
+
+      # deploy cgi to cgi-dir changing path etc
+      bindir="${www}/bin"
+      descrdir="${www}/descriptor"
+      cgitmp="${www}/tmp"
+  
+      if [ ! -d $bindir ];then
+        mkdir $bindir
+      fi
+
+      chown $cgiusr:$cgiusr $bindir
+      if [ ! $? -eq 0 ];then
+        echo "error: failed to create directory for small-shell APP bin"
+      fi
+  
+      if [ ! -d $descrdir ];then
+        mkdir $descrdir
+        mkdir $descrdir/common_parts
+        if [ ! $? -eq 0 ];then
+          echo "error: failed to create directory for small-shell APP html descriptor"
+        fi
+      fi
+      chown $cgiusr:$cgiusr $descrdir
+      if [ ! $? -eq 0 ];then
+        echo "error: failed to create directory for small-shell APP html descriptor"
+      fi
+
+      if [ ! -d $cgitmp ];then
+        mkdir $cgitmp
+      fi
+      chown $cgiusr:$cgiusr $cgitmp
+      if [ ! $? -eq 0 ];then
+        echo "error: failed to create directory for small-shell APP tmpfile"
+      fi
+
+      # gen command API key and URL  
+      echo "commandapi=\"${base_url}api\"" >> $ROOT/web/base
+      echo "hubapi=\"${base_url}e-cron\""  >> $ROOT/web/base
+
+      user_name=api
+      user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+
+      if [ ! -d $ROOT/users/$user_id ];then
+        mkdir $ROOT/users/$user_id
+      fi
+      echo "$user_name" > $ROOT/users/$user_id/user_name
+      echo "permission=ro" > $ROOT/users/$user_id/.attr.tmp
+      cat $ROOT/users/$user_id/.attr.tmp > $ROOT/users/$user_id/attr
+      chown small-shell:small-shell $ROOT/users/$user_id/attr
+
+      which openssl  >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        hash_gen_key=`openssl rand -hex 20`
+      else
+        hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+      fi
+      hash=`echo "${user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+      echo "$hash" > $ROOT/users/${user_id}/hash
+      chown -R small-shell:small-shell $ROOT/users/$user_id
+      chmod 700 $ROOT/users/${user_id}/hash
+      user_key=`echo "${user_name}:${hash_gen_key}" | base64 -w 0`
+      echo "api_authkey=\"$user_key\"" >> $ROOT/web/base
+
+      for src in `ls $ROOT/web/src/cgi-bin | grep -v controller | grep -v tmplt | grep -v auth | xargs basename -a`
+      do
+        cat $ROOT/web/src/cgi-bin/$src > $cgidir/$src
+        chmod 755 $cgidir/$src
+      done
+      cat $ROOT/web/src/cgi-bin/controller > $cgidir/shell.app
+      cat $ROOT/web/src/cgi-bin/auth > $cgidir/shell.auth
+      chmod 755 $cgidir/shell*
+
+      for src in `ls $ROOT/web/src/bin | grep -v tmplt | xargs basename -a`
+      do
+        cat $ROOT/web/src/bin/$src > $bindir/$src
+        chmod 755 $bindir/$src
+      done
+
+      rand=$RANDOM
+      for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | xargs basename -a`
+      do
+        cat $ROOT/web/src/descriptor/$src | sed "s/%%rand/$rand/g" > $descrdir/$src
+        chmod 755 $descrdir/$src
+      done
+
+      for src in `ls $ROOT/web/src/descriptor/common_parts | xargs basename -a`
+      do
+        cat $ROOT/web/src/descriptor/common_parts/$src | sed "s/%%rand/$rand/g" > $descrdir/common_parts/$src
+        chmod 755 $descrdir/common_parts/$src
+      done
+
+      echo "small_shell_path=$ROOT" > $descrdir/.small_shell_path
+
+      # enable standard jobs
+      if [ ! -f $ROOT/util/e-cron/def/del_session.def ];then
+        echo "SCHEDULE:* * * * *" > $ROOT/util/e-cron/def/del_session.def
+        echo "exec_command=\"$ROOT/util/scripts/del_session.sh\"" >> $ROOT/util/e-cron/def/del_session.def 
+      fi
+
+      if [ ! -f $ROOT/util/e-cron/def/del_util_log.def ];then
+        echo "SCHEDULE:5 0 * * *" > $ROOT/util/e-cron/def/del_util_log.def
+        echo "exec_command=\"$ROOT/util/scripts/del_log.sh\"" >> $ROOT/util/e-cron/def/del_util_log.def
+      fi
+ 
+      sudo -u small-shell $ROOT/bin/e-cron enable.del_session
+      sudo -u small-shell $ROOT/bin/e-cron enable.del_util_log
+
+
+      ls ${cgidir}/../bin/shelltest.sh >/dev/null 2>&1
+
+      if [ ! $? -eq 0 ];then
+        (cd $cgidir && cd .. && pwd > $tmp_dir/.tdir) 
+        tdir=`cat $tmp_dir/.tdir`
+        clear
+        echo "www dir must have relation with CGI dir. Is it OK to make symbolic link on $tdir ?"
+        echo "following command will be executed"
+        echo "-----------------------------------------------------------------"
+        echo "ln -s $bindir $tdir/bin"
+        echo "ln -s $descrdir $tdir/descriptor"
+        echo "ln -s $cgitmp $tdir/tmp"
+        echo "-----------------------------------------------------------------"
+        echo -n "(yes | no): "
+        read syml_answer
+        while [ ! "$syml_answer" = "yes" -a ! "$syml_answer" = "no" ]
+        do
+          echo "please input yes or no"
+          echo -n "Are you OK for make symlink ? (yes | no): "
+          read syml_answer
+        done
+
+        if [ "$syml_answer" = "yes" ];then
+          ln -s $bindir $tdir/bin
+          ln -s $descrdir $tdir/descriptor
+          ln -s $cgitmp $tdir/tmp
+        fi
+     
+      fi
+    
+      curl_test=`curl ${base_url}shelltest.cgi | grep OK`
+      if [ "$curl_test" ];then
+        echo ""
+        echo "-----------------------------------------------------------------"
+        echo "NOTE"
+        echo "-----------------------------------------------------------------"
+        echo "APP deployment has been succesfully done, please add user using ops command,"
+        echo "then access key to Base APP will be generated"
+        echo "# sudo $ROOT/adm/ops add.usr:\$uesr"
+        echo ""
+      else
+        sudo -u small-shell which curl >/dev/null 2>&1
+        if [ ! $? -eq 0 ];then
+          echo "warn: APP access failed due to lack of curl command, please install curl command if possible"
+          rm -rf $tmp_dir
+          exit 1
+        else
+          echo "error: it seems something is wrong,this problram tried to get ${base_url}shelltest.cgi and it's failed." 
+          echo "please check web server setting and url setting, you should start web server beforehand"
+          rm -rf $tmp_dir
+          exit 1
+        fi
+      fi
+    else
+      echo "please try again from begining #gen -app"
+    fi
+  fi
+
+  if [ "$apptype" = "2" ];then
+
+    if [ ! -f $ROOT/web/base ];then
+      echo "error: please generate BASE APP first"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    apptype="2.FORM"
+    echo -n "form_name: "
+    read form_name
+    ascii_chk_result=`ascii_check $form_name`
+    meta_chk_result=$(echo $form_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+    eval $form_name=test >/dev/null 2>&1
+
+    while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
+    do
+      echo "error: form name must be ascii text and you can't use meta charactor including space, please try again"
+      echo -n "form_name: "
+      read form_name
+      ascii_chk_result=`ascii_check $form_name`
+      meta_chk_result=$(echo $form_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+      eval $form_name=test >/dev/null 2>&1
+      load_chk=$?
+    done
+
+    echo -n "databox: "
+    read databox
+
+    while [ ! "$databox" -o ! -d $ROOT/databox/$databox ]
+    do
+      echo "error: databox name seems wrong, please try again"
+      echo -n "target databox: "
+      read databox
+    done 
+
+    echo -n "description of the form : "
+    read description 
+
+
+    echo -n "Do you want to enable IP whitelisting for this form ? (yes | no): "
+    read IP_whitelisting
+    while [ ! "$IP_whitelisting" = "yes" -a ! "$IP_whitelisting" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Do you want to enable IP whitelisting ? (yes | no): "
+      read IP_whitelisting
+    done
+
+    clear
+    datas=`cat $ROOT/databox/$databox/def/col* | grep name=\" | grep -v hashid | awk -F "name=" '{print $2}' \
+    | sed "s/\"//g" | sed -z "s/\n/ | /g" | sed "s/ | $//g"`
+    echo -n "select data that must be included in the form ($datas) : "
+    read key
+    
+    key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+
+    while [ ! "$key_chk" ]
+    do
+      echo "error: key name must be wrong"
+      echo -n "please try again ($datas): "
+      read key
+      key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+    done
+    keys=$key
+    datas=`echo $datas | sed "s/ | $key / /g" | sed "s/$key | //g" | sed "s/ | $key//g" | sed "s/^$key$//g"`
+
+    echo -n "Do you want to add more data to the form (yes | no): "
+    read add_form_answer
+    while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Do you want to add more data to the form ? (yes | no): "
+      read add_form_answer
+    done
+
+    while [ "$add_form_answer" = "yes" -a "$datas" ]
+    do 
+      echo -n "additional data that must be included in the form ($datas) : "
+      read key
+      key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+
+      while [ ! "$key_chk" ]
+      do
+        echo "error: key name must be wrong"
+        echo -n "please try again ($datas): "
+        read key
+        key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+      done
+      keys="$keys,$key"
+
+      datas=`echo $datas | sed "s/ | $key / /g" | sed "s/$key | //g" | sed "s/ | $key//g" | sed "s/^$key$//g"`
+  
+      if [ "$datas" ];then
+        echo -n "Do you want to add more data to the form ? (yes | no): "
+        read add_form_answer
+        while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
+        do
+          echo "please input yes or no"
+          echo -n "Do you want to add more data to the form ? (yes | no): "
+          read add_form_answer
+        done
+      fi
+    done
+
+    # load base info
+    . $ROOT/web/base
+    clear
+    echo "form will be generated by following order, please check it"
+    echo "-----------------------------------------------------------------"
+    echo ""
+    echo "APP type: $apptype"
+    echo "Form name: $form_name"
+    echo "target_databox: $databox"
+    echo "description: $description"
+    echo "IP_whitelisting: $IP_whitelisting"
+    echo "Included keys: $keys"
+    echo "Access URL: ${base_url}${form_name}"
+    echo ""
+    echo "-----------------------------------------------------------------"
+    echo ""
+    echo -n "Is it OK ? (yes | no): "
+    read fin_answer
+    while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Are you OK for generating Data box ? (yes | no): "
+      read fin_answer
+    done
+
+    if [ "$fin_answer" = "yes" ];then
+
+      app=$form_name
+      # careate APP user and authkey
+      app_user_name=${app}.app
+      app_user_id=`echo "$app_user_name" | sha256sum | awk '{print $1}'`
+
+      if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
+        mkdir $ROOT/users/${app}.${app_user_id}
+      fi
+      echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
+      echo "permission=rw" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
+      cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
+      chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+
+      which openssl  >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        hash_gen_key=`openssl rand -hex 20`
+      else
+        hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+      fi
+
+      hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+      echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
+      chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
+      chmod 700 $ROOT/users/${app}.${app_user_id}/hash
+      authkey=`echo "${app_user_name}:${hash_gen_key}" | base64 -w 0`
+
+      # deploy form APP
+      cat $ROOT/web/src/cgi-bin/controller.form | sed "s/%%authkey/$authkey/g" \
+      | sed "s/%%IP_whitelisting/$IP_whitelisting/g" | sed "s/%%app/$form_name/g" > $cgidir/$form_name
+      cat $ROOT/web/src/cgi-bin/tmplt_css | sed "s/%%app/$form_name/g" > $cgidir/${form_name}_css
+
+      chown $cgiusr:$cgiusr $cgidir/${form_name}*
+      chmod 700 $cgidir/${form_name}*
+
+
+      cat $ROOT/web/src/bin/tmplt_type2_get.sh | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  | sed "s/%%keys/$keys/g" > $cgidir/../bin/${form_name}_get.sh
+
+      cat $ROOT/web/src/bin/tmplt_type2_set.sh | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  | sed "s/%%keys/$keys/g" > $cgidir/../bin/${form_name}_set.sh
+
+      chown $cgiusr:$cgiusr $cgidir/../bin/${form_name}*
+      chmod 700 $cgidir/../bin/${form_name}*
+
+      cat $ROOT/web/src/descriptor/tmplt_type2_get_new.html.def | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  | sed "s/%%description/$description/g" > $cgidir/../descriptor/${form_name}_get_new.html.def
+
+      cat $ROOT/web/src/descriptor/tmplt_type2_get.html.def | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_get.html.def
+
+      cat $ROOT/web/src/descriptor/tmplt_type2_set.html.def | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_set.html.def
+
+      cat $ROOT/web/src/descriptor/tmplt_type2.css.def > $cgidir/../descriptor/${form_name}.css.def
+
+      chown $cgiusr:$cgiusr $cgidir/../descriptor/${form_name}*
+      chmod 700 $cgidir/../descriptor/${form_name}*
+
+      echo "Form is successfully generated"
+    else
+      echo "Plese try again from beginning, #gen -app" 
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+  fi
+
+  if [ "$apptype" = "3" ];then
+
+    if [ ! -f $ROOT/web/base ];then
+      echo "error: please generate BASE APP first"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    # load base info
+    . $ROOT/web/base
+
+    apptype="3.SCRATCH"
+    echo -n "app_name: "
+    read app
+
+    parent_app=`echo $app | awk -F "@" '{print $2}'`
+    if [ "$parent_app" ];then
+       app=`echo $app | awk -F "@" '{print $1}'`
+      if [ ! -f ${cgidir}/${parent_app} ];then
+        echo "error: there is no parement APP $parent_app"
+        exit 1
+      fi
+      if [ -f ${cgidir}/${app} ];then
+        echo "error: there is same name APP as parent"
+        exit 1
+      fi
+    fi
+   
+    ascii_chk_result=`ascii_check $app`
+    meta_chk_result=$(echo $app | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+    eval $app=test >/dev/null 2>&1
+    load_chk=$?
+
+    while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
+    do
+      echo "error: form name must be ascii text and you can't use meta charactor including space, please try again"
+      echo -n "app_name: "
+      read app
+
+      parent_app=`echo $app | awk -F "@" '{print $2}'`
+      if [ "$parent_app" ];then
+       app=`echo $app | awk -F "@" '{print $1}'`
+        if [ ! -f ${cgidir}/${parent_app} ];then
+          echo "error: there is no parement APP $parent_app"
+          exit 1
+        fi
+        if [ -f ${cgidir}/${app} ];then
+          echo "error: there is same name APP as parent"
+          exit 1
+        fi
+      fi
+      ascii_chk_result=`ascii_check $app`
+      meta_chk_result=$(echo $app | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+      eval $app=test >/dev/null 2>&1
+      load_chk=$?
+    done
+
+    if [ ! "$parent_app" ];then
+      echo -n "Type of Authentication (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other): "
+      read auth_method
+      while [ ! "$auth_method" = "1"  -a  ! "$auth_method" = "2" -a ! "$auth_method" = "3" ]
+      do
+        echo -n "please select number (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other) : "
+        read auth_method
+      done
+    fi
+
+    if [ "$auth_method" = 1 ];then
+      auth_method=shared_pass
+      echo -n "shared pass code: "
+      read shared_pass
+      num_value_chk=`echo $shared_pass | sed "s/[0-9]//g" | sed "s/-//g"`
+      value_chk=`echo $shared_pass | sed -z "s/\n//g"`
+      while [ "$shared_pass" -a "$num_value_chk" ]
+      do
+        echo -n "code must be numetric character, please try again: "
+        read shared_pass
+      done
+    fi
+
+    if [ "$auth_method" = 2 ];then
+      auth_method=key
+    fi
+
+    if [ "$auth_method" = 3 ];then
+      auth_method=other
+    fi
+
+    echo -n "primary databox: "
+    read databox
+
+    while [ ! "$databox" -o ! -d $ROOT/databox/$databox ]
+    do
+      echo "error: databox name seems wrong, please try again"
+      echo -n "target databox: "
+      read databox
+    done
+
+    clear
+    echo "form will be generated by following order, please check it"
+    echo "-----------------------------------------------------------------"
+    echo ""
+    echo "APP type: $apptype"
+    echo "APP name: $app"
+    echo "authentication: $auth_method"
+   
+    if [ ! "$parent_app" ];then
+
+      if [ "$auth_method" = "key" ];then
+        echo "Access URL: ${base_url}auth.${app}"
+      elif [ "$auth_method" = "shared_pass" ];then
+        echo "Access URL: ${base_url}auth.${app}"
+        echo "shared pass code: $shared_pass"
+      else
+        echo "Access URL: ${base_url}${app}"
+      fi
+
+    else
+      echo "Parent APP: $parent_app"
+    fi
+
+    echo ""
+    echo "-----------------------------------------------------------------"
+    echo ""
+    echo -n "Is it OK ? (yes | no): "
+    read fin_answer
+    while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Are you OK for generating Data box ? (yes | no): "
+      read fin_answer
+    done
+  
+    if [ "$fin_answer" = "yes" ];then
+
+      if [ ! "$parent_app" ];then 
+
+        if [ "$auth_method" = "shared_pass" ];then
+
+          input_type="password"
+          placeholder="please input pass code"
+
+          # careate app authkey
+          app_user_name=${app}.app
+          app_user_id=`echo "$app_user_name" | sha256sum | awk '{print $1}'`
+
+          if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
+            mkdir $ROOT/users/${app}.${app_user_id}
+          fi
+          echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
+          echo "permission=rw" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
+          cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
+          chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+
+          which openssl  >/dev/null 2>&1
+          if [ $? -eq 0 ];then
+            hash_gen_key=`openssl rand -hex 20`
+          else
+            hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+          fi
+
+          hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+          echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
+          chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
+          chmod 700 $ROOT/users/${app}.${app_user_id}/hash
+          authkey=`echo "${app_user_name}:${hash_gen_key}" | base64 -w 0`
+
+
+          # store pass code of shared pass APP
+          echo "$shared_pass" > $ROOT/web/${app}.code
+
+          # deploy psscode and other APP
+          cat $ROOT/web/src/cgi-bin/controller.app | sed "s/%%app/$app/g" | sed "s/%%auth/required/g" > $cgidir/$app
+          chown $cgiusr:$cgiusr $cgidir/$app
+          chmod 700 $cgidir/$app
+
+          cat $ROOT/web/src/cgi-bin/tmplt_css | sed "s/%%app/$app/g" > $cgidir/${app}_css
+          chown $cgiusr:$cgiusr $cgidir/${app}_css
+          chmod 700 $cgidir/${app}_css
+
+          cat $ROOT/web/src/cgi-bin/tmplt_pass_auth | sed "s/%%app/$app/g" | sed "s/%%authkey/$authkey/g" > $cgidir/auth.${app}
+          chown $cgiusr:$cgiusr $cgidir/auth.${app}
+          chmod 700 $cgidir/auth.${app}
+
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
+          cat $ROOT/web/src/bin/tmplt_main.sh | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
+          cat $ROOT/web/src/bin/tmplt_dl.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
+          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
+          chmod 700 $cgidir/../bin/${app}*
+
+          rand=$RANDOM
+          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+          do
+            html_def=`echo $src | sed "s/tmplt_//g" | sed "s/type3_//g"`
+            if [ ! "$src" = "tmplt_type3.css.def" ];then
+              cat $ROOT/web/src/descriptor/$src | sed "s/%%app/$app/g" | sed "s/%%rand/$rand/g" \
+              | sed "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
+              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+            else
+              cat $ROOT/web/src/descriptor/$src  > $cgidir/../descriptor/${app}.css.def
+              chmod 755 $cgidir/../descriptor/${app}.css.def
+            fi
+          done
+
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | sed "s/%%app/$app/g" \
+          > $cgidir/../descriptor/common_parts/${app}_common_menu
+          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+
+          cat $ROOT/web/src/descriptor/tmplt_pass_auth_form.html.def | sed "s/%%input_type/$input_type/g" \
+          | sed "s/%%placeholder/$placeholder/g" | sed "s/%%app/$app/g" \
+          | sed "s/%%rand/$rand/g" > $cgidir/../descriptor/${app}_auth_form.html.def
+          chmod 755 $cgidir/../descriptor/${app}_auth_form.html.def
+        fi
+
+        if [ "$auth_method" = "key" ];then
+
+          # deploy key auth APP
+          cat $ROOT/web/src/cgi-bin/controller.app | sed "s/%%app/$app/g" | sed "s/%%auth/required/g" > $cgidir/$app
+          chown $cgiusr:$cgiusr $cgidir/$app
+          chmod 700 $cgidir/$app
+
+          cat $ROOT/web/src/cgi-bin/tmplt_css | sed "s/%%app/$app/g" > $cgidir/${app}_css
+          chown $cgiusr:$cgiusr $cgidir/${app}_css
+          chmod 700 $cgidir/${app}_css
+
+          cat $ROOT/web/src/cgi-bin/tmplt_auth | sed "s/%%app/$app/g" > $cgidir/auth.${app}
+          chown $cgiusr:$cgiusr $cgidir/auth.${app}
+          chmod 700 $cgidir/auth.${app}
+
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
+          cat $ROOT/web/src/bin/tmplt_main.sh | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
+          cat $ROOT/web/src/bin/tmplt_dl.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
+          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
+          chmod 700 $cgidir/../bin/${app}*
+
+          rand=$RANDOM
+          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a`
+          do
+            html_def=`echo $src | sed "s/tmplt_//g" | sed "s/type3_//g"`
+            if [ ! "$src" = "tmplt_type3.css.def" ];then
+              cat $ROOT/web/src/descriptor/$src | sed "s/%%app/$app/g" | sed "s/%%rand/$rand/g" \
+              | sed "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
+              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+            else
+              cat $ROOT/web/src/descriptor/$src | sed "s/%%app/$app/g"  > $cgidir/../descriptor/${app}.css.def
+              chmod 755 $cgidir/../descriptor/${app}.css.def
+            fi
+          done
+
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | sed "s/%%app/$app/g" \
+          > $cgidir/../descriptor/common_parts/${app}_common_menu
+          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+
+        fi
+
+        if [ "$auth_method" = "other" ];then
+
+          # careate app authkey
+          app_user_name=${app}.app
+          app_user_id=`echo "$app_user_name" | sha256sum | awk '{print $1}'`
+
+          input_type="text"
+          placeholder="please input your name"
+
+          if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
+            mkdir $ROOT/users/${app}.${app_user_id}
+          fi
+          echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
+          echo "permission=rw" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
+          cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
+          chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+
+          which openssl  >/dev/null 2>&1
+          if [ $? -eq 0 ];then
+            hash_gen_key=`openssl rand -hex 20`
+          else
+            hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+          fi
+
+          hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+          echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
+          chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
+          chmod 700 $ROOT/users/${app}.${app_user_id}/hash
+          authkey=`echo "${app_user_name}:${hash_gen_key}" | base64 -w 0`
+
+          # deploy psscode and other APP
+          cat $ROOT/web/src/cgi-bin/controller.app | sed "s/%%app/$app/g" | sed "s/%%auth/required/g" > $cgidir/$app
+          chown $cgiusr:$cgiusr $cgidir/$app
+          chmod 700 $cgidir/$app
+
+          cat $ROOT/web/src/cgi-bin/tmplt_css | sed "s/%%app/$app/g" > $cgidir/${app}_css
+          chown $cgiusr:$cgiusr $cgidir/${app}_css
+          chmod 700 $cgidir/${app}_css
+
+          cat $ROOT/web/src/cgi-bin/tmplt_other_auth | sed "s/%%app/$app/g" | sed "s/%%authkey/$authkey/g" > $cgidir/auth.${app}
+          chown $cgiusr:$cgiusr $cgidir/auth.${app}
+          chmod 700 $cgidir/auth.${app}
+
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
+          cat $ROOT/web/src/bin/tmplt_main.sh | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
+          cat $ROOT/web/src/bin/tmplt_dl.sh | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
+          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
+          chmod 700 $cgidir/../bin/${app}*
+
+          rand=$RANDOM
+          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+          do
+            html_def=`echo $src | sed "s/tmplt_//g" | sed "s/type3_//g"`
+            if [ ! "$src" = "tmplt_type3.css.def" ];then
+              cat $ROOT/web/src/descriptor/$src | sed "s/%%app/$app/g" | sed "s/%%rand/$rand/g" \
+              | sed "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
+              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+            else
+              cat $ROOT/web/src/descriptor/$src  > $cgidir/../descriptor/${app}.css.def
+              chmod 755 $cgidir/../descriptor/${app}.css.def
+            fi
+          done
+
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | sed "s/%%app/$app/g" \
+          > $cgidir/../descriptor/common_parts/${app}_common_menu
+          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+
+          cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | sed "s/%%input_type/$input_type/g" \
+          | sed "s/%%placeholder/$placeholder/g" | sed "s/%%app/$app/g" \
+          | sed "s/%%rand/$rand/g" > $cgidir/../descriptor/${app}_auth_form.html.def
+          chmod 755 $cgidir/../descriptor/${app}_auth_form.html.def
+
+        fi
+
+        echo "SCRATCH APP template is successfully generated"
+        echo "Please update codes"
+        ls  $cgidir/auth.${app}
+        ls  $cgidir/${app}
+        ls  $cgidir/${app}_css
+        ls  $cgidir/../bin/${app}_*
+        ls  $cgidir/../descriptor/${app}_*
+
+      else
+      # else means this is subapp
+
+        cat $ROOT/web/src/bin/tmplt_type3_table_sub.sh | sed "s/%%parent_app/$parent_app/g" \
+        | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
+
+        cat $ROOT/web/src/bin/tmplt_type3_get_sub.sh | sed "s/%%parent_app/$parent_app/g" \
+        | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
+
+        cat $ROOT/web/src/bin/tmplt_type3_set_sub.sh | sed "s/%%parent_app/$parent_app/g" \
+        | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
+
+        cat $ROOT/web/src/bin/tmplt_type3_del_sub.sh | sed "s/%%parent_app/$parent_app/g" \
+        | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
+
+        cat $ROOT/web/src/bin/tmplt_log_viewer_sub.sh | sed "s/%%parent_app/$parent_app/g" \
+        | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
+
+        cat $ROOT/web/src/bin/tmplt_page_links.sh | sed "s/%%app/$parent_app/g" \
+        | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
+
+        cat $ROOT/web/src/bin/tmplt_dl_sub.sh | sed "s/%%parent_app/$parent_app/g" \
+        | sed "s/%%databox/$databox/g" | sed "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
+
+        chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
+        chmod 700 $cgidir/../bin/${app}*
+
+
+        for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+        do
+          html_def=`echo $src | sed "s/tmplt_//g" | sed "s/type3_//g"`
+          if [ ! "$src" = "tmplt_type3.css.def" ];then
+            cat $ROOT/web/src/descriptor/$src | sed "s/.\/%%app/.\/$parent_app/g" \
+            | sed "s/%%app/$app/g" | sed "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
+          fi
+        done
+
+        chmod 755 $cgidir/../descriptor/${app}*
+
+        clear
+        echo ""
+        echo "SUB APP template is successfully generated"
+        echo ""
+        echo "1. APP controller"
+        echo " please add routing on $cgidir/${parent_app}"
+        echo "#---------------------------------------------------------------------------------------------------------"
+        echo "\"${app}.table\") ../bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command;;"
+        echo "\"${app}.get\") ../bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
+        echo "\"${app}.set\") ../bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
+        echo "\"${app}.del\") ../bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
+        echo "\"${app}.log_viewer\") ../bin/${app}_log_viewer.sh session:\$session pin:\$pin id:\$id;;"
+        echo "\"${app}.file\") ../bin/${app}_dl.sh session:\$session pin:\$pin id:\$id;;"
+        echo "#---------------------------------------------------------------------------------------------------------"
+        echo "then you can access to the subapp"
+        echo "${base_url}${parent_app}?&subapp=${app}&req=table"
+        echo ""
+        echo "2. Dynamic link in the descriptor #html.def"
+        echo " +link to the APP #e.g please insert ${parent_app}_main.html.def"
+        echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">link to subapp table</a>"
+        echo ""
+        echo ""
+
+      fi
+
+    else
+      echo "Plese try again from beginning, #gen -app"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+  fi
+
+fi
+
+# GENERATE BATCH (e-cron)
+
+function gen_schedule(){
+  echo -n "" > $tmp_dir/cron_entry
+  echo "--Define schedule--"
+  echo -n "Month [ any | 1-12 ]: "
+  read month
+  month_chk=`echo $month | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1][0-2]\""`
+
+  while [ ! "$month" = "any" -a ! "$month_chk" ]  
+  do
+    echo -n "Try again [ any | 1-12 ]: "
+    read month
+    month_chk=`echo $month | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1][0-2]\""`
+  done 
+
+  echo -n "Date  [ any | 1-31 ]: "
+  read date
+  date_chk=`echo $date | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1-2][0-9]\"" -e  "\"[3][0-1]\""`
+
+  while [ ! "$date" = "any" -a ! "$date_chk" ]
+  do
+    echo -n "Try again [ any | 1-31 ]: "
+    read date
+    date_chk=`echo $date | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1-2][0-9]\"" -e  "\"[3][0-1]\""`
+  done
+
+  echo -n "Hour  [ any | 0-23 ]: "
+  read hour
+  hour_chk=`echo $hour | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1][0-9]\""  -e "\"[2][0-3]\""`
+
+  while [ ! "$hour" = "any" -a ! "$hour_chk" ]
+  do
+    echo -n "Try again [ any | 0-23 ]: "
+    read hour
+    hour_chk=`echo $hour | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1][0-9]\""  -e "\"[2][0-3]\""`
+  done
+
+  echo -n "Min   [ any | 0-59 ]: "
+  read min
+  min_chk=`echo $min | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1-5][0-9]\""`
+
+  while [ ! "$min" = "any" -a ! "$min_chk" ]
+  do
+    echo -n "Try again [ any | 0-59 ]: "
+    read min
+    min_chk=`echo $min | sed "s/^/\"/g" | sed "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1-5][0-9]\""`
+  done
+
+  if [ "$min" = "any" ];then
+    echo -n "* " >> $tmp_dir/cron_entry
+    echo "min: any" >> $tmp_dir/confirm
+  else
+    echo -n "$min " >> $tmp_dir/cron_entry
+    echo "min: $min" >> $tmp_dir/confirm
+  fi
+
+  if [ "$hour" = "any" ];then
+    echo -n "* " >> $tmp_dir/cron_entry
+    echo "hour: any" >> $tmp_dir/confirm
+  else
+    echo -n "$hour " >> $tmp_dir/cron_entry
+    echo "hour: $hour" >> $tmp_dir/confirm
+  fi
+
+  if [ "$date" = "any" ];then
+    echo -n "* " >> $tmp_dir/cron_entry
+    echo "date: any" >> $tmp_dir/confirm
+  else
+    echo -n "$date " >> $tmp_dir/cron_entry
+    echo "date: $date" >> $tmp_dir/confirm
+  fi
+
+  if [ "$month" = "any" ];then
+    echo -n "* " >> $tmp_dir/cron_entry
+    echo "month: any" >> $tmp_dir/confirm
+  else
+    echo -n "$month " >> $tmp_dir/cron_entry
+    echo "month: $month" >> $tmp_dir/confirm
+  fi
+
+  echo -n "Week  [ any | mon - sun ]: "
+  read week
+  week_chk=`echo $week | sed "s/^/\"/g" | sed "s/$/\"/g" | grep -e "\"mon\"" -e "\"tue\"" -e "\"wed\"" -e "\"thu\"" \
+            -e "\"fri\"" -e  "\"sat\"" -e "\"sun\""`
+
+  while [ ! "$week" = "any" -a ! "$week_chk" ]
+  do
+    echo -n "Try again [ any | mon - sun ]: "
+    read week
+     week_chk=`echo $week | sed "s/^/\"/g" | sed "s/$/\"/g" | grep -e "\"mon\"" -e "\"tue\"" -e "\"wed\"" -e "\"thu\"" \
+            -e "\"fri\"" -e  "\"sat\"" -e "\"sun\""`
+  done
+
+  if [ "$week" = "any" ];then
+    echo "*" >> $tmp_dir/cron_entry
+    echo "week: any" >> $tmp_dir/confirm
+
+  elif [ "$week" = "mon" ];then
+    echo "1" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+
+  elif [ "$week" = "tue" ];then
+    echo "2" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+
+  elif [ "$week" = "wed" ];then
+    echo "3" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+
+  elif [ "$week" = "thu" ];then
+    echo "4" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+
+  elif [ "$week" = "fri" ];then
+    echo "5" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+
+  elif [ "$week" = "sat" ];then
+    echo "6" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+
+  elif [ "$week" = "sun" ];then
+    echo "7" >> $tmp_dir/cron_entry
+    echo "week: $week" >> $tmp_dir/confirm
+  fi
+}
+
+if [ "$param" = "-job" ];then
+
+  # required command check, it's required for addslashes
+  sudo -u small-shell which php >/dev/null 2>&1
+  if [ ! $? -eq 0 ];then
+    echo "error: please install php"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  # start dialog
+  echo -n "job name: "
+  read job
+  ascii_chk_result=`ascii_check $job`
+  meta_chk_result=$(echo $job | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "\." -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+  ls $ROOT/util/e-cron/def/${job}.def >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    existing_chk_result=existing
+  else
+    existing_chk_result=""
+  fi
+
+  while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$job" ]
+  do
+
+    if [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ];then
+      echo "error: job name must be ascii text and you can't use meta charactor including space, please try again"
+    fi
+    echo -n "job_name: "
+    read job
+    ascii_chk_result=`ascii_check $job`
+    meta_chk_result=$(echo $job | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "\." -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+    ls $ROOT/util/e-cron/def/${job}.def >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      existing_chk_result=existing
+    else
+      existing_chk_result=""
+    fi
+
+  done
+  echo "job_name: $job" > $tmp_dir/confirm
+  touch $tmp_dir/${job}.def
+
+  if [ ! "$existing_chk_result" = existing ];then
+    echo -n "Type of job (1.job automation | 2.file exchange) : "
+    read jobtype
+    while [ ! "$jobtype" = "1" -a  ! "$jobtype" = "2" ]
+    do
+      echo -n "please select number 1 or 2 (1.job automation | 2.file exchange) : "
+      read jobtype
+    done
+  else
+    command_chk=`grep "^exec_command=" $ROOT/util/e-cron/def/${job}.def`
+    if [ "$command_chk" ];then
+      jobtype=1
+    else
+      jobtype=2
+    fi
+  fi
+
+  if [ "$jobtype" = "1" ];then
+
+    # command check
+    sudo -u small-shell which curl >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "warn: please install curl command for defining job relatiohship with external host later"
+    fi
+
+    if [ "$existing_chk_result" = existing ];then
+      clear
+      echo "WARN job:${job} is existing, please update the job by dialog.and if you don't want to update it, please exit with ctrl + C"
+    fi
+    gen_schedule
+    cat $tmp_dir/cron_entry | sed "s/^/SCHEDULE:/g" > $tmp_dir/${job}.def
+    echo -n "Exec command or batch script: "
+    read exec_command
+
+    if [ "$exec_command" ];then
+      solo_command=`echo $exec_command | awk '{print $1}'`
+
+      if [ ! -f "$solo_command" -a -f ${ROOT}/util/scripts/${solo_command} ];then
+        solo_command="${ROOT}/util/scripts/${solo_command}"
+        command_path=`echo $ROOT/util/scripts/ | sed "s/\//{%%%%%%%}/g"`
+        exec_command=`echo "$exec_command" | sed "s/^/$command_path/g" | sed "s/{%%%%%%%}/\//g"`
+      fi
+
+      if [ ! -f "$solo_command" -a -f /usr/bin/${solo_command} ];then
+        solo_command="/usr/bin/${solo_command}"
+        command_path=`echo /usr/bin/ | sed "s/\//{%%%%%%%}/g"`
+        exec_command=`echo "$exec_command" | sed "s/^/$command_path/g" | sed "s/{%%%%%%%}/\//g"`
+      fi
+
+      if [ ! -f "$solo_command" -a -f /bin/${solo_command} ];then
+        solo_command="/bin/${solo_command}"
+        command_path=`echo /bin/ | sed "s/\//{%%%%%%%}/g"`
+        exec_command=`echo "$exec_command" | sed "s/^/$command_path/g" | sed "s/{%%%%%%%}/\//g"`
+      fi
+
+      exec_chk=`sudo -u small-shell file $solo_command | grep -i -e executable -e gnu`
+
+    fi
+
+    while [ ! "$exec_command" -o ! -x "$solo_command" -o ! "$exec_chk" ]
+    do
+      if [ ! "$exec_command" ];then
+        echo -n "please input exec command or batch script: "
+      elif [  ! -x "$solo_command" ];then
+        echo "seems $solo_command is not executable, please input full path for the command"
+        echo -n "please input exec command or batch script: "
+      elif [ ! "$exec_chk" ];then
+        echo "seems $solo_command is not executable by small-shell"
+        echo -n "please input exec command or batch script: "
+      fi
+
+      read exec_command
+
+      if [ "$exec_command" ];then
+        solo_command=`echo $exec_command | awk '{print $1}'`
+        if [ ! -f "$solo_command" -a -f ${ROOT}/util/scripts/${solo_command} ];then
+          solo_command="${ROOT}/util/scripts/${solo_command}"
+          command_path=`echo $ROOT/util/scripts/ | sed "s/\//{%%%%%%%}/g"`
+          exec_command=`echo "$exec_command" | sed "s/^/$command_path/g" | sed "s/{%%%%%%%}/\//g"`
+        fi
+
+        if [ ! -f "$solo_command" -a -f /usr/bin/${solo_command} ];then
+          solo_command="/usr/bin/${solo_command}"
+          command_path=`echo /usr/bin/ | sed "s/\//{%%%%%%%}/g"`
+          exec_command=`echo "$exec_command" | sed "s/^/$command_path/g" | sed "s/{%%%%%%%}/\//g"`
+        fi
+
+        if [ ! -f "$solo_command" -a -f /bin/${solo_command} ];then
+          solo_command="/bin/${solo_command}"
+          command_path=`echo /bin/ | sed "s/\//{%%%%%%%}/g"`
+          exec_command=`echo "$exec_command" | sed "s/^/$command_path/g" | sed "s/{%%%%%%%}/\//g"`
+        fi
+
+        exec_chk=`sudo -u small-shell file $solo_command | grep -i -e executable -e gnu`
+
+      fi
+    done
+    echo "exec_command=\"`echo $exec_command | php -r "echo addslashes(file_get_contents('php://stdin'));"`\"" >> $tmp_dir/${job}.def
+    echo "exec_command: `echo $exec_command | php -r "echo addslashes(file_get_contents('php://stdin'));"`" >> $tmp_dir/confirm
+    echo "input_message=\"\"" >> $tmp_dir/${job}.def
+    echo "output_message=\"\"" >> $tmp_dir/${job}.def
+    echo "hubapi=\"\"" >> $tmp_dir/${job}.def
+    echo "api_authkey=\"\"" >> $tmp_dir/${job}.def
+
+    clear
+    echo "job will be generated by following order, please check it" 
+    echo "-----------------------------------------------------------------"
+    echo ""
+    echo "jobtype: 1.job automation"
+    cat $tmp_dir/confirm
+    echo ""
+    echo "-----------------------------------------------------------------"
+    echo -n "Is it OK ? (yes | no): "
+    read fin_answer
+    while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Are you OK for generating job ? (yes | no): "
+      read fin_answer
+    done
+   
+    if [ "$fin_answer" = "yes" ];then
+
+      if [ "$existing_chk_result" = "existing" ];then
+        sudo -u small-shell $ROOT/bin/e-cron disable.${job}
+      fi
+      cat $tmp_dir/${job}.def > $ROOT/util/e-cron/def/${job}.def
+      chown small-shell:small-shell $ROOT/util/e-cron/def/${job}.def
+      chmod 755 $ROOT/util/e-cron/def/${job}.def
+      cat $tmp_dir/confirm > $ROOT/util/e-cron/def/.${job}.dump
+
+
+      if [ $? -eq 0 ];then
+        echo "Succesfully generated. job definition is here"
+        echo "def: $ROOT/util/e-cron/def/${job}.def" 
+        echo "Please enable job \"sudo -u small-shell $ROOT/bin/e-cron enable.$job\""
+      else
+        echo "error: something wrong"
+      fi
+    else
+      echo "Plese try again from beginning, #gen -job"
+    fi
+  fi
+
+  if [ "$jobtype" = "2" ];then
+
+    # command check
+    sudo -u small-shell which curl >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install curl command for dataExchanging with external host"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    if [ "$existing_chk_result" = existing ];then
+      clear
+      echo "WARN job:${job} is existing, please update the job by dialog.and if you don't want to update it, please exit with ctrl + C"
+    fi
+    gen_schedule
+    cat $tmp_dir/cron_entry | sed "s/^/SCHEDULE:/g" > $tmp_dir/${job}.def
+    echo -n "Type of file exchange (push | get): "
+    read exchange_type
+    while [ ! "$exchange_type" = "push" -a ! "$exchange_type" = "get" ]
+    do
+      echo "please input push or get"
+      echo -n "Type (push | get): "
+      read exchange_type
+    done
+    echo "Exchange Type: $exchange_type" >> $tmp_dir/confirm
+
+    if [ "$exchange_type" = "get" ];then
+      echo -n "local directory: "
+      read local_dir
+      if [ -d $local_dir ];then
+        sudo -u small-shell echo "test" > $local_dir/.gentest
+	if [ $? -eq 0 ];then
+	  gen_test=success
+        else
+          gen_test=""
+	fi
+      fi
+      while [ ! "$gen_test" = "success" ]
+      do
+        echo "Oops something wrong, small-shell could not write down test file to the directory. please review the path or permission, then try again"
+        echo -n "local directory: "
+        read local_dir
+        if [ -d $local_dir ];then
+          sudo -u small-shell echo "test" > $local_dir/.gentest
+          if [ $? -eq 0 ];then
+            gen_test=success
+          else
+            gen_test=""
+          fi
+        fi
+      done
+      echo "local_dir=\"$local_dir\"" >> $tmp_dir/${job}.def
+    fi
+
+    if [ "$exchange_type" = "push" ];then
+      echo -n "local directory: "
+      read local_dir
+      if [ -d $local_dir ];then
+        echo "test" > $local_dir/.gentest
+        sudo -u small-shell ls $local_dir/.gentest > /dev/null 2>&1
+        if [ $? -eq 0 ];then
+          gen_test=success
+        else
+          gen_test=""
+        fi
+      fi
+      while [ ! "$gen_test" = "success" ]
+      do
+        echo "Oops something wrong, small-shell could not access to the directory. please review the path or permission, then try again"
+        echo -n "local directory: "
+        read local_dir
+        if [ -d $local_dir ];then
+          echo "test" > $local_dir/.gentest
+          sudo -u small-shell ls  $local_dir/.gentest > /dev/null 2>&1
+          if [ $? -eq 0 ];then
+            gen_test=success
+          else
+            gen_test=""
+          fi
+        fi
+      done
+      echo "local_dir=\"$local_dir\"" >> $tmp_dir/${job}.def
+    fi
+
+    echo -n "file_name: "
+    read file_name
+    file_name_excld_astrsk=`echo $file_name | tr -d \*`
+    ascii_chk_result=`ascii_check $file_name_excld_astrsk`
+    meta_chk_result=$(echo $file_name_exld_astrsk | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+    while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$file_name" ]
+    do
+      echo "error: file_name must be ascii text and you can't use meta charactor including space, please try again"
+      echo -n "file_name: "
+      read file_name
+      file_name_excld_astrsk=`echo $file_name | tr -d \*`
+      ascii_chk_result=`ascii_check $file_name_excld_astrsk`
+      meta_chk_result=$(echo $file_name_excld_astrsk | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+    done
+    echo "${exchange_type}_file=\"$file_name\"" >> $tmp_dir/${job}.def
+    echo "File: $file_name" >> $tmp_dir/confirm
+    
+    echo -n "HUB API URL: "
+    read hubapi
+    while [ ! "$hubapi" ]
+    do
+      echo "seems input is null, please try again"
+      echo -n "HUB API URL: "
+      read hubapi
+    done
+
+    echo -n "API authkey: "
+    read authkey
+    while [ ! "$authkey" ]
+    do
+      echo "seems input is null, please try again"
+      echo -n "API authkey: "
+      read authkey
+    done
+   
+    echo "HUB API test will be started (push & get)..."
+    sleep 0.2
+    clear
+    echo "HUB API test will be started (push & get).."
+    sleep 0.2
+    clear
+    echo "HUB API test will be started (push & get)"
+    clear
+
+    # push test
+    file_que=${ROOT}/util/e-cron/que/file
+    echo "test" > ${file_que}/e-cron_test
+    chown small-shell:small-shell ${file_que}/e-cron_test
+    push_file=e-cron_test
+    result=`curl -X POST "${hubapi}?req=push&filename=${push_file}" \
+    -H "Content-Type:application/octet-stream" -H "X-small-shell-authkey:${authkey}" \
+    --data-binary @${file_que}/${push_file}`
+
+    if [ ! "$result" -o ! "$result" = "file push failed" ];then
+      echo "File push test has been succesfully done" 
+    else
+      echo "Something wrong for file push test"
+      echo "please set correct URL and authkey, and try again"
+      echo "URL and authkey can be checked on dataExchange HUB server (e.g. cat /usr/local/small-shell/web/base)"
+      rm -rf $tmp_dir
+      exit 1
+    fi 
+
+    # get test
+    if [ ! -d ${file_que}/.e-cron_test ];then
+      mkdir ${file_que}/.e-cron_test
+      chown small-shell:small-shell ${file_que}/.e-cron_test
+    fi
+    (cd ${file_que}/.e-cron_test && curl -OLJ "${hubapi}?req=get&filename=e-cron_test" -H "X-small-shell-authkey:$authkey")
+
+    if [ -f ${file_que}/.e-cron_test/e-cron_test ];then
+      echo "File get test has been succesfully done" 
+      rm -rf ${file_que}/.e-cron_test
+    else
+      echo "Something wrong for file get test"
+      echo "please set correct URL and authkey, and try again"
+      echo "URL and authkey can be checked on dataExchange HUB server (e.g. cat /usr/local/small-shell/web/base)"
+      rm -rf ${file_que}/.e-cron_test
+      rm -rf $tmp_dir
+      exit 1
+    fi   
+    echo "hubapi=\"$hubapi\"" >> $tmp_dir/${job}.def
+    echo "api_authkey=\"$authkey\"" >> $tmp_dir/${job}.def
+    echo "HUB API URL: $hubapi" >> $tmp_dir/confirm
+    echo "API authkey: $authkey" >> $tmp_dir/confirm
+
+    sleep 1
+    clear
+    echo "job will be generated by following order, please check it"
+    echo "-----------------------------------------------------------------"
+    echo ""
+    echo "Job_type: 2.file exchange"
+    echo "Exchange_type: $exchange_type"
+    cat $tmp_dir/confirm
+    echo ""
+    echo "-----------------------------------------------------------------"
+    echo -n "Is it OK ? (yes | no): "
+    read fin_answer
+    while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
+    do
+      echo "please input yes or no"
+      echo -n "Are you OK for generating job ? (yes | no): "
+      read fin_answer
+    done
+
+    if [ "$fin_answer" = "yes" ];then
+
+      if [ "$existing_chk_result" = "existing" ];then
+        sudo -u small-shell $ROOT/bin/e-cron disable.${job}
+      fi
+
+      cat $tmp_dir/${job}.def > $ROOT/util/e-cron/def/${job}.def
+      chown small-shell:small-shell $ROOT/util/e-cron/def/${job}.def
+      chmod 755 $ROOT/util/e-cron/def/${job}.def
+      cat $tmp_dir/confirm > $ROOT/util/e-cron/def/.${job}.dump
+
+      if [ $? -eq 0 ];then
+        echo "Succesfully generated. job definition is here"
+        echo "def: $ROOT/util/e-cron/def/${job}.def"
+        echo ""
+        echo "1. Please enable job"
+	echo "  sudo -u small-shell $ROOT/bin/e-cron enable.$job"
+        if [ "$exchange_type" = "push" ];then
+          echo ""
+          echo "2. Please upload file:$file_name to the dir"
+          echo "  dir: $ROOT/util/e-cron/que/file/"
+          echo ""
+        fi
+        if [ "$exchange_type" = "get" ];then
+          echo ""
+          echo "2. File will be downloaded to the dir"
+          echo "  dir: $ROOT/util/e-cron/que/file/"
+          echo ""
+        fi
+      else
+        echo "error: something is wrong"
+      fi
+    else
+      echo "Plese try again from beginning, #gen -job"
+    fi
+    
+  fi
+fi
+
+rm -rf $tmp_dir

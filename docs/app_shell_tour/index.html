@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>APP Shell - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="../automation_tour/" class="dropdown-item">e-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="../python_tour/" class="dropdown-item">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="../auth_shell/" class="dropdown-item">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../quick_start/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../app_shell_form/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#app-shell" class="nav-link">APP Shell</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#gen-base-app" class="nav-link">Gen Base APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#define-data-structure" class="nav-link">Define Data structure</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#add-initialize-user" class="nav-link">Add / initialize user</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#import-data-structure-by-batch" class="nav-link">Import data structure by batch</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#change-data-structure" class="nav-link">Change data structure</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#insert-data-list-to-form" class="nav-link">Insert data list to form</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#change-user-permission" class="nav-link">Change user permission</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#mvc-model" class="nav-link">MVC model</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#parse" class="nav-link">Parse</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#debug-techniques" class="nav-link">Debug techniques</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#tagging" class="nav-link">Tagging</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#ip-whitelisting" class="nav-link">IP whitelisting</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#command-api" class="nav-link">Command API</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#verified-environment" class="nav-link">Verified environment</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="app-shell">APP Shell</h1>
+<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so it's not recommended to edit codes. instead of that, you can generate scratch APP and edit code freely without any impact to base layer.</p>
+<h6 id="types-of-small-shell-app">Types of small-shell APP</h6>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Authentication</th>
+<th>View</th>
+<th>Data  src</th>
+<th>Code</th>
+<th>Data Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#gen-base-app">Base APP</a></td>
+<td>Base64 encrypted Key</td>
+<td>table,form,console,log,graph</td>
+<td>All databox</td>
+<td>uneditable</td>
+<td>Full &amp; Flat but control rw/ro permission</td>
+</tr>
+<tr>
+<td><a href="../app_shell_form/">Form</a></td>
+<td>No auth</td>
+<td>form</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Just push new data through dedicated Form</td>
+</tr>
+<tr>
+<td><a href="../app_shell_scratch/">Shared APP</a></td>
+<td>Shared Pass Code</td>
+<td>portal,table,form,log</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Limitted &amp; controllable</td>
+</tr>
+<tr>
+<td><a href="../app_shell_scratch/">Key APP</a></td>
+<td>Base64 encrypted Key</td>
+<td>portal,table,form,log</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Limitted &amp; controllable</td>
+</tr>
+<tr>
+<td><a href="../app_shell_scratch/">Other</a></td>
+<td>any #Oauth other</td>
+<td>portal,table,form,log</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Limitted &amp; controllable</td>
+</tr>
+</tbody>
+</table>
+<h4 id="required">required</h4>
+<p>Please setup OS Env beorehand refering to <a href="../quick_start/">Quick start</a>,
+then start dialog by gen command.</p>
+<h2 id="gen-base-app">Gen Base APP</h2>
+<p>It could deploy small shell to the web server through gen dialog.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+#-&gt; dialog will be started
+</code></pre>
+<pre><code># Dialog result
+-----------------------------------------------------------------
+APP type: 1.BASE
+server: ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
+protocol: https
+APP exec user: www-data
+Root directory: /var/www #root directory for web server
+cgi directory: /usr/lib/cgi-bin
+base url: https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/
+-----------------------------------------------------------------
+</code></pre>
+<h5 id="add-symlink-on-ubuntu">Add symlink on ubuntu</h5>
+<p>If you are using ubuntu and apache2, please add symlink by answering "yes" in the dialog.</p>
+<pre><code>www dir must have relation with CGI dir. Is it OK to make symbolic link on /usr/lib ?
+following command will be executed
+-----------------------------------------------------------------
+ln -s /var/www/bin /usr/lib/bin
+ln -s /var/www/descriptor /usr/lib/descriptor
+ln -s /var/www/tmp /usr/lib/tmp
+-----------------------------------------------------------------
+(yes | no): yes
+</code></pre>
+<h2 id="define-data-structure">Define Data structure</h2>
+<p>You can define data type, name, label and options for html form. small shell Base APP will access to the Databx, and then get HTML data structure.</p>
+<ul>
+<li>type = same as HTML data types such like text, select, date and so on</li>
+<li>name = it will be used as HTML form param</li>
+<li>label = it will be used as a text for HTML form label </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><b>type: select , radio, checkbox</b>  <br />
+You can define parameters in the dialog. and change them anytime later.</p>
+<p><b>type: pdls</b><br />
+"pdls" means primary data list. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog.</p>
+<p><b>type: mls</b> <br />
+"mls" means member list. if you want to import user who already created in small-shell, please use mls.</p>
+</div>
+<h3 id="generate-databox-by-dialog-eg-itemdb">Generate databox by dialog #e.g item.db</h3>
+<p>You can generate databox using gen command.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -databox
+#-&gt; dialog will be started
+</code></pre>
+<h3 id="hashid">Hashid</h3>
+<p>Basically primary_key value could not be duplicated for normalization of databox. but in many cases you must want to use duplicated value. and If you want to disable the restriction, please use <b>hashid</b> as primary_key in the dialog.</p>
+<p>following is an example of using hashid</p>
+<pre><code># result of dialog
+databox_name:inventory.db
+#primary_key
+name=&quot;hashid&quot;
+label=&quot;hashid&quot;
+type=&quot;text&quot;
+option=&quot;required&quot;
+
+#column2
+name=&quot;item_name&quot;
+label=&quot;Item Name&quot;
+type=&quot;text&quot;
+option=&quot;required&quot;
+
+#column3
+name=&quot;type&quot;
+label=&quot;Type&quot;
+type=&quot;select&quot;
+params=&quot;PC network_device audio_visual furniture other&quot;
+option=&quot;required&quot;
+
+#column4
+name=&quot;num&quot;
+label=&quot;Num&quot;
+type=&quot;number&quot;
+option=&quot;required&quot;
+
+#column5
+name=&quot;note&quot;
+label=&quot;Note&quot;
+type=&quot;text&quot;
+option=&quot;&quot;
+</code></pre>
+<p><img alt="Screenshot" src="../img/hashid_table.png" /></p>
+<h2 id="add-initialize-user">Add / initialize user</h2>
+<p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test
+Initialize url for test on Base APP is created, please share this url to end user to generate access key to the APP
+https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize=634b027b1b69e1242d40d53e312b3b4ac7710f55be81f289b549446ef6778bee,ac6112287652879f0a3b9e98fd3882faa43465234f8eda1c49c546ee4b56080f
+</code></pre>
+<p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
+<h4 id="re-generate-user-key">Re-generate User key</h4>
+<p>If end user lost their key, you can generate URL for re-generating key.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops initialize.usr:test
+Initialize url for test on Base APP is created, please share this url to end user to generate access key to the APP
+https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,cb444988e82d38fd71423c53e2f2e7b992b62a7dc61a1ad49b53126036128aa1
+</code></pre>
+<h2 id="import-data-structure-by-batch">Import data structure by batch</h2>
+<p>Instead of gen command, you can create databox without dialog using batch script.</p>
+<h4 id="create-definition">create definition</h4>
+<pre><code># if you already created item.db, please delete it before generate new item.db
+# rm -rf /usr/local/small-shell/databox/item.db
+vi /tmp/db.def
+</code></pre>
+<h5 id="sapmle-of-dbdef">sapmle of db.def</h5>
+<p>please do not delete "+addcol" description that can declare to add column to backend process.</p>
+<pre><code>#---------------------------------------------------------------
+# db definition
+#---------------------------------------------------------------
+
+# databox
+databox=&quot;item.db&quot;
+
+# col1
+#-------------------------------------------
+primary_key=&quot;item_name&quot;
+primary_key_label=&quot;Item Name&quot;
+#-------------------------------------------
+
++addcol
+# col2
+#-------------------------------------------
+col2_key_name=&quot;description&quot;
+col2_key_label=&quot;Description&quot;
+col2_type=&quot;text&quot;
+
+# only for select, checkbox
+col2_key_params=&quot;&quot;
+
+# only for pdls
+col2_primary_databox=&quot;&quot;
+
+# required
+col2_required=&quot;no&quot;
+#-------------------------------------------
+
++addcol
+# col3
+#-------------------------------------------
+col3_key_name=&quot;stock&quot;
+col3_key_label=&quot;Stock&quot;
+col3_type=&quot;checkbox&quot;
+
+# only for select, checkbox
+col3_key_params=&quot;yes&quot;
+
+# only for pdls
+col3_primary_databox=&quot;&quot;
+
+# required option
+col3_required=&quot;no&quot;
+#-------------------------------------------
+
++addcol
+# col4
+#-------------------------------------------
+col4_key_name=&quot;item_type&quot;
+col4_key_label=&quot;Item Type&quot;
+col4_type=&quot;select&quot;
+
+# only for select, checkbox
+col4_key_params=&quot;book furniture electoric other&quot;
+
+# only for pdls
+col4_primary_databox=&quot;&quot;
+
+# required option
+col4_required=&quot;yes&quot;
+#-------------------------------------------
+</code></pre>
+<h6 id="exec-databox-batch">Exec databox batch</h6>
+<pre><code>sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
+</code></pre>
+<p>Following form will be generated
+<img alt="Screenshot" src="../img/item_new.png" /></p>
+<h2 id="change-data-structure">Change data structure</h2>
+<h5 id="add-del-column">Add | Del Column</h5>
+<p>Column can be added or deleted by gen command</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -addcol
+sudo /usr/local/small-shell/adm/gen -delcol
+</code></pre>
+<h5 id="change-label">Change label</h5>
+<p>Label definition can be modified directly</p>
+<pre><code>(e.g.) change item.db col2 label
+sudo vi /usr/local/small-shell/databox/item.db/def/col2
+
+--code--
+name="description"
+label="description"
+type="text"
+option=""
+--------
+</code></pre>
+<h5 id="change-params-of-select-type-or-radio">Change params of select type or radio</h5>
+<p>Params can be also modified directly</p>
+<pre><code>(e.g.) change item.db col3
+sudo vi /usr/local/small-shell/databox/item.db/def/col3
+
+--code--
+name="item_type"
+label="item_type"
+type="select"
+paramas="book furniture electoric gardening"
+option=""
+--------
+</code></pre>
+<h2 id="insert-data-list-to-form">Insert data list to form</h2>
+<p>You can import primary data list from other databox to the form using pdls type.
+following is an example that can show how you can utilize pdls.</p>
+<h4 id="typepdls">type=pdls</h4>
+<p>Import target: item.db 
+New databox : order.db &lt;- import item list</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -databox
+
+# result of dialog
+-----------------------------------------------------------------
+databox_name:order.db
+#primary_key
+name=&quot;hashid&quot;
+label=&quot;hashid&quot;
+type=&quot;text&quot;
+option=&quot;required&quot;
+
+#column2
+name=&quot;item&quot;
+label=&quot;item&quot;
+type=&quot;pdls&quot;
+pdlsbox=&quot;item.db&quot;
+option=&quot;required&quot;
+
+#column3
+name=&quot;num&quot;
+label=&quot;Num of item&quot;
+type=&quot;number&quot;
+option=&quot;required&quot;
+-----------------------------------------------------------------
+</code></pre>
+<p><img alt="Screenshot" src="../img/pdls.png" /></p>
+<h4 id="addkvl">+addkvl</h4>
+<p>Besides importing primary key value, you can import 1 other column as well by adding addkvl param manually. following example is adding item_type to the importing value.</p>
+<pre><code># edit target coumn, in this example col3 is target.
+sudo vi /usr/local/small-shell/databox/order.db/def/col2
+
+--code--
+name=&quot;item&quot;
+label=&quot;item&quot;
+type=&quot;pdls&quot;
+pdlsbox=&quot;item.db&quot;
+option=&quot;required&quot; 
+addkvl=&quot;item_type&quot; #&lt;- add by manually
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/addkvl.png" /></p>
+<h2 id="change-user-permission">Change user permission</h2>
+<p>You can cpontroll user permission. user default permission is "read/write"</p>
+<pre><code># read write permission
+sudo /usr/local/small-shell/adm/ops set.attr:$user{rw}
+
+# read only permission
+sudo /usr/local/small-shell/adm/ops set.attr:$user{ro}
+
+e.g)
+# change test user to read only permission
+sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
+</code></pre>
+<h2 id="mvc-model">MVC model</h2>
+<p>You can customize small shell by understanding similar MVC model concept.</p>
+<h5 id="basic-structure">Basic structure</h5>
+<pre><code># Directory of small-shell core
+/usr/local/small-shell/bin
+ |- auth # used for base64 encrypted key auth 
+ |- extension_auth # used for Scratch APP user auth
+ |- DATA_shell # CLI tool for accessing data shell
+ |- meta # show meta data
+/usr/local/small-shell/adm
+ |- ops
+ |- gen #generate CGI, DATA, Automate shells
+
+# Directory for APP 
+/usr/lib/cgi-bin
+ |- shell.app # work as Controller
+ |- shell.auth # for authentication
+ |- api
+ |- e-cron
+
+/var/www/bin　-&gt; /usr/lib/bin #symlink for ubuntu apache2
+ |- action_scripts # work as Model
+ |- parse.sh #it will be used for parsing posted params
+
+/var/www/descriptor -&gt; /usr/lib/description #symlink for ubuntu apache2
+ |- html_definitions # work as definition of view
+
+/var/www/tmp -&gt; /usr/lib/tmp #symlink for ubuntu apache2
+</code></pre>
+<h5 id="data-flow">Data flow</h5>
+<p>Following is a data flow of Base App that will be generated with databox <br />
+<img alt="Screenshot" src="../img/standard_flow.png" /></p>
+<h5 id="url-design">URL design</h5>
+<p>Query string will be loaded same name of valiables in the APP</p>
+<pre><code>https://$[server]/cgi-bin/shell.app?req=get&amp;databox=item.db&amp;id=1234 ..
+
+These query string will be loaded as following value in the APP
+-&gt; req=get
+-&gt; databox=item.db
+-&gt; id=1234
+</code></pre>
+<h5 id="routing-in-controller-shellapp">Routing in controller #shell.app</h5>
+<p>Routings to the action scripts are defined in the controller script.</p>
+<pre><code>sudo vi $cgi-bin/shell.app (e.g. /usr/lib/cgi-bin/shell.app)
+
+--code--
+#----------------------------
+# routing to action scripts
+#----------------------------
+
+#e.g. get request
+case &quot;$req&quot; in
+
+&quot;get&quot;)
+    ../bin/get.sh databox:$databox id:$id session:$session ;;
+--------
+</code></pre>
+<h5 id="action-scripts-model">Action scripts (model)</h5>
+<p>Action scripts will work with folloging STEPS</p>
+<ol>
+<li>Load parameters from QUERY string</li>
+<li>Load parameters from POST data</li>
+<li>Generate data by calling DATA shell</li>
+<li>Insert dynamic contents to %%tags</li>
+<li>Render pure HTML to client</li>
+</ol>
+<h6 id="load-query-string-eg-databoxidsession-that-will-be-passsed-from-app-as-parameter">Load QUERY string (e.g. $databox,$id,$session) that will be passsed from APP as parameter</h6>
+<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+
+--code--
+# load query string param @actionscripts
+for param in `echo $@`
+do
+
+  if [[ $param == databox:* ]]; then
+    databox=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+  fi  
+
+  if [[ $param == id:* ]]; then
+    id=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+  fi
+
+  if [[ $param == session:* ]]; then
+    session=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+  fi
+
+done
+-------
+</code></pre>
+<h6 id="load-post-data-that-is-stored-by-controller-tmpsessionkey">Load POST data that is stored by controller ../tmp/$session/$key</h6>
+<p>(e.g. item_name)</p>
+<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+
+--code--
+item_name=`cat ../tmp/$session/item_name`
+--------
+</code></pre>
+<h6 id="generate-data-by-calling-data_shell-with-html-format-eg-accesing-to-itemdb">Generate data by calling DATA_shell with html format (e.g. accesing to item.db)</h6>
+<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+
+--code--
+sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:item.db \
+action:get id:$id keys:all format:html_tag &gt; ../tmp/$session/dataset
+--------
+</code></pre>
+<h6 id="render-html-with-inserting-dynamic-contents-to-tags-eg-datasethtml_tag-from-itemdb">Render HTML with inserting dynamic contents to %%tags (e.g. dataset{html_tag} from item.db)</h6>
+<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+
+--code--
+cat ../descriptor/get.html.def | sed &quot;s/^ *&lt;/&lt;/g&quot; \
+| sed &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| sed &quot;s/%%dataset//g&quot;
+--------
+</code></pre>
+<h5 id="htmldef-view">html.def (view)</h5>
+<p>Just write down pure HTML. %%tag can be replaced to dynamic contents</p>
+<pre><code>sudo vi $descriptor/$htmldef (e.g. /var/www/descriptor/get.html.def)
+
+--code--
+&lt;h2&gt;Data.values&lt;/h2&gt;
+&lt;p&gt;&lt;b&gt;#ID &lt;/b&gt;%%id&lt;/p&gt;
+&lt;/div&gt;
+&lt;form method=&quot;post&quot; action=&quot;./shell.app?%%params&amp;req=set&amp;id=%%id&amp;post=yes&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
+&lt;ul&gt;
+%%dataset
+&lt;/ul&gt;
+&lt;button class=&quot;button&quot; type=&quot;submit&quot;&gt;UPDATE&lt;/button&gt;
+&lt;/form&gt;      
+--------
+</code></pre>
+<h5 id="rendered-pure-html">Rendered Pure HTML</h5>
+<p>Once action script is executed by accessing the page, pure HTML will be rendered by inserting dynamic contents to %%dataset tag.</p>
+<pre><code>&lt;h2&gt;Data.values&lt;/h2&gt;
+&lt;p&gt;&lt;b&gt;#ID &lt;/b&gt;81416a688e358d92b2a9f2ad412cb5fa60cae8e04f611335a14c6dafe2614f1e&lt;/p&gt;
+&lt;/div&gt;
+&lt;form method=&quot;post&quot; action=&quot;./shell.app?session=54c59a2567b0ac722855c801c7008a071b386f7b63ce2d6c138f5e0d94350037&amp;pin=29449&amp;databox=item.db&amp;req=set&amp;id=81416a688e358d92b2a9f2ad412cb5fa60cae8e04f611335a14c6dafe2614f1e&amp;post=yes&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;label&gt;item_name (Fixed)&lt;/label&gt;
+&lt;p&gt;small egg&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;label&gt;description&lt;/label&gt;
+&lt;input type=&quot;text&quot; name=&quot;description&quot; value=&quot;It's a small world egg&quot; &gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;label&gt;stock&lt;/label&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;stock&quot; value=&quot;&quot;&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;stock&quot; value=&quot;yes&quot; checked=&quot;checked&quot;&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;label&gt;item_type&lt;/label&gt;
+&lt;select name=&quot;item_type&quot; &gt;
+&lt;option value=&quot;other&quot;&gt;other&lt;/option&gt;
+&lt;option value=&quot;book&quot;&gt;book&lt;/option&gt;
+&lt;option value=&quot;furniture&quot;&gt;furniture&lt;/option&gt;
+&lt;option value=&quot;electric&quot;&gt;electric&lt;/option&gt;
+&lt;option value=&quot;other&quot;&gt;other&lt;/option&gt;
+&lt;/select&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;button class=&quot;button&quot; type=&quot;submit&quot;&gt;UPDATE&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<h2 id="parse">Parse</h2>
+<p>parse.sh will be used for parsing posted data. posted data will be stored to files in output dir.</p>
+<h5 id="path">PATH</h5>
+<pre><code>$bin/parse.sh (e.g. /var/www/bin/parse.sh)
+</code></pre>
+<h5 id="usage">Usage</h5>
+<pre><code>parse.sh $session $type
+</code></pre>
+<h5 id="input">input</h5>
+<pre><code>../tmp/$session/input (e.g. /var/www/tmp/$session/input)
+</code></pre>
+<h5 id="type">type</h5>
+<pre><code>urlenc # normal post
+multipart # multipart/form-data
+binary  # binary post
+json #json post
+</code></pre>
+<h5 id="output">output</h5>
+<p>Output will be dumped to ../tmp/$session directory</p>
+<pre><code># parsed key value
+ls /var/www/tmp/$session/$key
+
+# get key's value
+cat /var/www/tmp/$session/$key
+
+# parsed file
+ls /var/www/tmp/$session/binary_file/file_name #contain file name
+ls /var/www/tmp/$session/binary_file/binary.data #binary data
+</code></pre>
+<h4 id="parse-usage-in-the-app">Parse usage in the APP</h4>
+<pre><code>sudo vi /usr/ilb/cgi-bin/shell.app
+
+--code--
+# dump POST data
+if [ &quot;`echo $REQUEST_METHOD | grep -i &quot;POST&quot;`&quot; ];then
+
+  if [ &quot;`echo $CONTENT_TYPE | grep &quot;application/json&quot;`&quot; ];then
+    method=json
+  elif [ &quot;`echo $CONTENT_TYPE | grep &quot;multipart/form-data&quot;`&quot; ];then
+    method=multipart
+  elif [ &quot;`echo $CONTENT_TYPE | grep &quot;application/octet-stream&quot;`&quot; ];then
+    method=data-binary
+  else
+    method=urlenc
+  fi
+
+  mkdir ../tmp/$session
+  # dump posted data
+  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2&gt;/dev/null
+  ../bin/parse.sh $session $method
+
+fi
+--------
+</code></pre>
+<h2 id="debug-techniques">Debug techniques</h2>
+<h5 id="check-error-log">Check error log</h5>
+<pre><code>sudo tail -f /var/log/apache2/error_log
+</code></pre>
+<h5 id="posted-param-and-command-result-check">Posted param and command result check</h5>
+<p>comment out tmp dir removal</p>
+<pre><code>sudo vi /var/www/bin/set.sh
+
+--code--
+#if [ "$session" ];then
+#  rm -rf ../tmp/$session
+#fi
+--------
+</code></pre>
+<p>Then check /var/www/tmp, you can check posted params after post data on tmp dir</p>
+<pre><code>e.g.
+ec2-user@ip-*-* ~]$ ls /var/www/tmp
+b5ee3b232da9615cb7dda3838cc689aea77b323c3623c34c509d541eef9800eb
+ec2-user@ip-*-* ~]$ cd b5ee3b232da9615cb7dda3838cc689aea77b323c3623c34c509d541eef9800eb
+ec2-user@ip-*-* ~]$ ls 
+category  databox_list  issue_link  result  status
+</code></pre>
+<h5 id="check-posted-param">check posted param</h5>
+<pre><code>ec2-user@ip-*-* ~]$ cat status
+available
+</code></pre>
+<h5 id="check-result">check result</h5>
+<pre><code>ec2-user@ip-*-* ~]$ cat result
+successfully set 181210f8f9c779c26da1d9b2075bde0127302ee0e3fca38c9a83f5b1dd8e5d3b category
+info: issue_link value{} is same as original value
+info: status value{available} is same as original value
+</code></pre>
+<h5 id="exec-command-check">Exec Command check</h5>
+<p>show exec command by echo "", then you can check command and parameters. it can be chcked on browser.</p>
+<pre><code>sudo vi $bin/$actionscript (e.g. /var/www/bin/set.sh)
+
+--code--
+# set and get %%result contents
+sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+action:set id:$id keys:$keys input_dir:../tmp/$session format:html_tag &gt; ../tmp/$session/result
+
+# add echo command &amp; sleep to show command
+echo "sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+action:set id:$id keys:$keys input_dir:../tmp/$session format:html_tag &gt; ../tmp/$session/result"    
+sleep 10
+--------
+</code></pre>
+<p>You could find specific command that will be executed by action script (e.g. set.sh), following is an example executing set.sh on Base APP.
+<img alt="Screenshot" src="../img/command_debug.png" /></p>
+<h5 id="exec-command-with-debug-mode">Exec command with debug mode</h5>
+<pre><code># Exec command on bash directly
+authkey="XXXX" please input your authkey
+sudo -u small-shell bash -x /usr/local/small-shell/bin/DATA_shell authkey:$authkey + "parameters that shown on the page"
+</code></pre>
+<h2 id="tagging">Tagging</h2>
+<p>You can add tag to the table. the tag can be used for searching with specific word.</p>
+<h5 id="add-tag-thoroug-small-shell-command">Add tag thoroug small-shell command</h5>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.tag:$databox{word}
+(e.g.)
+sudo /usr/local/small-shell/adm/ops add.tag:item.db{test}
+</code></pre>
+<h5 id="delete-tag-on-small-shell-server">Delete tag on small-shell server</h5>
+<pre><code>sudo /usr/local/small-shell/adm/ops del.tag:$databox{word}
+(e.g.)
+sudo ./ops del.tag:item.db{test}
+</code></pre>
+<p>This is example of tag of word{test},
+If you click the tag, search result will be shown.
+<img alt="Screenshot" src="../img/table_tag.png" /></p>
+<h2 id="ip-whitelisting">IP whitelisting</h2>
+<p>You can set IP whitelisting for restrict access</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops set.IP
+# vi will be launched
+#########################################################
+# please write down IP num which can be allowed
+#########################################################
+# Exmaple;
+
+# specific IP
+# 192.168.1.10
+
+# Range IPs
+# 10.10.*
+</code></pre>
+<h2 id="command-api">Command API</h2>
+<p>You can access command API from external systems. command API priviledge is read only as default. </p>
+<h4 id="confirm-api-key">confirm API key</h4>
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep api_authkey
+</code></pre>
+<h4 id="confirm-api-url">confirm API url</h4>
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep commandapi
+</code></pre>
+<h4 id="change-permission-to-rw-optional">Change permission to rw (optional)</h4>
+<p>if you want to set data from external system, please change permission for api user. </p>
+<pre><code>sudo /usr/local/small-shell/adm/ops set.attr:api{rw}
+</code></pre>
+<h4 id="access-to-command-api">Access to command API</h4>
+<p>please access command API from external system, you can access the data using curl very easily.</p>
+<h4 id="from-linux-shell-with-curl">From Linux shell with curl</h4>
+<pre><code>api_authkey="XXXX"
+commandapi="https://XXXX/cgi-bin/api"
+databox="XXXX"
+
+(e.g.) exec grep command to index
+curl -X GET "${commandapi}?databox=$databox&amp;command=grep_test" -H "X-small-shell-authkey:$api_authkey"
+
+(e.g.) get DATA
+id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please input id that you want to get
+curl -X GET "${commandapi}?databox=$databox&amp;keys=all&amp;id=$id" -H "X-small-shell-authkey:$api_authkey"
+
+(e.g.) push DATA
+sudo /usr/local/small-shell/adm/ops set.attr:api{rw}
+id="new" #please input id that you want to set    
+curl -X POST "${commandapi}?databox=$databox&amp;id=$id" -H "X-small-shell-authkey:$api_authkey" -H "Content-Type: application/json" -d '{"item_name":"item1", "description":"test"}'
+</code></pre>
+<h4 id="from-windows-power-shell-with-curl">From Windows power shell with curl</h4>
+<pre><code>@External system (windwos)
+$api_authkey="YXBpOjkzYzI4YjMwZjBjMzA3ZmM4Nzg5NDM5ZjVkOGRhNTlkZTcwYzIzMjIK" #please input authkey that you confirmed
+$commandapi="https://XXXX/cgi-bin/api"
+$databox="XXXX"
+
+(e.g.) exec grep command to index
+curl.exe -X GET "${commandapi}?command=grep_test&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
+
+(e.g.) get DATA
+$id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please input id that you want to get
+curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
+</code></pre>
+<h2 id="verified-environment">Verified environment</h2>
+<pre><code>OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+bash: 4.X
+Web : Apache 2.X (recommended), nginx 1.X    
+curl: 7.X
+
+# REQUIRED commands
+Core commands : sha256sum, flock, base64
+awk : above 3 that can use "IGNORECASE = 1;" option
+sed : above 4.2.2 that can use "-z" option
+PHP : any version which have PHP url encyption libraries
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

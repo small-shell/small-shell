@@ -1,0 +1,491 @@
+#!/bin/bash
+
+#----------------------------------------------------------
+# PARAM FOR META
+# action(L1).action(L2):target{param}
+#----------------------------------------------------------
+# meta get.chain:$databox
+# meta get.progress:$import_session
+# meta get.num:$databox
+# meta get.databox
+# meta get.server
+# meta get.attr:$user{$attribute_key}
+# meta get.attr:$app/$user{$attribute_key}
+# meta get.key:$databox{primary}
+# meta get.key:$databox{all}
+# meta get.pdls:$databox{filter_word}
+# meta get.label:$databox{all}
+# meta get.header:$databox{csv}
+# meta get.header:$databox{json}
+# meta get.tag:$databox
+# meta get.tag:$app{$databox}
+# meta get.command
+# meta get.IP #show whitelisted IPs
+# meta get.statistics:ls{html_tag}
+# meta get.statistics:ls.$filter_word,$filter_word2{html_tag}
+# meta get.statistics:$statistics{graph}
+# meta get.statistics:$statistics{raw_data}
+# meta get.shared_pass:$app
+# meta get.users
+# meta get.users:$app
+# meta chk.form:$databox
+#----------------------------------------------------------
+
+# global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# load param
+param=$1
+
+if [[ $param == get.chain:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == get.progress:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  import_session=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == get.num:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == get.databox ]]; then
+  action=$param
+fi
+
+if [[ $param == get.server ]]; then
+  action=$param
+fi
+
+if [[ $param == get.attr:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  user=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+
+  if [[ $user == */* ]]; then
+    app=`echo "$user" | awk -F "/" '{print $1}'`
+    user=`echo "$user" | awk -F "/" '{print $2}'`
+  fi
+
+  attr_key=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+fi
+
+if [[ $param == get.key:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+  key=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+fi
+
+if [[ $param == get.pdls:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+  filter=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+fi
+
+if [[ $param == get.label:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+  label=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+fi
+
+if [[ $param == get.header:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+  type=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+fi
+
+if [[ $param == get.tag:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  target=`echo $param |  awk -F":" '{print $2}'`
+  if [[ $target == *{*} ]]; then
+    app=`echo $target | awk -F"{" '{print $1}'`
+    databox=`echo $target |  awk -F"{" '{print $2}' | sed "s/}//g"`
+  else
+   databox=$target
+  fi
+fi
+
+if [[ $param == get.command ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+fi
+
+if [[ $param == get.IP ]]; then
+  action=$param
+fi
+
+if [[ $param == get.statistics:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  target=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == get.shared_pass:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  app=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == get.users ]]; then
+  action=$param
+fi
+
+if [[ $param == get.users:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  app=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == chk.form:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  databox=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+# return meta data
+
+if [ "$action" = "get.chain" ];then
+
+  if [ -f $ROOT/databox/$databox/hashchain ];then
+    cat $ROOT/databox/$databox/hashchain
+  else
+    echo "error: there is no hash chain so far"
+    exit 1
+  fi 
+
+fi
+
+if [ "$action" = "get.progress" ];then
+
+  if [ -f $ROOT/tmp/log/${import_session}.log ];then
+    cat $ROOT/tmp/log/${import_session}.log
+  else
+    echo "error: there is no session log"
+    exit 1
+  fi 
+
+fi
+
+if [ "$action" = "get.num" ];then
+  num_of_data=`cat $ROOT/databox/$databox/index | wc -l`
+  echo "$num_of_data"
+fi
+
+if [ "$action" = "get.databox" ];then
+  databox_list=`ls $ROOT/databox | xargs basename -a | sed -z "s/\n/ /g"`
+  echo "$databox_list"
+fi
+
+if [ "$action" = "get.server" ];then
+  server=`cat $ROOT/web/base | grep server | awk -F "=" '{print $2}' | sed "s/\"//g"`
+  if [ "$server" ];then
+    echo "$server"
+  else
+    echo "warn: web server is not defined"
+  fi
+fi
+
+if [ "$action" = "get.attr" ];then 
+  user_id=`echo ${user} |  sha256sum | awk '{print $1}'`
+  if [ ! "${attr_key}" ];then
+    attr_key=permission
+  fi
+
+  if [ ! "$app" ];then
+    attr_param=`grep "^${attr_key}=" $ROOT/users/$user_id/attr | awk -F "=" '{print $2}'`
+  else
+    attr_param=`grep "^${attr_key}=" $ROOT/users/${app}.${user_id}/attr | awk -F "=" '{print $2}'`
+  fi
+  echo $attr_param
+  exit 0
+fi
+
+
+if [ "$action" = "get.key" ];then 
+  if [ "$key" = "primary" ];then
+    primary_key=`cat $ROOT/databox/${databox}/def/col1 | grep name= | awk -F "=" '{print $2}' | sed "s/\"//g" ` 
+    echo $primary_key
+    exit 0
+  fi
+
+  if [ "$key" = "all" ];then
+    keys=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+          | sed "s/ //g" | sed -z "s/\n/ /g" `
+    echo $keys
+  fi
+fi
+
+if [ "$action" = "get.pdls" ];then 
+
+  label=`cat $ROOT/databox/${databox}/def/col1 | grep label=  | awk -F"=" '{print $2}' | sed "s/\"//g"`
+  name=`cat $ROOT/databox/${databox}/def/col1 | grep name=  | awk -F"=" '{print $2}' | sed "s/\"//g"`
+
+  if [ "$filter" ];then
+    primary_key_values=`cat $ROOT/databox/${databox}/index | grep $filter | awk -F "::::::" '{print $3}' | awk -F "," '{print $1}'` 
+  else
+    primary_key_values=`cat $ROOT/databox/${databox}/index | awk -F "::::::" '{print $3}' | awk -F "," '{print $1}'` 
+  fi
+
+  echo "<li>"
+  echo "<label>$label</label>"
+  echo "<input type=\"text\" name=\"$name\" value=\"\" autocomplete=\"off\" list=\"pdls\">"
+  echo "<datalist id=\"pdls\">"
+  echo "$primary_key_values" | sed "s/^/<option value=\"/g" | sed "s/$/\">/g" \
+  | sed "s/{%%%%%%%%%%%%%}/#/g"\
+  | sed "s/{%%%%%%%%%%%%}/|/g"\
+  | sed "s/{%%%%%%%%%%%}/\]/g"\
+  | sed "s/{%%%%%%%%%%}/\[/g"\
+  | sed "s/{%%%%%%%%%}/)/g"\
+  | sed "s/{%%%%%%%%}/(/g"\
+  | sed "s/{%%%%%%%}/_/g"\
+  | sed "s/{%%%%%%}/,/g"\
+  | sed "s/{%%%%%}/\//g"\
+  | sed "s/{%%%%}/\&/g"\
+  | sed "s/{%%%}/:/g"
+  echo "</dataliset>"
+  echo "</li>"
+  exit 0
+fi
+
+if [ "$action" = "get.label" ];then 
+
+  if [ "$label" = "all" ];then
+    labels=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+            | sed "s/ //g" | sed -z "s/\n/ /g" `
+    echo $labels
+  fi
+fi
+
+if [ "$action" = "get.header" ];then 
+
+  if [ "$type" = "csv" ];then
+    header=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+            | sed "s/ //g" | sed -z "s/\n/,/g" | sed "s/,$//"`
+    echo "$header"
+  fi 
+
+  if [ "$type" = "json" ];then
+    header=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+            | sed "s/ //g" | sed -z "s/\n/,/g" | sed "s/,$//"`
+    
+    JQ="echo \$header | jq -R 'split(\",\") | {"
+    count=0
+    for col in `ls $ROOT/databox/${databox}/def/col* | sort -V | xargs basename -a`
+    do
+      if [ $count -eq 0 ];then
+        JQ="${JQ}\"$col\": .[$count]"
+      else
+        JQ="${JQ}, \"$col\": .[$count]"
+      fi
+      ((count += 1))
+    done
+    JQ="${JQ}}'"
+    eval $JQ
+  fi 
+
+fi
+
+if [ "$action" = "get.tag" ];then
+  if [ ! "$app" ];then
+    ls $ROOT/tmp/tag/$databox/* >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      cat $ROOT/tmp/tag/$databox/*
+    fi
+  else
+    ls $ROOT/tmp/tag/${app}.$databox/* >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      cat $ROOT/tmp/tag/${app}.$databox/*
+    fi
+  fi
+fi
+
+if [ "$action" = "get.command" ];then
+  grep "^ALLOWED_COMMANDS=\"*\"" $ROOT/bin/DATA_shell | awk -F "=" '{print $2}' | sed "s/\"//g" | sed "s/,/ /g"
+fi
+
+if [ "$action" = "get.IP" ];then
+   if [ -f $ROOT/web/whitelist ];then
+     IP_list=`cat $ROOT/web/whitelist | grep -v ^# `
+     if [ "$IP_list" ];then 
+       echo "$IP_list"
+     else
+       echo "NO IP RESTRICTION"
+     fi
+   fi
+fi
+
+if [ "$action" = "get.statistics" ];then
+  target=`echo $target | sed "s/{%%%%%%%}/_/g" `
+
+  if [[ $target == ls* ]]; then
+    format=`echo $target | awk -F"{" '{print $2}' | sed "s/}//g"`
+    target=`echo $target | awk -F "{" '{print $1}'`
+
+    if [ ! "$format" ];then
+      format=none
+    fi
+
+    if [ "$target" = ls ];then
+      list=`ls $ROOT/util/statistics/rawdata | xargs basename -a 2>/dev/null`
+      for rawdata in $list
+      do
+        if [ "$format" = "none" ];then
+          echo "- $rawdata :rawdata" | sed "s/.csv//g"
+          graph=`echo $rawdata | sed "s/.csv/.png/g"`
+          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+            echo "+ $graph :graph" | sed  "s/.png//g"
+          fi
+        fi
+
+        if [ "$format" = "html_tag" ];then
+          html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%rawdata&type=rawdata',"
+          html_tag="$html_tag 'statistics_viewer', 'width=820,height=280')\">%%rawdata :rawdata</a>"
+          echo "$html_tag" | sed "s/%%rawdata/$rawdata/g" | sed "s/.csv//g"
+
+          graph=`echo $rawdata | sed "s/.csv/.png/g"`
+          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+            html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%graph&type=graph',"
+            html_tag="$html_tag 'statistics_viewer', 'width=1200,height=820')\">%%graph :graph</a>"
+            echo "$html_tag" | sed "s/%%graph/$graph/g" | sed "s/.png//g"
+          fi
+        fi
+      done
+
+    else
+    #else means ls with filters
+
+      filters=`echo $target | awk -F "ls." '{print $2}' \
+      | sed "s/^/grep /g" | sed "s/,/ | grep /g"`
+
+      if [ ! "$format" ];then
+        format=none
+      fi
+
+      target=`echo $target | awk -F "{" '{print $1}'`
+
+      list="ls $ROOT/util/statistics/rawdata | $filters | xargs basename -a 2>/dev/null"
+      list=`eval $list`
+     
+      for rawdata in $list
+      do
+        if [ "$format" = "none" ];then
+          echo "- $rawdata :rawdata" | sed "s/.csv//g"
+          graph=`echo $rawdata | sed "s/.csv/.png/g"`
+          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+            echo "+ $graph :graph" | sed  "s/.png//g"
+          fi
+        fi
+
+        if [ "$format" = "html_tag" ];then
+          html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%rawdata&type=rawdata',"
+          html_tag="$html_tag 'statistics_viewer', 'width=820,height=280')\">%%rawdata :rawdata</a>"
+          echo "$html_tag" | sed "s/%%rawdata/$rawdata/g" | sed "s/.csv//g"
+
+          graph=`echo $rawdata | sed "s/.csv/.png/g"`
+          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+            html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%graph&type=graph',"
+            html_tag="$html_tag 'statistics_viewer', 'width=1200,height=820')\">%%graph :graph</a>"
+            echo "$html_tag" | sed "s/%%graph/$graph/g" | sed "s/.png//g"
+          fi
+        fi
+      done
+    fi
+
+  else 
+  # else means target is specific file
+
+    rawdata_chk=`echo $target | grep {rawdata}`
+    if [ "$rawdata_chk" ];then
+      target=`echo $ROOT/util/statistics/rawdata/$target | sed "s/{rawdata}/.csv/g"`
+      if [ -f $target ];then
+        cat $target
+      else
+        echo "$target is not existing"
+        exit 1
+      fi
+    fi
+
+    graph_chk=`echo $target | grep {graph}`
+    if [ "$graph_chk" ];then
+      target=`echo $ROOT/util/statistics/graph/$target | sed "s/{graph}/.png/g"`
+      if [ -f $target ];then
+        dd if=$target 2>/dev/null
+      else
+        echo "$target is not existing"
+        exit 1
+      fi
+    fi
+
+  fi
+fi
+
+if [ "$action" = "get.shared_pass" ];then
+  if [ -f $ROOT/web/${app}.code ];then
+    cat $ROOT/web/${app}.code
+  else
+    echo "error: there is no shared pass code of $app"
+  fi
+fi
+
+if [ "$action" = "get.users" ];then
+
+  if [ "$app" ];then
+    users=`ls -d $ROOT/users/${app}.* | xargs basename -a`
+  else
+    users=`ls -d $ROOT/users/* | sed "s/\./%%/g" | grep -v %% | xargs basename -a`
+  fi
+
+  if [ "$users"  ];then
+    for id in $users
+    do
+      echo "`cat $ROOT/users/$id/user_name`"
+    done
+  else
+    echo "error: there is no user@${app}"
+  fi
+
+fi
+
+if [ "$action" = "chk.form" ];then
+  data_type_chk=`grep "type=\"file\"" $ROOT/databox/${databox}/def/col*`
+
+  if [ "$data_type_chk" ];then
+    echo "multipart"
+  else
+    echo "urlenc"
+  fi
+
+fi
+
+if [ ! "$action" ];then
+echo "#------------------------------------------------------
+# PARAM FOR META
+# action(L1).action(L2):target{param}
+#----------------------------------------------------------
+# meta get.chain:\$databox
+# meta get.progress:\$import_session
+# meta get.num:\$databox
+# meta get.databox
+# meta get.server
+# meta get.attr:\$user{\$attribute_key}
+# meta get.attr:\$app/\$user{\$attribute_key}
+# meta get.key:\$databox{primary}
+# meta get.key:\$databox{all}
+# meta get.pdls:\$databox{filter_word}
+# meta get.label:\$databox{all}
+# meta get.header:\$databox{csv}
+# meta get.header:\$databox{json}
+# meta get.tag:\$databox
+# meta get.tag:\$app{\$databox}
+# meta get.command
+# meta get.IP #show whitelisted IPs
+# meta get.statistics:ls{html_tag}
+# meta get.statistics:ls.\$filter_word,$filter_word2{html_tag}
+# meta get.statistics:\$statistics{graph}
+# meta get.statistics:\$statistics{raw_data}
+# meta get.shared_pass:\$app
+# meta get.users
+# meta get.users:\$app
+# meta chk.form:\$databox
+#----------------------------------------------------------"
+fi
+
+exit 0

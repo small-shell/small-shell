@@ -1,0 +1,5 @@
+<li><a href="./shell.app?%%params&req=get&id=new">Add data</a></li>
+<li><a href="./shell.app?%%params&req=import">Data import</a></li>
+<li><a href="./shell.app?%%params&req=table">Table View</a></li>
+<li><a href="./shell.app?%%params&req=console">Console Box</a></li>
+<li><a href="./shell.app?%%params&req=logout">Logout</a></li>

@@ -1,0 +1,1920 @@
+#!/bin/bash
+#----------------------------------------------------------
+# COMMON PARAM
+#----------------------------------------------------------
+# session (session:$session)
+# pin (pin:$pin)
+# authkey (authkey:$authkey)
+# databox (databox:$databox)
+# type (type:data) or (type:log) 
+# format (format:html_tag) (format:csv) (format:json) (format:none)
+
+#----------------------------------------------------------
+# PARAM FOR COMMAND HANDLER
+#----------------------------------------------------------
+# command for resrouce array or logdump (command:$exec_command) e.g.(command:grep_-v_test_"|"_wc_-l)
+# just filtering (command:wordA,wordB)
+# show data array (command:show_all) (command:show_all[filter=wordA,wordB])
+# show data array with specific line or keys (command:show_all[line=1-X][keys=$keyA,$keyB])
+# show data array by sorting (command:show_all[sort=option,$key])
+# show data array by filtering specific word (command:show_all[filter=wordA,wordB])
+# show data array by filtering specific key (command:show_all[filter=$key{word}])
+# show 100% match data with specific key (command:show_all[match=$key{word}])
+
+#----------------------------------------------------------
+# PARAM FOR DATA HANDLER
+#----------------------------------------------------------
+# action (action:set) (action:set.force) (action:get) (action:del)
+# advanced action (action:merge.set) (action:merge.get)
+# id (id:$hash_id)(id:new)
+# data-key (key:$key) | keys (keys:key_name1,key_name2,key_name3)(keys:all)
+# input_dir (input_dir:/tmp/yyyymmdd) ##you can use any directory for input
+# value (value:$value)
+
+## global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# define allowed commands
+ALLOWED_COMMANDS="wc,grep,sort,uniq,tail,head,nl,awk,cut"
+
+
+# parsa input params
+for param in `echo $@`
+do
+
+  if [[ $param == authkey:* ]];then
+    authkey=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == session:* ]];then
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == pin:* ]];then
+    pin=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == databox:*  ]];then
+    databox=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == db:* ]];then
+    databox=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == type:* ]];then
+    type=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == format:* ]];then
+    format=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == command:* ]];then
+    command=`echo $param | awk -F":" '{print $2}'`
+
+    if [[ $command == *.dump*csv* ]];then
+      command=`echo $command | sed "s/{%%%}/:/g" | sed -r "s/>>_(.*).dump:csv_\|//g" | sed -r "s/>>(.*).dump:csv_\|//g" \
+      | sed -r "s/>>(.*).dump:csv\|//g" | sed -r "s/(.*).dump:csv_\|//g" |sed -r "s/(.*).dump:csv\|//g" \
+      | sed "s/_filter://g"`
+    fi
+
+  fi 
+
+  if [[ $param == action:* ]];then
+    action=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == id:* ]];then
+    id=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == key:* ]];then
+    key=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == keys:* ]];then
+    keys=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == input_dir:* ]];then
+    input_dir=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == value:* ]];then
+    value=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == app:* ]];then
+    app=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+  if [[ $param == bat:* ]];then
+    bat=`echo $param | awk -F":" '{print $2}'`
+  fi 
+
+done
+
+# param check
+if [ ! "$databox" ];then
+  echo "error: please input databox"
+  exit 1
+fi
+
+if [ ! -d $ROOT/databox/$databox ];then
+  echo "error: there is no databox:$databox"
+  exit 1
+fi
+
+if [ ! "$command" -a ! "$action" ];then
+  echo "error: please input command or action"
+  exit 1
+fi
+
+if [ ! "$format" ];then
+   format=html_tag
+fi
+
+if [ ! "$type" ];then
+  type=data
+fi
+
+if [ ! "$authkey" -a ! "$session" ];then
+  echo "error: you need authentication"
+  exit 1
+fi
+
+# exec user check
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "small-shell" ];then
+  echo "error: user must be small-shell"
+  exit 1
+fi
+
+# authentication
+if [ "$authkey" ];then
+  auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
+  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+
+  if [ ! "$session" ];then
+    echo "error: authentication failed"
+    exit 1
+  fi
+fi
+
+# authorized session check
+if [ -f $ROOT/tmp/session/$session ];then
+  user=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $1}'`
+  remote_addr=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $2}'`
+
+  if [ ! "$app" ];then
+    # check token
+    tokencheck=`echo "${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    app=shell.app
+  else
+    # check app token
+    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+  fi
+
+  if [ ! "$session" = "$tokencheck" ];then
+    echo "error: pin is wrong, you need authentication"
+    exit 1
+  fi 
+
+else
+
+  echo "error: you need authentication"
+  exit 1
+
+fi
+
+# prevent crash of exe file
+exec_session=$session.$RANDOM.$RANDOM.$RANDOM
+
+# load user attribut
+user_id=`echo ${user} |  sha256sum | awk '{print $1}'`
+
+
+## COMMAND HANDLER ###
+#  exec command
+if [ "$command" ];then
+  org_command=$command
+
+  if [ "$type" = "log" ];then
+    target_file=$ROOT/databox/$databox/log.dump
+  fi
+
+  if [ "$type" = "data" ];then
+    target_file=$ROOT/databox/$databox/index
+  fi
+
+  # handle "show_all" command
+  if [[ $command == show_all* ]];then
+
+    if [ "$type" = "log" ];then
+      echo "error: you can't show all log at once"
+      exit 1
+    fi
+   
+    if [[ $command == *key=* ]];then
+      command=`echo $command | sed "s/key=/keys=/g"`
+    fi
+
+    filter_words=`echo $command | grep filter= | awk -F "filter=" '{print $2}' |  sed "s/\]//g" \
+    | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[match=(.*)//g"`
+
+    match_word=`echo $command | grep match= | awk -F "match=" '{print $2}' |  sed "s/\]//g" \
+    | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[filter=(.*)//g"`
+
+    line_start=`echo $command | grep line= | awk -F "line=" '{print $2}' | awk -F "-" '{print $1}'`
+
+    line_end=`echo $command | grep line= | awk -F "line=" '{print $2}' | awk -F "-" '{print $2}' \
+    | sed "s/]//g" | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[keys=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[match=(.*)//g"`
+
+    key_list=`echo $command | grep keys= | awk -F "keys=" '{print $2}' |  sed "s/\]//g" | sed -r "s/\[keys=(.*)//g" \
+    | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[line=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[match=(.*)//g"`
+
+    if [ "$key_list" = "all" ];then
+      key_list=""
+    fi
+
+    sort_key=`echo $command | grep sort= | awk -F "sort=" '{print $2}' | awk -F "," '{print $2}' | sed "s/\]//g" \
+    | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g"`
+
+    sort_option=`echo $command | grep sort= | awk -F "sort=" '{print $2}' | awk -F "," '{print $1}' | sed "s/\]//g" \
+    | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g"`
+
+
+    # Handle show_all options
+
+    ## Handle sort option
+    sort_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.sort
+
+    if [ "${sort_key}" -a "${sort_option}" ];then
+       sort_col=`grep -l "^name=\"$sort_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
+       (( sort_col += 1 ))
+
+       if [ "$sort_col" ];then
+         cat $target_file | sed "s/^:::::://g" | sed "s/::::::/,/g" > ${sort_tmp}.1
+         cat ${sort_tmp}.1 | sort -t, $sort_option -k $sort_col > ${sort_tmp}.2
+         cat ${sort_tmp}.2  | sed "s/,/::::::/1" | sed "s/^/::::::/g" > ${sort_tmp}.3
+       fi
+       target_file=${sort_tmp}.3
+    fi
+
+    ## Handle show_all.filter_words
+    filter_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.filter
+
+    if [ "$filter_words" ];then
+
+      if [[ $filter_words == *{*} ]];then
+        filter_key=`echo $filter_words | awk -F"{" '{print $1}'`
+        filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
+        filter_words=`echo $filter_words | awk -F"{" '{print $2}' | awk -F"}" '{print $1}'`
+      fi
+
+      exec_command=`echo "$filter_words" | sed "s/,/ | grep -i /g" | sed "s/^/grep -i /g"`
+      echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.filtering.exe
+      chmod 700 $ROOT/tmp/exec/$exec_session.filtering.exe
+
+      # exec filtering
+      $ROOT/tmp/exec/$exec_session.filtering.exe > ${filter_tmp}
+
+      result_count=`cat ${filter_tmp} | wc -l`
+      target_file=${filter_tmp}
+      count=1
+      for filter_word in `echo $filter_words | sed "s/,/ /g"`
+      do
+        # remove line which contain filter words inside id hash
+        echo "cat $target_file | awk -F "::::::"  '\
+              {\
+                 IGNORECASE = 1;\
+                 if(match(\$3, /${filter_word}/))\
+                 print \$0;\
+              }\
+        '" > $ROOT/tmp/exec/$exec_session.${count}.remove_id.exe
+        chmod 700 $ROOT/tmp/exec/$exec_session.${count}.remove_id.exe
+        target_file="${target_file}.${count}"
+        $ROOT/tmp/exec/$exec_session.${count}.remove_id.exe > $target_file
+
+        if [ "$filter_key" ];then
+          if [ "$filter_col" ];then
+            # remove out of target column
+            echo "cat $target_file | awk -F ","  '\
+                  {\
+                     IGNORECASE = 1;\
+                     if(match(\$${filter_col}, /${filter_word}/))\
+                     print \$0;\
+                  }\
+            '" > $ROOT/tmp/exec/$exec_session.c.${count}.remove_col.exe
+            chmod 700 $ROOT/tmp/exec/$exec_session.c.${count}.remove_col.exe
+            target_file="${target_file}.c.${count}"
+            $ROOT/tmp/exec/$exec_session.c.${count}.remove_col.exe > $target_file
+          else
+            target_file="${target_file}.c.${count}"
+            touch $target_file
+          fi
+        fi
+
+        ((count += 1))
+      done
+    fi
+
+    ## Handle show_all.match_word
+    match_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.match
+
+    if [ "$match_word" ];then
+
+      if [[ $match_word == *{*} ]];then
+        filter_key=`echo $match_word | awk -F"{" '{print $1}'`
+        filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
+        match_word=`echo $match_word | awk -F"{" '{print $2}' | awk -F"}" '{print $1}'`
+      else
+        echo "error: please input specific key name"
+        exit 1
+      fi
+
+      exec_command=`echo "$match_word" | sed "s/^/grep  /g"`
+      echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.match.exe
+      chmod 700 $ROOT/tmp/exec/$exec_session.match.exe
+
+      # exec matching
+      $ROOT/tmp/exec/$exec_session.match.exe > $match_tmp
+
+      target_file=$match_tmp
+      count=1
+
+      if [ "$filter_key" ];then
+        if [ "$filter_col" ];then
+          # remove result which have columns that is not target column
+          echo "cat $target_file | awk -F ","  '\
+           {\
+               if(match(\$${filter_col}, /::::::${match_word}$/))\
+               print \$0;\
+
+               if(match(\$${filter_col}, /^${match_word}$/))\
+               print \$0;\
+           }\
+          '" > $ROOT/tmp/exec/$exec_session.c.${count}.match.exe
+          chmod 700 $ROOT/tmp/exec/$exec_session.c.${count}.match.exe
+          target_file="${target_file}.c.${count}"
+          $ROOT/tmp/exec/$exec_session.c.${count}.match.exe > $target_file
+        else
+          target_file="${target_file}.c.${count}"
+          touch $target_file
+        fi
+      fi
+    fi
+
+    ## Handle line start-end option
+    line_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.extract_line
+
+    if [ "${line_start}" -a "${line_end}"  ];then
+      if [ "${line_start}" -lt "${line_end}" ];then
+        cat $target_file | sed -n ${line_start},${line_end}p > $line_tmp
+        target_file=$line_tmp
+      else
+        echo "error: please set line adequately"
+
+        ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+        if [ $? -eq 0 ];then
+          rm $ROOT/tmp/exec/$exec_session*
+        fi
+        exit 1
+      fi
+    fi
+
+    ## Extract data with key_list
+    keys_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.extract_keys
+    if [ "$key_list" ];then
+
+      for key in `echo $key_list | sed "s/,/ /g"`
+      do
+        col=`grep -l "^name=\"$key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
+        if [ "$col" ];then
+          if [ ! "$col_list" ];then
+            col_list=$col
+          else
+            col_list="$col_list,$col"
+          fi
+        fi
+      done
+
+      # remove ID field with nl
+      split_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.split
+      cat $target_file  | awk -F "::::::" '{print $2}' | sed "s/^/::::::/g" | sed "s/$/::::::/g" | nl > ${split_tmp}.id
+
+      if [ "$col_list" ];then
+        exec_command="cut -d \",\" -f $col_list"
+        echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.extract_key.exe
+        chmod 700 $ROOT/tmp/exec/$exec_session.extract_key.exe
+        $ROOT/tmp/exec/$exec_session.extract_key.exe | nl > ${split_tmp}.data
+        join ${split_tmp}.id ${split_tmp}.data \
+        | sed "s/ ::::::/######/g" | sed "s/:::::: /::::::/g" | sed -r "s/^(.*)######/::::::/g" > $keys_tmp
+        target_file=$keys_tmp
+        result_count=`cat $target_file | wc -l`
+      fi
+
+    fi
+
+    # Generate result file of show_all with options
+    if [ "$target_file" ];then
+      cat $target_file > $ROOT/tmp/exec/$exec_session.result
+    fi
+
+  fi
+
+  # exec Unix commands to piplined data or just filtering the data
+  if [[ ! $command == show_all* ]];then
+    exec_command=`echo $command | sed "s/_/ /g"`
+    command=`echo $exec_command | awk -F " " '{print $1}'`
+
+    GRP_ALLOWED_COMMANDS=`echo $ALLOWED_COMMANDS | sed "s/,/ -e /g" | sed "s/^/grep -e /g"`
+    COMMAND_CHK="echo \"$command\" | $GRP_ALLOWED_COMMANDS"
+    command_chk=`eval $COMMAND_CHK`
+
+    if [ "$command_chk" ];then
+    # if command_chk is true, it will be executed as Unix command
+
+      exec_command=`echo $exec_command | sed "s/{%%%%%%%%%%%%}/|/g"`
+      if [[ ${org_command} == *\>* ]];then
+         cmd_check_error="you can't use redirect"
+         exec_command=""
+      fi
+
+      if [[ ${org_command} == *\|* ]];then
+        for devided_command in `echo $org_command | sed "s/|/ /g"`
+        do
+          command=`echo "$devided_command" | sed "s/_/ /g" | awk -F " " '{print $1}'`
+
+          if [[ ! $ALLOWED_COMMANDS == *${command}* ]];then
+             cmd_check_error="command $command is not allowed"
+             exec_command=""
+          fi
+
+          ((command_count += 1))
+        done
+      fi 
+    else
+      # else mean there is no allowed unix command to be pipelined to the data and it will be used as just filering words of grep
+      filter_command=`echo $exec_command | sed "s/ / | grep -i /g" | sed "s/^/grep -i /g"`
+      filter_flag="yes"
+      filter_words=`echo $org_command | sed "s/_/,/g"`
+    fi
+
+    if [ "$filter_flag" = "yes" ];then
+    # Yes means handle command just as filter words
+
+      if [ "$type" = "log" ];then
+        # execute filtering command for log
+        log_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.log
+        echo "cat $target_file | $filter_command" > $ROOT/tmp/exec/$exec_session
+        chmod 700 $ROOT/tmp/exec/$exec_session
+        $ROOT/tmp/exec/$exec_session > $log_tmp
+        target_file=$log_tmp
+        count=1
+
+        for filter_word in `echo $filter_words | sed "s/,/ /g"`
+        do
+          cat $target_file | sed "s/${filter_word}/<b>$filter_word<\/b>/g" > ${target_file}.${count}
+          target_file="${target_file}.${count}"
+          ((count += 1))
+        done
+
+        exec_command="filter:$filter_words"
+
+        # Generate result file for log filtering
+        cat $target_file  > $ROOT/tmp/exec/$exec_session.result
+
+      fi
+
+      if [ "$type" = "data" ];then
+        echo "cat $target_file | $filter_command" > $ROOT/tmp/exec/$exec_session
+        chmod 700 $ROOT/tmp/exec/$exec_session
+
+        # execute filtering command for data
+        filter_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.filter
+        $ROOT/tmp/exec/$exec_session > $filter_tmp
+        data_type_chk=`cat $ROOT/databox/${databox}/def/col* | grep -e "type=\"file\"" -e "type=\"url\""`
+        exec_command="filter:$filter_words"
+        target_file=$filter_tmp
+        count=1
+      
+        for filter_word in `echo $filter_words | sed "s/,/ /g"`
+        do
+          # remove line which contain filter words inside id hash
+          echo "cat $target_file | awk -F "::::::"  '\
+                {\
+                   IGNORECASE = 1;\
+                   if(match(\$3, /${filter_word}/))\
+                   print \$0;\
+                }\
+          '" > $ROOT/tmp/exec/$exec_session.${count}.exe
+          chmod 700 $ROOT/tmp/exec/$exec_session.${count}.exe
+          target_file="${target_file}.${count}"
+          $ROOT/tmp/exec/$exec_session.${count}.exe > $target_file
+  
+          if [ "$format" = "html_tag" ];then
+
+            # remove ID field with nl
+            cat $target_file  | awk -F "::::::" '{print $2}' | sed "s/^/::::::/g" | sed "s/$/::::::/g" | nl > ${target_file}.id
+
+            # highlight filter words if it's not contain file or url type of data
+            if [ ! "$data_type_chk" ];then
+              cat $target_file  | awk -F "::::::" '{print $3}' | sed "s/${filter_word}/<b>$filter_word<\/b>/g" | nl > ${target_file}.data
+            else
+              cat $target_file  | awk -F "::::::" '{print $3}' | nl > ${target_file}.data
+            fi
+
+            join  ${target_file}.id ${target_file}.data \
+            | sed "s/ ::::::/######/g" | sed "s/:::::: /::::::/g" | sed -r "s/^(.*)######/::::::/g" > ${target_file}.${count}
+            target_file="${target_file}.${count}"
+
+          fi 
+          ((count += 1))
+        done
+        # Generate result file for data filtering
+        cat $target_file  > $ROOT/tmp/exec/${exec_session}.result
+      fi
+
+    elif [ "$exec_command" -a ! "$cmd_check_error" ];then
+    # it means no filter_flag and command will be pipelined to the data and work as Unix command not filtering.
+
+      if [ "$type" = "log" ];then
+        log_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.log
+        unix_command=`echo "$exec_command" | sed "s/{%%%%%%}/,/g" `
+        echo "cat $target_file |  sed "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
+        chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
+        # execute unix command for log
+        $ROOT/tmp/exec/$exec_session.command.exe > $log_tmp
+      fi
+
+      if [ "$type" = "data" ];then
+        unix_command=`echo "$exec_command" | sed "s/{%%%%%%}/,/g" `
+
+        # detouch hash id  to be accurate input for Unix command. because hash id has so many random characters, it must be detouched.
+        echo "cat $target_file | awk -F "::::::" '{print \$3}' | sed "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
+        chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
+
+        # execute unix command for data
+        data_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.data
+        $ROOT/tmp/exec/$exec_session.command.exe > $data_tmp
+        target_file=$data_tmp
+        num_of_line=`cat $target_file | wc -l`
+
+
+        # Generate result file
+
+        if [ "$num_of_line" -lt 100 ];then
+        # will try to recover detouched hash id again. but it will consume CPU resource, so only 100 line will be recovered.
+
+          while read line
+          do
+            primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | awk -F "name=" '{print $2}' | sed "s/\"//g"`
+            if [ ! "$primary_key_name" = "hashid" ];then
+              hashid=`echo $line | awk -F "," '{print $1}' \
+              | sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+              | sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
+              | sed "s/{%%%%%%%%%%%%%%%}/*/g"\
+              | sed "s/{%%%%%%%%%%%%%%}/$/g"\
+              | sed "s/{%%%%%%%%%%%%%}/#/g"\
+              | sed "s/{%%%%%%%%%%%%}/|/g"\
+              | sed "s/{%%%%%%%%%%%}/\]/g"\
+              | sed "s/{%%%%%%%%%%}/\[/g"\
+              | sed "s/{%%%%%%%%%}/)/g"\
+              | sed "s/{%%%%%%%%}/(/g"\
+              | sed "s/{%%%%%%%}/_/g"\
+              | sed "s/{%%%%%%}/,/g"\
+              | sed "s/{%%%%%}/\//g"\
+              | sed "s/{%%%%}/\&/g"\
+              | sed "s/{%%%}/:/g"\
+              | sha256sum | awk '{print $1}'`
+            else
+              hashid=`echo $line | awk -F "," '{print $1}'`
+            fi
+
+            id_chk=`grep "::::::$hashid::::::" $ROOT/databox/$databox/index | awk -F "::::::" '{print $2}'`
+
+            if [ "$id_chk" ];then
+              echo "::::::$hashid::::::$line" >> $ROOT/tmp/exec/$exec_session.result
+            else
+              echo $line >> $ROOT/tmp/exec/$exec_session.result
+            fi
+          done < $target_file
+        else
+          echo "<b>Info: <a>link</a> can be generated within 100 line of command result</b>" > $ROOT/tmp/exec/$exec_session.result
+          echo "Result is $num_of_line line" >> $ROOT/tmp/exec/$exec_session.result
+          echo "------------------------------------------------------------------" >> $ROOT/tmp/exec/$exec_session.result
+          cat $target_file >> $ROOT/tmp/exec/$exec_session.result
+        fi
+      fi
+    fi
+  fi
+
+  if [ ! -f $ROOT/tmp/exec/$exec_session.result ];then
+    touch $ROOT/tmp/exec/$exec_session.result
+  fi
+
+  # render by html format
+  if [ "$format" = "html_tag" -a -f $ROOT/tmp/exec/$exec_session.result ];then
+
+    if [ "$col_list" ];then
+      header_info=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" | sort -V | awk -F"name=" '{print $2}' | sed "s/\"//g" \
+      | sed "s/ /_/g" | sed -z "s/\n/,/g" | sed "s/,$//g" | sed "s/,/, /g" | cut -d "," -f $col_list`
+    else
+      header_info=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" | sort -V |  awk -F"name=" '{print $2}' | sed "s/\"//g" \
+      | sed "s/ /_/g" | sed -z "s/\n/,/g" | sed "s/,$//g"`
+    fi
+
+    # ---------------------------------------------------------------------------
+    # render HTML with flexbox table format
+    # ---------------------------------------------------------------------------
+    if [[ $org_command == show_all* ]];then
+      echo "<div class=\"table\">"
+      echo "<ul>"
+      echo "<li class=\"table-header\">"
+      header_items="#,$header_info"
+      for header_item in `echo $header_info | sed "s/,/ /g"`
+      do
+        echo "<p>$header_item</p>"
+      done
+      cat $ROOT/tmp/exec/$exec_session.result  | sed -r "s/^::::::/<li><p><a href=\".\/$app?%%params\&req=get\&id=/g"  \
+      | sed -r "s/::::::/\">/g" \
+      | sed -r "s/,/<\/a><\/p><p>/1" \
+      | sed "s/,/<\/p><p>/g" \
+      | sed "s/$/<\/p><\/li>/g" 
+ 
+      if [ "$result" = "no" ];then
+        echo "No result"
+      fi
+      echo "</ul>"
+      echo "</div>"
+    fi
+
+    # ---------------------------------------------------------------------------
+    # render HTML with formal table format
+    # ! please uncomment these lines if you want to use formal html table tags. 
+    # ! then remove above lines for easy table format
+    # ---------------------------------------------------------------------------
+    #if [[ $org_command == show_all* ]];then
+    #  echo "<table>"
+    #  echo "<thead>"
+    #  echo "<tr>"
+    #  header_items="#,$header_info"
+    #  for header_item in `echo $header_info | sed "s/,/ /g"`
+    #  do
+    #    echo "<th>$header_item</th>"
+    #  done
+    #  echo "</tr>"
+    #  echo "</thead>"
+    #  echo "<tbody>"
+    #  cat $ROOT/tmp/exec/$exec_session.result  | sed -r "s/^::::::/<tr><td><a href=\".\/$app?%%params\&req=get\&id=/g"  \
+    #  | sed -r "s/::::::/\">/g" \
+    #  | sed -r "s/,/<\/a><\/td><td>/1" \
+    #  | sed "s/,/<\/td><td>/g" \
+    #  | sed "s/$/<\/td><\/tr>/g"
+    #  echo "</tbody>"
+    #  echo "</table>"
+    #
+    #  if [ "$result" = "no" ];then
+    #    echo "No result"
+    #  fi
+    #fi
+    #
+    # ---------------------------------------------------------------------------
+
+    # redner HTML with <pre></pre>
+    if [[ ! $org_command == show_all* ]];then
+      echo "<pre>"
+
+      if [ "$type" = "log" ];then
+        display_command=">> $databox.log | $exec_command"
+      fi
+
+      if [ "$type" = "data" ];then
+        display_command=">> $databox.dump:csv | $exec_command"
+      fi
+
+      if [ -s $ROOT/tmp/exec/$exec_session.result ];then
+        echo "$display_command"
+
+        if [[ $exec_command == filter:* ]]; then
+          if [ "$type" = "data" ];then
+            echo ""
+            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l `
+            echo "Result: $line_num"
+            #echo "Label:  $header_info"
+          fi
+
+          if [ "$type" = "log" ];then
+            echo ""
+            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l `
+            echo "Result: $line_num"
+          fi
+
+        else
+          echo ""
+          #echo "###################"
+          #echo "# <b>COMMAND RESULT</b>"
+          #echo "###################"
+        fi
+
+        # dump result
+        cat $ROOT/tmp/exec/$exec_session.result \
+        | sed -r "s/^::::::/<a href=\".\/$app?%%params\&req=get\&id=/g" | sed -r "s/::::::/\">link <-  <\/a>/g"
+
+      elif [ "$cmd_check_error" ];then
+        echo "<b># Oops! there is a problem</b>"
+        echo "$cmd_check_error"
+      
+      else 
+        echo "$display_command"
+        echo ""
+        echo "<b>NO RESULT</b>"
+      fi
+      
+      echo ""
+      echo "..done"
+      echo "</pre>"
+    fi
+  fi
+
+  if [ ! "$format" = "html_tag" ];then
+
+    if [ "$col_list" ];then
+      header_info=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V \
+                   | awk -F"=" '{print $2}' | sed "s/\"//g" | tr -d ' ' | sed -z "s/\n/,/g" | sed "s/,$//g"  | cut -d "," -f $col_list`
+    else
+      header_info=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V \
+                   |  awk -F"=" '{print $2}' | sed "s/\"//g" | tr -d ' ' | sed -z "s/\n/,/g" | sed "s/,$//g" `
+    fi
+    header_info="id,$header_info"
+
+    # remove hash id separator and others
+    if [ ! "$data_type_chk" ];then
+      cat $ROOT/tmp/exec/$exec_session.result | sed "s/^:::::://g" | sed "s/::::::/,/g" | sed "1s/^/$header_info\n/" \
+      | sed "s/,-,/,,/g" | sed "s/,-$/,/g" | sed  "s/<a href=\"//g" \
+      | sed "s/\" (.*)//g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
+    else
+      cat $ROOT/tmp/exec/$exec_session.result | sed -r "s/^:::::://g" | sed -r "s/::::::/,/g" | sed "1s/^/$header_info\n/" \
+      | sed "s/,-,/,,/g" | sed "s/,-$/,/g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
+    fi
+
+  fi
+
+  # render by none format
+  if [ "$format" = "none" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_error" ];then
+    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | sed -e '1d'
+  elif [ "$format" = "none"  -a "$cmd_check_error" ];then
+    echo "error: $cmd_check_error"
+  fi
+
+  # render by csv format
+  if [ "$format" = "csv" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_eror" ];then
+
+    if [ "$type" = "log" ];then
+      echo "error: csv can be provided only for data"
+
+      ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        rm $ROOT/tmp/exec/$exec_session*
+      fi
+      exit 1
+
+    fi
+
+    # render csv with removing id column
+    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | cut -d "," -f 2-
+
+  elif [  "$format" = "csv" -a "$cmd_check_error" ];then
+    echo "error: $cmd_check_error"
+  fi
+
+  # render by json
+  if [ "$format" = "json" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_error" ];then
+
+    if [ "$type" = "log" ];then
+      echo "error: json can be provided only for data"
+
+      ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        rm -rf $ROOT/tmp/exec/$exec_session*
+      fi
+
+      exit 1
+    fi
+
+    # change csv -> json
+    json_tmp="$ROOT/tmp/exec/${exec_session}.json.tmp.1"
+    echo "[" > $json_tmp
+    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | sed "s/\"/\\\\\"/g" \
+    | sed -e '1d' | sed "s/^/{ %%key/g" | sed "s/$/\" }%%comma/g" >> $json_tmp
+    echo "]" >> $json_tmp
+
+    keys=`echo $header_info | sed "s/,/ /g"`
+    for key in $keys
+    do
+      cat $json_tmp | sed "s/%%key/\"$key\": \"/g" | sed "s/,/\"%%comma %%key/1"  > $json_tmp.1
+      json_tmp="$json_tmp.1"
+    done
+
+    # render json
+    cat $json_tmp | sed -z "s/\n//g" | sed "s/%%comma/,/g" | sed "s/},]/}]/g" | sed "s/$/\n/g"
+
+
+  elif [ "$format" = "json" -a "$cmd_check_error" ];then
+    echo "error: $cmd_check_error"
+  fi
+
+  ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+     rm -rf $ROOT/tmp/exec/$exec_session*
+  fi
+  exit 0
+fi
+
+## DATA HANDLER ##
+function get_data(){
+  local id=$1
+  local key=$2
+  local format=$3
+  local primary_key=$4
+  local addkvl=""
+
+  # load column profile
+  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | awk -F":" '{print $1}' | xargs basename -a  2>/dev/null`
+  if [ ! "$col" ];then
+    echo "error: there is no key:$key"
+    return 1
+  fi
+
+  cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/$exec_session.$col
+  chmod 700 $ROOT/tmp/exec/$exec_session.$col
+  . $ROOT/tmp/exec/$exec_session.$col
+
+  if [ "$format" = "html_tag" ];then
+
+    if [ "$id" = "new" ];then
+       value=""
+     else
+       if [ -d "$ROOT/databox/$databox/data/$id" ];then
+         value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed "s/\"/\&quot;/g" | sed "s/'/\&apos;/g"`
+       else
+         if [ -d  $ROOT/databox/$databox/log/$id ];then
+            echo "error: there is no primary_key:$primary_key. data has been already deleted, please check data history"
+            echo "------------------------------------------------------------------------------------------------"
+            cat  $ROOT/databox/$databox/log/$id/history 2>/dev/null 
+            exit 1
+         else
+            echo "error: there is no primary_key:$primary_key"
+            exit 1
+         fi
+      fi
+    fi
+
+    # If id is new, value will be null. If id is existing, value will be inserted.
+
+    # render HTML tags
+    if [ "$type" = "text" -o "$type" = "email" -o "$type" = "number" -o "$type" = "date"  -o "$type" = "datetime-local" -o "$type" = "tel" ];then
+      if [ "$key" = "$primary_key" ];then 
+         if [ ! "$primary_key" = "hashid" ];then
+           if [ "$id" = "new" ];then
+             echo "<li>"
+             echo "<label>$label</label>"
+             echo "<input type=\"$type\" name=\"$name\" value=\"$value\" $option>"
+             echo "</li>"
+           else
+             echo "<li>"
+             echo "<label>$label (Fixed)</label>"
+             echo "<p>$value</p>"
+             echo "</li>"
+           fi
+         fi
+      else
+        echo "<li>"
+        echo "<label>$label</label>"
+        echo "<input type=\"$type\" name=\"$name\" value=\"$value\" $option>"
+        echo "</li>"
+      fi
+    fi
+
+    if [ "$type" = "url" ];then
+      if [ "$id" = "new" ];then
+         echo "<li>"
+         echo "<label>$label</label>"
+         echo "<input type=\"$type\" name=\"$name\" value=\"$value\" $option>"
+         echo "</li>"
+      else
+         if [ "$value" ];then
+           echo "<li>"
+           value_chk=`echo "$value" | grep "$app?%%params"`
+           if [ "$value_chk" ];then
+             echo "<label><a href=\"$value\">$label.ln</a></label>"
+           else
+             echo "<label><a href=\"$value\" target=\"_blank\" rel=\"noopener noreferrer\">$label.ln</a></label>"
+           fi
+           echo "<input type=\"$type\" name=\"$name\" value=\"$value\" $option>"
+           echo "</li>"
+         else
+           echo "<li>"
+           echo "<label>$label</label>"
+           echo "<input type=\"$type\" name=\"$name\" value=\"$value\" $option>"
+           echo "</li>"
+        fi
+      fi
+    fi
+
+    if [ "$type" = "select" ];then
+      echo "<li>"
+      echo "<label>$label</label>"
+      echo "<select name=\"$name\" $option>"
+
+      if [ "$value" ];then
+         echo "<option value=\"$value\">$value</option>"
+      else
+         echo "<option value=\"\" disabled selected>-</option>"
+      fi
+
+      for param in `echo $params`
+      do
+        echo "<option value=\"$param\">$param</option>"
+      done
+      echo "</select>"
+      echo "</li>"
+    fi
+
+    if [ "$type" = "radio" ];then
+      echo "<li>"
+      echo "<label>$label</label>"
+
+      for param in `echo $params`
+      do
+        if [ "$value" = "$param" ];then
+          echo "<input type=\"radio\" name=\"$name\" value=\"$param\" checked=\"checked\" $option>"
+        else
+          echo "<input type=\"radio\" name=\"$name\" value=\"$param\" $option>"
+        fi
+        echo "<label class=\"radio-label\">$param</label>"
+      done
+      echo "</li>"
+    fi
+
+    if [ "$type" = "checkbox" ];then
+      echo "<li>"
+      echo "<label>$label</label>"
+      echo "<input type=\"hidden\" name=\"$name\" value=\"\">"
+      for param in `echo $params`
+      do
+        value_chk=`echo "$value" | grep "^$param$" `
+        if [ "$value_chk" ];then
+          echo "<input type=\"checkbox\" name=\"${name}\" value=\"$param\" checked=\"checked\">"
+        else
+          echo "<input type=\"checkbox\" name=\"${name}\" value=\"$param\">"
+        fi
+        echo "<label class=\"checkbox-label\">$param</label>"
+      done
+      echo "</li>"
+    fi
+
+    if [ "$type" = "textarea" ];then
+      echo "<li>"
+      echo "<label>$label</label>"
+      if [ "$value" ];then
+        echo "<textarea name=\"$name\" rows=\"4\" id=\"txtara\" $option>$value</textarea>"
+      else 
+        echo "<textarea name=\"$name\" rows=\"4\" id=\"txtara\" $option></textarea>"
+      fi
+      echo "</li>"
+    fi
+
+    if [ "$type" = "file" ];then
+      echo "<li>"
+      echo "<label id=\"gray_label\">#FILE</label>"
+      echo "<div class=\"file_form\">"
+
+      if [ "$value" ];then
+        echo "<input class=\"file\" type=\"file\" name=\"$name\" id=\"file_input\">"
+        file_name=`echo "$value" | sed -r "s/ #size(.*)//g"`
+        echo "<label id=\"file_input_label\" for=\"file_input\">+</label>"
+        echo "<label id=\"file_name\"><a href=\"./$app?%%params&req=file&id=$id\" download=\"$file_name\">$value</a></label>"
+        echo "</div>"
+        echo "</li>"
+      else
+        echo "<input class=\"file\" type=\"file\" name=\"$name\" id=\"file_input\">"
+        echo "<label id=\"file_input_label\" for=\"file_input\">+</label>"
+        echo "<label id=\"file_name\">upload file</label>"
+        echo "</div>"
+        echo "</li>"
+      fi
+    fi
+
+    if [ "$type" = "pdls" ];then
+
+      echo "<li>"
+      if [ ! "$addkvl" ];then
+
+        # no addkvl means only extract primary data values
+        primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $3}' | awk -F "," '{print $1}'`
+        if [ "$value" ];then
+          pdid=`grep "::::::${value}," $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $2}'`
+          if [ "$app" = "shell.app" ];then
+            if [ "$pdid" ];then
+              echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}.ln</a></label>"
+            else
+              echo "<label>${label} # data is not found</label>"
+            fi
+          else
+            echo "<label>${label}</label>"
+          fi
+        else
+          echo "<label>$label</label>"
+        fi
+
+      else
+
+        # else means add other key value to pdls data
+        kvl_col=`grep -l "name=\"$addkvl\"" $ROOT/databox/$pdlsbox/def/col* | xargs basename -a 2>/dev/null | sed "s/col//g"`
+
+        # generate tmp exe file to extract specific column by awk
+        echo "cat $ROOT/databox/${pdlsbox}/index | awk -F \"::::::\" '{print \$3}' \
+        | awk -F \",\" '{print \$1\" \"\$$kvl_col}'"  > $ROOT/tmp/exec/$exec_session.pdls.$key
+
+        chmod 755 $ROOT/tmp/exec/$exec_session.pdls.$key
+        primary_key_values=`$ROOT/tmp/exec/$exec_session.pdls.$key`
+
+        if [ "$value" ];then
+          primary_value=`echo ${value} | awk -F "#" '{print $NF}'`
+          pdid=`grep "::::::${primary_value}," $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $2}'`
+
+          if [ "$pdid" ];then
+
+            # generate tmp exe file to extract specific column by awk
+            echo "cat $ROOT/databox/${pdlsbox}/index | grep "::::::${primary_value}," | awk -F \"::::::\" '{print \$3}' \
+            | awk -F \",\" '{print \$$kvl_col\" #\"\$1}'"   > $ROOT/tmp/exec/$exec_session.kvl
+
+            chmod 755 $ROOT/tmp/exec/$exec_session.kvl
+            value=`$ROOT/tmp/exec/$exec_session.kvl`
+
+            echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}.ln</a></label>"
+          else
+            echo "<label>${label} # data is not found</label>"
+          fi
+        else
+          echo "<label>$label</label>"
+        fi
+
+      fi
+
+      echo "<input type=\"text\" name=\"$name\" value=\"$value\" autocomplete=\"off\" list=\"pdls.$key\" $option>"
+      echo "<datalist id=\"pdls.$key\">"
+      echo "$primary_key_values" | sed "s/^/<option value=\"/g" | sed "s/$/\">/g" \
+      | sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+      | sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
+      | sed "s/{%%%%%%%%%%%%%%%}/*/g"\
+      | sed "s/{%%%%%%%%%%%%%%}/$/g"\
+      | sed "s/{%%%%%%%%%%%%%}/#/g"\
+      | sed "s/{%%%%%%%%%%%%}/|/g"\
+      | sed "s/{%%%%%%%%%%%}/\]/g"\
+      | sed "s/{%%%%%%%%%%}/\[/g"\
+      | sed "s/{%%%%%%%%%}/)/g"\
+      | sed "s/{%%%%%%%%}/(/g"\
+      | sed "s/{%%%%%%%}/_/g"\
+      | sed "s/{%%%%%%}/,/g"\
+      | sed "s/{%%%%%}/\//g"\
+      | sed "s/{%%%%}/\&/g"\
+      | sed "s/{%%%}/:/g"
+      echo "</datalist>"
+      echo "</li>"
+    fi
+
+    if [ "$type" = "mls" ];then
+
+      if [ "$app" = "shell.app" ];then
+        users=`$ROOT/bin/meta get.users` 
+      else
+        users=`$ROOT/bin/meta get.users:$app` 
+      fi
+
+      echo "<li>"
+      echo "<label>$label</label>"
+      echo "<input type=\"text\" name=\"$name\" value=\"$value\" autocomplete=\"off\" list=\"mls.$key\" $option>"
+      echo "<datalist id=\"mls.$key\">"
+      echo "$users" | sed "s/^/<option value=\"/g" | sed "s/$/\">/g" 
+      echo "</datalist>"
+      echo "</li>"
+
+    fi
+
+  fi
+
+  if [ "$format" = "json" ];then
+
+    if [ "$id" = "new" ];then
+      echo "error: you can't get any data if you set id as new with non format"
+      exit 1
+    fi
+
+    if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
+      echo "error: there is no data #$id"
+      exit 1 
+    fi
+
+    if [ "$type" = "checkbox" ];then
+      value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/^\n//g" | sed -z "s/\n/ /g" | sed "s/ $//g" \
+      | php -r "echo addslashes(file_get_contents('php://stdin'));"`
+      echo "  \"$key\": \"$value\"" >> $ROOT/tmp/json/$session.data
+    else
+      value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/\n$//g" | sed -z "s/\n/_%%enter_/g"\
+      | php -r "echo addslashes(file_get_contents('php://stdin'));"`
+      echo "  \"$key\": \"$value\"" >> $ROOT/tmp/json/$session.data
+    fi
+
+  fi
+
+  if [ "$format" = "none" ];then
+
+    if [ "$id" = "new" ];then
+      echo "error: you can't get any data if you set id as new with non format"
+      exit 1
+    fi
+
+    if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
+      echo "error: there is no id:$id"
+      exit 1 
+    fi
+
+    value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/\n/ /g" | sed "s/^ //g" | sed "s/ $//g"`
+    echo "${key}:${value}"
+
+  fi
+}
+
+function get_mergeable_data(){
+  local id=$1
+  local key=$2
+  local format=$3
+  local primary_key=$4
+
+  if [ ! "$format" = "html_tag" ];then
+    echo "error: merge option could be used only for html tag"
+    return 1
+  fi
+
+  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | awk -F":" '{print $1}' | xargs basename -a  2>/dev/null`
+  if [ ! "$col" ];then
+    echo "error: there is no key:$key"
+    return 1
+  fi
+
+  # load column profile
+  cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/$exec_session.$col
+  chmod 700 $ROOT/tmp/exec/$exec_session.$col
+  . $ROOT/tmp/exec/$exec_session.$col
+
+  if [ ! "$type" = "textarea" ];then
+    echo "error: merge option could be used only for textarea"
+    return 1
+  fi
+
+  if [ "$id" = "new" ];then
+    echo "error: id:new is not allowed for mergeble data"
+    return 1
+    
+  else
+    if [ -d "$ROOT/databox/$databox/data/$id" ];then
+      value=`cat $ROOT/databox/$databox/data/$id/$key | sed "s/\"/\&quot;/g" | sed "s/'/\&apos;/g"`
+    else
+      if [ -d $ROOT/databox/$databox/log/$id ];then
+        echo "error: there is no primary_key:$primary_key. data has been already deleted, please check data history"
+        echo "------------------------------------------------------------------------------------------------"
+        cat  $ROOT/databox/$databox/log/$id/history
+        exit 1
+      else
+        echo "error: there is no primary_key:$primary_key"
+        exit 1
+      fi
+    fi
+  fi
+
+
+  # render HTML tags
+  echo "<li>"
+  echo "<label>$label</label>"
+  echo "<pre>$value</pre>"
+  echo "<label>+</label>"
+  echo "<textarea name=\"$name\" rows=\"3\" id=\"txtara\" $option></textarea>"
+  echo "</li>"
+
+}
+
+function set_data(){
+ local id=$1
+ local key=$2
+ local value=$3
+ local input_dir=$4
+ local primary_key=$5
+ local set_option=$6
+
+
+  if [ ! "$id" = "new" -a ! -d $ROOT/databox/$databox/data/$id ];then  
+     if [ -d  $ROOT/databox/$databox/log/$id ];then
+       echo "error: data has been already deleted, please check data history"
+       echo "--------------------------------------------------------------"
+       cat  $ROOT/databox/$databox/log/$id/history
+       exit 1
+     else
+       echo "error: there is no data id:$id"
+       exit 1
+     fi
+  fi
+
+  if [ "$id" = "new" ];then
+    flg=new
+
+    if [ -f ${input_dir}/${primary_key} ];then
+
+      id=`cat ${input_dir}/${primary_key} | sha256sum | awk '{print $1}'`
+
+    elif [ $primary_key = "hashid" ];then
+      gen=`date +%s`
+      id=`echo "primary key will be generated $gen $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | sha256sum | awk '{print $1}'`
+      if [ ! -d $ROOT/databox/$databox/data/$id ];then
+        mkdir $ROOT/databox/$databox/data/$id
+        mkdir $ROOT/databox/$databox/log/$id
+        chmod 700 $ROOT/databox/$databox/data/$id
+        chmod 700 $ROOT/databox/$databox/log/$id
+        echo "`date +%Y-%m-%d` `date +%T`,created by $user" >> $ROOT/databox/$databox/log/$id/history
+        echo "$id" > $ROOT/databox/$databox/data/$id/hashid
+      else
+        echo "error: failed to generate hashid something wrong"
+        exit 1
+      fi
+
+    elif [ "$input_dir" = "null" -a "$key" = "$primary_key" ];then
+
+      id=`echo "$value" | sha256sum | awk '{print $1}'`
+
+    else
+
+      echo "error: please set primary key value first"
+      return 1
+
+    fi
+
+    if [ ! "$key" = "$primary_key" -a ! -d $ROOT/databox/$databox/data/$id ];then
+      echo "error: please set primary key first in order of keys"
+      return 1
+    fi
+
+    if [ "$key" = "$primary_key" ];then
+
+       if [ "$input_dir" = "null" ];then
+         primary_value_check=`echo "$value" | sed "s/ //g" | sed -z "s/\n//g"`
+         if [ ! "$primary_value_check" ];then
+           echo "error: please set value to primary key"
+           exit 1
+         fi
+       else
+         primary_value_check=`cat $input_dir/$primary_key | sed "s/ //g" | sed -z "s/\n//g"`
+         if [ ! "$primary_value_check" ];then
+           echo "error: please set value to primary key"
+           exit 1
+         fi
+       fi
+
+
+       if [ ! -d $ROOT/databox/$databox/data/$id ];then
+         mkdir $ROOT/databox/$databox/data/$id
+         mkdir $ROOT/databox/$databox/log/$id
+         chmod 700 $ROOT/databox/$databox/data/$id
+         chmod 700 $ROOT/databox/$databox/log/$id
+         echo "`date +%Y-%m-%d` `date +%T`,created by $user" >> $ROOT/databox/$databox/log/$id/history
+       else
+         if [ -f  ${input_dir}/${primary_key} ];then
+           echo "error:`cat ${input_dir}/${primary_key}` is already existing. primary key(col1) value can not be duplicated"
+           return 1
+         else
+           echo "error:`echo "$value"` is already existing. primary key(col1) value can not be duplicated"
+           return 1
+         fi
+       fi
+
+    fi
+  fi
+
+  # load type
+  type=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep type | awk -F "type=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+
+  # key check
+  key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col*`
+
+  if [ ! "${key_check}" ];then
+    echo "error: there is no key $key"
+    return 1
+  fi
+   
+  primary_key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col1`
+  if [ "${primary_key_check}" -a ! "$flg" = "new" ];then
+    echo "error: you can not change primary key:$key"
+    return 1
+  fi
+
+  # update or insert value
+  if [ "$input_dir" = "null" ];then
+    value=`echo "$value" | sed "s/{%%%}/:/g" | sed "s/%%null//g"`
+  else
+    value=`cat ${input_dir}/${key}`
+  fi
+
+  if [ ! "$set_option" = "force" ];then
+    if [ ! "$flg" = "new" ];then
+      org_value=`cat $ROOT/databox/$databox/data/${id}/${key} | sha256sum | awk '{print $1}'`
+    fi
+
+    if [ "$input_dir" = "null" ];then
+      new_value=`echo "$value" | sha256sum | awk '{print $1}'`
+    else
+      new_value=`cat ${input_dir}/${key} | sha256sum | awk '{print $1}'`
+    fi
+
+    if [ "$org_value" = "$new_value" -a ! "$type" = "file" ];then
+      echo "info: $key value{`echo $value | sed -z \"s/\n//g\"`} is same as original value"
+      return 1
+    fi
+  fi
+
+  # for select box or radio or checkbox 
+  if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+    params=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep params | awk -F "params=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+
+    if [ "$params" ];then
+      for param in $params
+      do
+        value_check=`echo "$value" | grep $param`
+        if [ "$value_check" ];then
+          break
+        fi
+      done
+      if [ ! "$value_check" ];then
+        if [ "$value" ];then
+          echo "error: $key value{$value} is not allowed"
+          return 1
+        fi
+      fi
+    fi
+  fi
+
+  if [ "$type" = "date" ];then
+    date_value_chk=`echo $value | sed "s/[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]//g"`
+    value_chk=`echo $value | sed -z "s/\n//g"`
+    if [ "$date_value_chk" ];then
+      if [ "$value_chk" ];then
+        echo "error: $key value{$value_chk} must be yyyy-mm-dd"
+        return 1
+      fi
+    fi
+  fi
+
+  if [ "$type" = "datetime-local" ];then
+    time_value_chk=`echo $value | sed "s/[0-9][0-9]//g" | sed "s/://g" | sed "s/T//g" | sed "s/-//g"`
+    value_chk=`echo $value | sed -z "s/\n//g"`
+    if [ "$time_value_chk" ];then
+      if [ "$value_chk" ];then
+        echo "error: $key value{$value_chk} must be yyyy-mm-ddTmm:ss"
+        return 1
+      fi
+    fi
+  fi
+
+  if [ "$type" = "number" ];then
+    num_value_chk=`echo $value | sed "s/[0-9]//g" | sed "s/-//g"`
+    value_chk=`echo $value | sed -z "s/\n//g"`
+    if [ "$num_value_chk" ];then
+      if [ "$value_chk" ];then
+        echo "error: $key value{$value_chk} must be numetric character"
+        return 1
+      fi
+    fi
+  fi
+
+  if [ "$type" = "email" ];then
+    email_value_chk=`echo "$value" | grep @`
+    if [ ! "$email_value_chk" ];then
+      if [ "$value" ];then
+        echo "error: $key value{$value} must contain @"
+        return 1
+      fi
+    fi
+  fi
+
+  if [ "$type" = "url" ];then
+    url_value_chk=`echo "$value" | grep -e ^http:// -e ^https://`
+    if [ ! "$url_value_chk" -a ! "$set_option" = "force" ];then
+      if [ "$value" ];then
+        echo "error: $key value{$value} must contain https or http"
+        return 1
+      fi
+    fi
+  fi
+
+  if [ "$type" = "file" ];then
+    if [ ! "$value" ];then
+      echo "info: $key value is null"
+      return 1
+    fi
+  fi
+
+  if [ "$type" = "pdls" ];then
+    pdlsbox=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep pdlsbox | awk -F "pdlsbox=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+    primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $3}' | awk -F "," '{print $1}'`
+    value_chk=`echo "$primary_key_values" | grep "^${value}$"`
+    if [ ! "$value" -a ! "$value_chk" -a "$set_option" = "force" ];then
+      echo "error: $key value{$value} is not alllowed"
+      return 1
+    fi
+  fi
+
+
+  # SET DATA#
+  if [ "$input_dir" = "null" ];then
+    if [ "$type" = "file" ];then  
+      echo "error: primary_key{`cat $ROOT/databox/$databox/data/$id/$primary_key \
+      | sed -z "s/\n//g"`} file must be set using input_dir:"
+      return 1
+    fi
+    echo "$value" > $ROOT/databox/$databox/data/${id}/${key}
+  else
+    if [ "$type" = "file" ];then
+      file_name=`cat ${input_dir}/${key}`
+      size=`ls -lh ${input_dir}/binary_file/binary.data | awk '{print $5}'`
+      echo "$file_name #size:$size" > $ROOT/databox/$databox/data/${id}/${key}
+      \cp -f ${input_dir}/binary_file/binary.data $ROOT/databox/$databox/file/${id}
+    else
+      cat ${input_dir}/${key} > $ROOT/databox/$databox/data/${id}/${key}
+    fi
+  fi
+
+  if [ $? -eq 0 ];then
+    echo "successfully set $key to id:$id"
+    exit 0
+  else
+    echo "failed to update data id:$id"
+    exit 1
+  fi
+
+}
+
+function merge_data(){
+ local id=$1
+ local key=$2
+ local value=$3
+ local input_dir=$4
+ local primary_key=$5
+
+
+  if [ ! "$id" = "new" -a ! -d $ROOT/databox/$databox/data/$id ];then
+     if [ -d  $ROOT/databox/$databox/log/$id ];then
+       echo "error: data has been already deleted, please check data history"
+       echo "--------------------------------------------------------------"
+       cat  $ROOT/databox/$databox/log/$id/history
+       exit 1
+     else
+       echo "error: there is no data id:$id"
+       exit 1
+     fi
+  fi
+
+  if [ "$id" = "new" ];then
+    echo "error: please set primary key value first"
+    return 1
+  fi
+
+  # load type
+  type=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep type | awk -F "type=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+
+  # key check
+  key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col*`
+
+  if [ ! "${key_check}" ];then
+    echo "error: there is no key $key"
+    return 1
+  fi
+
+  primary_key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col1`
+  if [ "${primary_key_check}" -a ! "$flg" = "new" ];then
+    echo "error: you can not change primary key:$key"
+    return 1
+  fi
+
+  if [ ! "$type" = "textarea" ];then
+    echo "error: merge could be used only for textarea"
+    return 1
+  fi
+
+  # MERGE DATA#
+  echo "" >> $ROOT/databox/$databox/data/${id}/${key}
+  echo "+MERGE `date +%Y-%m-%d` `date +%T` updated by $user" >> $ROOT/databox/$databox/data/${id}/${key}
+  if [ ! "$value" = "file_input" ];then
+    echo "$value" >> $ROOT/databox/$databox/data/${id}/${key}
+  else
+    cat ${input_dir}/${key} >> $ROOT/databox/$databox/data/${id}/${key}
+  fi
+
+  if [ $? -eq 0 ];then
+    echo "successfully set $key to id:$id"
+    exit 0
+  else
+    echo "something is wrong, please contact to system admin"
+    exit 1
+  fi
+
+}
+
+function del_data(){
+  local id=$1
+
+  if [ ! "$id" ];then
+     echo "error: please set id"
+     exit 1
+  fi
+
+  if [ -d $ROOT/databox/$databox/data/$id ];then
+      primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+      primary_key_value=`cat $ROOT/databox/$databox/data/$id/$primary_key`
+      mv $ROOT/databox/$databox/data/$id $ROOT/databox/$databox/data/${id}.detouched
+      rm -rf $ROOT/databox/$databox/data/${id}.detouched/*
+      echo $primary_key_value > $ROOT/databox/$databox/data/${id}.detouched/$primary_key
+
+     if [ -f $ROOT/databox/$databox/file/$id ];then 
+       rm -rf $ROOT/databox/$databox/file/$id
+       if [ $? -eq 0 ];then
+         echo "sucessfully deleted $id"
+         exit 0
+       fi
+     fi
+
+  else
+    if [ -d  $ROOT/databox/$databox/log/$id ];then
+      echo "error: data is already deleted, please check data history"
+      echo "--------------------------------------------------------------"
+      cat  $ROOT/databox/$databox/log/$id/history
+      exit 1
+    else
+      echo "error: there is no data id:$id"
+      exit 1
+    fi
+  fi
+
+}
+
+function get_log(){
+  id=$1
+  format=$2
+  
+  if [ ! "$format" = "html_tag" -a ! "$format" = "none" -a ! "$format" = "json" ];then
+    echo "error: log format is provided only html_tag or json or none"
+    exit 1
+  fi
+
+  if [ "$format" = "html_tag" ];then 
+    if [ -f $ROOT/databox/$databox/log/$id/history ];then
+      echo "<pre>"
+      cat $ROOT/databox/$databox/log/$id/history | sed "s/,/ /1"
+      echo "</pre>"
+    else
+      echo "error: there is no log"
+      exit 1
+    fi
+  fi
+
+  if [ "$format" = "none" ];then 
+    if [ -f $ROOT/databox/$databox/log/$id/history ];then
+      cat $ROOT/databox/$databox/log/$id/history | sed "s/,/ /1"
+    else
+      echo "error: there is no log"
+      exit 1
+    fi
+  fi
+
+  if [ "$format" = "json" ];then 
+    if [ -f $ROOT/databox/$databox/log/$id/history ];then
+      cat $ROOT/databox/$databox/log/$id/history | jq -R 'split(",") | {"Time Stamp": .[0], "Message": .[1]}' | jq -s
+    else
+      echo "error: there is no log"
+      exit 1
+    fi
+  fi
+}
+
+
+if [ "$action" ];then
+
+  if [ ! "$id" ];then
+    echo "error: please input id"
+    exit 1
+  fi
+
+  if [ "$action" = "get" ];then
+
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+
+    if [ "$type" = "log" ];then
+       get_log $id $format
+       exit 0
+    fi
+
+    if [ "$keys" ];then
+
+      if [ "$keys" = "all" ];then
+        keys=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+        | sed "s/ //g" | sed -z "s/\n/ /g" `
+      else
+        keys=`echo $keys | sed "s/,/ /g"`
+      fi
+     
+      for key in $keys
+      do
+        get_data $id $key $format $primary_key 
+      done
+    elif [ "$key" ];then
+        get_data $id $key $format $primary_key 
+    else
+      echo "error: please set key of data"
+      exit 1
+    fi
+
+    # const & render json data
+    if [ "$format" = "json" ];then
+      ls $ROOT/tmp/json/$session.data >/dev/null 2>&1
+        if [ $? -eq 0 ];then
+          cat $ROOT/tmp/json/$session.data | sed "s/\"/\\\\\"/g" > $ROOT/tmp/json/$session.data.fin
+          sed -i "1s/^/  \"id\": \"$id\"\n/" $ROOT/tmp/json/$session.data.fin
+          echo "{"
+          cat $ROOT/tmp/json/$session.data \
+          | sed "s/$/,/g" | sed -e "$ s/,$//g" | sed "s/_%%enter_/\\\n/g"
+          echo "}"
+          rm -rf $ROOT/tmp/json/$session.data*
+        fi
+     fi
+  fi
+
+  if [[ $action == set* ]]; then
+
+    if [ "$app" = "shell.app" ];then
+      permission=`$ROOT/bin/meta get.attr:$user{permission}`
+    else
+      permission=`$ROOT/bin/meta get.attr:$app/$user{permission}`
+    fi
+
+    if [ "$permission" = "ro" ];then
+      echo "error: you are read only permission"
+      exit 1
+    fi
+
+    if [ "$action" = "set.force" ];then
+      set_option="force"
+    fi
+
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+
+    if [ "$type" = "log" ];then
+       echo "error: you can not set any value to log"
+       exit 1
+    fi
+
+    if [ ! -d "$input_dir" -a ! "$value" ];then
+      echo "error: please define input_dir or value"
+      exit 1
+    fi
+
+    if [ "$value" -a "$input_dir" ];then
+      echo "error: you can not use both input_dir and value at same time, please select one option only"
+      exit 1
+    fi
+
+    if [ ! "$value" ];then
+      value=file_input
+    fi
+
+    if [ ! "$input_dir" ];then
+      input_dir=null 
+    fi
+
+    if [ "$keys" ];then
+      if [ ! "$value" = "file_input" ];then
+        echo "error: value can be insert to only 1 key"
+        exit 1
+      fi
+
+      if [ "$keys" = "all" ];then
+        keys=`grep "^name=" $ROOT/databox/${databox}/def/col* | grep -v "name=\"hashid\"" | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+        | sed "s/ //g" | sed -z "s/\n/ /g" `
+      else
+        if [ ! "$id" = "new" ];then
+          keys=`echo $keys | sed "s/,/ /g"`
+        else
+          keys=`echo $keys | sed "s/,/ /g" | sed "s/^${primary_key} //g" | sed "s/ ${primary_key} / /g" | sed "s/ ${primary_key}$//g"`
+          if [ ! "$primary_key" = "hashid" ];then
+            keys="$primary_key $keys"
+          fi
+        fi
+      fi
+
+      updated_keys=""
+      count=1
+      for key in $keys
+      do
+        if [ -f $input_dir/$key ];then
+          result=`set_data $id $key file_input $input_dir $primary_key $set_option`
+          if [ $? -eq 0 ];then
+            updated_keys="$key,$updated_keys"
+            if [ "$count" -eq 1 -a "$id" = "new" ];then
+              id=`echo "$result" | awk -F "id:" '{print $2}'`
+              set_option=force
+            fi
+          else
+            duplicate_chk=`echo \"$result\" | grep duplicated`
+            if [ "$duplicate_chk" ];then
+              echo "$result"
+              ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+              if [ $? -eq 0 ];then
+               rm $ROOT/tmp/exec/$exec_session*
+              fi  
+              exit 1
+            fi
+          fi
+          echo "$result"
+
+        else
+          echo "warn: there is no $key on $input_dir"
+        fi
+       ((couht += 1))
+      done
+   
+      if [ "$updated_keys" ];then
+        cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
+
+        if [ ! "$bat" = "yes" ];then
+          $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin set $app &
+        else
+          $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin set $app
+        fi
+      fi
+
+    elif [ "$key" ];then
+      if [ "$value" = file_input ];then
+        if [ ! -f $input_dir/$key ];then
+          echo "error: there is no value for $key"
+          exit 1
+        fi
+      fi
+      result=`set_data $id $key $value $input_dir $primary_key $set_option`
+      if [ $? -eq 0 ];then
+        if [ "$id" = "new" ];then
+          id=`echo "$result" | awk -F "id:" '{print $2}'`
+        fi
+        cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
+        if [ ! "$bat" = "yes" ];then
+          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app &
+        else
+          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app
+        fi
+      fi
+
+      echo "$result"
+
+    else
+       echo "error: please set key of data"
+       exit 1
+    fi
+  fi
+
+  if [ "$action" = "del" ];then
+
+    if [ "$type" = "log" ];then
+       echo "error: you can not delete any log"
+       exit 1
+    fi
+
+    result=`del_data $id `
+    if [ $? -eq 0 ];then
+      keys=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
+            | sed "s/ //g" | sed -z "s/\n/ /g" `
+      updated_keys=""
+      for key in $keys
+      do
+        updated_keys="$key,$updated_keys"           
+      done
+      cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
+      if [ ! "$bat" = "yes" ];then
+        $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin del $app &
+      else
+        $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin del $app
+      fi
+    fi
+    echo "$result"
+
+  fi
+
+
+  if [ "$action" = "merge.get" ];then
+
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+
+    if [ "$type" = "log" ];then
+       echo "error: mege.get could not get log"
+       exit 1
+    fi
+
+    if [ "$keys" ];then
+       echo "error: mege.get could not get log"
+       exit 1
+    fi
+
+    if [ ! "$key" ];then
+       echo "error: please set key"
+       exit 1
+    fi
+
+    if [ ! "$format" = "html_tag" ];then
+       echo "error: mege.get could not be used with json or csv format"
+       exit 1
+    fi
+
+    get_mergeable_data $id $key $format $primary_key
+
+  fi
+
+  if [ "$action" = "merge.set" ];then
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+
+    if [ "$type" = "log" ];then
+       echo "error: you can not set any value to log"
+       exit 1
+    fi
+
+    if [ ! "$format" = "html_tag" ];then
+       echo "error: you can use merge option only for HTML format"
+       exit 1
+    fi
+
+    if [ ! -d "$input_dir" -a ! "$value" ];then
+      echo "error: please define input_dir or value"
+      exit 1
+    fi
+
+    if [ "$value" -a "$input_dir" ];then
+      echo "error: you can not use both input_dir and value at same time, please select one option only"
+      exit 1
+    fi
+
+    if [ ! "$value" ];then
+      value=file_input
+    fi
+
+    if [ ! "$input_dir" ];then
+      input_dir=null
+    fi
+
+    if [ "$keys" ];then
+      echo "error: value can be insert to only 1 key"
+      exit 1
+    fi
+
+    if [ "$key" ];then
+      if [ "$value" = file_input ];then
+        if [ ! -f $input_dir/$key ];then
+          echo "error: there is no value for $key"
+          exit 1
+        fi
+      fi
+
+      result=`merge_data $id $key $value $input_dir $primary_key $set_option`
+      if [ $? -eq 0 ];then
+        if [ "$key" = "$primary_key" -a "$id" = "new" ];then
+          id=`echo "$result" | awk -F "id:" '{print $2}'`
+        fi
+        cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
+        if [ ! "$bat" = "yes" ];then
+          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app &
+        else
+          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app
+        fi
+      fi
+      echo "$result"
+
+    else
+       echo "error: please set key of data"
+       exit 1
+    fi
+  fi
+  
+  ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    rm $ROOT/tmp/exec/$exec_session*
+  fi  
+
+  exit 0
+fi

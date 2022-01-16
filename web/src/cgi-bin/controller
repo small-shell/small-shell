@@ -1,0 +1,191 @@
+#!/bin/bash
+
+# preproceduure
+session_update="required"
+
+# load small-shell path
+. ../descriptor/.small_shell_path
+
+# load remote addr
+remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+
+# IP restriction check
+whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
+if [ "$whitelist_chk" ];then
+  for IP in $whitelist_chk
+  do
+    IP=`echo $IP | sed "s/*//g"`
+    if [[ ${remote_addr} == ${IP}* ]];then
+      IP_chk_flag=yes
+      break
+    fi
+  done
+
+  if [ ! "$IP_chk_flag" = "yes" ];then
+    echo "error: your IP is not allowed to access"
+    exit 1
+  fi
+fi
+
+param=`date +%s`
+param="$param:$RANDOM"
+count=1
+while [ -f ../tmp/${param} ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "Content-Type: text/html"
+   echo ""
+   echo "error: please contact to adimin"
+   exit 1
+ fi
+done
+
+# parse QUERY_STRING
+echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" > ../tmp/${param}.load
+chmod 755 ../tmp/${param}.load
+
+# load query string
+.  ../tmp/${param}.load
+rm  ../tmp/${param}*
+
+
+# define main req
+if [ "$req" = "main" -o ! "$req" ];then
+  req=table
+fi
+
+# define contents type except statistics file or graph
+if [ ! "$req" = "stats" -a ! "$req" = "file" ];then
+  echo "Content-Type: text/html"
+  echo ""
+fi
+
+# session check
+session_chk=`sudo -u small-shell ${small_shell_path}/bin/auth session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
+session_ip=`echo $session_chk | awk -F ":" '{print $2}'`
+  
+if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "stats" -o "$req" = "file" ];then
+  session_update=no
+  if [ ! "${session_ip}" = ${remote_addr} ];then 
+    if [ "$req" = "stats" -o "$req" = "file" ];then
+      echo "Content-Type: text/html"
+      echo ""
+    fi
+    req=main
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+    exit 1
+  fi
+fi
+
+if [ "$req" = "logout" ]; then
+  sudo -u small-shell ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
+  echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?&req=main\">"
+  exit 0
+fi
+
+if [ "$session_update" = "required" ];then
+  get_session=`sudo -u small-shell ${small_shell_path}/bin/auth session_persist:${session} \
+  pin:${pin} remote_addr:${remote_addr}`
+  user_name=`echo $get_session | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
+  session=`echo $get_session | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+  pin=`echo $get_session | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+
+  if [ ! "$user_name" -o ! "$session" -o ! "${pin}" ];then
+
+    if [ "$req" = "console" ];then
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      exit 1
+
+    elif [ "$req" = "table" ];then
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      exit 1
+
+    elif [ "$req" = "get" ];then
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&id=$id&message=!%20Session%20Expired\">"
+      exit 1
+
+    else
+      req=main
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      exit 1
+
+    fi
+  fi
+
+fi
+
+# null handling
+if [ "$databox" = "null" -o ! "$databox" ];then
+  echo "<h1>NO DATABOX, please create databox first</h1>"
+  exit 1
+fi
+
+# dump POST data
+if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
+
+  if [ "`echo $CONTENT_TYPE | grep "application/json"`" ];then
+    method=json
+  elif [ "`echo $CONTENT_TYPE | grep "multipart/form-data"`" ];then
+    method=multipart
+  elif [ "`echo $CONTENT_TYPE | grep "application/octet-stream"`" ];then
+    method=data-binary
+  else
+    method=urlenc
+  fi
+
+  mkdir ../tmp/$session
+  # dump posted data
+  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2>/dev/null
+  ../bin/parse.sh $session $method
+
+fi
+
+#----------------------------
+# routing to action scripts
+#----------------------------
+
+case "$req" in
+
+  "console")
+    ../bin/console.sh databox:$databox session:$session user_name:$user_name pin:$pin remote_addr:${remote_addr};;
+
+  "table")
+    table_command="`echo $table_command | sed "s/ /{%%space}/g"`"
+    ../bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command ;;
+
+  "get")
+    ../bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate;;
+
+  "set")
+    ../bin/set.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id ;;
+
+  "del")
+    ../bin/del.sh databox:$databox session:$session pin:$pin id:$id ;;
+
+  "log_viewer")
+    ../bin/log_viewer.sh databox:$databox session:$session pin:$pin id:$id data_import_session:$data_import_session ;;
+
+  "import")
+    ../bin/import.sh databox:$databox session:$session pin:$pin remote_addr:${remote_addr} ;;
+
+  "hash")
+    ../bin/hashchain.sh databox:$databox session:$session pin:$pin id:$id ;;
+
+  "csv")
+    ../bin/csv.sh databox:$databox session:$session pin:$pin filter:$filter ;;
+
+  "stats")
+    ../bin/statistics_viewer.sh session:$session target:$target type:$type ;;
+
+  "file")
+    ../bin/dl.sh session:$session pin:$pin id:$id databox:$databox ;;
+
+  *)
+    echo "error: wrong request";;
+
+esac
+
+exit 0

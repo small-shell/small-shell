@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>auth</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <link rel="stylesheet" href="./%%app_css">
+    </head>
+    <body>
+    <div class="container">
+      <div class="flex-header">
+        <div class="left-header">
+        </div>
+        <div class="right-header">
+        </div>
+      </div>
+      <div class="auth-container">
+      <div class="auth-form">
+      <form method="post" action="./auth.%%app?%%params">
+      %%message
+      <h1>%%app</h1>
+      <div class="wrapper">
+        <input type="text" id="%%app_key_%%rand" name="%%app_key_%%rand" placeholder="please paste key" list="keylist" autocomplete="on">
+        <datalist id="keylist">
+        </datalist>
+        <button class="button" type="submit" onclick="setkey()">SUBMIT</button>
+      </div>
+      </form>
+     </div>
+     </div>
+     <div class="footer">
+     </div>
+   </div>
+   <script>
+
+   // menu
+   const btn = document.querySelector('.even-btn-menu');
+   const nav = document.querySelector('nav');
+
+   document.addEventListener('click', (e) => {
+     if(e.target.closest('.even-btn-menu')) {
+       nav.classList.toggle('open-menu')
+       if (btn.innerHTML === '=') {
+         btn.innerHTML = '-';
+       } else {
+         btn.innerHTML = '=';
+       }
+     }else{
+       nav.classList.remove('open-menu')
+       btn.innerHTML = '=';
+     }
+   })
+
+  // key management that is stored on localstorage
+  var keylist = document.getElementById("keylist");
+  key=document.createElement("option");
+  key.text=localStorage.getItem("%%app_key_%%rand");
+  keylist.appendChild(key);
+
+  function setkey() {
+     var newkey = document.getElementById("%%app_key_%%rand").value;
+     localStorage.setItem("%%app_key_%%rand", newkey);
+  }
+
+  </script>
+  </body>
+</html>

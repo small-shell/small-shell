@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>DATA Shell - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="../automation_tour/" class="dropdown-item">e-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="../python_tour/" class="dropdown-item">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="../auth_shell/" class="dropdown-item">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../app_shell_scratch/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../automation_tour/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#data-shell" class="nav-link">DATA Shell</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#structure" class="nav-link">Structure</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#command-reference" class="nav-link">Command reference</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#meta-charactors" class="nav-link">Meta charactors</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#backup-restore" class="nav-link">Backup &amp; Restore</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#hash-chain" class="nav-link">Hash chain</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#meta-command" class="nav-link">Meta command</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#batch-for-data-shell" class="nav-link">Batch for DATA shell</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#gen-databox-by-dbdef" class="nav-link">Gen databox by db.def</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#import-export-data" class="nav-link">Import / Export data</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#delete-databox" class="nav-link">Delete databox</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#verified-environment" class="nav-link">Verified environment</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="data-shell">DATA Shell</h1>
+<p>You can create DataBox through dialog. Mainly DataBox is designed to be used by WEB APP of APP shell. DATA shell could manage DataBox and it can ensure data integrity utilizing hash chain. </p>
+<h2 id="structure">Structure</h2>
+<p>Data will be storering on Unix file system with indexing and logging transactions.</p>
+<pre><code> sudo ls /usr/local/small-shell/databox/$databox
+ data  def  file  hashchain  index  log  log.dump
+
+* Data could be extracted using several formats through DATA_shell command
+-&gt; json {id:$hashid, keyA:$keyA_value, keyb:$keyB_value }
+-&gt; csv  #column1,column2..
+-&gt; html_tag #small-shell defined flex table format
+</code></pre>
+<h2 id="command-reference">Command reference</h2>
+<p>You can access datas through DATA_shell command</p>
+<pre><code>/usr/local/small-shell/bin/DATA_shell
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>DATA_shell has CLI, you can use them as small-shell priviledge <br />
+e.g.) sudo -u small-shell /usr/local/small-shell/bin/DATA_shell parama1:$param1 param2:$param2</p>
+</div>
+<h3 id="base-params">Base params</h3>
+<table>
+<thead>
+<tr>
+<th>param</th>
+<th>description</th>
+<th>usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>authkey</td>
+<td>Set key for authentication</td>
+<td>authkey:$authkey</td>
+</tr>
+<tr>
+<td>session</td>
+<td>Set session token for authentication. if you have session, you don't need key</td>
+<td>session:$session</td>
+</tr>
+<tr>
+<td>pin</td>
+<td>Set pin for authorize session token</td>
+<td>pin:$pin</td>
+</tr>
+<tr>
+<td>databox</td>
+<td>Set target databox name</td>
+<td>databox:$databox</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Set target data</td>
+<td>type:data , type:log</td>
+</tr>
+<tr>
+<td>format</td>
+<td>Set data format</td>
+<td>format:html_tag , format:json , format:none</td>
+</tr>
+<tr>
+<td>command</td>
+<td>Set command</td>
+<td>command:$command</td>
+</tr>
+</tbody>
+</table>
+<h3 id="command-handler-params">Command Handler params</h3>
+<p>You can exec various type of commands, see following examples. by the way commands will refer to index not refer to data file directly.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exec unix command</td>
+<td>command:grep_-v_test_"|"_wc_-l</td>
+</tr>
+<tr>
+<td>just filtering data</td>
+<td>command:word1_word2</td>
+</tr>
+<tr>
+<td>show data array</td>
+<td>command:show_all</td>
+</tr>
+<tr>
+<td>show data array with specific line or column</td>
+<td>command:show_all[filter=wordA,wordB]</td>
+</tr>
+<tr>
+<td>show data array by sorting</td>
+<td>command:show_all[sort=option,col_num]</td>
+</tr>
+<tr>
+<td>show data array by filtering specific column</td>
+<td>command:show_all[filter=col1{word}]</td>
+</tr>
+<tr>
+<td>show 100% match data with specific column</td>
+<td>command:show_all[match=col1{word}]</td>
+</tr>
+</tbody>
+</table>
+<h5 id="command-handler-exmaple">Command handler exmaple</h5>
+<pre><code># get data using authkey
+authkey="dGVzdDoyOGZkYTJlOTFjODBkZ************"
+databox="item.db"
+sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey databox:$databox type:data command:show_all format:json
+
+# get data using session token
+session="06deccfc51ec102da4b16db09cf96345a160ce51996fa3533b******"
+pin="****"
+databox="item.db"    
+sudo -u small-shell /usr/local/small-shell/bin/DATA_shell session:$session pin:$pin databox:$databox type:data command:show_all format:json
+</code></pre>
+<h3 id="data-handler-params">DATA Handler params</h3>
+<p>You can set or show datas using data handler</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Set Data</td>
+<td>action:set</td>
+</tr>
+<tr>
+<td>Get Data</td>
+<td>action:get</td>
+</tr>
+<tr>
+<td>Delete Data</td>
+<td>action:del</td>
+</tr>
+<tr>
+<td>Set id</td>
+<td>id:$hash_id</td>
+</tr>
+<tr>
+<td>Create new id</td>
+<td>id:new</td>
+</tr>
+<tr>
+<td>Set data-key scope</td>
+<td>key:key_nameA</td>
+</tr>
+<tr>
+<td>Set data-keys scope</td>
+<td>keys:key_name1,key_name2,key_name3</td>
+</tr>
+<tr>
+<td>Set data-keys as all</td>
+<td>keys:all</td>
+</tr>
+<tr>
+<td>Set value to the scope</td>
+<td>value:$value</td>
+</tr>
+<tr>
+<td>Set null value</td>
+<td>value:%%null</td>
+</tr>
+<tr>
+<td>Set input_dir</td>
+<td>input_dir:/tmp/yyyymmdd</td>
+</tr>
+<tr>
+<td>app</td>
+<td>app:$app</td>
+</tr>
+</tbody>
+</table>
+<h5 id="data-handler-exmaple">Data handler exmaple</h5>
+<pre><code>authkey="dGVzdDoyOGZkYTJlOTFjODBkZ************"
+databox="item.db"
+id="d5397fed4d6e0da54ed769232e9706d0f5bbf805f251b3a0b2c9083aa00e6874"
+
+# get
+sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey databox:$databox action:get keys:all id:$id format:json
+
+# set
+sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey databox:$databox action:set key:description value:test id:$id
+</code></pre>
+<h2 id="meta-charactors">Meta charactors</h2>
+<h5 id="meta-in-index-file">Meta in index file</h5>
+<p>Some meta charactors are removed or changed to specific tags in the index to be searchable. index is just an index, data itself will not be impacted.</p>
+<pre><code>` - delete
+:  - {%%%}
+&amp;  - {%%%%}
+/  - {%%%%%}
+,  - {%%%%%%}
+_  - {%%%%%%%}
+(  - {%%%%%%%%}
+)  - {%%%%%%%%%}
+[  - {%%%%%%%%%%}
+]  - {%%%%%%%%%%%}
+|  - {%%%%%%%%%%%%}
+#  - {%%%%%%%%%%%%%}
+$  - {%%%%%%%%%%%%%%}
+*  - {%%%%%%%%%%%%%%%}
+%  - {%%%%%%%%%%%%%%%%}
+'  - {%%%%%%%%%%%%%%%%%}
+null - -
+</code></pre>
+<h2 id="backup-restore">Backup &amp; Restore</h2>
+<p>You can get backup data using bkup command. and then restore the data using rstr command. </p>
+<pre><code>sudo /usr/local/small-shell/adm/bkup $databox $backup_directory
+sudo /usr/local/small-shell/adm/rstr $databox $restore_file
+</code></pre>
+<h2 id="hash-chain">Hash chain</h2>
+<p>Hash chain is created by que.sh which are used for making index and log and hash chain as well.
+see detail at que.sh codes. 
+Actually log.dump data will be hashed and it will be integrated to synthesis hash with previous updated keys.</p>
+<pre><code>#view /usr/local/small-shell/sbin/que.sh
+    log_dump=&quot;${timestamp} user:${user} primary_key:$primary_key_value updated_key:${updated_key} value:${value} #id:$id&quot;
+
+    # gen hash
+    hash=`echo &quot;$log_dump&quot; | sha256sum | awk '{print $1}'`
+
+    # update hash chain
+    last_hash=`grep synthesis_hash $ROOT/databox/$databox/hashchain | tail -1 | awk -F &quot;:&quot; '{print $2}'`
+    synthesis_hash=` echo ${last_hash}${hash} | sha256sum | awk '{print $1}'`
+    echo &quot;`date +%Y-%m-%d` `date +%T` id             :$id&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
+    echo &quot;`date +%Y-%m-%d` `date +%T` hash           :$hash&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
+    echo &quot;`date +%Y-%m-%d` `date +%T` synthesis_hash :$synthesis_hash&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
+</code></pre>
+<h4 id="download-hash-chain">Download hash chain</h4>
+<p>Every user can download hash chain and verificate data integrity by themselves.
+<img alt="Screenshot" src="../img/hash_chain.png" /></p>
+<h2 id="meta-command">Meta command</h2>
+<p>"meta" command can be used for gathering meta data.</p>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta
+</code></pre>
+<pre><code>#----------------------------------------------------------
+# PARAM FOR META
+# action(L1).action(L2):target{param}
+#----------------------------------------------------------
+# meta get.chain:$databox
+# meta get.progress:$import_session
+# meta get.num:$databox
+# meta get.databox
+# meta get.server
+# meta get.attr:$user{$attribute_key}
+# meta get.attr:$app/$user{$attribute_key}
+# meta get.key:$databox{primary}
+# meta get.key:$databox{all}
+# meta get.pdls:$databox{filter_word}
+# meta get.label:$databox{all}
+# meta get.header:$databox{csv}
+# meta get.header:$databox{json}
+# meta get.tag:$databox
+# meta get.tag:$app{$databox}
+# meta get.command
+# meta get.IP #show whitelisted IPs
+# meta get.statistics:ls{html_tag}
+# meta get.statistics:ls.$filter_word,{html_tag}
+# meta get.statistics:$statistics{graph}
+# meta get.statistics:$statistics{raw_data}
+# meta get.shared_pass:$app
+# meta get.users
+# meta get.users:$app
+# meta chk.form:$databox
+#----------------------------------------------------------
+</code></pre>
+<h2 id="batch-for-data-shell">Batch for DATA shell</h2>
+<p>You can import or delete datas using batch scripts.</p>
+<pre><code>/usr/local/small-shell/util/scripts
+</code></pre>
+<pre><code># bat_import.sh
+## import file must be csv format
+usage: sudo -u small-shell bat_import.sh $authkey $databox $import_file
+
+# data_del.sh 
+## list file should just contain IDs of target datasets
+usage: sudo -u small-shell del_datasets.sh $authkey $databox $list_file
+</code></pre>
+<h2 id="gen-databox-by-dbdef">Gen databox by db.def</h2>
+<p>You can define data structure using db.def template, then bat_gen.sh could generate databox without dialog.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>+addcol : declare to add column to dataset
+colX_ : declare which number of column</p>
+</div>
+<h4 id="template">Template</h4>
+<p>please freely add column by using "+addcol" declaration.</p>
+<pre><code>#---------------------------------------------------------------
+# db definition
+#---------------------------------------------------------------
+
+# databox
+databox=&quot;&quot;
+
+# col1
+#-------------------------------------------
+primary_key=&quot;&quot;
+primary_key_label=&quot;&quot;
+#-------------------------------------------
+
++addcol
+# col2
+#-------------------------------------------
+col2_key_name=&quot;&quot;
+col2_key_label=&quot;&quot;
+col2_type=&quot;&quot;
+
+# only for select, checkbox
+col2_key_params=&quot;&quot;
+
+# only for pdls
+col2_primary_databox=&quot;&quot;
+
+# required
+col2_required=&quot;yes&quot;
+#-------------------------------------------
+
++addcol
+# col3
+#-------------------------------------------
+col3_key_name=&quot;&quot;
+col3_key_label=&quot;&quot;
+col3_type=&quot;&quot;
+
+# only for select, checkbox
+col3_key_params=&quot;&quot;
+
+# only for pdls
+col3_primary_databox=&quot;&quot;
+
+# required option
+col3_required=&quot;no&quot;
+#-------------------------------------------
+</code></pre>
+<h4 id="generate-databox">Generate Databox</h4>
+<pre><code>vi /tmp/db.def #please writedown definition
+cd /usr/local/small-shell/util/script
+./bat_gen.sh /tmp/db.def
+</code></pre>
+<h2 id="import-export-data">Import / Export data</h2>
+<p>You can import datas through WEB APP or batch command. csv format can be downloaded from Base APP table #csv tag or import form.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using hashid for primary key, please input value as "new". if you are not use hashid as primary key, you can input any value to the key.</p>
+</div>
+<h4 id="import-throgh-base-app">Import throgh Base APP</h4>
+<p>You can import datas from Base APP "Data Import" menu. Import format can be download on the page.
+<img alt="Screenshot" src="../img/import.png" /></p>
+<h4 id="import-through-bat">Import through bat</h4>
+<pre><code>/usr/local/small-shell/util/scripts/bat_import $authkey $databox $file
+tail -f /usr/local/small-shell/tmp/log/$session.log
+</code></pre>
+<h4 id="export-data-through-app">Export data through APP</h4>
+<p>You can export datas with csv format on Base APP table.
+<img alt="Screenshot" src="../img/export.png" /></p>
+<h2 id="delete-databox">Delete databox</h2>
+<p>Please delete databox with rm command after getting backup. following is example of rm test.box</p>
+<pre><code>mkdir $HOME/backup
+databox=test.box
+sudo /usr/local/small-shell/adm/bkup $databox $HOME/backup
+cd /usr/local/small-shell/databox
+sudo rm -rf $databox
+</code></pre>
+<h2 id="verified-environment">Verified environment</h2>
+<pre><code>OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+bash: 4.X
+Web : Apache 2.X (recommended), nginx 1.X    
+curl: 7.X
+
+# REQUIRED commands
+Core commands : sha256sum, flock, base64
+awk : above 3 that can use "IGNORECASE = 1;" option
+sed : above 4.2.2 that can use "-z" option
+PHP : any version which have PHP url encyption libraries
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

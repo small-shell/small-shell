@@ -1,0 +1,253 @@
+#!/bin/bash
+
+#-----------------------------------------------------------------------
+#  COMMON
+#-----------------------------------------------------------------------
+#  remote_addr:ip_addr -> IP addreess will be used for audit log and security check
+#  app:$app -> WEB app name for authentication
+
+#-----------------------------------------------------------------------
+#  AUTH REQUEST
+#-----------------------------------------------------------------------
+#  initialize:user_id{initialize_key} -> get user_name and user_key
+#  key_auth:$base64_enc_key #user_key -> get user_name and session_token with pin
+#  force_user:$external_auth_user -> overwrite APP user name, you can disable this option by changing enable_force to no
+
+#-----------------------------------------------------------------------
+#  SESSION REQUEST
+#-----------------------------------------------------------------------
+#  session_chk:$session_token -> get user_name and remote_addr
+#  session_refresh:$session_token -> get user_name and new session token
+#  session_persist:$session_token -> get user_name and new session token, and make symlink from new session to last session.
+#  data_import_session:$session_token -> get user_name and new session token
+#  logout:$session_token
+
+# force user option
+enable_force="yes"
+
+## global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# exec user check
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "small-shell" ];then
+  echo "error: user must be small-shell"
+  exit 1
+fi
+
+# parsa input params
+for param in `echo $@`
+do
+
+  if [[ $param == key_auth:* ]]; then
+    key_auth=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == initialize:* ]]; then
+    initialize=yes
+    user_id=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    initialize_hash_key=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+  fi
+
+  if [[ $param == session_chk:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == session_refresh:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == session_persist:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == data_import_session:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == pin:* ]]; then
+    pin=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == remote_addr:* ]]; then
+    remote_addr=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == logout:* ]]; then
+    logout=yes
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == app:* ]]; then
+    app=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == force_user:* ]]; then
+    force_user=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+done
+
+# IP addr check
+if [ ! "$remote_addr" ];then
+  echo "error: IP addr is null"
+  exit 1
+fi
+
+# APP check
+if [ ! "$app" ];then
+  echo "error: app name is null"
+  exit 1
+fi
+
+# initialize
+if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
+  base_hash=`cat $ROOT/users/${app}.${user_id}/initialize_key`
+
+  if [ "$base_hash" = "$initialize_hash_key" ];then
+
+    which openssl >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      hash_gen_key=`openssl rand -hex 20`
+    else
+      hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+    fi
+
+    user_name=`cat $ROOT/users/${app}.${user_id}/user_name`
+    hash=`echo "${app}:${user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+    echo "$hash" > $ROOT/users/${app}.${user_id}/hash
+
+    if [ $? -eq 0 ];then
+      user_key=`echo "${user_name}:${hash_gen_key}" | base64 -w 0`
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} generated user_key of user_name:${user_name}" \
+      >> $ROOT/users/audit.log
+      echo "user_name:${user_name},user_key:${user_key}"
+      rm $ROOT/users/${app}.${user_id}/initialize_key
+      exit 0
+    else
+      echo "error: failed to generate user key"
+      exit 1
+    fi
+  else
+    echo "error: your initialize key is wrong"
+    exit 1
+  fi
+
+fi
+
+# key_auth 
+if [ "$key_auth" ];then
+  decrypted_value=`echo "$key_auth" | base64 -d`
+  user_name=`echo "$decrypted_value" | awk -F ":" '{print $1}'`
+  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+  hash_gen_key=`echo "$decrypted_value" | awk -F ":" '{print $2}'`
+  hash=`echo "${app}:${user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+
+  if [ -f $ROOT/users/${app}.${user_id}/hash ];then
+    existing_hash=`cat $ROOT/users/${app}.${user_id}/hash`
+    if [ "$hash" = "$existing_hash" ];then
+      pin=$RANDOM
+
+      # force option for external authentication
+      if [ "$force_user" -a "$enable_force" = "yes" ];then
+        user_name="${force_user}@${app}"
+      fi
+
+      session_token=`echo "${app}:${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+      echo "user_name:$user_name,session_token:$session_token,pin:$pin"
+      echo "`date +%Y-%m-%d` `date +%T` app:${app} user_name:${user_name} remote_addr:${remote_addr} logged in successfully" \
+      >> $ROOT/users/audit.log
+      echo "${user_name}:${remote_addr}" > $ROOT/tmp/session/${session_token}
+      chmod 700 $ROOT/tmp/session/${session_token}
+      exit 0
+    else
+     echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to login to user_name:${user_name} with wrong key" \
+     >> $ROOT/users/audit.log
+     exit 1
+    fi
+  fi
+
+fi
+
+
+# session handling
+
+if [ "$action" = "session_chk" ];then
+  if [ -f  $ROOT/tmp/session/${session} ];then
+    user_name=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $1}'`
+    org_addr=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $2}'`
+
+    if [ "$org_addr" = "$remote_addr" ];then
+      tokencheck=`echo "${app}:${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+      if [ "${session}" = "${tokencheck}" ];then
+        cat $ROOT/tmp/session/$session
+      fi
+    fi
+  fi
+fi
+
+
+if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$action" = "session_persist" ];then
+  if [ -f  $ROOT/tmp/session/${session} ];then
+    user_name=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $1}'`
+    org_addr=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $2}'`
+    org_session=$session
+ 
+    if [ "$org_addr" = "$remote_addr" ];then
+      tokencheck=`echo "${app}:${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+      if [ "${session}" = "${tokencheck}" ];then
+
+        if [ "${logout}" = "yes" ];then
+          rm $ROOT/tmp/session/${org_session}
+          exit 0
+        fi
+
+        if [ ! "$action" = "data_import_session" ];then
+          ln_session=`cat $ROOT/tmp/session/${org_session} | awk -F ":" '{print $3}'`
+          if [ "$ln_session" -a -f $ROOT/tmp/session/${ln_session} ];then
+            unlink $ROOT/tmp/session/${ln_session}
+          fi
+          rm $ROOT/tmp/session/${org_session}
+        fi
+
+        pin=$RANDOM
+        session_token=`echo "${app}:${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+        echo "user_name:${user_name},new_token:${session_token},pin:${pin}"
+
+        if [ "$action" = "session_persist" ];then
+          ln -s $ROOT/tmp/session/${session_token} $ROOT/tmp/session/${org_session}
+          echo "${user_name}:${remote_addr}:${org_session}" > $ROOT/tmp/session/${session_token}
+        fi
+
+        if [ "$action" = "session_refresh" ];then
+          echo "${user_name}:${remote_addr}" > $ROOT/tmp/session/${session_token}
+        fi
+
+        chmod 700 $ROOT/tmp/session/${session_token}
+
+        exit 0
+
+      else
+        echo "error: session token or pin is wrong, need additional authentication" 
+        echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to get new session (user_name:${user_name}) due to session check failure" \
+        >> $ROOT/users/audit.log
+        exit 1
+      fi
+    else
+      echo "warn: IP address was changed, need additional authentication" 
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to get new session (user_name:${user_name}) due to IP change" \
+      >> $ROOT/users/audit.log
+      exit 1
+    fi
+
+  else
+    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} tried to use gone session" \
+    >> $ROOT/users/audit.log
+    exit 1
+  fi
+fi

@@ -1,0 +1,107 @@
+#!/bin/bash
+
+echo "Content-Type: text/html"
+echo ""
+
+# load small-shell path
+. ../descriptor/.small_shell_path
+
+# load remote addr
+remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+
+IP_whitelisting=%%IP_whitelisting
+
+# IP restriction check
+if [ "$IP_whitelisting" = "yes" ];then
+  whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
+  if [ "$whitelist_chk" ];then
+    for IP in $whitelist_chk
+    do
+      IP=`echo $IP | sed "s/*//g"`
+      if [[ ${remote_addr} == ${IP}* ]];then
+        IP_chk_flag=yes
+        break
+      fi
+    done
+   
+    if [ ! "$IP_chk_flag" = "yes" ];then
+      echo "error: your IP is not allowed to access"
+      exit 1
+    fi
+  fi
+fi
+
+# auth for small-shell databox
+authkey="%%authkey"
+auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth key_auth:${authkey} remote_addr:${remote_addr} app:%%app`
+user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
+session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+
+
+param=`date +%s`
+param="$param:$RANDOM"
+count=1
+
+while [ -f ../tmp/${param} ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: please contact to adimin"
+   exit 1
+ fi
+done
+
+
+# parse QUERY_STRING
+echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" > ../tmp/${param}.load
+chmod 755 ../tmp/${param}.load
+
+# load query string
+.  ../tmp/${param}.load
+rm  ../tmp/${param}*
+
+# dump POST data
+if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
+
+  if [ "`echo $CONTENT_TYPE | grep "application/json"`" ];then
+    method=json
+  elif [ "`echo $CONTENT_TYPE | grep "multipart/form-data"`" ];then
+    method=multipart
+  elif [ "`echo $CONTENT_TYPE | grep "application/octet-stream"`" ];then
+    method=data-binary
+  else
+    method=urlenc
+  fi
+
+  mkdir ../tmp/$session
+  # dump posted data
+  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2>/dev/null
+  ../bin/parse.sh $session $method
+
+fi
+
+#----------------------------
+# routing to action scripts
+#----------------------------
+
+if [ ! "$req" ];then
+  req=get
+fi
+
+case "$req" in
+
+  "get")
+    ../bin/%%app_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr};;
+
+  "set")
+    ../bin/%%app_set.sh session:$session pin:$pin id:$id remote_addr:${remote_addr};;
+
+  *)
+    echo "error: wrong request";;
+
+esac
+
+exit 0

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>e-cron (Automate & dataExchange) - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">e-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="../python_tour/" class="dropdown-item">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="../auth_shell/" class="dropdown-item">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../data_shell_tour/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../python_tour/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#extended-cron" class="nav-link">extended cron</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#job-automation-by-e-cron" class="nav-link">Job automation by e-cron</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#job-relationship-with-hosts" class="nav-link">Job relationship with hosts</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#data-file-exchange" class="nav-link">DATA (file) exchange</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#general-queing" class="nav-link">General queing</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#bine-cron" class="nav-link">bin/e-cron</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#util-scripts-for-e-cron" class="nav-link">Util scripts for e-cron</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#verified-environment" class="nav-link">Verified environment</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="extended-cron">extended cron</h1>
+<p>small-shell could provide Job automation &amp; data Exchagne framework by extending cron function (e-cron). you can define job relation ship between several hosts. you can also exchange DATA between several hosts.  </p>
+<h2 id="job-automation-by-e-cron">Job automation by e-cron</h2>
+<p>e-cron could provide following function on Linux platform.</p>
+<ol>
+<li>Add job entry to cron throgh dialog</li>
+<li>Provide CLI status check tool</li>
+<li>Prevent double start of same job</li>
+<li>Logging job result and command dump</li>
+<li>Make relationship between jobs or hosts using messaing function</li>
+</ol>
+<h4 id="basic-concept">Basic concept</h4>
+<p>Basically e-cron extends cron function by providing utility scripts. and wrapper script that will work as job management framework. following ideas are basic functions of e-cron.</p>
+<h6 id="dialog">DIALOG</h6>
+<pre><code>gen dialog -&gt; generate cron entry
+</code></pre>
+<h6 id="framework">FRAMEWORK</h6>
+<pre><code>cron  -&gt; wrapper.sh -&gt; script #exec
+CLI  &lt;-&gt; wrapper.sh &lt;- script #result
+</code></pre>
+<h6 id="util-command">UTIL COMMAND</h6>
+<pre><code>CLI $options -&gt; show results, status and more
+</code></pre>
+<h6 id="wrapper">WRAPPER</h6>
+<pre><code>Message/DataExchange, prevent_double_start, logging, dump_command_result
+</code></pre>
+<h4 id="required">Required</h4>
+<p>It' required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start/">Quickstart</a>.</p>
+<h5 id="dir">dir</h5>
+<p>Please upload script on following directory.</p>
+<pre><code>/usr/local/small-shell/util/scripts
+</code></pre>
+<h5 id="sample-job">sample job</h5>
+<pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job1.sh
+--code--
+#!/bin/bash
+
+echo &quot;`date` Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
+
+exit 0
+--------
+sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
+</code></pre>
+<h5 id="automate-stand-alone-job">Automate Stand alone Job</h5>
+<p>You can generate job by gen command.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+# -&gt; dialog will be started
+</code></pre>
+<p>Following is an example of making job that will execuete ls command. it's just an examplem, you can execute any unix commands or any scripts.</p>
+<h6 id="dialog_1">Dialog</h6>
+<pre><code>job name: job1
+Type of job (1.job automation | 2.file exchange) : 1
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: any
+Hour  [ any | 0-23 ]: any
+Min   [ any | 0-59 ]: 1
+Week  [ any | mon - sun ]: any
+Exec command or batch script: job1.sh
+</code></pre>
+<h5 id="enabeldisable-job">enabel/disable Job</h5>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.$job
+sudo -u small-shell /usr/local/small-shell/bin/e-cron disable.$job    
+(e.g.)
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1.sh
+</code></pre>
+<h5 id="confirm-job-definition">confirm job definition</h5>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.job1.sh
+ &gt; JOB: job1
+def:/usr/local/small-shell/util/e-cron/def/job1.def
+-------------SCHEDULE----------------
+min: 1
+hour: any
+date: any
+month: any
+week: any
+-------------DEFINITION----------------
+exec_command=&quot;/home/ubuntu/job1.sh&quot;
+input_message=&quot;&quot;
+output_message=&quot;&quot;
+hubapi=&quot;&quot;
+authkey=&quot;&quot;
+</code></pre>
+<h5 id="confirm-job-list">confirm job list</h5>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron ls
+--------------------------------------------------------------
+job definition: /usr/local/small-shell/util/e-cron/def
+--------------------------------------------------------------
+del_session.enabled
+del_util_log.enabled
+job1.enabled
+</code></pre>
+<h5 id="exec-job-manually">Exec job manually</h5>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job1
+</code></pre>
+<h5 id="confirm-job-result">confirm job result</h5>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron stats
+--------------------------------------------------------
+LATEST STATUS OF JOB
+--------------------------------------------------------
+2021-04-12 12:15:01 ls_tmp successfully completed
+</code></pre>
+<pre><code>cat /usr/local/small-shell/util/scripts/log/hello.log
+Mon Jan  3 04:10:23 UTC 2022 Hello
+</code></pre>
+<h5 id="confirm-job-log">confirm job log</h5>
+<pre><code>ls /usr/local/small-shell/util/e-cron/log/joblog/*job1*
+/usr/local/small-shell/util/e-cron/log/joblog/job1_command_dump_20220103  
+/usr/local/small-shell/util/e-cron/log/joblog/job1_log_20220103
+</code></pre>
+<h4 id="change-job-setting">change Job setting</h4>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+&gt; then input existing job name in the dialog
+</code></pre>
+<h5 id="define-job-relation-ship-in-same-host">Define Job relation ship in same host</h5>
+<p>If you want to define job relationship in same same host. please modify job definition directly. 
+This is an exmaple of job relationship. messae wil be exchanged in the host.</p>
+<pre><code>job1.success@host1 --&gt; message (done.1) --&gt; job2@host1 #if message is raedy, kicked
+! Once message is grabed, message will be cleared
+</code></pre>
+<h5 id="sample-job_1">sample job</h5>
+<h6 id="job1sh">job1.sh</h6>
+<pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job1.sh
+--code--
+#!/bin/bash
+
+echo &quot;`date` Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
+
+exit 0
+--------
+sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
+</code></pre>
+<h6 id="job2sh">job2.sh</h6>
+<pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job2.sh
+--code--
+#!/bin/bash
+
+echo &quot;`date` World&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/world.log
+
+exit 0
+--------
+sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job2.sh
+</code></pre>
+<h6 id="add-job-to-small-shell-and-set-message">Add job to small-shell and set message</h6>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+ #-&gt; please create job1 on small-shell
+
+sudo -u small-shell vi /usr/local/small-shell/util/e-cron/def/job1.def
+-----------------------------------------------------------
+SCHEDULE:1 * * * *
+exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
+input_message=&quot;&quot;
+output_message=&quot;done.1&quot;
+hubapi=&quot;&quot;
+authkey=&quot;&quot;                     
+-----------------------------------------------------------
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
+
+sudo /usr/local/small-shell/adm/gen -job
+ #-&gt; please create job2 on small-shell
+sudo -u small-shell vi /usr/local/small-shell/util/e-cron/def/job2.def
+-----------------------------------------------------------
+SCHEDULE:2 * * * *
+exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
+input_message=&quot;done.1&quot;
+output_message=&quot;&quot;
+hubapi=&quot;&quot;
+authkey=&quot;&quot;
+-----------------------------------------------------------
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
+</code></pre>
+<h5 id="exec-job">Exec job</h5>
+<p>Then let's try to execute jobs. if you execute job2 first, job will not be started because message is not set by job1.</p>
+<pre><code># execute manually
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
+ #-&gt; job will not be started. please exit Ctrl + C
+
+sudo -u small-shell /usr/local/small-shell/bin/e-cron stats.job2 
+--------------------------------------------------------
+LATEST STATUS OF JOB
+filter: job2
+--------------------------------------------------------
+2022-01-03 04:34:53 job2 INFO input_message_done.1_was_not_set
+
+# re-execute manually
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job1
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
+
+# confirm result
+sudo -u small-shell /usr/local/small-shell/bin/e-cron stats.job
+--------------------------------------------------------
+LATEST STATUS OF JOB
+filter: job
+--------------------------------------------------------
+2022-01-03 04:38:38 job1 INFO ouput_message_done.1_pushed
+2022-01-03 04:38:38 job1 successfully completed
+2022-01-03 04:38:47 job2 successfully completed
+</code></pre>
+<pre><code>cat /usr/local/small-shell/util/scripts/log/hello.log
+Mon Jan  3 04:10:23 UTC 2022 Hello
+Mon Jan  3 04:38:38 UTC 2022 Hello
+cat /usr/local/small-shell/util/scripts/log/world.log
+Mon Jan  3 04:38:47 UTC 2022 World
+</code></pre>
+<h2 id="job-relationship-with-hosts">Job relationship with hosts</h2>
+<p>If you will define relation ship between serveral hosts, you need to generate Base APP first on HUB server. #see <a href="../app_shell_tour/">APP shell tour</a> for further details for Base APP. <br />
+Once API HUB is ready, you can define job relationship using message.</p>
+<pre><code> -----------------------------------------------
+ | API Server #MessageExchange                 |
+ -----------------------------------------------
+           | GET/PUSH message  #http/https protocol
+ -----------------------------------------------
+ | Edge servers {hostsA,B,C,D} automated jobs  | # jobs will be kicked once get message
+ -----------------------------------------------
+</code></pre>
+<h5 id="confirm-base-information-at-api-hub-server">confirm base information at API HUB server</h5>
+<h6 id="hub">@hub</h6>
+<pre><code>cat /usr/local/small-shell/web/base | grep hubapi
+hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot;
+cat /usr/local/small-shell/web/base | grep auth
+api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
+</code></pre>
+<h5 id="update-job-definition-at-each-hosts">Update job definition at each hosts</h5>
+<p>In this exmaple, hostB job2 will be kicked, once got message from hostA job1 through API HUB.</p>
+<pre><code>job1.success@hostA ---&gt; message (done.1) --&gt; job2@hostB #if message is raedy, kicked
+</code></pre>
+<h5 id="sample-job_2">sample job</h5>
+<h6 id="job1shhosta">job1.sh@hostA</h6>
+<pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job1.sh
+--code--
+#!/bin/bash
+
+echo &quot;`date` Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
+
+exit 0
+--------
+sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
+</code></pre>
+<h6 id="job2shhostb">job2.sh@hostB</h6>
+<pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job2.sh
+--code--
+#!/bin/bash
+
+echo &quot;`date` World&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/world.log
+
+exit 0
+--------
+sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job2.sh
+</code></pre>
+<h6 id="add-job-to-small-shell-and-set-message_1">Add job to small-shell and set message</h6>
+<pre><code>@hostA
+sudo /usr/local/small-shell/adm/gen -job
+ #-&gt; please create job2
+sudo vi /usr/local/small-shell/util/e-cron/def/job1.def
+-----------------------------------------------------------
+SCHEDULE:1 * * * *
+exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
+input_message=&quot;&quot;
+output_message=&quot;done.1&quot; #modify
+hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot; #modify
+api_authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
+-----------------------------------------------------------
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
+ #-&gt; please enable ls_tmp job acordingly
+
+@hostB
+sudo /usr/local/small-shell/adm/gen -job
+ #-&gt; please create job2
+sudo vi /usr/local/small-shell/util/e-cron/def/job2.def
+-----------------------------------------------------------
+CHEDULE:2 * * * *
+exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
+input_message=&quot;done.1&quot;
+output_message=&quot;&quot;
+hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot; #modify
+authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
+-----------------------------------------------------------
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
+ #-&gt; please enable ls_tmp2 job acordingly
+</code></pre>
+<h5 id="execute-manually-and-confirm-result">Execute manually and confirm result</h5>
+<p>Then let's try to execute jobs. if you execute job2@hostB first, job will not be started because message is not set by job1.</p>
+<pre><code>@hostB
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
+ #-&gt; job will not be started more than 1 minutes. then please exit Ctrl + C    
+sudo -u small-shell /usr/local/small-shell/bin/e-cron stat.job2
+--------------------------------------------------------
+LATEST STATUS OF JOB
+filter: job2
+2022-01-07 14:18:12 job2 INFO input_message_done.1_was_not_set
+
+@hostA
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job1
+
+@hostB
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
+sudo -u small-shell /usr/local/small-shell/bin/e-cron stat    
+--------------------------------------------------------
+LATEST STATUS OF JOB
+filter: job2
+--------------------------------------------------------    
+2022-01-07 14:19:12 job2 successfully completed
+</code></pre>
+<h2 id="data-file-exchange">DATA (file) exchange</h2>
+<p>DATA Exchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
+<pre><code> -----------------------------------------------
+ | API Server #DataExchange                    | -&gt; HUB dir: /usr/local/small-shell/util/e-cron/que/file
+ -----------------------------------------------
+                   | GET/PUSH DATA #http/https protocol
+ -----------------------------------------------
+ | Edge servers {hostsA,B,C,D} #sync jobs      |  -&gt; can be synced to any local directory
+ -----------------------------------------------
+</code></pre>
+<h5 id="confirm-base-information-at-api-hub-server_1">confirm base information at API HUB server</h5>
+<h6 id="hub_1">@hub</h6>
+<pre><code>cat /usr/local/small-shell/web/base | grep hubapi
+hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot;
+
+cat /usr/local/small-shell/web/base | grep auth
+api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
+</code></pre>
+<h4 id="dataexchange-job">DataExchange Job</h4>
+<p>This is exmpale of exchange dummy from host1 to host2 through HUB API.</p>
+<pre><code># data_push@hostA ---&gt; dummy file ---&gt; data_get@hostB
+! file will not be cleared even if it's synced to other hosts
+</code></pre>
+<h5 id="job-for-pushing-file">Job for pushing file</h5>
+<p>This is exmaple of generating job that will push dummy.log to HUB API server.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+# -&gt; diarlog will be started
+</code></pre>
+<h6 id="generate-file-exchange-job">generate file exchange job</h6>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please use "*" to file name if you want to upload or download several files at one.   <br />
+e.g.) access.log*</p>
+</div>
+<pre><code>@hostA
+# generate job
+sudo /usr/local/small-shell/adm/gen -job
+job name: data_push
+Type of job (1.job automation | 2.file exchange) : 2
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: 1
+Hour  [ any | 0-23 ]: 1
+Min   [ any | 0-59 ]: 0
+Week  [ any | mon - sun ]: any
+Type of file exchange (push | get): push
+local directory: /tmp
+file_name: dummy*
+HUB API URL: http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron
+API authkey: YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****
+
+# enable job
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.data_push
+
+@hostB
+# generate job
+sudo /usr/local/small-shell/adm/gen -job
+job name: data_get
+Type of job (1.job automation | 2.file exchange) : 2
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: 1
+Hour  [ any | 0-23 ]: 0
+Min   [ any | 0-59 ]: 2
+Week  [ any | mon - sun ]: any
+Type of file exchange (push | get): get
+local directory: /tmp
+file_name: dummy*
+HUB API URL: http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron
+API authkey: YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****
+
+# enable job
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.data_get
+</code></pre>
+<h5 id="execute-manually">Execute manually</h5>
+<pre><code>@hostA
+# create dummy file
+echo "dummy" &gt; /tmp/dummy1
+echo "dummy" &gt; /tmp/dummy2
+echo "dummy" &gt; /tmp/dummy3
+
+# push manually
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_push
+dummy #data is synced to
+
+
+# check file at hub server
+@hub
+ls /usr/local/small-shell/util/e-cron/que/file/
+dummy1  dummy2  dummy3
+</code></pre>
+<h5 id="confirm-file-after-push-and-get-job-completion">Confirm file after push and get job completion</h5>
+<pre><code>@hostB
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_get
+ls /tmp/dummy*
+dummy1 dummy2 dummy3 #data is synced to local dir
+</code></pre>
+<h2 id="general-queing">General queing</h2>
+<p>You can pass parameters using general que to the script that will be executed by e-cron. This function is useful for such like sending mails.</p>
+<h5 id="queing-dir">queing dir</h5>
+<pre><code>dir: /usr/local/small-shell/util/que/common
+</code></pre>
+<h5 id="function">function</h5>
+<p>Script can load valuables that is in the que file. For examaple mailque contain subjects, mailto, mailfrom, contents. and </p>
+<pre><code>push   -&gt; que: mail           -&gt; mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID    
+script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID.load
+</code></pre>
+<h6 id="push-mail-que">Push mail que</h6>
+<pre><code># send mail que to e-cron batch
+session=&quot;`date +%s`.$RANDOM&quot;
+mkdir /tmp/$session
+echo &quot;subject=\&quot;test\&quot;&quot; &gt; /tmp/$session/mail
+echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail        
+echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail
+echo &quot;contents=\&quot;test\&quot;&quot; &gt;&gt; /tmp/$session/mail
+sudo -u small-shell /usr/local/small-shell/bin/e-cron push.que:/tmp/$session/mail
+#-&gt;&gt;pushed successfully
+rm -rf /tmp/$session
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Plese setup MTA and mail command beforehand by yourself.</p>
+</div>
+<h6 id="create-mail-batch">Create mail batch</h6>
+<pre><code>sudo vi /usr/local/small-shell/util/scripts/send_mail
+--code--
+#!/bin/bash
+
+# load params from que
+mailto=&quot;$1&quot;
+mailfrom=&quot;$2&quot;
+subject=&quot;$3&quot;
+contents=&quot;$4&quot;
+
+# send mail
+echo &quot;$contents&quot; | mail -s &quot;$subject&quot; -r $mailfrom $mailto
+-------
+</code></pre>
+<h6 id="add-batch-to-e-cron-automation">Add batch to e-cron automation</h6>
+<pre><code>chowm small-shell:small-shell  /usr/local/small-shell/util/scripts/send_mail
+chmod 755 /usr/local/small-shell/util/scripts/send_mail
+
+# ADD AUTOMATION JOB
+sudo /usr/local/small-shell/adm/gen -job
+
+#-&gt; diaglog start
+job name: mailq
+Type of job (1.job automation | 2.file exchange) : 1
+
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: any
+Hour  [ any | 0-23 ]: any
+Min   [ any | 0-59 ]: any
+Week  [ any | mon - sun ]: any
+Exec command or batch script: send_mail &quot;$mailto&quot; &quot;$mailfrom&quot; &quot;$subject&quot; &quot;$contents&quot;
+#-&gt; dialog end
+
+# update def
+sudo vi /usr/local/small-shell/util/e-cron/def/mailq.def
+--code--
+SCHEDULE:* * * * *
+exec_command=&quot;/usr/local/small-shell/util/scripts/send_mail \&quot;$mailto\&quot; \&quot;$mailfrom\&quot; \&quot;$subject\&quot; \&quot;$contents\&quot;&quot;
+input_message=&quot;&quot;
+output_message=&quot;&quot;
+hubapi=&quot;&quot;
+authkey=&quot;&quot;
+
+# add manually
+que=&quot;mail&quot;
+--------
+</code></pre>
+<h6 id="enable-job">enable job</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.mailq
+</code></pre>
+<h6 id="check-log">Check log</h6>
+<pre><code>tail -f /usr/local/small-shell/util/e-cron/log/joblog/mailq_command_dump_20210918
+2021-09-18 01:28:01 /usr/local/small-shell/util/scripts/send_mail &quot;to@***.com&quot; &quot;from@***.com&quot; &quot;test&quot; &quot;test&quot; executed
+</code></pre>
+<h2 id="bine-cron">bin/e-cron</h2>
+<p>e-cron must be executed as small-shell permission</p>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>param</th>
+<th>description</th>
+<th>usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cat.$job</td>
+<td>show job definition</td>
+<td>e-cron cat.jobA</td>
+</tr>
+<tr>
+<td>stat</td>
+<td>show job status</td>
+<td>e-cron stat</td>
+</tr>
+<tr>
+<td>stat.$filter</td>
+<td>show filtered job status</td>
+<td>e-cron stat.ERROR</td>
+</tr>
+<tr>
+<td>ls</td>
+<td>show job list</td>
+<td>e-cron ls</td>
+</tr>
+<tr>
+<td>enable.$job</td>
+<td>enable job</td>
+<td>e-cron enable.jobA</td>
+</tr>
+<tr>
+<td>disable.$job</td>
+<td>disable job</td>
+<td>e-cron disable.jobA</td>
+</tr>
+<tr>
+<td>exec.$job</td>
+<td>execute job manually</td>
+<td>e-cron exec.jobA</td>
+</tr>
+<tr>
+<td>clear.$job</td>
+<td>clear job status</td>
+<td>e-cron clear.jobA</td>
+</tr>
+</tbody>
+</table>
+<h2 id="util-scripts-for-e-cron">Util scripts for e-cron</h2>
+<p>Scripts are provided on following directory.</p>
+<pre><code>ls /usr/local/small-shell/util/scripts
+</code></pre>
+<p>Usage is written in the shell header. please check more command.</p>
+<pre><code>bat_import.sh       # import datasets as batch job
+del_datasets.sh     # delete datasets as batch job
+del_log.sh          # delete log of e-cron
+del_session.sh      # delete session of DATA shell
+del_statistics.sh   # delete statistics of pyshell
+
+countup.sh          # please see detail at pyshell tour
+sumup.sh            # please see detail at pyshell tour
+</code></pre>
+<h2 id="verified-environment">Verified environment</h2>
+<pre><code>API server
+OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+bash: 4.X
+Web : Apache 2.X (recommended), nginx 1.X    
+curl: 7.X
+
+IoT Edge
+OS: raspberrypi 4.X
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

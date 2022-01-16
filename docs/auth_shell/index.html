@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Auth - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="../automation_tour/" class="dropdown-item">e-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="../python_tour/" class="dropdown-item">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../python_tour/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#auth-shell-iam" class="nav-link">Auth Shell (IAM)</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#base-64-key-auth" class="nav-link">Base 64 key auth</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#pin-and-session-token" class="nav-link">PIN and Session Token</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#cli-for-base-app" class="nav-link">CLI for Base APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#add-user-for-base-app" class="nav-link">Add User for Base APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#extension-auth" class="nav-link">Extension auth</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#add-user-for-scratch-app" class="nav-link">Add User for scratch APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#ops" class="nav-link">OPS</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="auth-shell-iam">Auth Shell (IAM)</h1>
+<p>Auth shell desined to be used for key based authentication and session management for WEB APPs.</p>
+<h2 id="base-64-key-auth">Base 64 key auth</h2>
+<p>Base64 key will be generated with accessing intialize URL. it will contain user_name and randome strings. Because key length is long enough, we think it's secure. but please use Base APP with IP whitelisting and other security measure as well if possible.</p>
+<h6 id="flow-of-standard-auth">FLow of Standard Auth</h6>
+<pre><code>|--------|                               |--------|
+|        |  ------ BASE64key ----------&gt; |        |
+| client |                               | Server |
+|        | &lt;------ Session Hash -------  |        |
+|        |                               |        |
+|        |  ------ Page req {Session} -&gt; |        |
+|        |                               |        |
+|        | &lt;------ Link {NEW Sesesion} - |        |
+|--------|                               |--------|
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Base64 key will be sotred at localstorage on browser using random name per instance in the personal key initializing process.</p>
+</div>
+<h2 id="pin-and-session-token">PIN and Session Token</h2>
+<p>Session itself is temporary hash file that will contain remote address, user name and randomly generated PIN code. Besides session key will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key, IP address and PIN check.</p>
+<h2 id="cli-for-base-app">CLI for Base APP</h2>
+<pre><code># for Base App
+sudo /usr/local/small-shell/bin/auth action:target{param}
+</code></pre>
+<h6 id="params">params</h6>
+<pre><code>#  COMMON
+#-----------------------------------------------------------------------
+#  remote_addr:ip_addr -&gt; IP addreess will be used for audit log and security check
+
+#-----------------------------------------------------------------------
+#  AUTH REQUEST
+#-----------------------------------------------------------------------
+#  initialize:user_id{initialize_key} -&gt; get user_name and user_key
+#  key_auth:$base64_enc_key #user_key -&gt; get user_name and session_token with pin
+
+#-----------------------------------------------------------------------
+#  SESSION REQUEST
+#-----------------------------------------------------------------------
+#  session_chk:$session_token -&gt; get user_name and IP addr
+#  session_refresh:$session_token -&gt; get user_name and new session token
+#  session_persist:$session_token -&gt; get user_name and new session token, and make symlink from new session to last session.
+#  data_import_session:$session_token -&gt; get user_name and new session token
+#  logout:$session_token
+</code></pre>
+<h2 id="add-user-for-base-app">Add User for Base APP</h2>
+<p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test
+test successfully created
+Initialize url is here, please share this url to end user then he or she can generate a key to access Data box.
+https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
+</code></pre>
+<h2 id="extension-auth">Extension auth</h2>
+<p>Extension auth is used for authentication of scratch APP.</p>
+<pre><code># for Scratch App
+sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
+</code></pre>
+<pre><code>#-----------------------------------------------------------------------
+#  COMMON
+#-----------------------------------------------------------------------
+#  remote_addr:ip_addr -&gt; IP addreess will be used for audit log and security check
+#  app:$app -&gt; WEB app name for authentication
+
+#-----------------------------------------------------------------------
+#  AUTH REQUEST
+#-----------------------------------------------------------------------
+#  initialize:user_id{initialize_key} -&gt; get user_name and user_key
+#  key_auth:$base64_enc_key #user_key -&gt; get user_name and session_token with pin
+#  force_user:$external_auth_user -&gt; overwrite APP user name, disabled this option as default
+
+#-----------------------------------------------------------------------
+#  SESSION REQUEST
+#-----------------------------------------------------------------------
+#  session_chk:$session_token -&gt; get user_name and remote_addr
+#  session_refresh:$session_token -&gt; get user_name and new session token
+#  session_persist:$session_token -&gt; get user_name and new session token, and make symlink from new session to last session.
+#  data_import_session:$session_token -&gt; get user_name and new session token
+
+</code></pre>
+<h2 id="add-user-for-scratch-app">Add User for scratch APP</h2>
+<p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test app:${app}
+test successfully created
+Initialize url is here, please share this url to end user then he or she can generate a key to access Data box.
+https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
+</code></pre>
+<h2 id="ops">OPS</h2>
+<p>"ops" command can be used for the several types of the operation.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops action(L1).action(L2):target{param}
+</code></pre>
+<h6 id="commands">commands</h6>
+<pre><code>#-----------------------------------
+# IAM
+#-----------------------------------
+# ops ls.usr
+# ops add.usr:$user
+# ops del.usr:$user
+# ops initialize.usr:$user
+# ops get.usr:$user{url}
+# ops set.attr:$user{ro}
+# ops set.attr:$user{rw}
+# ops set.attr:$user{$attribute_key=$param}
+
+#-----------------------------------
+# Add tag for Base APP table
+#-----------------------------------
+# ops add.tag:$databox{$filter}
+# ops del.tag:$databox{$filter}
+
+#-----------------------------------
+# for Scratch APP
+#-----------------------------------
+# ops add.usr:$user app:$app
+# ops del.usr:$user app:$app
+# ops initialize.usr:$user app:$app
+# ops get.app_usr:$user{url} app:$app
+# ops add.tag:$databox{$filter} app:$app
+# ops del.tag:$databox{$filter} app:$app
+# ops set.attr:$user{rw} app:$app
+# ops set.attr:$user{ro} app:$app
+# ops set.attr:$user{$attribute_key=$param} app:$app
+</code></pre>
+<h4 id="description-of-ops-command">Description of OPS command</h4>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ls.usr</td>
+<td>show user list of Base APP</td>
+</tr>
+<tr>
+<td>add.usr</td>
+<td>add user to Base APP</td>
+</tr>
+<tr>
+<td>del.usr</td>
+<td>delete user of Base APP</td>
+</tr>
+<tr>
+<td>initialize.usr</td>
+<td>initialize user key of Base APP, it could generate URL for initialization</td>
+</tr>
+<tr>
+<td>get.usr:$user{url}</td>
+<td>Get user dedicated URL for initialization</td>
+</tr>
+<tr>
+<td>set.attr:$user{rw}, set.attr:$user{ro}</td>
+<td>set attribute to user. rw is read write, ro is read only permission</td>
+</tr>
+<tr>
+<td>set.attr:$user{$attribute_key=$param}</td>
+<td>set external attribute to end user if needed</td>
+</tr>
+<tr>
+<td>add.tag</td>
+<td>add tag (#search_word) to Base APP table</td>
+</tr>
+<tr>
+<td>del.tag</td>
+<td>delet tag (#search_word) from Base APP table</td>
+</tr>
+<tr>
+<td>app:$app</td>
+<td>change target from Base APP to Dedicated Scratch APP</td>
+</tr>
+</tbody>
+</table></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

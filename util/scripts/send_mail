@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# load params from que
+mailto="$1"
+mailfrom="$2"
+subject="$3"
+contents="$4"
+
+# send mail
+echo "$contents" | sed "s/%%enter/\n/g" | sed "s/%%double_quote/\"/g" \
+| mail -s "$subject" -r $mailfrom $mailto

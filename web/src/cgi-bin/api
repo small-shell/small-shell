@@ -1,0 +1,141 @@
+#!/bin/bash
+
+echo "Content-Type: text/html"
+echo ""
+
+# load remote addr
+remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+
+# load small-shell path
+. ../descriptor/.small_shell_path
+
+# IP restriction check
+whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
+if [ "$whitelist_chk" ];then
+  for IP in $whitelist_chk
+  do
+    IP=`echo $IP | sed "s/*//g"`
+    if [[ ${remote_addr} == ${IP}* ]];then
+      IP_chk_flag=yes
+      break
+    fi
+  done
+
+  if [ ! "$IP_chk_flag" = "yes" ];then
+    echo "error: your IP is not allowed to access"
+    exit 1
+  fi
+fi
+
+# preproceduure
+param=`date +%s`
+param="$param:$RANDOM"
+count=1
+
+while [ -f ../tmp/${param} ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: please contact to adimin"
+   exit 1
+ fi
+done
+
+echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" > ../tmp/${param}.load
+chmod 755 ../tmp/${param}.load
+
+# load query string
+.  ../tmp/${param}.load
+rm  ../tmp/${param}*
+
+# load from HTML request header 
+authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
+
+# key auth
+auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
+session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+
+if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
+  echo "{ \"error\": \"KEY AUTHENTICATION FAILED\" }"
+  exit 1
+fi
+
+# Handle POST request
+if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
+  mkdir ../tmp/$session
+  # dump posted data
+  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2>/dev/null
+
+  if [ "`echo $CONTENT_TYPE | grep "application/json"`" ];then
+    ../bin/parse.sh $session json
+    keys=`ls ../tmp/$session | grep -v binary_file | sed -z "s/\n/,/g" | sed "s/,$//g"`
+
+    if [ "$id" -a "$databox" ];then
+
+      # set posted data
+      sudo -u small-shell ${small_shell_path}/bin/DATA_shell \
+      session:$session pin:$pin action:set id:$id databox:$databox keys:$keys \
+      input_dir:../tmp/$session databox:$databox  > ../tmp/$session/result
+      echo "{ \"info\": \"`cat ../tmp/$session/result | sed -z "s/\n/, /g" | sed "s/, \$//g" | sed "s/:/->/g"`\" }"
+    else
+
+      echo "{ \"error\": \"PLEASE INPUT DATABOX AND ID\" }"
+    fi
+  else
+    echo "{ \"error\": \"PLEASE USE application/json in QUERY_STRING for POSTING THROUGH THIS API\" }"
+  fi
+fi
+
+# Handle GET request
+if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
+  mkdir ../tmp/$session
+  if [ "$command" ];then
+    sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin command:$command databox:$databox format:json \
+    | sed "s/{%%%%%%%%%%%%%}/#/g"\
+    | sed "s/{%%%%%%%%%%%%}/|/g"\
+    | sed "s/{%%%%%%%%%%%}/\]/g"\
+    | sed "s/{%%%%%%%%%%}/\[/g"\
+    | sed "s/{%%%%%%%%%}/)/g"\
+    | sed "s/{%%%%%%%%}/(/g"\
+    | sed "s/{%%%%%%%}/_/g"\
+    | sed "s/{%%%%%%}/,/g"\
+    | sed "s/{%%%%%}/\//g"\
+    | sed "s/{%%%%}/\&/g"\
+    | sed "s/{%%%}/:/g" > ../tmp/$session/result
+
+    error_chk=`grep error: ../tmp/$session/result | sed "s/error://g"`
+    if [ "$error_chk" ];then
+      echo "{ \"error\": \"$error_chk\" }"
+    elif [ ! -s ../tmp/$session/result ];then
+      echo "{ \"info\": \"no result\" }"
+    else
+      cat ../tmp/$session/result
+    fi
+
+  elif [ "$id" ];then
+    sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin \
+    action:get keys:$keys id:$id databox:$databox format:json  > ../tmp/$session/result
+
+    error_chk=`grep error: ../tmp/$session/result | sed "s/error://g"`
+    if [ "$error_chk" ];then
+      echo "{ \"error\": \"$error_chk\" }"
+    elif [ ! -s ../tmp/$session/result ];then
+      echo "{ \"info\": \"no result\" }"
+    else
+      cat ../tmp/$session/result
+    fi
+  fi
+fi
+
+sudo -u small-shell ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
+
+
+if [ "$session" ];then
+  rm -rf ../tmp/$session
+fi
+
+exit 0

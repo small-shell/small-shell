@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#----------------------------------------------------------
+# usage: ./rstr $databox $restore_file
+#----------------------------------------------------------
+
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "root" ];then
+  echo "error: user must be root"
+  exit 1
+fi
+
+# global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# load param
+databox=$1
+rstr_file=$2
+
+if [ ! "$databox" ];then
+  echo "error: please input databox name"
+  exit 1
+fi
+
+if [ ! "$rstr_file" ];then
+  echo "error: please input restore file with full path"
+  exit 1
+fi
+
+if [ ! -f $rstr_file ];then
+   echo "error: restore file {$rstr_file} seems wrong"
+   exit 1
+fi
+
+if [ -d $ROOT/databox/${databox} ];then
+  echo "warn: databox{$databox} is still existing"
+  echo "original one will be moved to $ROOT/databox/_${databox}"
+  mv $ROOT/databox/${databox} $ROOT/databox/_${databox}
+fi
+
+# Exec restore
+(cd $ROOT/databox && tar -xf ${rstr_file})
+result=$?
+
+if [ $result -eq 0 ];then
+  chown -R small-shell:small-shell $ROOT/databox/$databox
+  chmod 700 $ROOT/databox/$databox/data
+  chmod 700 $ROOT/databox/$databox/log
+  chmod 700 $ROOT/databox/$databox/hashchain
+  chmod 700 $ROOT/databox/$databox/log.dump
+  chmod 700 $ROOT/databox/$databox/index
+  chown -R small-shell:small-shell $ROOT/databox/${databox}/def
+  chmod 755 $ROOT/databox/${databox}/def/*
+  echo "DATA has been successfully restored"
+else
+  echo "eror: something seems wrong"
+  exit 1
+fi

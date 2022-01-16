@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# load small-shell path
+. ../descriptor/.small_shell_path
+
+# load remote addr
+remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+
+# IP restriction check
+whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
+if [ "$whitelist_chk" ];then
+  for IP in $whitelist_chk
+  do
+    IP=`echo $IP | sed "s/*//g"`
+    if [[ ${remote_addr} == ${IP}* ]];then
+      IP_chk_flag=yes
+      break
+    fi
+  done
+
+  if [ ! "$IP_chk_flag" = "yes" ];then
+    echo "Content-Type: text/html"
+    echo ""
+    echo "error: your IP $remote_addr is not allowed to access"
+    exit 1
+  fi
+fi
+
+# preproceduure
+param=`date +%s`
+param="$param:$RANDOM"
+count=1
+
+while [ -f ../tmp/${param} ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "Content-Type: text/html"
+   echo ""
+   echo "error: please contact to adimin"
+   exit 1
+ fi
+done
+
+# parse QUERY_STRING
+echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" > ../tmp/${param}.load
+chmod 755 ../tmp/${param}.load
+
+# load query string
+.  ../tmp/${param}.load
+rm  ../tmp/${param}*
+
+# load from HTML request header 
+authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
+
+# key auth
+auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
+session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+
+if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
+  echo "Content-Type: text/html"
+  echo ""
+  echo "KEY AUTHENTICATION FAILED"
+  exit 1
+fi
+
+# dump POST data
+if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
+
+  if [ "`echo $CONTENT_TYPE | grep "application/json"`" ];then
+    method=json
+  elif [ "`echo $CONTENT_TYPE | grep "multipart/form-data"`" ];then
+    method=multipart
+  elif [ "`echo $CONTENT_TYPE | grep "application/octet-stream"`" ];then
+    method=data-binary
+  else
+    method=urlenc
+  fi
+
+  mkdir ../tmp/$session
+  # dump posted data
+  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2>/dev/null
+  ../bin/parse.sh $session $method
+
+fi
+
+# chk request
+if [ "$req" = "ls" ];then
+  if [ "$filename" ];then
+    echo "Content-Type: text/html"
+    echo ""
+    sudo -u small-shell ${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr
+  fi
+fi
+
+# get message or file from e-cron core
+if [ "$req" = "get" ];then
+  if [ "$message" ];then
+    echo "Content-Type: text/html"
+    echo ""
+    sudo -u small-shell ${small_shell_path}/bin/e-cron get.message:$message
+  fi
+
+  if [ "$filename" ];then
+    file_chk=`sudo -u small-shell ${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr`
+    if [ "$file_chk" ];then
+      echo "Content-Disposition: attachment; filename=$filename"
+      echo "Content-Type: application/octet-stream"
+      echo ""
+      sudo -u small-shell ${small_shell_path}/bin/e-cron get.file:$filename remote_addr:$remote_addr
+    else
+      echo "Content-Disposition: attachment; filename=failed"
+      echo "Content-Type: application/octet-stream"
+      echo ""
+      echo "file is not ready"
+    fi 
+  fi
+fi
+
+# send messages or file to e-cron core
+if [ "$req" = "push" ];then
+  if [ "$message" ];then
+    echo "Content-Type: text/html"
+    echo ""
+    sudo -u small-shell ${small_shell_path}/bin/e-cron push.message:$message remote_addr:$remote_addr
+  fi
+
+  if [ "$filename"  ];then
+    echo "Content-Type: text/html"
+    echo ""
+    mv ../tmp/$session/binary_file/binary.data ../tmp/$session/$filename
+    sudo -u small-shell ${small_shell_path}/bin/e-cron push.file:../tmp/$session/$filename remote_addr:$remote_addr
+  fi
+fi
+
+if [ -d ../tmp/$session ];then
+  rm -rf ../tmp/$session
+fi
+
+exit 0

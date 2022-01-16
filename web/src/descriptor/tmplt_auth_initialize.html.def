@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        
+        <style type="text/css">
+        body {
+          font-family: 'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
+          color: #000022;
+          letter-spacing: .04em;
+          font-size: 94%;
+        }
+
+        .container * {
+          box-sizing: border-box;
+        }
+
+        .flex-header {
+          padding-top: 4px;
+          display:flex;
+          flex-wrap:wrap;
+        }
+
+        .left-header {
+          font-weight: 300;
+          line-height: 0.8em;
+          font-size: 80%;
+          flex: auto;
+          margin: auto;
+          color: #000033;
+        }
+
+        .auth-message {
+          padding-top: 98px;
+          padding-left: 40px;
+          padding-right: 10px;
+          padding-bottom: 140px;
+          margin: auto;
+          text-align:center;
+        }
+
+        .auth-message button {
+          padding: 16px 16px;
+          border-radius: 40px;
+          border-style: none;
+          background: #000033;
+          color: #f2f2f2;
+          text-transform: uppercase;
+          letter-spacing: .09em;
+          cursor: pointer;
+          cursor: hand;
+          font-size: 80%;
+        }
+
+        .footer {
+          padding-top: 20px;
+          padding-right: 12px;
+          font-weight: 300;
+          font-size: 60%;
+          text-align: right;
+          bottom: 0;
+          width: 100%;
+          font-weight: bold;
+          color: #696969;
+        }
+
+        </style>
+
+        <title>key gen</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    </head>
+    <body>
+    <div class="container">
+      <div class="flex-header">
+        <div class="left-header">
+          <h2>%%app@%%server</h2>
+        </div>
+      </div>
+      <div class="auth-message">
+      <h2> Your APP Key is successfully generated.</h2>
+      <p> <b>user_key:%%user_key</b></p>
+      <p> If your are not <b>%%user_name</b>, please escalate to webadmin. your IP (%%IP) will be recorded on audit log</p>
+
+      <form method="post" action="./auth.%%app">
+      <input type="hidden" name="key_placeholder" value="%%user_key" >
+      <button class="button" type="submit">Connect %%app with KEY</button>
+      </form>
+     </div>
+   <div class="footer">
+   <p>small-shell.org</p>
+   </div>
+</html>

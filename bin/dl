@@ -1,0 +1,120 @@
+#!/bin/bash
+
+#------------------------------------------------------------
+# download file from databox
+# usage: dl databox:$databox id:$id session:$session pin:$pin
+#------------------------------------------------------------
+
+## global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# exec user check
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "small-shell" ];then
+  echo "error: user must be small-shell"
+  exit 1
+fi
+
+# gen tmpdir
+random=$RANDOM
+while [ -d $ROOT/tmp/gen/$random ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: something is wrong"
+   exit 1
+ fi
+ random=$RANDOM
+done
+mkdir $ROOT/tmp/gen/$random
+tmp_dir="$ROOT/tmp/gen/$random"
+
+# parsa input params
+for param in `echo $@`
+do
+
+  if [[ $param == databox:* ]]; then
+    databox=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == id:* ]]; then
+    id=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == session:* ]]; then
+    session=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == pin:* ]]; then
+    pin=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == authkey:* ]]; then
+    authkey=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == app:* ]];then
+    app=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+done
+
+
+# authentication
+if [ "$authkey" ];then
+  auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
+  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+fi
+
+# authorized session check
+if [ -f $ROOT/tmp/session/$session ];then
+  user=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $1}'`
+  remote_addr=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $2}'`
+
+  if [ ! "$app" ];then
+    # check token
+    tokencheck=`echo "${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    app=shell.app
+  else
+    # check app token
+    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+  fi
+
+  if [ ! "$session" = "$tokencheck" ];then
+    echo "error: pin is wrong, you need authentication"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+else
+
+  echo "error: you need authentication"
+  rm -rf $tmp_dir
+  exit 1
+
+fi
+
+if [ ! "$remote_addr" ];then
+  remote_addr=localhost
+fi
+
+if [ ! -f $ROOT/databox/$databox/file/$id ];then
+   echo "error: $id does not have file"
+   rm -rf $tmp_dir
+   exit 1
+fi
+
+# get primary key
+primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+primary_key_value=`cat $ROOT/databox/${databox}/data/${id}/${primary_key}`
+
+# output binary data
+dd if=$ROOT/databox/$databox/file/$id 2>/dev/null
+echo "`date +%Y-%m-%d` `date +%T` user_name:$user $remote_addr download file from databox:$databox primary_key:$primary_key_value" >> $ROOT/users/audit.log
+
+if [ -d $tmp_dir ];then
+  rm -rf $tmp_dir
+fi

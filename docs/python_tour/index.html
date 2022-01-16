@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Pyshell - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="../automation_tour/" class="dropdown-item">e-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="../auth_shell/" class="dropdown-item">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../automation_tour/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../auth_shell/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#pyshell" class="nav-link">pyshell</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#setup-env-ubuntu" class="nav-link">Setup Env @ubuntu</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#make-statistics-job" class="nav-link">Make statistics job</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#view-statistics" class="nav-link">View statistics</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#utilscripts" class="nav-link">Utilscripts</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#delete-rawdata-and-graph" class="nav-link">Delete rawdata and graph</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#bi-tool-integration" class="nav-link">BI tool integration</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#pyshell_1" class="nav-link">pyshell</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#pyshell-libraries" class="nav-link">pyshell libraries</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#change-fonts-family" class="nav-link">Change fonts-family</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#pyshell-verificated-env" class="nav-link">pyshell verificated env</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="pyshell">pyshell</h1>
+<p>pyshell is dedicated shell for python integration. it can call python librarise {matplotlib, numpy, pandas} for analyzing data and generating png graph.</p>
+<h2 id="setup-env-ubuntu">Setup Env @ubuntu</h2>
+<h4 id="install-library-for-compiling-python3">install library for compiling python3</h4>
+<pre><code>sudo apt install build-essential libbz2-dev libdb-dev \
+libreadline-dev libffi-dev libgdbm-dev liblzma-dev \
+libncursesw5-dev libsqlite3-dev libssl-dev \
+zlib1g-dev uuid-dev tk-dev
+</code></pre>
+<h4 id="install-python-39">install python 3.9</h4>
+<pre><code># Download
+cd $HOME
+wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
+tar xJf Python-3.9.4.tar.xz
+
+# Compiling
+cd Python-3.9.4
+./configure
+make
+
+# install
+sudo make install
+ls /usr/local/lib/python3.9
+ls /usr/local/bin/pip3.9
+</code></pre>
+<h4 id="install-python-libraries">install python libraries</h4>
+<pre><code># please ignore just WARNINGS
+sudo /usr/local/bin/pip3.9 install numpy
+sudo /usr/local/bin/pip3.9 install pandas
+sudo /usr/local/bin/pip3.9 install matplotlib
+
+# mkdir for matplotlib
+sudo mkdir -p /home/small-shell/.config/matplotlib
+sudo mkdir -p /home/small-shell/.cache/matplotlib    
+chown -R small-shell:small-shell /home/small-shell
+</code></pre>
+<h4 id="define-python-path-at-env">Define python path at env</h4>
+<pre><code>sudo vi /usr/local/small-shell/util/pyshell/env
+--code--
+PYTHON="/usr/local/bin/python3.9"
+--------
+</code></pre>
+<h2 id="make-statistics-job">Make statistics job</h2>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+</code></pre>
+<p>It' required to complete OS setup and setup of small-shell Base APP, see detail at <a href="../quick_start/">Quickstart</a>.
+Following is an expamle that count up number of data of item.db</p>
+<h6 id="dialog-result">dialog result</h6>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+job name: countup_item
+Type of job (1.job automation | 2.file exchange) : 1
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: any
+Hour  [ any | 0-23 ]: 0
+Min   [ any | 0-59 ]: 1
+Week  [ any | mon - sun ]: any
+Exec command or batch script: countup.sh databox:item.db type:line frequency:daily
+
+# enable job
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_item
+
+# execute manually, please execute several time because line graph needs at least 2 teims execution.
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
+countup_item successfully completed
+
+# re-execute manually. because line graph need to have at least 2 line.
+sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
+countup_item successfully completed
+
+</code></pre>
+<h2 id="view-statistics">View statistics</h2>
+<p>You can view statistics on console of Base APP. pyshell could make graph using pandas and matplotlib librarise. please exec #stas at console, then you can access to graph.</p>
+<p><img alt="Screenshot" src="../img/statistics.png" /></p>
+<p>Pop up graph is here.
+<img alt="Screenshot" src="../img/countup_item.png" /></p>
+<h2 id="utilscripts">Utilscripts</h2>
+<p>You can use script for statistics on util/scripts dir</p>
+<pre><code>ls /usr/local/small-shell/util/scripts
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>utilscripts should be executed small-shell priviledge.  <br />
+e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/$utilscript param1:$param1 param2:$param2</p>
+</div>
+<h4 id="list-of-utilscripts">List of utilscripts</h4>
+<table>
+<thead>
+<tr>
+<th>script</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>countup.sh</td>
+<td>countup number of data, if you don't set filter words, it will count lines of databox. if you set filter word, it will count number of data per filter. in that case, filter word will be label of graph</td>
+</tr>
+<tr>
+<td>sumup.sh</td>
+<td>sumup specific column data, if you set filters , it will sumup data of filtered array of column data. in that case, filter word will be label of graph</td>
+</tr>
+</tbody>
+</table>
+<h4 id="parameters-for-util-scirpts">Parameters for util scirpts</h4>
+<table>
+<thead>
+<tr>
+<th>param</th>
+<th>description</th>
+<th>allowed param</th>
+<th>useage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>databox</td>
+<td>target databox</td>
+<td>any</td>
+<td>databox:$databox</td>
+</tr>
+<tr>
+<td>title</td>
+<td>title of graph (optional)</td>
+<td>any</td>
+<td>title:$title</td>
+</tr>
+<tr>
+<td>X_lalbel</td>
+<td>label of X line (optional)</td>
+<td>any</td>
+<td>X_label:$X_label</td>
+</tr>
+<tr>
+<td>Y_lalbel</td>
+<td>label of Y line (optional)</td>
+<td>any</td>
+<td>Y_label:$Y_label</td>
+</tr>
+<tr>
+<td>type</td>
+<td>graph type, deault is line</td>
+<td>line bar pie</td>
+<td>type:$type</td>
+</tr>
+<tr>
+<td>frequency</td>
+<td>frequency of data gathering batch, it will adjust titles and xticks formats adequately. default will be daily</td>
+<td>monthly daily hourly snapshot</td>
+<td>frequency:$frequency</td>
+</tr>
+<tr>
+<td>filters</td>
+<td>words for countup or sumup in databox, these words will be labels of graph</td>
+<td>any</td>
+<td>filters:word1,word2</td>
+</tr>
+<tr>
+<td>key</td>
+<td>key name of the column which is filtering target of <b>countup</b></td>
+<td>any</td>
+<td>key:$key</td>
+</tr>
+<tr>
+<td>sumup_key</td>
+<td>key name of the column which will be <b>sumuped</b></td>
+<td>any</td>
+<td>sumup_key:$key</td>
+</tr>
+<tr>
+<td>filter_key</td>
+<td>key name of the column which <b>sumup</b>, if the dataset contain the word in the column, it will be targetted</td>
+<td>any</td>
+<td>filter_key:$key</td>
+</tr>
+<tr>
+<td>glogal_filter</td>
+<td>filtering data from pipeline from databox, but it will not be label</td>
+<td>any</td>
+<td>global_filter:word,$n</td>
+</tr>
+<tr>
+<td>diff</td>
+<td>calc difference from last statistics number, default is "no"</td>
+<td>any</td>
+<td>diff:no or diff:yes</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to put space in the title, please use {####}. it's changed to space internally in th pyshell.</p>
+</div>
+<h4 id="usage">Usage</h4>
+<p>please set following commands as exec_command in "#sudo gen -job" dialog. <br />
+or you can execute the script manually. then you can confirm result on console box of Standard APP.</p>
+<h5 id="countup">Countup</h5>
+<pre><code>e.g.) just countup survey result that is stored at suvery.box   
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box type:bar frequency:daily
+</code></pre>
+<p><img alt="Screenshot" src="../img/countup_num.png" /></p>
+<h5 id="target-databox-for-analytics">Target Databox for analytics</h5>
+<p><a href="../app_shell_form/">survey.box</a></p>
+<h5 id="countup-with-filtering">Countup with filtering</h5>
+<pre><code>e.g.) countup survey result which have "Good" or "Average" or "Bad" as feedback in impression key column.
+
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box key:impression filters:Good,Average,Bad \
+type:bar frequency:snapshot
+</code></pre>
+<p><img alt="Screenshot" src="../img/survey_graph.png" /></p>
+<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box \
+key:impression filters:Good,Average,Bad type:pie title:2021-05-11_survey_result frequency:snapshot
+</code></pre>
+<p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
+<h5 id="sumup-scenario">Sumup Scenario</h5>
+<p>Create monthly graph of inventory.db by sumup each type of inventory </p>
+<h6 id="target-databox-for-analytics_1">Target Databox for analytics]</h6>
+<pre><code>inventory.db {item_name:text, type:select, num:num, note:text}
+</code></pre>
+<h6 id="sumup-with-filtering">Sumup with filtering</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/sumup.sh databox:inventory.db type:bar filter_key:type filter:PC,network_device,audio_visual,furniture,other sumup_key:num frequency:snapshot
+</code></pre>
+<p><img alt="Screenshot" src="../img/sumup_inventory_type.png" /></p>
+<h2 id="delete-rawdata-and-graph">Delete rawdata and graph</h2>
+<pre><code>cd /usr/local/small-shell/util/statistics
+cd rawdata or cd graph
+sudo rm $target
+</code></pre>
+<h2 id="bi-tool-integration">BI tool integration</h2>
+<p>You can export rawdata of statistics to BI tool. If graph must be complex one, we would like to recommend to use BI tool.</p>
+<h4 id="rawdata-of-statistics">rawdata of statistics</h4>
+<p>You can check, export or delete rawdata on small-shell server.</p>
+<pre><code>ls /usr/local/small-shell/util/statistics/rawdata
+</code></pre>
+<h5 id="rawdata-format">rawdata format</h5>
+<p>Please transfer tehse rawdatas to BI tool.</p>
+<pre><code>Time,item1,item2
+2021-01-01 01:00:00,1,2
+2021-01-01 02:00:00,1,2
+</code></pre>
+<h2 id="pyshell_1">pyshell</h2>
+<p>Pyshell is a intermediate generation tool for python programs. it will generate python program which contain Pandas , matplotlib and numpy. You can generate graph through pygraph.sh</p>
+<pre><code>ls /usr/local/small-shell/util/pyshell/pygraph.sh
+</code></pre>
+<pre><code>#--------------------------------------------------------------
+# usage: pygraph.sh type:$type input:$input output:$output \
+#        title:$title X_label:$X_label Y_label:$Y_label
+#--------------------------------------------------------------
+
+# graph types
+#--------------------------------------------------------------
+# type:bar,hourly
+# type:bar,daily
+# type:bar,monthly
+# type:line,hourly
+# type:line,daily
+# type:line,monthly
+# type:pie,snapshot{yyyy-mm-dd HH:MM}
+# type:bar,snapshot{yyyy-mm-dd HH:MM}
+#--------------------------------------------------------------
+</code></pre>
+<h2 id="pyshell-libraries">pyshell libraries</h2>
+<p>Pyshell could generate python programs using core libraries.</p>
+<pre><code>/usr/local/small-shell/util/pyshell/lib
+</code></pre>
+<h4 id="input-for-pyshell">Input for pyshell</h4>
+<p>Input data must be csv and column 1 must be "Time", countup.sh or sumup.sh could generate statistic data in this standard format, then pass to pyshell for generating matplotlib graph.</p>
+<h6 id="sample-data-format">sample data format</h6>
+<pre><code>Time,label1,label2
+2021-01-01 01:00:00,1,2
+2021-01-01 02:00:00,1,2
+</code></pre>
+<h2 id="change-fonts-family">Change fonts-family</h2>
+<p>If your charactor is not shown correctly in graph, please install favorit fonts and reflect to pyshell.</p>
+<h4 id="install">install</h4>
+<p>Install IPAexGothic as an example.</p>
+<pre><code>sudo apt install fonts-ipaexfont
+</code></pre>
+<h4 id="change-fonts">change fonts</h4>
+<pre><code>sudo vi /usr/local/small-shell/util/pyshell/env
+--code--
+font_family="IPAexGothic" #modify
+--------
+</code></pre>
+<h4 id="remove-cache">remove cache</h4>
+<p>Please remove your cache, then please execute graph job again.</p>
+<pre><code>sudo -u small-shell rm /home/small-shell/.cache/matplotlib/fontlist-v330.json
+</code></pre>
+<h2 id="pyshell-verificated-env">pyshell verificated env</h2>
+<pre><code>OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+bash: 4.X
+python: 3.8, 3.9
+required: matplotlib(3.X), pandas(1.X), numpy(1.X)
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

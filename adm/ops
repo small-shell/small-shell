@@ -1,0 +1,457 @@
+#!/bin/bash
+
+#----------------------------------------------------------
+# PARAM FOR OPS
+# action(L1).action(L2):target{param}
+#----------------------------------------------------------
+
+#-----------------------------------
+# IAM
+#-----------------------------------
+# ops ls.usr
+# ops add.usr:$user
+# ops initialize.usr:$user
+# ops get.usr:$user{url}
+# ops del.usr:$user
+# ops set.attr:$user{ro}
+# ops set.attr:$user{rw}
+# ops set.attr:$user{$attribute_key=$param}
+
+#-----------------------------------
+# Add tag for Base APP table
+#-----------------------------------
+# ops add.tag:$databox{$filter}
+# ops del.tag:$databox{$filter}
+
+#-----------------------------------
+# for Scratch APP
+#-----------------------------------
+# ops add.usr:$user app:$app
+# ops del.usr:$user app:$app
+# ops initialize.usr:$user app:$app
+# ops get.app_usr:$user{url} app:$app
+# ops add.tag:$databox{$filter} app:$app
+# ops del.tag:$databox{$filter} app:$app
+# ops set.attr:$user{$attribute_key=$param} app:$app
+
+#------------------
+# IP whitelisting
+#------------------
+# ops set.IP #IP whitelisting
+
+#----------------------------------------------------------
+
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "root" ];then
+  echo "error: user must be root"
+  exit 1
+fi
+
+# global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# parsa input params
+for param in `echo $@`
+do
+
+  if [[ $param == ls.usr ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+  fi
+
+  if [[ $param == add.usr:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    user_name=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == del.usr:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    user_name=`echo $param |  awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == get.usr:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    user_name=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    target=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+  fi
+
+  if [[ $param == set.attr* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    user_name=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    attr_param=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+    attr_key=`echo $attr_param | grep "=" | awk -F "=" '{print $1}'`
+
+    if [ ! "$attr_key" ];then
+      attr_key=permission
+    else
+      attr_param=`echo $attr_param |  awk -F"=" '{print $2}'`
+    fi
+
+  fi
+
+  if [[ $param == initialize.usr:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    user_name=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+  fi
+
+  if [[ $param == add.tag:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    databox=`echo $param | awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    filter=`echo $param | sed "s/$action:$databox//g" | sed "s/^{//g" | sed "s/}$//g"`
+  fi
+
+  if [[ $param == del.tag:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    databox=`echo $param | awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    filter=`echo $param | sed "s/$action:$databox//g" | sed "s/^{//g" | sed "s/}$//g"`
+  fi
+
+  if [[ $param == set.IP ]]; then
+    action="set.IP"
+  fi
+
+  if [[ $param == app:* ]]; then
+    app=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+done
+
+function initialize_url(){
+  user_id=$1
+  user_name=$2
+  t_app=$3
+ 
+  if [ ! "$t_app" ];then
+    auth=shell.auth
+  else
+    auth=auth.${t_app}
+  fi
+
+  if [ ! "$t_app" ];then
+    user_dir="$ROOT/users/${user_id}"
+    t_app="Base APP"
+  else
+    user_dir="$ROOT/users/${t_app}.${user_id}"
+  fi
+
+  if [ ! -f $ROOT/web/base ];then
+    echo "error: please generate Base APP first #gen -app"
+    rm -rf $user_dir
+    exit 1 
+  fi
+
+  # load web base info
+  . $ROOT/web/base
+
+  if [ ! -f $cgidir/$auth ];then
+    echo "error: please generate APP first #gen -app" 
+    rm -rf $user_dir
+    exit 1
+  fi
+
+  echo "initialize_key:$user_id:$random_key:${RANDOM}" | sha256sum | awk '{print $1}' > $user_dir/initialize_key
+  chown small-shell:small-shell $user_dir/initialize_key
+  chmod 700 $user_dir/initialize_key
+
+  if [ $? -eq 0 ];then
+    initialize_hash_key=`cat $user_dir/initialize_key`
+    initialize_url="${base_url}${auth}?initialize=$user_id,$initialize_hash_key"
+    echo "Initialize url for $user_name on $t_app is created, please share this url to end user to generate access key to the APP"
+    echo "$initialize_url"
+  else
+    echo "error: failed to create initialize key"
+    exit 1
+  fi
+
+  return 0
+}
+
+function set_attr(){
+  user_id=$1
+  attr_key=$2
+  attr_param=$3
+  t_app=$4
+
+  if [ ! "$t_app" ];then
+    user_dir="$ROOT/users/${user_id}"
+  else
+    user_dir="$ROOT/users/${t_app}.${user_id}"
+  fi
+
+  if [ ! -d $user_dir ];then
+    echo "error: user is not found"
+    exit 1
+  fi
+  
+  if [ -f $user_dir/attr ];then
+    cat $user_dir/attr | grep -v "^${attr_key}=" > $user_dir/.attr.tmp 2>/dev/null
+    echo "${attr_key}=${attr_param}" >> $user_dir/.attr.tmp
+    cat $user_dir/.attr.tmp > $user_dir/attr
+    chown small-shell:small-shell $user_dir/attr
+  else
+    echo "${attr_key}=${attr_param}" > $user_dir/attr
+    chmod 755 $user_dir/attr
+    chown small-shell:small-shell $user_dir/attr
+  fi
+
+  return 0
+  
+}
+
+if [ "$action" = "ls.usr" ];then
+  echo "----------User List-------------"
+  for id in `ls $ROOT/users | grep -v audit.log | xargs basename -a`
+  do
+    app_chk=`echo $id | awk -F "." '{print $2}'`
+    if [ "$app_chk" ];then
+      app=`echo $id | awk -F "." '{print $1}'`
+      echo "${app}/`cat $ROOT/users/$id/user_name`"
+    else
+      echo "`cat $ROOT/users/$id/user_name`"
+    fi
+  done
+  echo "--------------------------------"
+fi
+
+# Handle user operation request
+if [ "$action" = "add.usr" ];then
+  
+  if [ ! "$user_name" ];then
+    echo "error: please set user_name"
+    exit 1
+  fi
+
+  if [[ $user_name == *:* ]]; then
+    echo "error: you can not use : for in username"
+    exit 1
+  fi
+
+  if [[ $user_name == *{*}* ]]; then
+    echo "error: you can not use "{ }" for in username"
+    exit 1
+  fi
+
+  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+
+  if [ "$app" ];then
+    user_dir="$ROOT/users/${app}.${user_id}"
+  else
+    user_dir="$ROOT/users/${user_id}"
+  fi
+
+  if [ -d $user_dir ];then 
+    echo "error: $user_name is already existing"
+    exit 1
+  fi
+
+  mkdir $user_dir
+  echo "$user_name" > $user_dir/user_name
+  chown -R small-shell:small-shell $user_dir
+
+  set_attr $user_id permission rw $app
+  initialize_url $user_id $user_name $app
+
+fi
+
+# Handle initialize operation request
+if [ "$action" = "initialize.usr" ];then
+
+  if [ ! "$user_name" ];then 
+     echo "error: please input user name"
+     exit 1
+  fi
+
+  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+
+  if [ "$app" ];then
+    user_dir="$ROOT/users/${app}.${user_id}"
+  else
+    user_dir="$ROOT/users/${user_id}"
+  fi
+
+  if [ ! -d $user_dir ];then 
+    if [ "$app" ];then
+      user_name="${app}/${user_name}"
+    fi
+    echo "error: $user_name is not existing"
+    exit 1
+  fi
+  
+  initialize_url $user_id $user_name $app
+
+fi
+
+# Handle delete user request
+if [ "$action" = "del.usr" ];then
+  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+
+  if [ "$app" ];then
+    user_dir="$ROOT/users/${app}.${user_id}"
+  else
+    user_dir="$ROOT/users/${user_id}"
+  fi
+
+  if [ ! -d $user_dir ];then
+    if [ "$app" ];then
+      user_name="${app}/${user_name}"
+    fi
+    echo "error: $user_name is not existing"
+    exit 1
+  fi
+
+  if [ "$user_id" ];then
+    rm -rf $user_dir
+    if [ $? -eq 0 ];then
+      echo "successfully deleted"
+    else
+      echo "error: something is wrong"
+    fi
+  fi
+fi
+
+# Handle attribute setting
+if [[ $action == set.attr* ]];then
+
+  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+
+  if [ "$app" ];then
+    user_dir="$ROOT/users/${app}.${user_id}"
+  else
+    user_dir="$ROOT/users/${user_id}"
+  fi
+
+  if [ ! -d $user_dir ];then
+    echo "error: there is no user ($user_name)"
+    exit 1
+  fi
+
+  set_attr $user_id $attr_key $attr_param $app
+  if [ $? -eq 0 ];then
+    if [ ! "$app" ];then
+      echo "successfully set attr $attr_key $user_name{${attr_key}=${attr_param}}"
+    else
+      echo "successfully set attr $attr_key $app/$user_name{$attr_param}"
+    fi
+  else
+    echo "error: failed to set attribute"
+  fi
+
+fi
+
+# Handle table tagging request
+if [[ $action == add.tag* ]];then
+
+  if [ ! "$databox" ];then
+    echo "error: please set databox"
+    exit 1
+  fi
+
+  if [ ! -d $ROOT/databox/$databox ];then
+    echo "error:there is no databox $databox"
+    exit 1
+  fi
+
+  if [ ! "$app" ];then
+   tdir=$databox
+   meta_param=$databox
+  else
+   tdir=${app}.${databox}
+   meta_param=${app}{$databox}
+  fi
+
+  grep "^$filter$" $ROOT/tmp/tag/$tdir/* >/dev/null 2>&1
+  if [ $? -eq 0 ];then
+    echo "error: tag is already defined"
+    exit 1
+  fi
+
+  tag=$RANDOM
+  if [ ! -d $ROOT/tmp/tag/$tdir ];then
+    mkdir $ROOT/tmp/tag/$tdir
+    chown small-shell:small-shell $ROOT/tmp/tag/$tdir
+  fi
+
+  while [ -f $ROOT/tmp/tag/$tdir/$tag ]
+  do
+    tag=$RANDOM 
+  done
+
+  echo "$filter" > $ROOT/tmp/tag/$tdir/$tag
+  chown small-shell:small-shell $ROOT/tmp/tag/$tdir/$tag
+  echo "successfully created tag to $databox table"
+  echo "please get tag using meta get.tag:$meta_param"
+
+fi
+
+if [[ $action == del.tag* ]];then
+
+  if [ ! "$app" ];then
+   tdir=$databox
+  else
+   tdir=${app}.${databox}
+  fi
+
+  grep "^$filter$" $ROOT/tmp/tag/$tdir/* >/dev/null 2>&1
+
+  if [ $? -eq 0 ];then
+    tag=`grep -l "^$filter\$" $ROOT/tmp/tag/$tdir/* | xargs basename -a`
+    rm $ROOT/tmp/tag/$tdir/$tag
+    echo "successfully deleted tag from $tdir"
+  else
+    echo "There is no $tag on $tdir table"
+    exit 1
+  fi
+fi
+
+# Handle IP whitelisting operation request
+if [ "$action" = "set.IP" ];then
+  clear
+  echo "please edit IP whitelisting list via Vim"
+  echo "file will be opened after 3 sec"
+  sleep 1
+  clear
+  echo "please edit IP whitelisting list via Vim"
+  echo "file will be opened after 2 sec"
+  sleep 1 
+  clear
+  echo "please edit IP whitelisting list via Vim"
+  echo "file will be opened after 1 sec"
+  sleep 1 
+
+  chown small-shell:small-shell $ROOT/web/whitelist
+  vi $ROOT/web/whitelist
+fi
+
+
+if [ ! "$action" ];then
+ echo "please set action properly, man is here"
+ echo "--------------------------------------------------
+# BASIC OPERATION
+ ops ls.usr
+ ops add.usr:\$user
+ ops initialize.usr:\$user
+ ops get.usr:\$user{url}
+ ops del.usr:\$user
+ ops set.attr:\$user{ro}
+ ops set.attr:\$user{rw}
+ ops set.attr:\$user{\$attribute_key=\$param}
+
+# Tagging for Base APP table
+ ops add.tag:\$databox{\$filter}
+ ops del.tag:\$databox{\$filter}
+
+# for Scratch APP
+ ops add.usr:\$user app:\$app
+ ops initialize.usr:\$user app:\$app
+ ops get.usr:\$user app:\$app
+ ops del.usr:\$user app:\$app
+ ops add.tag:\$databox{\$filter} app:\$app
+ ops del.tag:\$databox{\$filter} app:\$app
+ ops set.attr:\$user{\$attribute_key=\$param} app:\$app
+
+# IP whitelisting
+ ops set.IP #IP whitelisting
+ --------------------------------------------------"
+
+fi
+exit 0

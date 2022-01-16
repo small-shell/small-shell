@@ -1,0 +1,2 @@
+<a href="./shell.app?%%params&req=table"><p>-CLR</p></a>
+<a href="./shell.app?%%params&req=csv&filter=%%filter" download="%%databox.csv"><p>#CSV</p></a>

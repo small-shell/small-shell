@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Create Scratch APP - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="../automation_tour/" class="dropdown-item">e-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="../python_tour/" class="dropdown-item">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="../auth_shell/" class="dropdown-item">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../app_shell_form/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../data_shell_tour/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#create-scratch-app" class="nav-link">Create Scratch APP</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#common-step" class="nav-link">Common STEP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#gen-app" class="nav-link">Gen APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#add-user-to-the-app" class="nav-link">Add user to the APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#update-pass-code" class="nav-link">Update Pass code</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#tagging-on-scratch-app-table" class="nav-link">Tagging on Scratch APP Table</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#change-user-permission" class="nav-link">Change user permission</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#add-delete-function" class="nav-link">Add "delete" function</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#sub-app" class="nav-link">Sub APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#team-app" class="nav-link">Team APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#import-app-from-template" class="nav-link">Import APP from template</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#update-more-codes" class="nav-link">Update more codes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#technical-tips" class="nav-link">Technical Tips</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#oauth-integration" class="nav-link">Oauth integration</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="create-scratch-app">Create Scratch APP</h1>
+<p>In this tour, you can learn how you could make scratch APP using small-shell framework.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3  
+app_name: scratch
+Type of Authentication (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other):
+
+# 1. Shared_Pass_Code -&gt; Shared APP
+# 2. Base64_User_Key -&gt; Key APP
+# 3. Other -&gt; Full Scratch APP
+</code></pre>
+<h6 id="types-of-small-shell-scratch-app">Types of small-shell Scratch APP</h6>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Auth</th>
+<th>View</th>
+<th>Data  src</th>
+<th>Code</th>
+<th>Data Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shared APP</td>
+<td>Shared Pass code</td>
+<td>portal,table,form,log</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Limitted &amp; controllable per group</td>
+</tr>
+<tr>
+<td>Key APP</td>
+<td>Base64 encrypted Key</td>
+<td>portal,table,form,log</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Limitted &amp; controllable per user</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>any</td>
+<td>portal,table,form,log</td>
+<td>specific databox</td>
+<td>editable</td>
+<td>Customize everything</td>
+</tr>
+</tbody>
+</table>
+<h4 id="required">Required</h4>
+<p>Please setup Base APP beorehand refering to <a href="../quick_start/">Quick Start</a></p>
+<h2 id="common-step">Common STEP</h2>
+<p>Each scratch APP has common STEP for launching APP, difference is mainly authentication method.</p>
+<ol>
+<li>Generate DataBox for datasotore #gen -databox</li>
+<li>Generate Scratch APP #gen -app</li>
+<li>Update scripts</li>
+<li>Update portal #main.html.def</li>
+<li>Add user #key APP, other</li>
+<li>Add subAPP #connect additional databox if needed</li>
+</ol>
+<h4 id="sceinario">Sceinario</h4>
+<ul>
+<li>Const management APP for team</li>
+<li>Each member must have key for authentication # key type of Auth</li>
+<li>Manage {Portal, Events} in the APP</li>
+</ul>
+<h4 id="gen-databox">Gen DataBox</h4>
+<p>Please generate databox that will be used for Scratch APP. any types of data can be used for Scratch APP. </p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -databox
+# -&gt; dialog will be started
+</code></pre>
+<h2 id="gen-app">Gen APP</h2>
+<p>Let's start to generate scratch APP named team with base64 key authentiaction</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+app_name: scratch                                                               # any name is OK
+Type of Authentication (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other): 2
+primary databox: item.db                                                        # please input any databox that you made
+</code></pre>
+<h3 id="update-codes">Update codes</h3>
+<p>Then APP will be generated to directory that you already defined in Base APP dialog. you can update codes freely.</p>
+<h4 id="target-codes">Target codes</h4>
+<pre><code># actionscripts
+$bin (/var/www/bin)
+
+# HTML descriptors
+$descriptor(/var/www/descriptor)
+</code></pre>
+<h4 id="action-script-bin">Action script ($bin)</h4>
+<p>You can control accesible key. default parameter is all.</p>
+<pre><code>e.g) restrict data keys
+sudo vi /var/www/bin/scratch_get.sh
+
+--code--
+# Target databox and keys
+#keys=all
+keys=item_name,description
+--------
+</code></pre>
+<h4 id="html-descriptor-descriptor">HTML descriptor ($descriptor)</h4>
+<p>Draft design of HTML is already generated, and you could customize them freely.</p>
+<pre><code>sudo vi /var/www/descriptor/scratch_main.html.def
+sudo vi /var/www/descriptor/scratch_table.html.def
+</code></pre>
+<h2 id="add-user-to-the-app">Add user to the APP</h2>
+<p>If you select Key APP, please add user for the APP. then you can get URL that can generate key for each end user.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$usr app:$app 
+
+e.g.) add &quot;test&quot; user for key APP name &quot;scratch&quot;
+sudo /usr/local/small-shell/adm/ops add.usr:test app:scratch
+
+Initialize url for test on team is created, please share this url to end user to generate access key to the APP
+https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.scratch?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,7534e67ed1c2c311d812e5b3f76ae647c3a814027084cc2a4cb4e32a58ac5309
+</code></pre>
+<h4 id="connect-to-the-app">Connect to the APP</h4>
+<p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url. e.g) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.scratch</p>
+<p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
+<h4 id="re-generate-user-key">Re-generate User key</h4>
+<p>If end user lost their key, you can generate URL for re-generating key.</p>
+<pre><code>Initialize url for test on scratch is created, please share this url to end user to generate access key to the APP
+http://XXXXX/cgi-bin/auth.scratch?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,8bd9d3d92fa7d1c64901c3b7ddff1467a7f55035ad1e25cbbb12d7fabdde70f6
+</code></pre>
+<h2 id="update-pass-code">Update Pass code</h2>
+<p>If it's shared Pass code APP, you can update pass code by updating file directly </p>
+<pre><code>sudo vi /usr/local/small-shell/web/$app.code
+</code></pre>
+<h2 id="tagging-on-scratch-app-table">Tagging on Scratch APP Table</h2>
+<p>You can add search tag in Base App table by ops command</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} app:$app_name
+
+e.g.)
+sudo /usr/local/small-shell/adm/ops add.tag:tasks{status{on-going}} app:tasks
+</code></pre>
+<p><img alt="Screenshot" src="../img/app_tag.png" /></p>
+<h2 id="change-user-permission">Change user permission</h2>
+<p>User permission could be changed ops command with app option. </p>
+<pre><code># change to read only 
+sudo /usr/local/small-shell/adm/ops set.attr:$user{ro} app:$app
+
+# change to read / write
+sudo /usr/local/small-shell/adm/ops set.attr:$user{rw} app:$app
+</code></pre>
+<p>You can add any extension information to user attribute.
+following is exmaple to set attribute to ken as admin for management APP.</p>
+<pre><code># user=ken app=management
+sudo /usr/local/small-shell/adm/ops set.attr:ken{admin=yes} app:management
+
+# confirm permission
+sudo -u small-shell /usr/local/small-shell/bin/meta get.attr:management/ken{admin} 
+&gt;yes
+</code></pre>
+<h2 id="add-delete-function">Add "delete" function</h2>
+<p>Scratch APP don't have delete function as default because admin can delete data on Base APP. if you want to add delete function to your APP, please update controller and descriptor.</p>
+<h6 id="update-controller">update controller</h6>
+<p>Put delete function in routing.</p>
+<pre><code># e.g ) add delete function to scratch APP
+# sudo vi /usr/lib/cgi-bin/$app
+sudo vi /usr/lib/cgi-bin/scratch
+---code--
+#----------------------------
+# routing to action scripts
+#----------------------------
+
+case &quot;$req&quot; in
+
+  &quot;main&quot;)
+    ../bin/scratch_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${REMOTE_ADDR};;
+
+  &quot;get&quot;)
+    ../bin/scratch_get.sh session:$session pin:$pin user_name:$user_name id:$id;;
+
+  &quot;set&quot;)
+    ../bin/scratch_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
+
+  &quot;table&quot;)
+    ../bin/scratch_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command;;
+
+  &quot;log_viewer&quot;)
+    ../bin/scratch_log_viewer.sh session:$session user_name:$user_name pin:$pin id:$id ;;
+
+  &quot;file&quot;)
+    ../bin/scratch_dl.sh session:$session user_name:$user_name  pin:$pin id:$id ;;
+
+  # add delete function
+  &quot;del&quot;)
+    ../bin/scratch_del.sh session:$session user_name:$user_name pin:$pin id:$id ;;
+---------
+</code></pre>
+<h6 id="update-descriptor">update descriptor</h6>
+<p>Put delete link under action links class</p>
+<pre><code># e.g ) add delete function to scratch APP
+# sudo vi /var/www/descriptor/sapp_get.html.def
+sudo vi /var/www/descriptor/scratch_get.html.def
+---code--
+       &lt;div class=&quot;action_links&quot;&gt;
+        &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;window.open('./scratch?%%params&amp;req=log_viewer&amp;id=%%id', 'log_viewer', 'width=820,height=280')&quot;&gt;Show data update history&lt;/p&gt;&lt;/span&gt;
+        &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;del_confirmation()&quot;&gt;Delete&lt;/p&gt;&lt;/span&gt;
+---------
+</code></pre>
+<h2 id="sub-app">Sub APP</h2>
+<p>Basically scratch APP will connect to only 1 databox. Sub APP can add databox for your APP.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -databox
+#-&gt; please create any databox
+
+sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+app_name: $subAPP@$parentAPP
+
+please generate tasks as subapp in this tour.
+-&gt; app_name: inventory@scratch
+-&gt; primary databox: inventory.db
+</code></pre>
+<p>then you can get codes to integrate subapp with parentapp.</p>
+<pre><code>SUB APP template is successfully generated
+
+1. APP controller
+ please add routing on /usr/lib/cgi-bin/scratch
+#---------------------------------------------------------------------------------------------------------
+&quot;inventory.table&quot;) ../bin/inventory_table.sh session:$session pin:$pin user_name:$user_name page:$page table_command:$table_command;;
+&quot;inventory.get&quot;) ../bin/inventory_get.sh session:$session pin:$pin user_name:$user_name id:$id;;
+&quot;inventory.set&quot;) ../bin/inventory_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
+&quot;inventory.del&quot;) ../bin/inventory_del.sh session:$session pin:$pin user_name:$user_name id:$id;;
+&quot;inventory.log_viewer&quot;) ../bin/inventory_log_viewer.sh session:$session pin:$pin id:$id;;
+&quot;inventory.file&quot;) ../bin/inventory_dl.sh session:$session pin:$pin id:$id;;
+#---------------------------------------------------------------------------------------------------------
+then you can access to the subapp
+http://13.115.46.203/cgi-bin/scratch?&amp;subapp=inventory&amp;req=table
+
+2. Dynamic link in the descriptor #html.def
+ +link to the APP #e.g please insert scratch_main.html.def
+ &lt;a href=&quot;./scratch?%%session&amp;subapp=inventory&amp;req=table&quot;&gt;link to subapp table&lt;/a&gt;
+</code></pre>
+<h2 id="team-app">Team APP</h2>
+<p>You can import APP template from git, this APP could manage not only Team events, but also tasks, shared drive, bookmarks and inquiries as easy ticketing system. </p>
+<h6 id="team-app-funcions">Team APP funcions</h6>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Portal</td>
+<td>parent</td>
+<td>Manage team events with portal calendar</td>
+</tr>
+<tr>
+<td>Announcements</td>
+<td>sub-app</td>
+<td>Share announcement to the team</td>
+</tr>
+<tr>
+<td>Tasks</td>
+<td>sub-app</td>
+<td>Manage team tasks {assignment,status,deadline,sync_calendar}</td>
+</tr>
+<tr>
+<td>Inquiries</td>
+<td>sub-app</td>
+<td>Manage inquiryes involving external users {assignment, status, external_form, ticketing}</td>
+</tr>
+<tr>
+<td>Drive</td>
+<td>sub-app</td>
+<td>Provide object storage for Team</td>
+</tr>
+<tr>
+<td>Bookmarks</td>
+<td>sub-app</td>
+<td>Shared bookmarks</td>
+</tr>
+<tr>
+<td>Inquiry_F</td>
+<td>form</td>
+<td>Inquiry form to Team from external user</td>
+</tr>
+</tbody>
+</table>
+<p>+You can add any databox to the Team APP as subapp</p>
+<h2 id="import-app-from-template">Import APP from template</h2>
+<h6 id="link-to-code-is-here">Link to code is  <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
+<pre><code>cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+cd small-shell-apps/team_app
+
+#if you already careated events and tasks, please delete it.
+#rm -rf /usr/local/small-shell/databox/events 
+#rm -rf /usr/local/small-shell/databox/tasks
+
+# Deploy Team APP, shell can createe databox as well
+sudo ./deploy.sh
+</code></pre>
+<h6 id="add-user-to-team-app">Add user to Team APP</h6>
+<p>Please add user to the APP, Then you can get key to access team portal.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test app:team
+</code></pre>
+<p><img alt="Screenshot" src="../img/scratch_portal.png" /></p>
+<p>Ofcourse, you can update portal html by your self.</p>
+<pre><code>sudo vi /var/www/descriptor/team_main.html.def
+</code></pre>
+<h2 id="update-more-codes">Update more codes</h2>
+<p>You can update codes as scratch, basic knowledge of APP shell is here
+<a href="../app_shell_tour/">APP shell</a></p>
+<h2 id="technical-tips">Technical Tips</h2>
+<p>This is a random technical Tips. It could be hint for making your own scratch APP.</p>
+<h4 id="1-get-id-keys-value">1. Get ID &amp; key's value</h4>
+<p>You can get text name using ID and key using "none" format</p>
+<h6 id="action-script-shell">@action script (shell)</h6>
+<pre><code> # get name which will be issued
+ DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
+ book_name=`$DATA_SHELL databox:book.db action:get key:book_name id:$id format:none | awk -F ":" '{print $2}'`
+</code></pre>
+<h4 id="2-id-search-by-using-name">2. ID search by using Name</h4>
+<p>You can also get ID using 100% matched text</p>
+<h6 id="action-script-shell_1">@action script (shell)</h6>
+<pre><code> # get book ID Based on the name 
+ DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
+ book_id=`$DATA_SHELL databox:library.db command:show_all[match=book_name{$book_name}] format:json | jq '.[] | .id'| sed -s "s/\"//g"`
+</code></pre>
+<h4 id="3-json-insert-to-javascript-instance">3. Json insert to javascript instance</h4>
+<p>In terms of integration with javascript frameworks, we would like to recommend to insert bulk of json datas to javascript directly using %% tag because ajax with small-shell will take 1 or 2 sec for getting data.</p>
+<h5 id="json-technique-javascript-in-html-def">Json technique (javascript in html def)</h5>
+<pre><code>const events =
+%%json
+</code></pre>
+<h5 id="generator-in-binteam_mainsh">generator in bin/team_main.sh</h5>
+<pre><code>sudo vi /var/www/bin/team_main.sh
+
+--code--
+## generate json
+$DATA_SHELL databox:$databox command:show_all[filter=sync{yes}] format:json \
+| sed &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
+| sed &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
+| sed &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
+| sed &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
+| sed &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
+| sed &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
+| sed &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
+| sed &quot;s/{%%%%%%%%%%}/\[/g&quot;\
+| sed &quot;s/{%%%%%%%%%}/)/g&quot;\
+| sed &quot;s/{%%%%%%%%}/(/g&quot;\
+| sed &quot;s/{%%%%%%%}/_/g&quot;\
+| sed &quot;s/{%%%%%%}/,/g&quot;\
+| sed &quot;s/{%%%%%}/\//g&quot;\
+| sed &quot;s/{%%%%}/\&amp;/g&quot;\
+| sed &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/$session/events
+
+## then, just insert %%json to events
+cat ../descriptor/team_main.html.def | sed &quot;s/^ *&lt;/&lt;/g&quot; \
+| sed &quot;/%%common_menu/r ../descriptor/common_parts/pintest_common_menu&quot; \
+| sed &quot;s/%%common_menu//g&quot;\
+| sed &quot;s/%%user_name/$user_name/g&quot; \
+| sed &quot;/%%json/r ../tmp/$session/events&quot;\
+| sed &quot;s/%%json//g&quot;\
+| sed &quot;s/%%params/session=$session\&amp;pin=$pin\&amp;databox=$databox/g&quot;
+-------
+
+</code></pre>
+<h2 id="oauth-integration">Oauth integration</h2>
+<p>Gen APP with other option</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3  
+app_name: oauth_test
+Type of Authentication (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other):3
+</code></pre>
+<p>We made sample script that can be integrated with Oauth provider, 
+please get each parameter from Oauth provider beforehand.</p>
+<pre><code># input small-shell app name
+app=&quot;oauth_test&quot;
+echo $app
+
+cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+
+# select provider
+provider=&quot;gcp&quot;
+#provider=&quot;okta&quot;
+
+cd small-shell-apps/oauth_sample/authorization_code
+
+# UPDATE PARAMA
+vi ./cgi-bin/${provider}_auth
+#------------------------------------------------
+# target params
+exchange_token_uri=&quot;&quot;
+user_info_req_uri=&quot;&quot;
+redirect_uri=&quot;&quot;
+client_id=&quot;&quot;
+client_secret=&quot;&quot;
+target_claim=&quot;&quot;
+#-------------------------------------------------
+
+# sample input
+#------------------------------------------------
+#exchange_token_uri=&quot;https://oauth2.googleapis.com/token&quot;
+#user_info_req_uri=&quot;https://www.googleapis.com/oauth2/v1/userinfo?&quot;
+#redirect_uri=&quot;http://XXX/cgi-bin/auth.oauth_test&quot;
+#client_id=&quot;XXX.apps.googleusercontent.com&quot;
+#client_secret=&quot;XXXX&quot;
+#target_claim=&quot;email&quot;
+
+vi ./descriptor/${provider}_oauth_form.html.def
+#------------------------------------------------
+# target params
+  var CLIENT_ID = '';
+  var REDIRECT_URI = '';
+  var OAUTH_END_POINT = '';
+  var SCOPE = '';
+  var STATE = '';
+#-------------------------------------------------
+
+# sample input
+#------------------------------------------------
+#  var CLIENT_ID = 'XXXX.apps.googleusercontent.com';
+#  var REDIRECT_URI = 'http://XXXX/cgi-bin/auth.oauth_test';
+#  var OAUTH_END_POINT = 'https://accounts.google.com/o/oauth2/v2/auth';
+#  var SCOPE = 'https://www.googleapis.com/auth/userinfo.email';
+#  var STATE = 'statee';
+#------------------------------------------------ 
+
+
+# DEPLOY
+authkey=`grep authkey= /usr/lib/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;`
+echo $authkey
+cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/$authkey/g&quot; &gt; /usr/lib/cgi-bin/auth.$app
+cat ./descriptor/${provider}_oauth_form.html.def &gt; /var/www/descriptor/${app}_auth_form.html.def
+</code></pre>
+<p>Then you can try to connect APP through Oauth. <br />
+https://XXXX/cgi-bin/auth.oauth_test</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

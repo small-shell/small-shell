@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>DATA: %%id</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <link rel="stylesheet" href="./css">
+    </head>
+    <body>
+    <div class="container">
+      <div class="flex-header">
+       <div class="left-header">
+         <b><p id="no-decoration"><a href="./shell.app?%%params&req=table">DataBox:%%databox</a></p></b>
+         <a href="./shell.app?%%params&req=hash" download="%%databox_hash_chain.txt"><p>#hashchain</p></a>
+       </div>
+       <div class="right-header">
+        <button class="even-btn-menu">=</button>
+        <nav>
+         <ul>
+          %%common_menu
+         </ul>
+        </nav>
+       </div>
+      </div>
+
+      <div class="form-box">
+      <div class="description">
+      <h1>#values(ro)</h1>
+      <p><b>#ID </b>%%id</p>
+      </div>
+      <ul>
+      %%dataset
+      </ul>
+      <div class="action_links">
+      <span><p style="cursor: pointer" onclick="window.open('./shell.app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
+      </div>
+     </div>
+   <script>
+   const btn = document.querySelector('.even-btn-menu');
+   const nav = document.querySelector('nav');
+
+   document.addEventListener('click', (e) => {
+     if(e.target.closest('.even-btn-menu')) {
+       nav.classList.toggle('open-menu')
+       if (btn.innerHTML === '=') {
+         btn.innerHTML = '-';
+       } else {
+         btn.innerHTML = '=';
+       }
+     }else{
+       nav.classList.remove('open-menu')
+       btn.innerHTML = '=';
+     }
+   })
+
+   </script>
+   </body>
+</html>

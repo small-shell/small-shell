@@ -1,0 +1,449 @@
+#!/bin/bash
+
+#----------------------------------------------------------
+# PARAM FOR META
+# action(L1).action(L2):target{param}
+#----------------------------------------------------------
+# show job (e-cron cat.$job)
+# show list (e-cron ls)
+# show status (e-cron stat)
+# show error (e-cron stat.ERROR)
+# show filtered result (e-cron stat.$filter_word)
+# clear status que (e-cron clear.$job)
+
+#-----------------------------------
+# operational commands
+#-----------------------------------
+# enable job (e-cron enable.$job)
+# disable job (e-cron disable.$job)
+# exec job (e-cron exec.$job)
+
+#-----------------------------------
+# data exchange HUB commands
+#-----------------------------------
+# ls file (e-cron ls.file:$file)
+# get file (e-cron get.file:$file)
+# push file (e-cron push.file:$file)
+
+# message exchange HUB commands
+# ls message (e-cron ls.message:$message)
+# get message (e-cron get.message:$message)
+# push message (e-cron push.message:$message)
+
+#-----------------------------------
+# general queing  commands
+#-----------------------------------
+# push data to common que (e-cron push.que:$que{$file_path})
+
+## global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# exec user check
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "small-shell" ];then
+  echo "error: user must be small-shell"
+  exit 1
+fi
+
+# gen tmpdir
+random=$RANDOM
+while [ -d $ROOT/tmp/gen/$random ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: something is wrong"
+   exit 1
+ fi
+ random=$RANDOM
+done
+mkdir $ROOT/tmp/gen/$random
+tmp_dir="$ROOT/tmp/gen/$random"
+
+# parsa input params
+for param in `echo $@`
+do
+
+  if [[ $param == cat* ]]; then
+    action=`echo $param | awk -F"." '{print $1}'`
+    job=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+  if [[ $param == stat* ]]; then
+    action=$param
+    filter=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+  if [[ $param == ls* ]] && [[ ! $param == ls.file:* ]] && [[ ! $param == ls.message:* ]]; then
+    action=$param
+    filter=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+  if [[ $param == enable* ]]; then
+    action=$param
+    job=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+  if [[ $param == disable* ]]; then
+    action=$param
+    job=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+  if [[ $param == exec* ]]; then
+    action=$param
+    job=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+  if [[ $param == get.message:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    message=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == get.file:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    file=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    dir=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g" | sed "s/\/$//g"`
+  fi
+
+  if [[ $param == push.message:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    message=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == push.file:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    file=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == push.que:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    que_file=`echo $param |  awk -F":" '{print $2}'`
+    que=`echo "$que_file" | xargs basename -a`
+  fi
+
+  if [[ $param == ls.message:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    message=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == ls.file:* ]]; then
+    action=`echo $param | awk -F":" '{print $1}'`
+    file=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == remote_addr:* ]]; then
+    remote_addr=`echo $param | awk -F":" '{print $2}'`
+  fi
+
+  if [[ $param == clear* ]]; then
+    action=$param
+    job=`echo $param | awk -F"." '{print $2}'`
+  fi
+
+done
+
+if [ ! "$remote_addr" ];then
+  remote_addr=localhost
+fi
+
+if [ ! "$action" ];then
+  echo "------------------------------------"
+  echo "command usage #basic commands"
+  echo "------------------------------------"
+  echo "e-cron cat.\$job"
+  echo "e-cron stat"
+  echo "e-cron stat.ERROR"
+  echo "e-cron stat.\$filter_word"
+  echo "e-cron ls"
+  echo "e-cron enable.\$job"
+  echo "e-cron disable.\$job"
+  echo "e-cron exec.\$job"
+  echo "e-cron clear.\$job"
+fi
+
+if [[ "$action" == cat ]];then
+  if [ -f $ROOT/util/e-cron/def/$job.def ];then
+    clear
+    echo " > JOB: $job"
+    echo "def:$ROOT/util/e-cron/def/$job.def"
+    echo "-------------SCHEDULE----------------"
+    cat $ROOT/util/e-cron/def/.$job.dump | grep -v ^job_name: | grep -v ^exec_command:
+    echo "-------------DEFINITION----------------"
+    cat $ROOT/util/e-cron/def/$job.def | grep -v SCHEDULE:
+  else
+    echo "error: it seems job is wrong"
+  fi
+fi
+
+if [[ "$action" == stat* ]];then
+  if [ ! "$filter" ];then
+    echo "--------------------------------------------------------"
+    echo "LATEST STATUS OF JOB"
+    echo "--------------------------------------------------------"
+    cat ${ROOT}/util/e-cron/que/status/*  2> /dev/null | sort -V
+  else
+    echo "--------------------------------------------------------"
+    echo "LATEST STATUS OF JOB"
+    echo "filter: $filter"
+    echo "--------------------------------------------------------"
+    cat ${ROOT}/util/e-cron/que/status/*  2> /dev/null | grep $filter | sort -V
+  fi   
+fi
+
+if [[ "$action" == ls* ]] && [[ ! "$file" ]] && [[ ! "$message" ]];then
+  crontab -l > $tmp_dir/.crontab_tmp
+  if [ ! "$filter" ];then
+    echo "--------------------------------------------------------------"
+    echo "job definition: $ROOT/util/e-cron/def"
+    echo "--------------------------------------------------------------"
+    for line in `ls $ROOT/util/e-cron/def | sed "s/.def//g" | xargs basename -a`
+    do
+      enable_chk=`grep " $line " $tmp_dir/.crontab_tmp`
+      if [ "$enable_chk" ];then
+        echo "${line}.enabled"
+      else
+        echo "${line}.disabled"
+      fi
+    done
+  else
+    echo "--------------------------------------------------------------"
+    echo "LIST.filtered ($filter)"
+    echo "job definition: $ROOT/util/e-cron/def"
+    echo "--------------------------------------------------------------"
+    for line in `ls $ROOT/util/e-cron/def | sed "s/.def//g" | grep $filter | xargs basename -a 2>/dev/null`
+    do
+      enable_chk=`grep " $line " $tmp_dir/.crontab_tmp`
+      if [ "$enable_chk" ];then
+        echo "${line}.enabled"
+      else
+        echo "${line}.disabled"
+      fi
+    done
+  fi
+fi
+
+if [[ "$action" == enable* ]];then
+
+  if [ ! "$job" ];then  
+    echo "error: please input job name (e-cron enable.${job})"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+  
+  if [ ! -f $ROOT/util/e-cron/def/${job}.def ];then
+    echo "error: ${job} is not defined"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  crontab -l > $tmp_dir/.crontab_tmp
+  chmod 766 $tmp_dir/.crontab_tmp
+  crontab_chk=`grep " ${job} " $tmp_dir/.crontab_tmp`
+  if [ "$crontab_chk" ];then
+    echo "warn: $job is already enabled"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  command_chk=`grep "^exec_command=" $ROOT/util/e-cron/def/${job}.def`
+  if [ "$command_chk" ];then
+    echo "`grep SCHEDULE  $ROOT/util/e-cron/def/${job}.def \
+    | grep -v \# | awk -F [:] '{print $2}'` $ROOT/util/e-cron/bin/jobwrapper.sh ${job} > /dev/null 2>&1" >> $tmp_dir/.crontab_tmp
+  else
+    echo "`grep SCHEDULE  $ROOT/util/e-cron/def/${job}.def \
+    | grep -v \# | awk -F [:] '{print $2}'` $ROOT/util/e-cron/bin/dataExchange.sh ${job} > /dev/null 2>&1" >> $tmp_dir/.crontab_tmp
+  fi
+
+  # cron update
+  crontab $tmp_dir/.crontab_tmp
+
+  if [ $? -eq 0 ];then
+     echo "${job} is succesfully enabled"
+  else
+     echo "error: something is wrong"
+  fi 
+
+fi
+
+if [[ "$action" == disable* ]];then
+
+  if [ ! "$job" ];then
+    echo "error: please input job name (e-cron enable.${job})"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
+  crontab -l > $tmp_dir/.crontab_tmp
+  chmod 766 $tmp_dir/.crontab_tmp
+  crontab_chk=`grep " ${job} " $tmp_dir/.crontab_tmp`
+  if [ ! "$crontab_chk" ];then
+    echo "warn: $job is already disabled"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+  crontab -l | grep -v " ${job} " > $tmp_dir/.crontab_tmp
+ 
+  # cron update
+  crontab $tmp_dir/.crontab_tmp
+
+  if [ $? -eq 0 ];then
+     echo "${job} is succesfully disabled"
+  else
+     echo "error: something is wrong"
+  fi
+
+fi
+
+if [[ "$action" == exec* ]];then
+
+  if [ ! -f $ROOT/util/e-cron/def/${job}.def ];then
+    echo "error: it seems there is no job ${job}"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+  jobtype=`crontab -l | grep " ${job} " | awk -F "small-shell/util/e-cron/bin" '{print $2}' | awk '{print $1}' | xargs basename -a 2>/dev/null` 
+
+  if [ ! "$jobtype" ];then
+    echo "error:failed to execute job, please enable job first"
+    exit 1
+  fi
+
+  # exec
+  $ROOT/util/e-cron/bin/$jobtype $job
+  
+  if [ $? -eq 0 ];then
+    echo "$job successfully completed"
+  else
+    echo "$job failed. please check log in $ROOT/util/e-cron/log/joblog"
+  fi
+
+fi
+
+if [[ $action == ls.* ]];then
+  if [ "$message" ];then
+    ls $ROOT/util/e-cron/que/message/$message 2>/dev/null | xargs basename -a 2>/dev/null
+    if [ $? -eq 0 ];then
+      rm -rf $tmp_dir
+      exit 0
+    else
+      rm -rf $tmp_dir
+      exit 1
+    fi
+  fi
+
+  if [ "$file" ];then
+    ls $ROOT/util/e-cron/que/file/$file 2>/dev/null | xargs basename -a 2>/dev/null
+    if [ $? -eq 0 ];then
+      rm -rf $tmp_dir
+      exit 0
+    else
+      rm -rf $tmp_dir
+      exit 1
+    fi
+  fi
+
+fi
+
+if [[ $action == get.* ]];then
+
+  if [ "$message" ];then
+    ls $ROOT/util/e-cron/que/message/$message >/dev/null 2>&1
+    if [ $? -eq 0 ];then
+      echo "$message"
+      rm -f $ROOT/util/e-cron/que/message/$message
+      echo "`date +%Y-%m-%d` `date +%T` $remote_addr grabed $message" >> $ROOT/util/e-cron/log/messagingHUB.log
+    else
+      echo "message is not ready"
+    fi
+  fi
+
+  if [ "$file" ];then
+    if [ ! -f $ROOT/util/e-cron/que/file/$file ];then
+      echo "file is not ready"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    # output binary data
+    dd if=$ROOT/util/e-cron/que/file/$file 2>/dev/null
+    echo "`date +%Y-%m-%d` `date +%T` $remote_addr grabed $file" >> $ROOT/util/e-cron/log/fileExchange.log 
+    rm -f $ROOT/util/e-cron/que/file/$file
+  fi
+fi
+
+if [[ $action == push.* ]];then
+
+  if [ "$message" ];then
+    echo $message > $ROOT/util/e-cron/que/message/$message
+    if [ $? -eq 0 ];then
+      echo "message pushed successfully"
+      echo "`date +%Y-%m-%d` `date +%T` $remote_addr pushed $message" >> $ROOT/util/e-cron/log/messagingHUB.log
+    else
+      echo "message push falied"
+    fi
+  fi
+
+  if [ "$file" ];then
+    \cp -f $file $ROOT/util/e-cron/que/file/
+    if [ $? -eq 0 ];then
+      echo "file pushed successfully"
+      file=`echo $file | xargs basename -a`
+      echo "`date +%Y-%m-%d` `date +%T` $remote_addr pushed $file" >> $ROOT/util/e-cron/log/fileExchange.log
+    else
+      echo "file push failed"
+    fi
+  fi
+
+  if [ "$que" ];then
+    rand=`date +%s`
+    rand=$rand.$RANDOM.$RANDOM
+    count=1
+
+    if [ ! -f $que_file ];then
+      echo "error: $que_file is not found"
+      rm -rf $tmp_dir
+      exit 1
+    fi
+
+    while [ -f $ROOT/util/e-cron/que/common/${que}.qid_${rand} ]
+    do
+      sleep 0.01
+      count=`expr $count + 1`
+      rand=$rand.$count
+      
+      if [ $count -eq 100 ];then
+        echo "error: please contact to adimin"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+    done
+
+    cat $que_file > $ROOT/util/e-cron/que/common/${que}.qid_${rand}
+    chmod 755 $ROOT/util/e-cron/que/common/${que}.qid_${rand}
+    if [ $? -eq 0 ];then
+      echo "pushed successfully"
+    else
+      echo "error: failed to push"
+    fi
+  fi
+
+
+fi
+
+if [[ "$action" == clear* ]];then
+  if [ ! ${job} ];then
+    echo "error: pelase input job that you want to clear status"
+    exit 1
+  fi
+  if [ ! -f $ROOT/util/e-cron/que/status/${job} ];then
+    echo "error: there is not status ${job}"
+    exit 1
+  else
+    rm -rf $ROOT/util/e-cron/que/status/${job}
+  fi
+fi
+
+if [ -d $tmp_dir ];then
+  rm -rf $tmp_dir
+fi

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#----------------------------------------------------------
+# usage: ./bkup $databox $backup_directory 
+#----------------------------------------------------------
+
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "root" ];then
+  echo "error: user must be root"
+  exit 1
+fi
+
+# global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
+
+# load param
+databox=$1
+bkup_dir=$2
+bkup_dir=`echo $bkup_dir | sed "s/\/$//g"`
+
+if [ ! "$databox" ];then
+  echo "error: please input databox name"
+  exit 1
+fi
+
+if [ ! -d $ROOT/databox/$databox ];then
+   echo "error: databox{$databox} seems wrong"
+   exit 1
+fi
+
+if [ ! "$bkup_dir" ];then
+  echo "error: please input backdup directory"
+  exit 1
+fi
+
+if [ ! -d $bkup_dir ];then
+   echo "error: backup_directory{$bkup_dir} seems wrong"
+   exit 1
+fi
+
+# Exec backup
+(cd $ROOT/databox && tar -Jcf $bkup_dir/${databox}.tar.xz ${databox})
+result=$?
+
+if [ $result -eq 0 ];then
+  echo "Backup has been done successfully"
+  echo "please check $bkup_dir"
+else
+  echo "eror: something seems wrong"
+  exit 1
+fi
+
