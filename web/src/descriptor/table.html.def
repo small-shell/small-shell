@@ -38,9 +38,6 @@
       %%page_link
      </div>
     </div>
-    <div class="footer">
-     %%footer
-    </div>
    </div>
    <script>
    const btn = document.querySelector('.even-btn-menu');

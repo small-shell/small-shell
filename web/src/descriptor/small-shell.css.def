@@ -299,7 +299,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 68px;
+    padding-bottom: 72px;
   }
   .auth-form {
     flex: 1 1 auto;
@@ -753,7 +753,7 @@ a {
 .form-box button {
   padding: 8px 16px;
   border-style: none;
-  background: #07ADAF;
+  background: #2f3333;
   color: #f2f2f2;
   text-transform: uppercase;
   letter-spacing: .09em;

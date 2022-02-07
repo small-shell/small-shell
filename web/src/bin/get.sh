@@ -33,6 +33,10 @@ done
 # load small-shell path
 . ../descriptor/.small_shell_path
 
+# SET BASE_COMMAND
+META="sudo -u small-shell ${small_shell_path}/bin/meta"
+DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
+
 if [ "$id" = "" ];then
   echo "error: please set correct id"
 fi
@@ -41,45 +45,57 @@ if [ ! -d ../tmp/$session ];then
   mkdir ../tmp/$session
 fi
 
+# gen databox list for left menu
+db_list="$databox `$META get.databox`"
+count=0
+for db in $db_list
+do
+  if [ ! "$databox" = "$db" -o $count -eq 0 ];then
+    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=get&id=new\">DataBox:$db</option>"\
+    >> ../tmp/$session/databox_list
+  fi
+  ((count +=1 ))
+done
+
 # -----------------
 # Exec  command
 # -----------------
 
 # load permission
-permission=`${small_shell_path}/bin/meta get.attr:$user_name{permission}`
+permission=`$META get.attr:$user_name{permission}`
 
 if [ ! "$duplicate" = "yes" ];then
 
   # gen %%data contents
-  sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+  $DATA_SHELL databox:$databox \
   action:get id:$id keys:all format:html_tag > ../tmp/$session/dataset
 
 else
 
   # else means copying data
-  keys=`${small_shell_path}/bin/meta get.key:$databox{all}`
+  keys=`$META get.key:$databox{all}`
   count=1
   for key in $keys
   do
      # gen %%data by conpying
     if [ "$count" = 1 ];then
-      sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+      $DATA_SHELL databox:$databox \
       action:get id:new key:$key format:html_tag > ../tmp/$session/dataset
     else
-      data=`sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+      data=`$DATA_SHELL databox:$databox \
       action:get id:$id key:$key format:html_tag ` \
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
       if [ ! "$file_chk" ];then
         echo $data >> ../tmp/$session/dataset
       else
-        sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+        $DATA_SHELL databox:$databox \
         action:get id:new key:$key format:html_tag  >> ../tmp/$session/dataset
       fi
-        
+
     fi
     (( count += 1 ))
-  done  
+  done
   id=new
 
 fi
@@ -88,7 +104,7 @@ fi
 error_chk=`cat ../tmp/$session/dataset | grep "^error: there is no primary_key:"`
 
 # form type check
-form_chk=`${small_shell_path}/bin/meta chk.form:$databox`
+form_chk=`$META chk.form:$databox`
 
 
 # -----------------
@@ -119,6 +135,8 @@ fi
 cat ../descriptor/${view} | sed "s/^ *</</g" \
 | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
 | sed "/%%common_menu/d" \
+| sed "/%%databox_list/r ../tmp/$session/databox_list" \
+| sed "s/%%databox_list//g"\
 | sed "/%%dataset/r ../tmp/$session/dataset" \
 | sed "s/%%databox/$databox/g" \
 | sed "s/%%dataset//g"\
@@ -126,7 +144,7 @@ cat ../descriptor/${view} | sed "s/^ *</</g" \
 | sed "s/%%session/$session/g"\
 | sed "s/%%pin/$pin/g"\
 | sed "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
-| sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g" 
+| sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 
 if [ "$session" ];then
   rm -rf ../tmp/$session

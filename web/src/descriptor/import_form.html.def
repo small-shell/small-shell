@@ -9,8 +9,9 @@
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
-          <b><p>DataBox:%%databox</p></b>
-          <a href="./shell.app?%%params&req=csv&filter=%%header" download="%%databox_format.csv"><p>#Download csv format</p></a>
+          <select class="dataselect" onChange="location.href=value;">
+          %%databox_list
+          </select>
         </div>
         <div class="right-header">
           <button class="even-btn-menu">=</button>
@@ -25,6 +26,7 @@
       <div class="import-container">
         <div class="import-form">
           <h2>IMPORT CSV DATA</h2>
+          <a href="./shell.app?%%params&req=csv&filter=%%header" download="%%databox_format.csv"><p>Download csv format</p></a>
           <form method="post" action="./shell.app?%%params&req=import" enctype="multipart/form-data">
           <ul>
           <li>
@@ -41,7 +43,7 @@
       <div class="footer">
        %%footer
       </div>
- 
+
    </div>
    <script>
    const btn = document.querySelector('.even-btn-menu');

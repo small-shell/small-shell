@@ -9,8 +9,9 @@
     <div class="container">
       <div class="flex-header">
        <div class="left-header">
-         <b><p id="no-decoration"><a href="./shell.app?%%params&req=table">DataBox:%%databox</a></p></b>
-         <a href="./shell.app?%%params&req=hash" download="%%databox_hash_chain.txt"><p>#hashchain</p></a>
+          <select class="dataselect" onChange="location.href=value;">
+          %%databox_list
+          </select>
        </div>
        <div class="right-header">
         <button class="even-btn-menu">=</button>

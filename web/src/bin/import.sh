@@ -29,6 +29,26 @@ done
 # load small-shell path
 . ../descriptor/.small_shell_path
 
+# SET BASE_COMMAND
+META="sudo -u small-shell ${small_shell_path}/bin/meta"
+DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
+
+if [ ! -d ../tmp/$session ];then
+  mkdir ../tmp/$session
+fi
+
+# gen databox list for left menu
+db_list="$databox `$META get.databox`"
+count=0
+for db in $db_list
+do
+  if [ ! "$databox" = "$db" -o $count -eq 0 ];then
+    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=import\">DataBox:$db</option>"\
+    >> ../tmp/$session/databox_list
+  fi
+  ((count +=1 ))
+done
+
 # -----------------
 # render HTML
 # -----------------
@@ -41,8 +61,10 @@ if [ ! -d ../tmp/$session/binary_file  ];then
   | sed "/%%common_menu/d"\
   | sed "/%%footer/r ../descriptor/common_parts/footer" \
   | sed "/%%footer/d"\
+  | sed "/%%databox_list/r ../tmp/$session/databox_list" \
+  | sed "s/%%databox_list//g"\
   | sed "s/%%databox/$databox/g"\
-  | sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g" 
+  | sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 
 else
 
@@ -65,6 +87,8 @@ else
   | sed "/%%common_menu/d"\
   | sed "/%%footer/r ../descriptor/common_parts/footer" \
   | sed "/%%footer/d"\
+  | sed "/%%databox_list/r ../tmp/$session/databox_list" \
+  | sed "s/%%databox_list//g"\
   | sed "s/%%databox/$databox/g"\
   | sed "/%%result/r ../tmp/$session/result" \
   | sed "s/%%result/$message/g"\
