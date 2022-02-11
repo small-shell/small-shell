@@ -595,13 +595,12 @@ a {
 }
 
 .form-box .file_form #file_input_label {
-  background-color: #0C47C1;
-  cursor: pointer;
-  color: white;
+  color: #333;
+  font-size: 140%;
   font-weight: bold;
+  cursor: hand;
   padding-left: 6px;
   padding-right: 6px;
-  border-radius: 20%;
 }
 
 .form-box .file_form #file_name {
