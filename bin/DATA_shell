@@ -640,6 +640,7 @@ if [ "$command" ];then
       do
         echo "<p>$header_item</p>"
       done
+      echo "</li>"
       cat $ROOT/tmp/exec/$exec_session.result  | sed -r "s/^::::::/<li><p><a href=\".\/$app?%%params\&req=get\&id=/g"  \
       | sed -r "s/::::::/\">/g" \
       | sed -r "s/,/<\/a><\/p><p>/1" \
