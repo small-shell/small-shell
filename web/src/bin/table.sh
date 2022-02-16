@@ -120,11 +120,11 @@ else
 fi
 
 # calc pages
-((pages = $line_num / 18))
-adjustment=`echo "scale=6;${line_num}/18" | bc | awk -F "." '{print $2}'`
+((pages = $line_num / 12))
+adjustment=`echo "scale=6;${line_num}/12" | bc | awk -F "." '{print $2}'`
 line_start=$page
-((line_start = $page * 18 - 17))
-((line_end = $line_start + 17))
+((line_start = $page * 12 - 11))
+((line_end = $line_start + 11))
 
 if [ ! "$adjustment" = "000000" ];then
   ((pages += 1))
