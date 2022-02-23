@@ -1434,7 +1434,7 @@ if [ "$param" = "-app" ];then
         echo "-----------------------------------------------------------------"
         echo "APP deployment has been succesfully done, please add user using ops command,"
         echo "then access key to Base APP will be generated"
-        echo "# sudo $ROOT/adm/ops add.usr:\$uesr"
+        echo "# sudo $ROOT/adm/ops add.usr:\$user"
         echo ""
       else
         sudo -u small-shell which curl >/dev/null 2>&1
@@ -2008,6 +2008,11 @@ if [ "$param" = "-app" ];then
         ls  $cgidir/${app}_css
         ls  $cgidir/../bin/${app}_*
         ls  $cgidir/../descriptor/${app}_*
+
+        if [ "$auth_method" = "key" ];then
+          echo "then please create user for the APP."
+          echo "# sudo $ROOT/adm/ops add.usr:\$user app:${app}"
+        fi
 
       else
       # else means this is subapp
