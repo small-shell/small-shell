@@ -137,6 +137,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#meta-link" class="nav-link">meta link</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#team-app" class="nav-link">Team APP</a>
               <ul class="nav flex-column">
               </ul>
@@ -398,6 +402,13 @@ http://13.115.46.203/cgi-bin/scratch?&amp;subapp=inventory&amp;req=table
 2. Dynamic link in the descriptor #html.def
  +link to the APP #e.g please insert scratch_main.html.def
  &lt;a href=&quot;./scratch?%%session&amp;subapp=inventory&amp;req=table&quot;&gt;link to subapp table&lt;/a&gt;
+</code></pre>
+<h2 id="meta-link">meta link</h2>
+<p>You can generate link that can be used in the APP with meta command. please do not delete %%session in the link. then it will be replaced to dynamic session and pin codes. These links could be inserted to main.html of your APP.</p>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
+</code></pre>
+<p>for subapp   </p>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$subapp@$parent_app
 </code></pre>
 <h2 id="team-app">Team APP</h2>
 <p>You can import APP template from git, this APP could manage not only Team events, but also tasks, shared drive, bookmarks and inquiries as easy ticketing system. </p>

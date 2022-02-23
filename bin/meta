@@ -28,6 +28,7 @@
 # meta get.shared_pass:$app
 # meta get.users
 # meta get.users:$app
+# meta get.link:$app
 # meta chk.form:$databox
 #----------------------------------------------------------
 
@@ -131,6 +132,11 @@ if [[ $param == get.users ]]; then
 fi
 
 if [[ $param == get.users:* ]]; then
+  action=`echo $param | awk -F":" '{print $1}'`
+  app=`echo $param |  awk -F":" '{print $2}'`
+fi
+
+if [[ $param == get.link:* ]]; then
   action=`echo $param | awk -F":" '{print $1}'`
   app=`echo $param |  awk -F":" '{print $2}'`
 fi
@@ -444,6 +450,47 @@ if [ "$action" = "get.users" ];then
 
 fi
 
+if [ "$action" = "get.link" ];then
+
+  # load base
+  if [ ! -f $ROOT/web/base ];then
+    echo "please generate base APP first"
+    exit 1
+  else
+    . $ROOT/web/base
+  fi
+
+
+  if [ ! -f ${cgidir}/${app} ];then
+
+    subapp=`echo $app | awk -F "@" '{print $1}'`
+    parent_app=`echo $app | awk -F "@" '{print $2}'`
+
+    if [ ! "$parent_app" ];then
+
+      echo "There is no APP $app, if it's subapp, please describe it as \$subapp@\$parent please try again"
+      exit 1
+
+    else
+
+      # redner subapp link
+      echo "APP:$app"
+      echo "Table: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=table\">link</a>"
+      echo "DATA.new: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=new\">link</a>"
+      echo "DATA.XXX: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=XXX\">link</a>"
+
+    fi
+
+  else
+    # render links
+    echo "APP:$app"
+    echo "Table: <a href=\"./$app?%%session&req=table\">link</a>"
+    echo "DATA.new: <a href=\"./$app?%%session&req=get&id=new\">link</a>"
+    echo "DATA.XXX: <a href=\"./$app?%%session&req=get&id=XXX\">link</a>"
+  fi
+
+fi
+
 if [ "$action" = "chk.form" ];then
   data_type_chk=`grep "type=\"file\"" $ROOT/databox/${databox}/def/col*`
 
@@ -484,6 +531,7 @@ echo "#------------------------------------------------------
 # meta get.shared_pass:\$app
 # meta get.users
 # meta get.users:\$app
+# meta get.link:\$app
 # meta chk.form:\$databox
 #----------------------------------------------------------"
 fi
