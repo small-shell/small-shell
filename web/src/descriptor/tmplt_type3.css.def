@@ -654,7 +654,6 @@ a {
 }
 
 .form-box .action_links a {
-  font-size: 80%;
   color: #808080;
 }
 
