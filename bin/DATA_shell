@@ -1040,7 +1040,7 @@ function get_data(){
 
         # generate tmp exe file to extract specific column by awk
         echo "cat $ROOT/databox/${pdlsbox}/index | awk -F \"::::::\" '{print \$3}' \
-        | awk -F \",\" '{print \$1\" \"\$$kvl_col}'"  > $ROOT/tmp/exec/$exec_session.pdls.$key
+        | awk -F \",\" '{print \$$kvl_col\" #\"\$1}'"  > $ROOT/tmp/exec/$exec_session.pdls.$key
 
         chmod 755 $ROOT/tmp/exec/$exec_session.pdls.$key
         primary_key_values=`$ROOT/tmp/exec/$exec_session.pdls.$key`
