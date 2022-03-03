@@ -109,7 +109,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem 1rem;
+    padding: .5rem;
     cursor: pointer;
     line-height: 1;
 }
@@ -126,7 +126,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem 1rem;
+    padding: .5rem;
     cursor: pointer;
     line-height: 1;
 }
