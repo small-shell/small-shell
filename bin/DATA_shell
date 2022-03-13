@@ -1350,6 +1350,12 @@ function set_data(){
   if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
     params=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep params | awk -F "params=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
 
+    if [ "$type" = "checkbox" ];then
+      if [ "$value" = "-" ];then
+        value=""
+      fi
+    fi
+
     if [ "$params" ];then
       for param in $params
       do
