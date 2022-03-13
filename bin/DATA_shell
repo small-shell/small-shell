@@ -1146,7 +1146,7 @@ function get_data(){
       exit 1 
     fi
 
-    value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/\n/ /g" | sed "s/^ //g" | sed "s/ $//g"`
+    value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/\n/_%%enter_/g" | sed "s/^ //g" | sed "s/ $//g"`
     echo "${key}:${value}"
 
   fi
