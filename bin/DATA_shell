@@ -272,7 +272,7 @@ if [ "$command" ];then
       if [[ $filter_words == *{*} ]];then
         filter_key=`echo $filter_words | awk -F"{" '{print $1}'`
         filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
-        filter_words=`echo $filter_words | awk -F"{" '{print $2}' | awk -F"}" '{print $1}'`
+        filter_words=`echo $filter_words | cut -f 2- -d "{" | sed "s/}$//g"`
       fi
 
       exec_command=`echo "$filter_words" | sed "s/,/ | grep -i /g" | sed "s/^/grep -i /g"`
@@ -330,7 +330,7 @@ if [ "$command" ];then
       if [[ $match_word == *{*} ]];then
         filter_key=`echo $match_word | awk -F"{" '{print $1}'`
         filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
-        match_word=`echo $match_word | awk -F"{" '{print $2}' | awk -F"}" '{print $1}'`
+        match_word=`echo $match_word | cut -f 2- -d "{" | sed "s/}$//g"`
       else
         echo "error: please input specific key name"
         exit 1
