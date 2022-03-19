@@ -2070,7 +2070,7 @@ if [ "$param" = "-app" ];then
         echo "then you can access to the subapp"
         echo "${base_url}${parent_app}?&subapp=${app}&req=table"
         echo ""
-        echo "2. Dynamic link in the descriptor #html.def"
+        echo "2. Meta link in the descriptor #html.def"
         echo " +link to the APP #e.g please insert ${parent_app}_main.html.def"
         echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">link to subapp table</a>"
         echo ""
