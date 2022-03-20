@@ -786,8 +786,16 @@ if [ "$command" ];then
 
     fi
 
-    # render csv with removing id column
-    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | cut -d "," -f 2-
+    # filtered_key check
+    id_chk=`echo $key_list | grep ^id,`
+
+    if [ "$id_chk" ];then
+      # render csv with keeping id
+      cat $ROOT/tmp/exec/$exec_session.result.except_html_tag
+    else
+      # render csv with removing id 
+      cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | cut -d "," -f 2-
+    fi
 
   elif [  "$format" = "csv" -a "$cmd_check_error" ];then
     echo "error: $cmd_check_error"
