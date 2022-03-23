@@ -4,6 +4,7 @@ body {
   letter-spacing: .04em;
   font-size: 94%;
   height: 100%;
+  background: #fffafa;
 }
 
 /* Base CSS */
@@ -30,10 +31,30 @@ a {
   box-sizing: border-box;
 }
 
-.flex-header {
-  display:flex;
-  flex-wrap:wrap;
-  margin-bottom: -16px;
+@media screen and (min-width: 641px) {
+  .flex-header {
+    margin-right: calc(50% - 50vw);
+    margin-left: calc(50% - 50vw);
+    padding-left: 48px;
+    padding-right: 48px;
+    display:flex;
+    align-items: baseline;
+    flex-wrap:wrap;
+    margin-top: -10px;
+    margin-bottom: 18px;
+    background: #434246;
+    color: #dcdcdc;
+  }
+}
+
+@media screen and (max-width: 641px) {
+  .flex-header {
+    display:flex;
+    flex-wrap:wrap;
+    align-items: baseline;
+    margin-bottom: -16px;
+    color: #dcdcdc;
+  }
 }
 
 .left-header {
@@ -42,13 +63,7 @@ a {
   font-size: 80%;
   flex: auto;
   margin: auto;
-}
-
-.left-header .dataselect{
-  font-weight: bold;
-  color: #333333;
-  cursor: hand;
-  border-style: none;
+  padding-top: 4px;
 }
 
 .left-header p {
@@ -58,7 +73,8 @@ a {
 }
 
 .left-header a {
-  color: #333;
+  color:inherit;
+  text-decoration: none;
 }
 
 .right-header {
@@ -66,11 +82,11 @@ a {
   line-height: 0.8em;
   padding-right: 0px;
   margin: auto;
-  color: white;
+  color: #ADFBEA;
 }
 
 .right-header a {
-  color: white;
+  color: #ADFBEA;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -105,7 +121,7 @@ a {
     border-style: none;
     background: transparent;
     outline:0;
-    color:  #000033;
+    color: #dcdcdc;
     font-size: 240%;
     cursor: pointer;
     letter-spacing: .01em;
@@ -138,16 +154,18 @@ a {
     border-radius: 16px;
     font-size: 88%;
     font-weight: bold;
-    margin-top: 30px;
+    margin-top: 4px;
     margin-right: 20px;
     width: 18%;
     display: block;
+    border: medium solid #ADFBEA;
   }
 }
 @media screen and (max-width: 640px) {
   .right-header nav.open-menu {
     margin-top: 20px;
     width: 100%;
+    font-weight: bold;
     display: block;
   }
 }
@@ -159,6 +177,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: -16px;
   }
   .auth-form {
     flex: 1 1 auto;
@@ -220,9 +239,9 @@ a {
 
 .auth-form button {
   font-weight: bold;
-  padding: 2px 16px;
+  padding: 14px 20px;
   border-style: none;
-  background: #0066CC;
+  background: #07ADAF;
   color: #f8f8f8;
   text-transform: uppercase;
   letter-spacing: .09em;
@@ -247,7 +266,8 @@ a {
 
 .table-box .description h1 {
   font-style : italic;
-  font-size: 180%;
+  font-size: 120%;
+  color: #434246;
 }
 
 .table-box .wrapper {
@@ -264,7 +284,7 @@ a {
   letter-spacing: .09em;
   padding: 8px 16px;
   border: 2px solid #E6E6FA;
-  border-radius: 0px;
+  border-radius: 3px;
   font-size: 80%;
 }
 
@@ -303,12 +323,24 @@ a {
   margin: auto;
 }
 
-.table-header{
-  font-weight: 300;
-  font-weight: bold;
-  border-radius: 4px;
-  background: #0066CC;
-  color: white;
+@media screen and (min-width: 641px) {
+  .table-header{
+    font-weight: 300;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px dotted #c0c0c0;
+  }
+}
+
+@media screen and (max-width: 641px) {
+  .table-header{
+    font-weight: 300;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px dotted #c0c0c0;
+    color: white;
+    background: #424242;
+  }
 }
 
 .table ul {
@@ -381,7 +413,7 @@ a {
 @media screen and (min-width: 640px){ 
   .form-box .description h1 {
     font-size: 180%;
-    color: #444444;
+    color: #434246;
     font-style : italic;
 }
 }
@@ -540,7 +572,6 @@ a {
   }
 }
 
-/* pre init */
 .form-box .init {
   margin-top: 4px;
   margin-bottom: 4px;
@@ -551,7 +582,6 @@ a {
   overflow:auto;
 }
 
-/* pre for comment from user */
 .form-box .user {
   margin-top: 4px;
   margin-bottom: 4px;
@@ -575,6 +605,18 @@ a {
   padding: 6px 6px;
   border: 1px solid #d3d3d3;
   letter-spacing: .09em;
+  flex: auto;
+}
+
+.form-box li pre {
+  text-align: left;
+  background: #f5f5f5;
+  font-size: 12px;
+  margin:0;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  letter-spacing: .09em;
+  overflow:auto;
   flex: auto;
 }
 
@@ -625,6 +667,11 @@ a {
   cursor: hand;
 }
 
+.form-box button a {
+  color:inherit;
+  text-decoration: none;
+}
+
 .form-box .flex-button {
   display:flex;
   flex-wrap:wrap;
@@ -651,20 +698,12 @@ a {
   line-height: 0.8em;
   font-size: 80%;
   color: #808080;
+  font-weight: bold;
+  font-style : italic;
 }
 
 .form-box .action_links a {
   color: #808080;
-}
-
-.form-box .action_menu p {
-  font-size: 80%;
-  color: #c0c0c0;
-}
-
-.form-box .action_menu a {
-  font-size: 80%;
-  color: #c0c0c0;
 }
 
 @media screen and (min-width: 640px){
@@ -841,91 +880,6 @@ a {
   }
 }
 
-@media screen and (max-width: 640px){
-  .announcement-form-box li select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
-
-  .announcement-form-box input[type="date"],
-  .announcement-form-box input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    border: 4px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
-}
-
-.announcement-form-box button {
-  text-align: right;
-  padding: 8px 16px;
-  border-style: none;
-  background: #07ADAF;
-  color: #f2f2f2;
-  text-transform: uppercase;
-  letter-spacing: .09em;
-  border-radius: 2px;
-  cursor: pointer;
-  cursor: hand;
-}
-
-.announcement-form-box .flex-button {
-  display:flex;
-  flex-wrap:wrap;
-}
-
-.announcement-form-box .flex-button button {
-  flex: auto;
-  font-weight: bold;
-  text-align: center;
-  padding: 4px 8px;
-  border-style: none;
-  background: #20b2aa;
-  color: #f2f2f2;
-  text-transform: uppercase;
-  letter-spacing: .09em;
-  border-radius: 2px;
-  cursor: pointer;
-  cursor: hand;
-}
-
-.announcement-form-box input:focus, .announcement-form-box select:focus, .announcement-form-box textarea:focus {
-  outline-color: #40B9F8;
-  outline-width: 2px;
-}
-
-.announcement-form-box .action_links {
-  text-align: left;
-  padding-top: 12px;
-  line-height: 0.8em;
-  font-size: 80%;
-  color: #808080;
-}
-
-.announcement-form-box .action_links a {
-  font-size: 80%;
-  color: #808080;
-}
-
-.announcement-form-box .action_menu p {
-  font-size: 80%;
-  color: #c0c0c0;
-}
-
-.announcement-form-box .action_menu a {
-  font-size: 80%;
-  color: #c0c0c0;
-}
-
-
 .result-box {
   padding-top: 60px;
   padding-bottom: 40px;
@@ -991,12 +945,14 @@ input[type="file"] {
 
   .main .description {
     flex: none;
-    max-width: 480px;
+    max-width: 780px;
     text-align: left;
+    padding-top: 24px;
   }
 
   .main .description h1 {
-    font-size: 400%;
+    font-size: 180%;
+    color: #5A595E;
   }
 
   .main .description ul {
@@ -1005,6 +961,16 @@ input[type="file"] {
     padding: 0px;
     margin-bottom: 28px;
   }
+
+  .main .description pre {
+    border-radius: 4px;
+    line-height: 1.4em;
+    margin: 0px;
+    margin-top: -12px;
+    padding: 8px 12px;
+    overflow:auto;
+  }
+
 
   .main .calendar {
     flex: auto;
@@ -1046,7 +1012,6 @@ input[type="file"] {
    padding-top: 24px;
    max-width: 98%;
    height: 68%;
-   font-size: 80%;
   }
 
   .main .description {
@@ -1055,7 +1020,7 @@ input[type="file"] {
   }
 
   .main .description h1 {
-    font-size: 320%;
+    font-size: 180%;
   }
 
   .main .description ul {
@@ -1064,6 +1029,12 @@ input[type="file"] {
     padding: 0px;
     margin-bottom: 12px;
   }
+
+  .main .description pre {
+    margin: 0px;
+    overflow:auto;
+  }
+
 
   .main .calendar {
     z-index: 1;
@@ -1098,6 +1069,26 @@ input[type="file"] {
 .main a {
  color: #000080;
 }
+
+.main button {
+  font-weight: bold;
+  padding: 14px 20px;
+  border-style: none;
+  background: #07ADAF;
+  color: #f8f8f8;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  border-radius: 2px;
+  cursor: pointer;
+  cursor: hand;
+  font-size: 80%;
+}
+
+.main button a {
+  color:inherit;
+  text-decoration: none;
+}
+
 
 .footer {
   color: #696969;

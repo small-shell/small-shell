@@ -155,6 +155,9 @@ case "$req" in
   "set")
     ../bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
 
+  "del")
+    ../bin/%%app_del.sh databox:$databox session:$session pin:$pin id:$id ;;
+
   "table")
     table_command="`echo $table_command | sed "s/ /{%%space}/g"`"
     ../bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command;;

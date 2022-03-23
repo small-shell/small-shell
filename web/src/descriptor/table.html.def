@@ -23,6 +23,9 @@
         </div>
       </div>
       <div class="table-box">
+       <div class="description">
+       <h1>Base.APP</h1>
+       </div>
         <form method="post" action="./shell.app?%%params&req=table">
         <div class="wrapper">
           <input type="search" name="table_command" placeholder="Hi %%user, please input filter words or input unix sort command with column name e.g.[sort -r %%key]">

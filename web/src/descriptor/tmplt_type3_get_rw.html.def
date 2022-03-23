@@ -9,7 +9,7 @@
     <div class="container">
       <div class="flex-header">
        <div class="left-header">
-        <h3>%%app</h3>
+         <h3><a href="./%%app?%%params&req=main">%%app</a></h3>
        </div>
        <div class="right-header">
         <button class="even-btn-menu">=</button>
@@ -33,6 +33,8 @@
        <button class="button" type="submit">SET</button>
        <div class="action_links">
         <span><p style="cursor: pointer" onclick="window.open('./%%app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
+        <span><a href="./%%app?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
+        <span><p style="cursor: pointer" onclick="del_confirmation()">Delete</p></span>
        </div>
       </div>
    </div>

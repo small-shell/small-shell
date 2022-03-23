@@ -9,7 +9,7 @@
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
-          <h2>%%app</h2>
+          <h2><a href="./%%app?%%params&req=main">%%app</a></h2>
         </div>
         <div class="right-header">
         <button class="even-btn-menu">=</button>
@@ -21,8 +21,7 @@
         </div>
       </div>
       <div class="main">
-      <div class="descriptor">
-        <br></br>
+      <div class="description">
         <h1>Hello Small Shell World, you must be %%user_name</h1>
         <h3><a href="./%%app?%%session&req=table">Go to databox table</a></h3>
       </div>

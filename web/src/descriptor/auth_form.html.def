@@ -7,21 +7,6 @@
     </head>
     <body>
     <div class="container">
-      <div class="flex-header">
-        <div class="left-header">
-          <select class="dataselect" onChange="location.href=value;">
-          %%databox_list
-          </select>
-        </div>
-        <div class="right-header">
-        <button class="even-btn-menu">=</button>
-        <nav>
-         <ul>
-          %%auth_form_menu
-         </ul>
-        </nav>
-        </div>
-      </div>
       <div class="auth-container">
       <div class="auth-form">
       <form method="post" action="./shell.auth?%%params">
