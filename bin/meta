@@ -176,7 +176,7 @@ if [ "$action" = "get.num" ];then
 fi
 
 if [ "$action" = "get.databox" ];then
-  databox_list=`ls $ROOT/databox | xargs basename -a | sed -z "s/\n/ /g"`
+  databox_list=`ls $ROOT/databox | xargs basename -a  2>/dev/null | sed -z "s/\n/ /g"`
   echo "$databox_list"
 fi
 
@@ -196,9 +196,9 @@ if [ "$action" = "get.attr" ];then
   fi
 
   if [ ! "$app" ];then
-    attr_param=`grep "^${attr_key}=" $ROOT/users/$user_id/attr | awk -F "=" '{print $2}'`
+    attr_param=`grep "^${attr_key}=" $ROOT/users/$user_id/attr 2>/dev/null | awk -F "=" '{print $2}'`
   else
-    attr_param=`grep "^${attr_key}=" $ROOT/users/${app}.${user_id}/attr | awk -F "=" '{print $2}'`
+    attr_param=`grep "^${attr_key}=" $ROOT/users/${app}.${user_id}/attr 2>/dev/null | awk -F "=" '{print $2}'`
   fi
   echo $attr_param
   exit 0
@@ -274,7 +274,7 @@ if [ "$action" = "get.header" ];then
     
     JQ="echo \$header | jq -R 'split(\",\") | {"
     count=0
-    for col in `ls $ROOT/databox/${databox}/def/col* | sort -V | xargs basename -a`
+    for col in `ls $ROOT/databox/${databox}/def/col* 2>/dev/null | sort -V | xargs basename -a 2>/dev/null`
     do
       if [ $count -eq 0 ];then
         JQ="${JQ}\"$col\": .[$count]"
@@ -434,9 +434,9 @@ fi
 if [ "$action" = "get.users" ];then
 
   if [ "$app" ];then
-    users=`ls -d $ROOT/users/${app}.* | xargs basename -a`
+    users=`ls -d $ROOT/users/${app}.* 2>/dev/null | xargs basename -a 2>/dev/null`
   else
-    users=`ls -d $ROOT/users/* | sed "s/\./%%/g" | grep -v %% | xargs basename -a`
+    users=`ls -d $ROOT/users/* 2>/dev/null | sed "s/\./%%/g" | grep -v %% | xargs basename -a 2>/dev/null`
   fi
 
   if [ "$users"  ];then
@@ -477,7 +477,7 @@ if [ "$action" = "get.link" ];then
       echo "APP:$app"
       echo "Table: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=table\">link</a>"
       echo "DATA.new: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=new\">link</a>"
-      echo "DATA.XXX: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=XXX\">link</a>"
+      echo "DATA.\$id: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=\$id\">link</a>"
 
     fi
 
@@ -486,7 +486,7 @@ if [ "$action" = "get.link" ];then
     echo "APP:$app"
     echo "Table: <a href=\"./$app?%%session&req=table\">link</a>"
     echo "DATA.new: <a href=\"./$app?%%session&req=get&id=new\">link</a>"
-    echo "DATA.XXX: <a href=\"./$app?%%session&req=get&id=XXX\">link</a>"
+    echo "DATA.\$id: <a href=\"./$app?%%session&req=get&id=\$id\">link</a>"
   fi
 
 fi
