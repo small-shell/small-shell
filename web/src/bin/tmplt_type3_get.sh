@@ -42,28 +42,23 @@ META="sudo -u small-shell ${small_shell_path}/bin/meta"
 DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%app"
 
 # load permission
-permission=`$META get.attr:%%app/$user_name{permission}`
+if [ ! "$user_name" = "guest" ];then
+  permission=`$META get.attr:%%app/$user_name{permission}`
+else
+  permission="ro"
+fi
 
-if [ $id = "new" ];then
+if [ ! "$permission" = "ro"  ];then
 
-  #----------------------------
-  # gen reqd/write form #new
-  #----------------------------
+  # gen read/write datas
   $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:html_tag > ../tmp/$session/dataset
 
 else
 
-  #---------------------------
-  # gen reqd/write form #update
-  #---------------------------
-  $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:html_tag > ../tmp/$session/dataset
-
-  #---------------------------
   # gen read only datas
-  #---------------------------
-  #$DATA_SHELL databox:%%databox action:get id:$id keys:%%keys format:none > ../tmp/$session/dataset.0.1
-  #cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><p>/g" | sed "s/$/<\/p><\/li>/g" \
-  #| sed "s/<p><\/p>/<p>-<\/p>/g" >> ../tmp/$session/dataset
+  $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:none | grep -v hashid > ../tmp/$session/dataset.0.1
+  cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><pre>/g" | sed "s/$/<\/pre><\/li>/g" \
+  | sed "s/<p><\/p>/<p>-<\/p>/g" | sed "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
 
 fi
 

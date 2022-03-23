@@ -196,14 +196,14 @@ if [ "$line_num" = 0 ];then
     if [ ! "$permission" = "ro" ];then
       echo "<h4><a href=\"./shell.app?%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> ../tmp/$session/table
     else
-      echo "<h4>NO DATA</h4>" >> ../tmp/$session/table
+      echo "<h4>= NO DATA</h4>" >> ../tmp/$session/table
     fi
   elif [ "$sort_col" ];then
     echo "<h4>sort key or option must be wrong</h4>" >> ../tmp/$session/table
   elif [ "$err_chk" ];then
     echo "<h2>404 databox:$databox not found</h2>" > ../tmp/$session/table 
   else
-    echo "<h4>NO DATA</h4>" >> ../tmp/$session/table
+    echo "<h4>= NO DATA</h4>" >> ../tmp/$session/table
   fi
 fi
 

@@ -51,7 +51,7 @@ count=0
 for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
-    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=get&id=new\">DataBox:$db</option>"\
+    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
     >> ../tmp/$session/databox_list
   fi
   ((count +=1 ))
@@ -66,9 +66,19 @@ permission=`$META get.attr:$user_name{permission}`
 
 if [ ! "$duplicate" = "yes" ];then
 
-  # gen %%data contents
-  $DATA_SHELL databox:$databox \
-  action:get id:$id keys:all format:html_tag > ../tmp/$session/dataset
+  if [ ! "$permission" = "ro"  ];then
+
+    # gen read/write datas
+    $DATA_SHELL databox:$databox action:get id:$id keys:all format:html_tag > ../tmp/$session/dataset
+
+  else
+
+    # gen read only datas
+    $DATA_SHELL databox:$databox action:get id:$id keys:all format:none | grep -v hashid > ../tmp/$session/dataset.0.1
+    cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><pre>/g" | sed "s/$/<\/pre><\/li>/g" \
+    | sed "s/<p><\/p>/<p>-<\/p>/g" | sed "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
+
+  fi
 
 else
 

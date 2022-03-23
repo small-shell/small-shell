@@ -41,7 +41,8 @@ cat ../descriptor/%%app_main.html.def | sed "s/^ *</</g" \
 | sed "/%%common_menu/r ../descriptor/common_parts/%%app_common_menu" \
 | sed "s/%%common_menu//g"\
 | sed "s/%%user_name/$user_name/g" \
-| sed "s/%%session/session=$session\&pin=$pin/g"
+| sed "s/%%session/session=$session\&pin=$pin/g" \
+| sed "s/%%params/session=$session\&pin=$pin/g"
 
 if [ "$session" ];then
   rm -rf ../tmp/$session

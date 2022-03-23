@@ -152,7 +152,12 @@ do
 done
 
 # load permission
-permission=`$META get.attr:%%app/$user_name{permission}`
+
+if [ ! "$user_name" = "guest" ];then
+  permission=`$META get.attr:%%app/$user_name{permission}`
+else
+  permission="ro"
+fi
 
 # gen %%page_link contents
 ../bin/%%app_page_links.sh $page $pages "$table_command" > ../tmp/$session/page_link &
@@ -192,14 +197,14 @@ if [ "$line_num" = 0 ];then
     if [ ! "$permission" = "ro" ];then
       echo "<h4><a href=\"./%%app?%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> ../tmp/$session/table
     else
-      echo "<h4>NO DATA</h4>" >> ../tmp/$session/table
+      echo "<h4>= NO DATA</h4>" >> ../tmp/$session/table
     fi
 
   elif [ "$sort_col" ];then
     echo "<h4>sort option $sort_option seems wrong</h4>" >> ../tmp/$session/table
     view=%%app_table.html.def
   else
-    echo "<h4>NO DATA</h4>" >> ../tmp/$session/table
+    echo "<h4>= NO DATA</h4>" >> ../tmp/$session/table
     view=%%app_table.html.def
   fi
 else
