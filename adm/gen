@@ -1716,11 +1716,11 @@ if [ "$param" = "-app" ];then
     done
 
     if [ ! "$parent_app" ];then
-      echo -n "Type of Authentication (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other | 4.None): "
+      echo -n "Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): "
       read auth_method
       while [ ! "$auth_method" = "1"  -a  ! "$auth_method" = "2" -a ! "$auth_method" = "3" -a ! "$auth_method" = "4" ]
       do
-        echo -n "please select number (1.Shared_Pass_Code | 2.Base64_User_Key | 3.Other | 4.None) : "
+        echo -n "please select number (1.shared pass | 2.user key | 3.other | 4.none) : "
         read auth_method
       done
     fi
@@ -1770,7 +1770,7 @@ if [ "$param" = "-app" ];then
    
     if [ ! "$parent_app" ];then
 
-      if [ "$auth_method" = "key" ];then
+      if [ "$auth_method" = "key" -o "$auth_method" = "other" ];then
         echo "Access URL: ${base_url}auth.${app}"
       elif [ "$auth_method" = "shared_pass" ];then
         echo "Access URL: ${base_url}auth.${app}"
