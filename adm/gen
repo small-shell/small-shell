@@ -1735,6 +1735,8 @@ if [ "$param" = "-app" ];then
       do
         echo -n "code must be numetric character, please try again: "
         read shared_pass
+        num_value_chk=`echo $shared_pass | sed "s/[0-9]//g" | sed "s/-//g"`
+        value_chk=`echo $shared_pass | sed -z "s/\n//g"`
       done
     fi
 
