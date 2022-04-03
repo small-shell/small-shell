@@ -185,6 +185,8 @@ a {
 
 @media screen and (min-width: 641px) {
   .console-container {
+    margin-right: calc(50% - 50vw);
+    margin-left: calc(50% - 50vw);
     background: #333;
     height: 100%;
     min-height: 100%;
@@ -195,10 +197,6 @@ a {
   }
 
   .console-container .flex-header {
-    margin-right: calc(50% - 50vw);
-    margin-left: calc(50% - 50vw);
-    padding-left: 48px;
-    padding-right: 48px;
     display:flex;
     flex-wrap:wrap;
     margin-top: -10px;
@@ -318,7 +316,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem 1rem;
+    padding: .5rem;
     cursor: pointer;
     line-height: 1;
   }
@@ -350,7 +348,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem 1rem;
+    padding: .5rem;
     cursor: pointer;
     line-height: 1;
  } 
