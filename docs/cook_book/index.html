@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Cook Book - small-shell.org</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">small-shell.org</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+</li>
+                                    
+<li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+</li>
+                                    
+<li>
+    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Cook Book</a>
+</li>
+                                    
+<li>
+    <a href="../automation_tour/" class="dropdown-item">E-cron (Automate & dataExchange)</a>
+</li>
+                                    
+<li>
+    <a href="../python_tour/" class="dropdown-item">Pyshell</a>
+</li>
+                                    
+<li>
+    <a href="../auth_shell/" class="dropdown-item">Auth</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../app_shell_scratch/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../automation_tour/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#cook-prototype" class="nav-link">Cook prototype</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#cook-app" class="nav-link">Cook APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#cook-form" class="nav-link">Cook Form</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#cook-job" class="nav-link">Cook Job</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#publish-cook-book-as-a-template" class="nav-link">Publish cook book as a template</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#published-sample-code" class="nav-link">Published sample code</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="cook-prototype">Cook prototype</h1>
+<p>Let's create proto type, in this sample we would like to cook library booking APP. we will use Base APP for admin, and then create scratch APP for end user.</p>
+<h5 id="app">APP</h5>
+<pre><code>APP for admin = Base APP
+APP for user  = book_search, req.form
+</code></pre>
+<h5 id="databox">Databox</h5>
+<p>Databoxes are created as following. book.master will be master data of book information, book.res is resource information including location information each resource, and request.db is databox for request from end user.</p>
+<pre><code>book.master  &lt;-- book.res #res=resource &lt;-- request.db
+</code></pre>
+<p>Let's start to generate databox</p>
+<h3 id="create-databox">Create databox</h3>
+<pre><code>sudo -u small-shell /usr/local/small-shell/gen -databox
+
+1. book.master { name: text, isbn: num, author: text, category: select, desciption: textarea, available: checkbox}
+2. book.res  { hashid, name: pdls(book.master), location: select, status: select }
+3. request.db  { hashid, requester: text, email: email, book_name: text, status: select, book_resource: pdls(book.res), message: textarea }
+</code></pre>
+<p>Please check the sample definition <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook/def">db.def</a></p>
+<h3 id="launch-base-app">Launch Base APP</h3>
+<p>Let's launch Base APP by refering to <a href="../quick_start/">Quick start</a></p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
+#-&gt; Dialog will be started, for making Base APP
+</code></pre>
+<h4 id="add-data-by-using-base-app">Add data by using Base APP</h4>
+<p>For managing datas, let's use Base APP.</p>
+<pre><code>STEP1 Add master data to book.master
+STEP2 Add resource data to bookk.res that will be linked to master data
+</code></pre>
+<h3 id="create-scratch-app">Create scratch APP</h3>
+<p>Once databoxes and Base APP is created, let's create APPs</p>
+<h4 id="create-main-app">Create Main APP</h4>
+<p>Let's execute gen -app to create book_search APP, then access URL will be shown.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+app_name: book_search
+Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
+primary databox: book.master
+</code></pre>
+<h4 id="add-sub-app">Add sub APP</h4>
+<p>Once main APP is created, let's add table to the APP using sub APP. this sub APP is used for searching book resource and location.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+app_name: location@book_search
+Type of Authentication (1.shared pass | 2.user key | 3.Other | 4.None): 4
+primary databox: book.res
+</code></pre>
+<h5 id="add-routing">Add routing</h5>
+<pre><code>sudo vi /usr/lib/cgi-bin/book_search
+--code--
+# add routing
+&quot;location.table&quot;) ../bin/location_table.sh session:$session pin:$pin user_name:$user_name page:$page table_command:$table_command;;
+&quot;location.get&quot;) ../bin/location_get.sh session:$session pin:$pin user_name:$user_name id:$id;;
+&quot;location.set&quot;) ../bin/location_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
+&quot;location.del&quot;) ../bin/location_del.sh session:$session pin:$pin user_name:$user_name id:$id;;
+&quot;location.log_viewer&quot;) ../bin/location_log_viewer.sh session:$session pin:$pin id:$id;;
+&quot;location.file&quot;) ../bin/location_dl.sh session:$session pin:$pin id:$id;;
+--------
+</code></pre>
+<h3 id="generate-meta-link">Generate meta link</h3>
+<p>meta links can be generated for each APPs. and let's cook it as next step.</p>
+<pre><code># generate link
+sudo -u small-shell /usr/local/small-shell/bin/meta get.link:book_search
+sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location@book_search
+</code></pre>
+<h2 id="cook-app">Cook APP</h2>
+<h4 id="update-portal">update portal</h4>
+<p>Portal could be used for some description of the APP, lets modify descpription section.</p>
+<pre><code>sudo vi /var/www/descriptor/book_search_main.html.def
+# -&gt; update HTML
+--code--
+&lt;div class=&quot;main&quot;&gt;
+&lt;div class=&quot;description&quot;&gt;
+&lt;h1&gt;Welcome to book_search APP. please search book and request for lending.&lt;/h1&gt;
+&lt;pre&gt;
+STEP1: search book from table
+STEP2: request from book page, then you can get your request link
+STEP3: message will be update by admin, then you can get book
+&lt;/pre&gt;
+&lt;br&gt;&lt;/br&gt;
+&lt;a href=&quot;./book_search?%%params&amp;req=table&quot;&gt;&lt;button class=&quot;button&quot;&gt;Search&lt;/button&gt;&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
+<h4 id="update-menu">update menu</h4>
+<p>For better UI, let's add meta link to the menu</p>
+<pre><code>sudo vi /var/www/descriptor/common_parts/book_search_common_menu
+--code--
+&lt;li&gt;&lt;a href=&quot;./book_search?%%session&amp;req=table&quot;&gt;book.master&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;./book_search?%%session&amp;subapp=location&amp;req=table&quot;&gt;location.search&lt;/a&gt;&lt;/li&gt;
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_search_menu.png" /></p>
+<h4 id="add-logics-to-the-app">Add logics to the APP</h4>
+<p>In this example, we are adding following functions to book_search APP</p>
+<ol>
+<li>Add link from master data to resource table</li>
+<li>Filter table to show only available data</li>
+<li>Restrict key</li>
+<li>Add link from resource data to master data</li>
+</ol>
+<h5 id="add-link-from-master-data-to-resource-table">Add link from master data to resource table</h5>
+<pre><code>sudo vi /var/www/descriptor/book_search_get_ro.html.def
+--code--
+&lt;div class=&quot;action_links&quot;&gt;
+&lt;span&gt;&lt;a href=&quot;./book_search?%%session&amp;subapp=location&amp;req=table&amp;table_command=%%book_name&quot;&gt;&lt;p&gt;location table&lt;/p&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;/div&gt;
+--------
+</code></pre>
+<p>To insert %%book_name, let's add these logics to get action.</p>
+<pre><code>sudo vi /var/www/bin/book_search_get.sh
+# block1 { get ID book_namd }
+--code--
+book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | awk -F &quot;:&quot; '{print $2}'`
+--------
+# block2 { update sed logic to insert book_name }
+--code--
+cat ../descriptor/${view} | sed &quot;s/^ *&lt;/&lt;/g&quot; \
+| sed &quot;/%%common_menu/r ../descriptor/common_parts/book_adm_common_menu&quot; \
+| sed &quot;/%%common_menu/d&quot; \
+| sed &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| sed &quot;s/%%dataset//g&quot;\
+| sed &quot;/%%history/r ../tmp/$session/history&quot; \
+| sed &quot;s/%%history//g&quot;\
+| sed &quot;s/%%id/$id/g&quot; \
+| sed &quot;s/%%book_name/$book_name/g&quot; \
+| sed &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
+| sed &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
+| sed &quot;s/%%params/session=$session\&amp;pin=$pin/g&quot;
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_search_location_link.png" /></p>
+<h5 id="filter-table-to-show-only-available-data">Filter table to show only available data</h5>
+<p>To filter the master table only available data, let's add match option.</p>
+<pre><code>sudo vi /var/www/bin/book_search_table.sh
+# e.g.) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=available{yes}]
+</code></pre>
+<p>To filter the location table only on the shelve, let's add match option. by the way {%%%%%%%} is meta charactor of small shell. it will be translated to _, I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve.</p>
+<pre><code>sudo vi /var/www/bin/location_table.sh
+# e.g. ) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=status{on{%%%%%%%}the{%%%%%%%}shelve}]
+
+</code></pre>
+<h5 id="restrict-key">Restrict key</h5>
+<p>To restrict accessable key, please change all to specific keys.</p>
+<pre><code>sudo vi /var/www/bin/location_get.sh
+# -&gt; change keys from all to specific keys.
+keys=hashid,name,location
+</code></pre>
+<pre><code>sudo vi /var/www/bin/location_table.sh
+# -&gt; change keys from all to specific keys.
+keys=hashid,name,location
+</code></pre>
+<h5 id="add-link-from-resource-data-to-master-data">Add link from resource data to master data</h5>
+<pre><code>sudo vi /var/www/descriptor/location_get_ro.html.def
+--code--
+&lt;div class=&quot;action_links&quot;&gt;
+&lt;span&gt;&lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=%%book_id&quot;&gt;&lt;p&gt;Master data&lt;/p&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;/div&gt;
+--------
+</code></pre>
+<p>To insert %%book_id, let's modify render logics to get action.</p>
+<pre><code>sudo vi /var/www/bin/location_get.sh
+--code--
+# render HTML
+resource_id=$id
+book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | awk -F &quot;:&quot; '{print $2}'`
+book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| sed -s &quot;s/\&quot;//g&quot;`
+
+cat ../descriptor/${view} | sed &quot;s/^ *&lt;/&lt;/g&quot; \
+| sed &quot;/%%common_menu/r ../descriptor/common_parts/book_search_common_menu&quot; \
+| sed &quot;/%%common_menu/d&quot; \
+| sed &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| sed &quot;s/%%dataset//g&quot;\
+| sed &quot;/%%history/r ../tmp/$session/history&quot; \
+| sed &quot;s/%%history//g&quot;\
+| sed &quot;s/%%id/$id/g&quot; \
+| sed &quot;s/%%book_id/$book_id/g&quot; \
+| sed &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
+| sed &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
+| sed &quot;s/%%params/subapp=location\&amp;session=$session\&amp;pin=$pin/g&quot;
+
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_search_master_link.png" /></p>
+<h3 id="generate-form">Generate form</h3>
+<p>Let's generate form for requesting book.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 2
+</code></pre>
+<h5 id="result-of-dialog">result of dialog</h5>
+<pre><code>APP type: 2.FORM
+Form name: booking_req
+target_databox: request.db
+description: This is request form for booking library
+IP_whitelisting: no
+Included keys: requester,email,book_name
+Access URL: https://**-**-**/cgi-bin/booking_req
+</code></pre>
+<h2 id="cook-form">Cook Form</h2>
+<p>Once Form APP is generated, let's cook the codes.</p>
+<ol>
+<li>Insert book name using QUERY STRING</li>
+<li>Booking 1 resource which is available and searchable in book.master</li>
+<li>Change status of other databoxes, #book.master #book.res</li>
+</ol>
+<h6 id="update-controller">update controller</h6>
+<pre><code>sudo vi /usr/lib/cgi-bin/booking_req
+org: ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr};;
+update : ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr} book_name:${book_name} ;;
+</code></pre>
+<h6 id="update-get-logic-for-loading-query-string">update get logic for loading QUERY STRING</h6>
+<pre><code>sudo vi /var/www/bin/booking_req_get.sh
+
+# block1, load book_name from controller
+--code--
+if [[ $param == book_name:* ]]; then
+  book_name=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+fi
+--------
+
+# bock2, add book_name to new form. 
+--code--
+# gen reqd/write form #new
+$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; ../tmp/$session/dataset.0.1
+cat ../tmp/$session/dataset.0.1 \
+| sed &quot;s/name=\&quot;book_name\&quot; value=\&quot;\&quot;/name=\&quot;book_name\&quot; value=\&quot;$book_name\&quot;/g&quot; &gt; ../tmp/$session/dataset
+--------
+
+</code></pre>
+<h6 id="update-app_setsh-for-updating-datasets-additionally">update $app_set.sh for updating datasets additionally</h6>
+<pre><code>sudo vi /var/www/bin/booking_req_set.sh
+
+--code--
+# load book resource
+book_name=`cat ../tmp/$session/book_name`
+resource_id=`$DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:json \
+| jq '.[] | .id'| sed -s &quot;s/\&quot;//g&quot; | head -1`
+
+if [ &quot;$resource_id&quot; ];then
+  # push datas to databox
+  echo &quot;$resource_id&quot; &gt; ../tmp/$session/book_resource_id
+  echo &quot;requested&quot; &gt; ../tmp/$session/status
+  keys=&quot;book_resource_id,status,$keys&quot;
+  $DATA_SHELL databox:request.db action:set id:new keys:$keys input_dir:../tmp/$session  &gt; ../tmp/$session/result
+
+  # result check
+  updated_id=`cat ../tmp/$session/result | grep &quot;^successfully set&quot; | awk -F &quot;id:&quot; '{print $2}' | sed '/^$/d' | sort | uniq`
+  avail_num=`$DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none | wc -l`
+
+  if [ &quot;$updated_id&quot; -a $avail_num -ge 1 ];then
+    # update staus of resource.db
+    $DATA_SHELL databox:book.res action:set id:$resource_id key:status value:reserved  &gt;&gt; ../tmp/$session/result
+
+    # update status of book.master
+    (( avail_num -= 1 ))
+    if [ $avail_num -eq 0 ];then
+      book_master_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| sed -s &quot;s/\&quot;//g&quot;`
+      $DATA_SHELL databox:book.master action:set id:$book_master_id key:available value:-  &gt;&gt; ../tmp/$session/result
+    fi
+  fi
+
+fi
+-------
+</code></pre>
+<h6 id="add-reserve-button-for-book_search-app">Add reserve button for book_search APP</h6>
+<pre><code>sudo vi /var/www/descriptor/book_search_get_ro.html.def
+--code--
+&lt;a href=&quot;./booking_req?book_name=%%book_name&quot;&gt;&lt;button class=&quot;button&quot;&gt;Reserve&lt;/button&gt;&lt;/a&gt;
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_search_reserve.png" /></p>
+<h6 id="check-query-string-is-working">Check QUERY STRING is working</h6>
+<p>Once you click Reserve button, request form must contain book information
+<img alt="Screenshot" src="../img/book_req_form.png" /></p>
+<h3 id="finalize">Finalize</h3>
+<ol>
+<li>Add status and message to end user page</li>
+<li>Change color if you want</li>
+</ol>
+<h6 id="add-status-and-message-to-end-user-page">Add status and message to end user page</h6>
+<pre><code>sudo vi /var/www/bin/booking_req_get.sh
+--code--
+# gen read only datas
+$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name,status,message format:none | grep -v hashid &gt; ../tmp/$session/dataset.0.1
+cat ../tmp/$session/dataset.0.1 | sed &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | sed &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/g&quot; | sed &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
+| sed &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | sed &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/$session/dataset
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_req_status.png" /></p>
+<h5 id="change-color">Change color</h5>
+<p>You can change color by updating $app.css.def</p>
+<pre><code>sudo vi /var/www/descriptor/book_search.css.def
+</code></pre>
+<pre><code>#----------------classes---------------#
+# Change header charactor
+.flex-header
+
+# Change menue charactor
+.container .right-header a 
+.console-container .right-header a
+
+# Change menu
+.right-header nav 
+.right-header nav.open-menu
+
+# Change even button
+.right-header .even-btn-menu
+
+# Change button
+.main button
+.form-box button
+#----------------------------------------#
+</code></pre>
+<h2 id="cook-job">Cook Job</h2>
+<p>Let's create job for updating available status. this job can prevent miss to update available status even if admin return book to shelve and update book resource status.</p>
+<h4 id="create-batch-script">Create batch script</h4>
+<p>You can use small-shell basic parameters and sys user key if you add script to util/scripts dir.</p>
+<pre><code>sudo vi /usr/local/small-shell/util/scripts/status_update.sh
+</code></pre>
+<pre><code>#!/bin/bash
+#-------------------------------------------------------------
+# This is the script for update status of book.master
+#-------------------------------------------------------------
+
+# global.conf load
+SCRIPT_DIR=`dirname $0`
+. ${SCRIPT_DIR}/../../global.conf
+
+# load authkey
+. ${SCRIPT_DIR}/.authkey
+
+WHOAMI=`whoami`
+if [ ! &quot;$WHOAMI&quot; = &quot;small-shell&quot; ];then
+  echo &quot;error: user must be small-shell&quot;
+  exit 1
+fi
+
+# dump non available books
+$ROOT/bin/DATA_shell authkey:$authkey databox:book.master command:show_all[keys=id,name][match=available{-}] format:csv \
+&gt; ${SCRIPT_DIR}/tmp/book_master_dump.tmp
+
+# check latest resource status
+count=1
+while read line
+do
+
+  if [ $count -gt 1  ];then
+    book_id=`echo $line | awk -F &quot;,&quot; '{print $1}'`
+    book_name=`echo $line | awk -F &quot;,&quot; '{print $2}'`
+
+    # check on_the_shelve book
+    check_shelv=`$ROOT/bin/DATA_shell authkey:$authkey databox:book.res \
+    command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none`
+
+    if [ &quot;$check_shelv&quot; ];then
+      # update available status
+      $ROOT/bin/DATA_shell authkey:$authkey databox:book.master action:set id:$book_id key:available value:yes
+      echo &quot;$ROOT/bin/DATA_shell authkey:$authkey databox:book.master action:set id:$book_id key:available value:yes&quot;
+    fi
+  fi
+
+  ((count += 1))
+
+done &lt; ${SCRIPT_DIR}/tmp/book_master_dump.tmp
+
+exit 0
+</code></pre>
+<h4 id="change-system-user-permission-from-read-only-to-readwrite">Change system user permission from read only to read/write</h4>
+<p>Before executing the job, please change sys user permission from ro to rw.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops set.attr:sys{rw}
+</code></pre>
+<h4 id="push-job-to-small-shell">Push job to small shell</h4>
+<p>You can put job to small shell automation framework very easily, please check detail at <a href="../automation_tour/">e-cron</a> tour.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+</code></pre>
+<p>Dialog will be started.</p>
+<pre><code>job name: book_master_status_update
+Type of job (1.job automation | 2.file exchange) : 1
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: any
+Hour  [ any | 0-23 ]: any
+Min   [ any | 0-59 ]: 0
+Week  [ any | mon - sun ]: any
+Exec command or batch script: status_update.sh
+</code></pre>
+<h4 id="enable-job">Enable job</h4>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.book_master_status_update
+</code></pre>
+<h4 id="job-check">Job check</h4>
+<pre><code># check list
+sudo -u small-shell ./e-cron ls
+--------------------------------------------------------------
+job definition: /usr/local/small-shell/util/e-cron/def
+--------------------------------------------------------------
+book_master_status_update.enabled
+del_session.enabled
+del_util_log.enabled
+
+# exec manually
+sudo -u small-shell ./e-cron exec.book_master_status_update
+book_master_status_update successfully completed
+
+# check status
+sudo -u small-shell ./e-cron stat
+--------------------------------------------------------
+LATEST STATUS OF JOB
+--------------------------------------------------------
+2022-03-20 00:05:01 del_util_log successfully completed
+2022-03-20 02:45:41 book_master_status_update successfully completed
+2022-03-20 02:46:01 del_session successfully completed
+</code></pre>
+<h2 id="publish-cook-book-as-a-template">Publish cook book as a template</h2>
+<p>You can publish your APP template with copying bin/${APP}<em> and cgi-bin/${APP}</em> descriptor/${APP}*,
+if you add deploy.sh as well to the repository other user can import APP very easily, following is sample code of deploy.sh</p>
+<pre><code>cd $HOME
+git clone https://github.com/21it-org/21it/templates
+cd cookbook
+sudo ./deploy.sh
+</code></pre>
+<p>This is sample code of
+<a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/deploy.sh">deploy.sh</a></p>
+<h2 id="published-sample-code">Published sample code</h2>
+<p>please check it !
+<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">cookbook on github</a></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
