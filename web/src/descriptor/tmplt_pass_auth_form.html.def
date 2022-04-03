@@ -7,12 +7,6 @@
     </head>
     <body>
     <div class="container">
-      <div class="flex-header">
-        <div class="left-header">
-        </div>
-        <div class="right-header">
-        </div>
-      </div>
       <div class="auth-container">
       <div class="auth-form">
       <form method="post" action="./auth.%%app?%%params">
@@ -20,8 +14,6 @@
       <h1>%%app</h1>
       <div class="wrapper">
         <input type="%%input_type" id="%%app_pass_%%rand" name="%%app_pass_%%rand" placeholder="%%placeholder">
-        <datalist id="keylist">
-        </datalist>
         <button class="button" type="submit">submit</button>
       </div>
       </form>

@@ -23,7 +23,7 @@
       <div class="main">
       <div class="description">
         <h1>Hello Small Shell World, you must be %%user_name</h1>
-        <h3><a href="./%%app?%%session&req=table">Go to databox table</a></h3>
+        <a href="./%%app?%%session&req=table"><button class="button">SEARCH</button></a>
       </div>
       </div>
     </div>
