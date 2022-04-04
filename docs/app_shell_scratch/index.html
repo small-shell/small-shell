@@ -113,18 +113,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#none-auth-app" class="nav-link">None auth APP</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#sub-app" class="nav-link">Sub APP</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#meta-link" class="nav-link">meta link</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#import-app-from-template" class="nav-link">Import APP from template</a>
               <ul class="nav flex-column">
               </ul>
@@ -218,12 +206,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 <li>Add user #key APP, other</li>
 <li>Add subAPP #connect additional databox if needed</li>
 </ol>
-<h4 id="sceinario">Sceinario</h4>
-<ul>
-<li>Const management APP for team</li>
-<li>Each member must have key for authentication # key type of Auth</li>
-<li>Manage {Portal, Events} in the APP</li>
-</ul>
+<p>Let's create scratch APP by following above steps.</p>
 <h4 id="gen-databox">Gen DataBox</h4>
 <p>Please generate databox that will be used for Scratch APP. any types of data can be used for Scratch APP. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
@@ -321,7 +304,7 @@ sudo vi /var/www/descriptor/scratch_get.html.def
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;del_confirmation()&quot;&gt;Delete&lt;/p&gt;&lt;/span&gt;
 ---------
 </code></pre>
-<h2 id="none-auth-app">None auth APP</h2>
+<h3 id="none-auth-app">None auth APP</h3>
 <p>None auth app will take care of end users as guest. anyone can access to the table and datas with read only permission as guest. If you want to change to read write, please change user name from guest to other proper name in controller.</p>
 <pre><code>sudo vi /usr/lib/$app
 --code--
@@ -329,7 +312,7 @@ sudo vi /var/www/descriptor/scratch_get.html.def
 user_name="external_user"
 --------
 </code></pre>
-<h2 id="sub-app">Sub APP</h2>
+<h3 id="sub-app">Sub APP</h3>
 <p>Basically scratch APP will connect to only 1 databox. Sub APP can add databox for your APP.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; please create any databox
@@ -366,7 +349,7 @@ http://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/scratch?&amp;subapp=in
 <p class="admonition-title">Note</p>
 <p>If you add rougin aftter [ *) echo "error: wrong request";; ] in the controller, everything will go to error routing.</p>
 </div>
-<h2 id="meta-link">meta link</h2>
+<h3 id="meta-link">meta link</h3>
 <p>You can generate link that can be used in the APP. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html descriptor of your APP.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
 </code></pre>
