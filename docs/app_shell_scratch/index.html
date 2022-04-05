@@ -197,7 +197,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 <h4 id="required">Required</h4>
 <p>Please setup Base APP beorehand refering to <a href="../quick_start/">Quick Start</a></p>
 <h2 id="common-step">Common STEP</h2>
-<p>Each scratch APP has common STEP for launching APP, difference is mainly authentication method.</p>
+<p>Each types of scratch APP have common STEP for launching APP, difference is mainly authentication method.</p>
 <ol>
 <li>Generate DataBox for datastore #gen -databox</li>
 <li>Generate Scratch APP #gen -app</li>
@@ -208,12 +208,12 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 </ol>
 <p>Let's create scratch APP by following above steps.</p>
 <h4 id="gen-databox">Gen DataBox</h4>
-<p>Please generate databox that will be used for Scratch APP. any types of data can be used for Scratch APP. </p>
+<p>Please generate databox that will be used for Scratch APP. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
 <h3 id="gen-app">Gen APP</h3>
-<p>Let's start to generate scratch APP named team with base64 key authentiaction</p>
+<p>Let's start to generate scratch APP named as just scratch with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just scrach.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: scratch                                                              
