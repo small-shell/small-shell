@@ -621,11 +621,13 @@ if [ "$command" ];then
   if [ "$format" = "html_tag" -a -f $ROOT/tmp/exec/$exec_session.result ];then
 
     if [ "$col_list" ];then
-      header_info=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" | sort -V | awk -F"name=" '{print $2}' | sed "s/\"//g" \
-      | sed "s/ /_/g" | sed -z "s/\n/,/g" | sed "s/,$//g" | sed "s/,/, /g" | cut -d "," -f $col_list`
+      header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" \
+      | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g" | sort -V | awk -F"label=" '{print $2}' | sed "s/\"//g" \
+      | sed "s/ /\&nbsp;/g" | sed -z "s/\n/,/g" | sed "s/,$//g" | sed "s/,/, /g" | cut -d "," -f $col_list`
     else
-      header_info=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" | sort -V |  awk -F"name=" '{print $2}' | sed "s/\"//g" \
-      | sed "s/ /_/g" | sed -z "s/\n/,/g" | sed "s/,$//g"`
+      header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" | sort -V \
+      | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g" |  awk -F"label=" '{print $2}' | sed "s/\"//g" \
+      | sed "s/ /\&nbsp;/g" | sed -z "s/\n/,/g" | sed "s/,$//g"`
     fi
 
     # ---------------------------------------------------------------------------
@@ -862,6 +864,7 @@ function get_data(){
   cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/$exec_session.$col
   chmod 700 $ROOT/tmp/exec/$exec_session.$col
   . $ROOT/tmp/exec/$exec_session.$col
+  label=`echo $label | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g"`
 
   if [ "$format" = "html_tag" ];then
 
@@ -1530,7 +1533,6 @@ function merge_data(){
   fi
 
   # MERGE DATA#
-  echo "" >> $ROOT/databox/$databox/data/${id}/${key}
   echo "+MERGE `date +%Y-%m-%d` `date +%T` updated by $user" >> $ROOT/databox/$databox/data/${id}/${key}
   if [ ! "$value" = "file_input" ];then
     echo "$value" >> $ROOT/databox/$databox/data/${id}/${key}

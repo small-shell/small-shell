@@ -13,7 +13,9 @@
 # meta get.attr:$app/$user{$attribute_key}
 # meta get.key:$databox{primary}
 # meta get.key:$databox{all}
+# meta get.key:$databox{$label}
 # meta get.pdls:$databox{filter_word}
+# meta get.label:$databox{primary}
 # meta get.label:$databox{all}
 # meta get.header:$databox{csv}
 # meta get.header:$databox{json}
@@ -77,7 +79,7 @@ fi
 if [[ $param == get.key:* ]]; then
   action=`echo $param | awk -F":" '{print $1}'`
   databox=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-  key=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+  key=`echo $param |  awk -F":" '{print $2}' | cut -f 2- -d "{" | sed "s/{%%space}/ /g" | sed "s/}//g"`
 fi
 
 if [[ $param == get.pdls:* ]]; then
@@ -210,12 +212,21 @@ if [ "$action" = "get.key" ];then
     primary_key=`cat $ROOT/databox/${databox}/def/col1 | grep name= | awk -F "=" '{print $2}' | sed "s/\"//g" ` 
     echo $primary_key
     exit 0
-  fi
 
-  if [ "$key" = "all" ];then
+  elif [ "$key" = "all" ];then
     keys=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
           | sed "s/ //g" | sed -z "s/\n/ /g" `
     echo $keys
+    exit 0
+
+  else
+    label="$key"
+    col=`grep -l "^label=\"$label\"" $ROOT/databox/${databox}/def/col* | xargs basename -a 2>/dev/null`
+    if [ "$col" ];then
+      . $ROOT/databox/${databox}/def/$col
+      echo $name
+      exit 0 
+    fi
   fi
 fi
 
@@ -257,6 +268,15 @@ if [ "$action" = "get.label" ];then
     labels=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
             | sed "s/ //g" | sed -z "s/\n/ /g" `
     echo $labels
+    exit 0
+  fi
+
+  if [ "$label" = "primary" ];then 
+    label=""
+    key=primary
+    label=`grep "^label=" $ROOT/databox/${databox}/def/col1 |  awk -F"=" '{print $2}' | sed "s/\"//g"`
+    echo $label
+    exit 0
   fi
 fi
 
@@ -294,11 +314,13 @@ if [ "$action" = "get.tag" ];then
     ls $ROOT/tmp/tag/$databox/* >/dev/null 2>&1
     if [ $? -eq 0 ];then
       cat $ROOT/tmp/tag/$databox/*
+      exit 0
     fi
   else
     ls $ROOT/tmp/tag/${app}.$databox/* >/dev/null 2>&1
     if [ $? -eq 0 ];then
       cat $ROOT/tmp/tag/${app}.$databox/*
+      exit 0
     fi
   fi
 fi
@@ -516,6 +538,7 @@ echo "#------------------------------------------------------
 # meta get.attr:\$app/\$user{\$attribute_key}
 # meta get.key:\$databox{primary}
 # meta get.key:\$databox{all}
+# meta get.key:\$databox{\$label}
 # meta get.pdls:\$databox{filter_word}
 # meta get.label:\$databox{all}
 # meta get.header:\$databox{csv}

@@ -271,7 +271,7 @@ if [ "$param" = "-databox" ];then
       char_chk_result=`charset_check "$primary_key_label"`
     done
   else
-    primary_key_label=hashid
+    primary_key_label="#ID"
   fi
 
   # escape meta character

@@ -47,16 +47,19 @@ if [ -s ../tmp/$session/table_command ];then
   table_command=`cat ../tmp/$session/table_command`
 fi
 
-primary_key=`$META get.key:$databox{primary}`
+primary_key_label=`$META get.label:$databox{primary}`
 sort_chk_post=`echo $table_command | grep "^sort "`
 sort_chk_query_string=`echo $table_command | grep "^sort,"`
 
 if [ "$sort_chk_post" -o "$sort_chk_query_string" ];then
   table_command=`echo $table_command | sed "s/ /,/g"`
-  sort_option=`echo $table_command | sed "s/sort,//g" | awk -F "," '{print $1}'`
-  sort_col=`echo $table_command  | sed "s/sort,//g" | awk -F "," '{print $2}'`
+  sort_option=`echo $table_command | sed "s/sort,//g" | cut -f 1 -d ","`
+  sort_label=`echo $table_command  | sed "s/sort,//g" | cut -f 2- -d "," | sed "s/,/{%%space}/g"`
+  sort_col=`$META get.key:$databox{$sort_label}`
+
   if [ ! "$sort_col" ];then
-    sort_col=$primary_key
+    sort_label=" - "
+    sort_col=`$META get.key:$databox{$primary_key_label}`
   fi
 else
   if [[ $table_command == *{*} ]]; then
@@ -186,7 +189,7 @@ fi
 if [ ! "$sort_col" ];then
   sort_command="ordered by latest update"
 else
-  sort_command="sort option:$sort_option col:$sort_col"
+  sort_command="sort option:$sort_option col:$sort_label"
 fi
 
 if [ "$line_num" = 0 ];then
@@ -226,7 +229,7 @@ cat ../descriptor/$view | sed "s/^ *</</g" \
 | sed "s/%%num/$line_num/g"\
 | sed "s/%%filter/$filter_table/g"\
 | sed "s/%%sort/$sort_command/g"\
-| sed "s/%%key/$primary_key/g"\
+| sed "s/%%key/$primary_key_label/g"\
 | sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
 | sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
 | sed "s/{%%%%%%%%%%%%%%%}/*/g"\
@@ -242,6 +245,7 @@ cat ../descriptor/$view | sed "s/^ *</</g" \
 | sed "s/{%%%%%}/\//g"\
 | sed "s/{%%%%}/\&/g"\
 | sed "s/{%%%}/:/g"\
+| sed "s/{%%space}/ /g"\
 | sed "s/.\/shell.app?/.\/%%parent_app?/g"\
 | sed "s/%%session/session=$session\&pin=$pin/g" \
 | sed "s/%%params/subapp=%%app\&session=$session\&pin=$pin\&databox=$databox/g"
