@@ -97,7 +97,7 @@ if [ ! "$%%app_key" ];then
     cat ../descriptor/%%app_auth_form_with_key.html.def | sed "s/^ *</</g"\
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
     | sed "/%%footer/d"\
     | sed "s/%%key_placeholder/$key_placeholder/g"
     exit 0
@@ -163,7 +163,7 @@ if [ "$%%app_key" ];then
     | sed "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
     | sed "/%%footer/d"\
     | sed "s/%%params//g"
     exit 1

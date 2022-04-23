@@ -125,7 +125,7 @@ if [ "$%%app_pass" ];then
     | sed "s/%%message/<p><b>! Pass code is wrong, please try again<\/b><\/p>/g" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
+    | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
     | sed "/%%footer/d"\
     | sed "s/?%%params//g"
     exit 1
