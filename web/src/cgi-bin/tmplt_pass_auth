@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#read posted param 
-input=`dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -`
+# load authkey
 authkey="%%authkey"
 
 echo "Content-Type: text/html"
@@ -53,21 +52,24 @@ done
 
 # parse QUERY STRING
 echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
-
-# parse POST param
-echo $input | sed "s/\`//g" | sed "s/&/\n/g"  | sed -r "s/%%app_pass(.*)=/%%app_pass=/g" \
-| php -r "echo urldecode(file_get_contents('php://stdin'));"  >> ../tmp/${param}
 cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
-
 chmod 755 ../tmp/${param}.load
 
 # load query string
-.  ../tmp/${param}.load
-rm  ../tmp/${param}*
+. ../tmp/${param}.load
 
+# dump posted data
+dummy_session="$param.post"
+mkdir ../tmp/$dummy_session
+dd bs=${CONTENT_LENGTH} of=../tmp/$dummy_session/input 2>/dev/null
+../bin/parse.sh $dummy_session urlenc
+
+# load posted data
+app_pass=`cat ../tmp/$dummy_session/%%app_pass*`
+rm -rf ../tmp/${param}*
 
 # render auth form
-if [ ! "$%%app_pass" ];then
+if [ ! "$app_pass" ];then
 
   if [ "$req" ];then
     req="?req=`echo $req`"
@@ -94,9 +96,9 @@ fi
 
 
 # Authentication 
-if [ "$%%app_pass" ];then
+if [ "$app_pass" ];then
 
-  pass_code_chk=`${small_shell_path}/bin/meta get.shared_pass:%%app | grep "^${%%app_pass}$"`
+  pass_code_chk=`${small_shell_path}/bin/meta get.shared_pass:%%app | grep "^${app_pass}$"`
 
   if [ "$pass_code_chk" ];then
     # use app authkey for session controll

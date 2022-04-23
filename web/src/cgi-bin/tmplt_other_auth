@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#read posted param 
-input=`dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -`
+# load authkey
 authkey="%%authkey"
 
 echo "Content-Type: text/html"
@@ -53,21 +52,24 @@ done
 
 # parse QUERY STRING
 echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
-
-# parse POST param
-echo $input | sed "s/\`//g" | sed "s/&/\n/g"  | sed -r "s/%%app_user(.*)=/%%app_user=/g" \
-| php -r "echo urldecode(file_get_contents('php://stdin'));"  >> ../tmp/${param}
 cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
-
 chmod 755 ../tmp/${param}.load
 
 # load query string
-.  ../tmp/${param}.load
-rm  ../tmp/${param}*
+. ../tmp/${param}.load
 
+# dump posted data
+dummy_session="$param.post"
+mkdir ../tmp/$dummy_session
+dd bs=${CONTENT_LENGTH} of=../tmp/$dummy_session/input 2>/dev/null
+../bin/parse.sh $dummy_session urlenc
 
-# render login button if thre is no step in log for audit matter
-if [ ! "$%%app_step_in_token" ];then
+# load posted data
+app_step_in_token=`cat ../tmp/$dummy_session/%%app_step_in_token`
+rm -rf ../tmp/${param}*
+
+# render login button if there is no step in log for audit matter
+if [ ! "$app_step_in_token" ];then
 
   # regenerate  query string
   if [ "$req" ];then
@@ -95,7 +97,7 @@ fi
 
 
 # Just check user name
-if [ "$%%app_step_in_token" ];then
+if [ "$app_step_in_token" ];then
   # auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} force_user:${%%app_user} remote_addr:${remote_addr}`
   auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr}`
   session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
