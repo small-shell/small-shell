@@ -149,14 +149,14 @@ sudo useradd -s /sbin/nologin small-shell
 # update apt list
 sudo apt-get update
 
-##install httpd (e.g. apache, Ubuntu)
+# install httpd (e.g. apache)
 sudo apt-get install apache2
 sudo a2enmod cgid
 #sudo systemctl start apache2
 sudo service apache2 start
 sudo update-rc.d apache2 defaults
 
-##install php library, it will be used for url encoding (required)
+# install php library, it will be used for url encoding (required)
 sudo apt-get install php
 
 ##install jq
