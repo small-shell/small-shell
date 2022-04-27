@@ -65,7 +65,10 @@ dd bs=${CONTENT_LENGTH} of=../tmp/$dummy_session/input 2>/dev/null
 ../bin/parse.sh $dummy_session urlenc
 
 # load posted data
-app_pass=`cat ../tmp/$dummy_session/%%app_pass*`
+ls ../tmp/$dummy_session/%%app_pass* >/dev/null 2>&1
+if [ $? -eq 0 ];then
+  app_pass=`cat ../tmp/$dummy_session/%%app_pass*`
+fi
 rm -rf ../tmp/${param}*
 
 # render auth form

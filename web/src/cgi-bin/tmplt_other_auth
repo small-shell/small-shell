@@ -65,7 +65,10 @@ dd bs=${CONTENT_LENGTH} of=../tmp/$dummy_session/input 2>/dev/null
 ../bin/parse.sh $dummy_session urlenc
 
 # load posted data
-app_step_in_token=`cat ../tmp/$dummy_session/%%app_step_in_token`
+ls ../tmp/$dummy_session/%%app_step_in_token >/dev/null 2>&1
+if [ $? -eq 0 ];then
+  app_step_in_token=`cat ../tmp/$dummy_session/%%app_step_in_token`
+fi
 rm -rf ../tmp/${param}*
 
 # render login button if there is no step in log for audit matter

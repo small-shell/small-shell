@@ -62,8 +62,16 @@ dd bs=${CONTENT_LENGTH} of=../tmp/$dummy_session/input 2>/dev/null
 ../bin/parse.sh $dummy_session urlenc
 
 # load posted data
-app_key=`cat ../tmp/$dummy_session/%%app_key*`
-key_placeholder=`cat ../tmp/$dummy_session/key_placeholder`
+ls ../tmp/$dummy_session/%%app_key* >/dev/null 2>&1
+if [ $? -eq 0 ];then
+  app_key=`cat ../tmp/$dummy_session/%%app_key*`
+fi
+
+ls ../tmp/$dummy_session/key_placeholder >/dev/null 2>&1
+if [ $? -eq 0 ];then
+  key_placeholder=`cat ../tmp/$dummy_session/key_placeholder`
+fi
+
 rm -rf ../tmp/${param}*
 
 
