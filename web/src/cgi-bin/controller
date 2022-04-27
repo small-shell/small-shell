@@ -82,7 +82,7 @@ fi
 
 if [ "$req" = "logout" ]; then
   sudo -u small-shell ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?&req=main\">"
+  echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?req=main\">"
   exit 0
 fi
 

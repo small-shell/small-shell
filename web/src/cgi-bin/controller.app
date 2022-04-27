@@ -91,7 +91,7 @@ if [ "$auth" = "required" ];then
 
   if [ "$req" = "logout" ]; then
     sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session}
-    echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?&req=main\">"
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=main\">"
     exit 0
   fi
 
