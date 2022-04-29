@@ -19,6 +19,8 @@ body {
 @media screen and (max-width: 641px) {
   .container {
     margin: 0 auto;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 }
 
@@ -53,7 +55,6 @@ a {
     flex-wrap:wrap;
     align-items: baseline;
     margin-bottom: -16px;
-    color: #dcdcdc;
   }
 }
 
@@ -945,9 +946,8 @@ input[type="file"] {
 
   .main .description {
     flex: none;
-    max-width: 780px;
     text-align: left;
-    padding-top: 24px;
+    padding: 24px 42px;
   }
 
   .main .description h1 {
@@ -1009,18 +1009,18 @@ input[type="file"] {
 @media screen and (max-width: 640px){
 
  .main {
-   padding-top: 24px;
+   padding: 12px 12px;
    max-width: 98%;
    height: 68%;
   }
 
   .main .description {
+    padding: 12px 0px;
     flex: none;
-    text-align: left;
   }
 
   .main .description h1 {
-    font-size: 180%;
+    color: #5A595E;
   }
 
   .main .description ul {
@@ -1034,7 +1034,6 @@ input[type="file"] {
     margin: 0px;
     overflow:auto;
   }
-
 
   .main .calendar {
     z-index: 1;
@@ -1089,6 +1088,84 @@ input[type="file"] {
   text-decoration: none;
 }
 
+.main ul {
+  list-style: none;
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 24px;
+}
+
+.main li {
+  width: 98%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width :220px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.main li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
+    font-size: 80%;
+    text-align: left;
+    color: #444444;
+    min-width:100%;
+    font-weight: 300;
+    margin-right: 2px;
+    letter-spacing: .09em;
+    padding: 6px 6px;
+    font-weight: bold;
+}
+
+.main li input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='date']):not([type='datetime-local']),
+.main li textarea {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  flex: auto;
+  border-radius: 4px;
+}
+
+.main li select {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  flex: auto;
+  border-radius: 4px;
+}
+
+.main input[type="date"],
+.main input[type="datetime-local"] {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid #d3d3d3;
+  flex: auto;
+  border-radius: 4px;
+}
+
+.main input[type="radio"],
+.main input[type="checkbox"]{
+  margin-top: 6px;
+}
+
+.main li pre {
+  text-align: left;
+  background: #f5f5f5;
+  font-size: 12px;
+  margin:0;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  letter-spacing: .09em;
+  overflow:auto;
+  flex: auto;
+}
 
 .footer {
   color: #696969;
