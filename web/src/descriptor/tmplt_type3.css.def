@@ -285,6 +285,7 @@ a {
   letter-spacing: .09em;
   padding: 8px 16px;
   border: 2px solid #E6E6FA;
+  background: white;
   border-radius: 3px;
   font-size: 80%;
 }
