@@ -2032,7 +2032,7 @@ if [ "$param" = "-app" ];then
           chmod 700 $ROOT/users/${app}.${app_user_id}/hash
           authkey=`echo "${app_user_name}:${hash_gen_key}" | base64 -w 0`
 
-          # deploy psscode and other APP
+          # deploy none auth APP
           cat $ROOT/web/src/cgi-bin/controller.app.4 | sed "s/%%authkey/$authkey/g" \
           | sed "s/%%app/$app/g" | sed "s/%%auth//g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
