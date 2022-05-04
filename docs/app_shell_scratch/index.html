@@ -564,7 +564,7 @@ cat ../descriptor/team_main.html.def | sed &quot;s/^ *&lt;/&lt;/g&quot; \
 
 </code></pre>
 <h4 id="4-disable-portal">4. Disable portal</h4>
-<p>If your APP will not use portal, please change main request to table in controller by adding </p>
+<p>If your APP will not use portal, please change main request to table by adding these codes.</p>
 <pre><code>sudo vi /usr/lib/cgi-bin/$app
 --code--
 if [ &quot;$req&quot; = &quot;main&quot; ];then
