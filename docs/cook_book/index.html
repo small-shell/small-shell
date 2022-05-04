@@ -107,25 +107,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#cook-prototype" class="nav-link">Cook prototype</a>
+            <li class="nav-item" data-level="1"><a href="#cook-book" class="nav-link">Cook book</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#cook-app" class="nav-link">Cook APP</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#cook-form" class="nav-link">Cook Form</a>
+            <li class="nav-item" data-level="2"><a href="#cook-prototype-app" class="nav-link">Cook prototype APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#cook-job" class="nav-link">Cook Job</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#publish-cook-book-as-a-template" class="nav-link">Publish cook book as a template</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#published-sample-code" class="nav-link">Published sample code</a>
+            <li class="nav-item" data-level="2"><a href="#htmlcss-design-recipe" class="nav-link">HTML/CSS design recipe</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -136,8 +124,10 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="cook-prototype">Cook prototype</h1>
-<p>Let's create proto type, in this sample we would like to cook library booking APP. we will use Base APP for admin, and then create scratch APP for end user.</p>
+<h1 id="cook-book">Cook book</h1>
+<p>In this course, we would like to show how you can utilize APPs { Base APP, Scratch APP, Form } and we would like to also share the recipe of design change of HTML/CSS descriptor.</p>
+<h2 id="cook-prototype-app">Cook prototype APP</h2>
+<p>In this protoype scinario we would like to cook library booking APP. Base APP will be used for data management of admin, Scrath APP will be used for data search for end user and Form will be used for request form. </p>
 <h5 id="app">APP</h5>
 <pre><code>APP for admin = Base APP
 APP for user  = book_search, req.form
@@ -202,7 +192,7 @@ primary databox: book.res
 sudo -u small-shell /usr/local/small-shell/bin/meta get.link:book_search
 sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location@book_search
 </code></pre>
-<h2 id="cook-app">Cook APP</h2>
+<h3 id="cook-app">Cook APP</h3>
 <h4 id="update-portal">update portal</h4>
 <p>Portal could be used for some description of the APP, lets modify descpription section.</p>
 <pre><code>sudo vi /var/www/descriptor/book_search_main.html.def
@@ -337,7 +327,7 @@ IP_whitelisting: no
 Included keys: requester,email,book_name
 Access URL: https://**-**-**/cgi-bin/booking_req
 </code></pre>
-<h2 id="cook-form">Cook Form</h2>
+<h3 id="cook-form">Cook Form</h3>
 <p>Once Form APP is generated, let's cook the codes.</p>
 <ol>
 <li>Insert book name using QUERY STRING</li>
@@ -414,10 +404,7 @@ fi
 <p>Once you click Reserve button, request form must contain book information
 <img alt="Screenshot" src="../img/book_req_form.png" /></p>
 <h3 id="finalize">Finalize</h3>
-<ol>
-<li>Add status and message to end user page</li>
-<li>Change color if you want</li>
-</ol>
+<p>Add status and message to end user page</p>
 <h6 id="add-status-and-message-to-end-user-page">Add status and message to end user page</h6>
 <pre><code>sudo vi /var/www/bin/booking_req_get.sh
 --code--
@@ -428,31 +415,20 @@ cat ../tmp/$session/dataset.0.1 | sed &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; 
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_req_status.png" /></p>
-<h5 id="change-color">Change color</h5>
-<p>You can change color by updating $app.css.def</p>
-<pre><code>sudo vi /var/www/descriptor/book_search.css.def
+<h3 id="publish-cook-book-as-a-template">Publish cook book as a template</h3>
+<p>You can publish your APP template with copying bin/${APP}<em> and cgi-bin/${APP}</em> descriptor/${APP}*,
+if you add deploy.sh as well to the repository, other user can import APP very easily. following is sample code of deploy.sh</p>
+<pre><code>cd $HOME
+git clone https://github.com/21it-org/21it/templates
+cd cookbook
+sudo ./deploy.sh
 </code></pre>
-<pre><code>#----------------classes---------------#
-# Change header charactor
-.flex-header
-
-# Change menue charactor
-.container .right-header a 
-.console-container .right-header a
-
-# Change menu
-.right-header nav 
-.right-header nav.open-menu
-
-# Change even button
-.right-header .even-btn-menu
-
-# Change button
-.main button
-.form-box button
-#----------------------------------------#
-</code></pre>
-<h2 id="cook-job">Cook Job</h2>
+<p>This is sample code of
+<a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/deploy.sh">deploy.sh</a></p>
+<h4 id="published-sample-code">Published sample code</h4>
+<p>please check it !
+<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">cookbook on github</a></p>
+<h3 id="cook-job">Cook Job</h3>
 <p>Let's create job for updating available status. this job can prevent miss to update available status even if admin return book to shelve and update book resource status.</p>
 <h4 id="create-batch-script">Create batch script</h4>
 <p>You can use small-shell basic parameters and sys user key if you add script to util/scripts dir.</p>
@@ -551,19 +527,114 @@ LATEST STATUS OF JOB
 2022-03-20 02:45:41 book_master_status_update successfully completed
 2022-03-20 02:46:01 del_session successfully completed
 </code></pre>
-<h2 id="publish-cook-book-as-a-template">Publish cook book as a template</h2>
-<p>You can publish your APP template with copying bin/${APP}<em> and cgi-bin/${APP}</em> descriptor/${APP}*,
-if you add deploy.sh as well to the repository other user can import APP very easily, following is sample code of deploy.sh</p>
-<pre><code>cd $HOME
-git clone https://github.com/21it-org/21it/templates
-cd cookbook
-sudo ./deploy.sh
+<h2 id="htmlcss-design-recipe">HTML/CSS design recipe</h2>
+<p>In this section, you can learn how you can change design of main page of your APP. let's create main page with no authentication and no databox for making the easiest example.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+app_name: static_site
+Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
+primary databox: noe
 </code></pre>
-<p>This is sample code of
-<a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/deploy.sh">deploy.sh</a></p>
-<h2 id="published-sample-code">Published sample code</h2>
-<p>please check it !
-<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">cookbook on github</a></p></div>
+<p>Then default page will be generated like this.
+<img alt="Screenshot" src="../img/static_site_default.png" /></p>
+<h3 id="cook-main-page">Cook main page</h3>
+<p>Le's move on to cook main page, </p>
+<pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please update under "main" class, then you can use light css framework</p>
+</div>
+<h4 id="update-left-header">Update left header</h4>
+<p>You can modify links and logo to the left header, in this example link to Docs is added.</p>
+<pre><code>&lt;div class=&quot;left-header&quot;&gt;
+  &lt;a href=&quot;https://github.com&quot;&gt;&lt;img src=&quot;../GitHub-Mark-32px.png&quot;&gt;&lt;/a&gt;
+  &lt;a href=&quot;https://small-shell.org&quot;&gt;&lt;h2&gt;Docs&lt;/h2&gt;&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+<h4 id="implement-table">Implement table</h4>
+<p>For implementing table, you must use some classes. table must be contain "table-box" class and "table" class. and header should have "table-header" class.</p>
+<pre><code>&lt;div class=&quot;table-box&quot;&gt;
+  &lt;div class=&quot;table&quot;&gt;
+    &lt;ul&gt;
+      &lt;li class=&quot;table-header&quot;&gt;
+        &lt;p&gt;column1&lt;/p&gt;
+        &lt;p&gt;column2&lt;/p&gt;
+        &lt;p&gt;column3&lt;/p&gt;
+        &lt;p&gt;column4&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;data1.column1&lt;/p&gt;
+        &lt;p&gt;data1.column2&lt;/p&gt;
+        &lt;p&gt;data1.column3&lt;/p&gt;
+        &lt;p&gt;data1.column4&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;div&gt;
+&lt;/div&gt;
+</code></pre>
+<h5 id="add-internal-page-link-to-the-left-navi">Add internal page link to the left navi</h5>
+<p>In this example, page will have 3 section including table section.</p>
+<pre><code>&lt;div class=&quot;left-nav&quot;&gt;
+ &lt;a href=&quot;#section1&quot;&gt;&lt;p&gt;section1&lt;/p&gt;&lt;/a&gt;
+ &lt;a href=&quot;#section2&quot;&gt;&lt;p&gt;section2&lt;/p&gt;&lt;/a&gt;
+ &lt;a href=&quot;#section3&gt;&lt;p&gt;section3p&gt;&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+<h5 id="use-button">Use button</h5>
+<p>Button must have "button" class.</p>
+<pre><code>&lt;button class=&quot;button&quot;&gt;Sample button&lt;/button&gt;
+</code></pre>
+<h5 id="use-image">Use image</h5>
+<p>In this example, we would like to use GitHub logo for image. please upload logo to "/var/www/html" dir if you are using ubuntu&amp;apache2. then write down the path to the HTML page.</p>
+<pre><code>&lt;a href=&quot;https://github.com&quot;&gt;&lt;img src=&quot;../GitHub-Mark-32px.png&quot;&gt;&lt;/a&gt;
+</code></pre>
+<h5 id="update-even-menu">Update even menu</h5>
+<p>In this example, links in right header menu will be external links and mail addr.</p>
+<pre><code>sudo vi /var/www/descriptor/common_parts/static_site_common_menu
+</code></pre>
+<pre><code>&lt;li&gt;&lt;a href=&quot;&quot;&gt;LINK 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;&quot;&gt;LINK 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;mailto:address&quot;&gt;MAIL&lt;/a&gt;&lt;/li&gt;
+</code></pre>
+<h5 id="add-footer">Add footer</h5>
+<p>Please use footer class for making footer.</p>
+<pre><code>&lt;div class=&quot;footer&quot;&gt;
+  &lt;p&gt;powered by small-shell.org&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<h5 id="completed-image">completed image</h5>
+<p>Please see the entire sample code here <a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/recipe/sample/static_site_main.html.def">sample</a>,</p>
+<p><img alt="Screenshot" src="../img/site_image.png" /></p>
+<h5 id="change-color">Change color</h5>
+<p>You can change color by updating $app.css.def</p>
+<pre><code>sudo vi /var/www/descriptor/static_site.css.def
+</code></pre>
+<pre><code>#----------------classes---------------#
+# Change header color
+.flex-header
+
+# Change right menu charactor
+.right-header a
+
+# Change right menu background and border color
+.right-header nav 
+.right-header nav.open-menu
+
+# Change right header button (=)
+.right-header .even-btn-menu
+
+# Change button
+.main button
+
+# Change table header of main
+.main .table-header
+#----------------------------------------#
+</code></pre>
+<h3 id="dist-cmd-export-as-static-site">dist cmd {export as static site}</h3>
+<p>You can export main page as static stie. then please copy the html to /var/www/html or other static directory.</p>
+<pre><code>/usr/locla/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
+</code></pre></div>
             </div>
         </div>
 

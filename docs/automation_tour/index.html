@@ -48,6 +48,10 @@
 </li>
                                     
 <li>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+</li>
+                                    
+<li>
     <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
 </li>
                                     
@@ -56,7 +60,7 @@
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+    <a href="../cook_book/" class="dropdown-item">Cook Book</a>
 </li>
                                     
 <li>
@@ -76,7 +80,7 @@
 
                     <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a rel="prev" href="../data_shell_tour/" class="nav-link">
+                                <a rel="prev" href="../cook_book/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -141,7 +145,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="extended-cron">Extended cron</h1>
-<p>small-shell could provide Job automation &amp; data Exchagne framework by extending cron function (e-cron). you can define job relation ship between several hosts. you can also exchange DATA between several hosts.  </p>
+<p>small shell could provide Job automation &amp; data Exchagne framework by extending cron function (e-cron). you can define job relation ship between several hosts. you can also exchange DATA between several hosts.  </p>
 <h2 id="job-automation-by-e-cron">Job automation by e-cron</h2>
 <p>e-cron could provide following function on Linux platform.</p>
 <ol>
@@ -150,6 +154,7 @@
 <li>Prevent double start of same job</li>
 <li>Logging job result and command dump</li>
 <li>Make relationship between jobs or hosts using messaing function</li>
+<li>Provide dataExchange platform between small shell hosts</li>
 </ol>
 <h4 id="basic-concept">Basic concept</h4>
 <p>Basically e-cron extends cron function by providing utility scripts. and wrapper script that will work as job management framework. following ideas are basic functions of e-cron.</p>
@@ -167,7 +172,7 @@ CLI  &lt;-&gt; wrapper.sh &lt;- script #result
 <pre><code>Message/DataExchange, prevent_double_start, logging, dump_command_result
 </code></pre>
 <h4 id="required">Required</h4>
-<p>It' required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start/">Quickstart</a>.</p>
+<p>It's required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start/">Quickstart</a>.</p>
 <h5 id="dir">dir</h5>
 <p>Please upload script on following directory.</p>
 <pre><code>/usr/local/small-shell/util/scripts
@@ -188,7 +193,7 @@ sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 # -&gt; dialog will be started
 </code></pre>
-<p>Following is an example of making job that will execuete ls command. it's just an examplem, you can execute any unix commands or any scripts.</p>
+<p>Following is an example of making job that will execuete script. it's just an examplem, you can execute any unix commands or any scripts.</p>
 <h6 id="dialog_1">Dialog</h6>
 <pre><code>job name: job1
 Type of job (1.job automation | 2.file exchange) : 1
@@ -345,7 +350,7 @@ cat /usr/local/small-shell/util/scripts/log/world.log
 Mon Jan  3 04:38:47 UTC 2022 World
 </code></pre>
 <h2 id="job-relationship-with-hosts">Job relationship with hosts</h2>
-<p>If you will define relation ship between serveral hosts, you need to generate Base APP first on HUB server. #see <a href="../app_shell_tour/">APP shell tour</a> for further details for Base APP. <br />
+<p>If you will define relation ship between serveral hosts, you need to generate Base APP first on HUB server. #see <a href="../app_shell_tour/">APP shell tour</a> for further details for Base APP.
 Once API HUB is ready, you can define job relationship using message.</p>
 <pre><code> -----------------------------------------------
  | API Server #MessageExchange                 |
@@ -358,7 +363,7 @@ Once API HUB is ready, you can define job relationship using message.</p>
 <h5 id="confirm-base-information-at-api-hub-server">confirm base information at API HUB server</h5>
 <h6 id="hub">@hub</h6>
 <pre><code>cat /usr/local/small-shell/web/base | grep hubapi
-hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot;
+hubapi=&quot;http://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
 cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
@@ -399,7 +404,7 @@ SCHEDULE:1 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;done.1&quot; #modify
-hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot; #modify
+hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
 api_authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
@@ -414,7 +419,7 @@ CHEDULE:2 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
 input_message=&quot;done.1&quot;
 output_message=&quot;&quot;
-hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot; #modify
+hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
 authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
@@ -444,7 +449,7 @@ filter: job2
 2022-01-07 14:19:12 job2 successfully completed
 </code></pre>
 <h2 id="data-file-exchange">DATA (file) exchange</h2>
-<p>DATA Exchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
+<p>e-cron could be dataExchange platform between several hosets . dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
 <pre><code> -----------------------------------------------
  | API Server #DataExchange                    | -&gt; HUB dir: /usr/local/small-shell/util/e-cron/que/file
  -----------------------------------------------
@@ -456,7 +461,7 @@ filter: job2
 <h5 id="confirm-base-information-at-api-hub-server_1">confirm base information at API HUB server</h5>
 <h6 id="hub_1">@hub</h6>
 <pre><code>cat /usr/local/small-shell/web/base | grep hubapi
-hubapi=&quot;http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron&quot;
+hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
 
 cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
@@ -491,7 +496,7 @@ Week  [ any | mon - sun ]: any
 Type of file exchange (push | get): push
 local directory: /tmp
 file_name: dummy*
-HUB API URL: http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron
+HUB API URL: https://ec2-**-**-**-**.com/cgi-bin/e-cron
 API authkey: YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****
 
 # enable job
@@ -511,7 +516,7 @@ Week  [ any | mon - sun ]: any
 Type of file exchange (push | get): get
 local directory: /tmp
 file_name: dummy*
-HUB API URL: http://ec2-**-**-**-**.us-west-2.compute.amazonaws.com/cgi-bin/e-cron
+HUB API URL: https://ec2-**-**-**-**.com/cgi-bin/e-cron
 API authkey: YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****
 
 # enable job
