@@ -48,10 +48,6 @@
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
-</li>
-                                    
-<li>
     <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
 </li>
                                     
@@ -60,7 +56,7 @@
 </li>
                                     
 <li>
-    <a href="../cook_book/" class="dropdown-item">Cook Book</a>
+    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
 </li>
                                     
 <li>
@@ -85,7 +81,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../data_shell_tour/" class="nav-link">
+                                <a rel="next" href="../app_shell_form/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -173,7 +169,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="app-shell">APP Shell</h1>
-<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so we recommend to generate scratch APP for editting codes freely without any impact to base layer.</p>
+<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so it's not recommended to edit codes. instead of that, you can generate scratch APP and edit code freely without any impact to base layer.</p>
 <h6 id="types-of-small-shell-app">Types of small-shell APP</h6>
 <table>
 <thead>
@@ -221,19 +217,11 @@
 </tr>
 <tr>
 <td><a href="../app_shell_scratch/">Other</a></td>
-<td>Any #Oauth other</td>
+<td>any #Oauth other</td>
 <td>portal,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Limitted &amp; controllable</td>
-</tr>
-<tr>
-<td><a href="../app_shell_scratch/">None auth</a></td>
-<td>No authentication</td>
-<td>portal,table,form</td>
-<td>specific databox</td>
-<td>editable</td>
-<td>Basically read only</td>
 </tr>
 </tbody>
 </table>
@@ -241,7 +229,7 @@
 <p>Please setup OS Env beorehand refering to <a href="../quick_start/">Quick start</a>,
 then start dialog by gen command.</p>
 <h2 id="gen-base-app">Gen Base APP</h2>
-<p>Once OS setup has been done, let's tart to generate Base APP through gen dialog.</p>
+<p>It could deploy small shell to the web server through gen dialog.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app 
 #-&gt; dialog will be started
 </code></pre>
@@ -284,12 +272,12 @@ You can define parameters in the dialog. and change them anytime later.</p>
 "mls" means member list. if you want to import user who already created in small-shell, please use mls.</p>
 </div>
 <h3 id="generate-databox-by-dialog-eg-itemdb">Generate databox by dialog #e.g item.db</h3>
-<p>adm/gen command can generate databox through dialog like following.</p>
+<p>You can generate databox using gen command.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; dialog will be started
 </code></pre>
 <h3 id="hashid">Hashid</h3>
-<p>Basically primary_key value could not be duplicated for normalization of databox. but in many cases you must want to use duplicatable value. and If you want to disable the restriction, please use <b>hashid</b> as primary_key in the dialog.</p>
+<p>Basically primary_key value could not be duplicated for normalization of databox. but in many cases you must want to use duplicated value. and If you want to disable the restriction, please use <b>hashid</b> as primary_key in the dialog.</p>
 <p>following is an example of using hashid</p>
 <pre><code># result of dialog
 databox_name:inventory.db
@@ -414,8 +402,8 @@ col4_required=&quot;yes&quot;
 <h6 id="exec-databox-batch">Exec databox batch</h6>
 <pre><code>sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
 </code></pre>
-<p>Then item.db will be generated. you can add the data based on the db.def definition.</p>
-<p><img alt="Screenshot" src="../img/item_new.png" /></p>
+<p>Following form will be generated
+<img alt="Screenshot" src="../img/item_new.png" /></p>
 <h2 id="change-data-structure">Change data structure</h2>
 <h5 id="add-del-column">Add | Del Column</h5>
 <p>Column can be added or deleted by gen command</p>
@@ -521,12 +509,10 @@ sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
 
 # Directory for APP 
 /usr/lib/cgi-bin
- |- shell.app # Base APP controller
- |- shell.auth # Base APP authenticator
+ |- shell.app # work as Controller
+ |- shell.auth # for authentication
  |- api
  |- e-cron
- |- ${app} # scratch APP controller
- |- auth.${app} # scratch APP authenticator
 
 /var/www/bin　-&gt; /usr/lib/bin #symlink for ubuntu apache2
  |- action_scripts # work as Model
@@ -538,18 +524,18 @@ sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
 /var/www/tmp -&gt; /usr/lib/tmp #symlink for ubuntu apache2
 </code></pre>
 <h5 id="data-flow">Data flow</h5>
-<p>Following is a data flow of APP shell it will be used as Base APP or Scratch APP
+<p>Following is a data flow of Base App that will be generated with databox <br />
 <img alt="Screenshot" src="../img/standard_flow.png" /></p>
 <h5 id="url-design">URL design</h5>
 <p>Query string will be loaded same name of valiables in the APP</p>
-<pre><code>https://$[server]/cgi-bin/${app}?req=get&amp;databox=item.db&amp;id=1234 ..
+<pre><code>https://$[server]/cgi-bin/shell.app?req=get&amp;databox=item.db&amp;id=1234 ..
 
 These query string will be loaded as following value in the APP
 -&gt; req=get
 -&gt; databox=item.db
 -&gt; id=1234
 </code></pre>
-<h5 id="routing-in-controller-base-app">Routing in controller # Base APP</h5>
+<h5 id="routing-in-controller-shellapp">Routing in controller #shell.app</h5>
 <p>Routings to the action scripts are defined in the controller script.</p>
 <pre><code>sudo vi $cgi-bin/shell.app (e.g. /usr/lib/cgi-bin/shell.app)
 
@@ -574,7 +560,7 @@ case &quot;$req&quot; in
 <li>Insert dynamic contents to %%tags</li>
 <li>Render pure HTML to client</li>
 </ol>
-<h6 id="load-query-string-eg-databoxidsession-that-will-be-passsed-from-controller-as-parameter">Load QUERY string (e.g. $databox,$id,$session) that will be passsed from controller as parameter</h6>
+<h6 id="load-query-string-eg-databoxidsession-that-will-be-passsed-from-app-as-parameter">Load QUERY string (e.g. $databox,$id,$session) that will be passsed from APP as parameter</h6>
 <pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
@@ -790,7 +776,7 @@ sudo /usr/local/small-shell/adm/ops add.tag:item.db{test}
 <h5 id="delete-tag-on-small-shell-server">Delete tag on small-shell server</h5>
 <pre><code>sudo /usr/local/small-shell/adm/ops del.tag:$databox{word}
 (e.g.)
-sudo /usr/local/small-shell/adm/ops del.tag:item.db{test}
+sudo ./ops del.tag:item.db{test}
 </code></pre>
 <p>This is example of tag of word{test},
 If you click the tag, search result will be shown.
@@ -843,7 +829,7 @@ curl -X POST "${commandapi}?databox=$databox&amp;id=$id" -H "X-small-shell-authk
 </code></pre>
 <h4 id="from-windows-power-shell-with-curl">From Windows power shell with curl</h4>
 <pre><code>@External system (windwos)
-$api_authkey="XXXX" #please input authkey that you confirmed
+$api_authkey="YXBpOjkzYzI4YjMwZjBjMzA3ZmM4Nzg5NDM5ZjVkOGRhNTlkZTcwYzIzMjIK" #please input authkey that you confirmed
 $commandapi="https://XXXX/cgi-bin/api"
 $databox="XXXX"
 
