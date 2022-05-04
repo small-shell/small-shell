@@ -63,6 +63,8 @@ a {
   line-height: 0.8em;
   font-size: 80%;
   flex: auto;
+  display:flex;
+  flex-wrap:wrap;
   margin: auto;
   padding-top: 4px;
 }
@@ -76,7 +78,9 @@ a {
 .left-header a {
   color:inherit;
   text-decoration: none;
+  padding-right: 12px;
 }
+
 
 .right-header {
   font-weight: 300;
@@ -938,40 +942,27 @@ input[type="file"] {
 
   .main {
    padding-top: 24px;
-   height: 68%;
    display: flex;
    flex-wrap: wrap;
    justify-content: center;
    align-items: flex-start;
+   color: #5A595E;
   }
 
   .main .description {
     flex: none;
+    max-width: 84%;
     text-align: left;
     padding: 24px 42px;
   }
 
-  .main .description h1 {
+  .main h1 {
     font-size: 180%;
-    color: #5A595E;
   }
 
-  .main .description ul {
-    list-style: none;
-    margin: 0px;
-    padding: 0px;
-    margin-bottom: 28px;
+  .main p {
+   line-height: 1em;
   }
-
-  .main .description pre {
-    border-radius: 4px;
-    line-height: 1.4em;
-    margin: 0px;
-    margin-top: -12px;
-    padding: 8px 12px;
-    overflow:auto;
-  }
-
 
   .main .calendar {
     flex: auto;
@@ -1012,7 +1003,8 @@ input[type="file"] {
  .main {
    padding: 12px 12px;
    max-width: 98%;
-   height: 68%;
+   color: #5A595E;
+   overflow-wrap normal;
   }
 
   .main .description {
@@ -1020,20 +1012,8 @@ input[type="file"] {
     flex: none;
   }
 
-  .main .description h1 {
-    color: #5A595E;
-  }
-
-  .main .description ul {
-    list-style: none;
-    margin: 0px;
-    padding: 0px;
-    margin-bottom: 12px;
-  }
-
-  .main .description pre {
-    margin: 0px;
-    overflow:auto;
+  .main p {
+   line-height: 1em;
   }
 
   .main .calendar {
@@ -1067,7 +1047,16 @@ input[type="file"] {
 }
 
 .main a {
- color: #000080;
+ color: #07ADAF;
+}
+
+.main .table-header {
+  font-weight: 300;
+  font-weight: bold;
+  border-radius: 4px;
+  border: 1px dotted #c0c0c0;
+  color: white;
+  background: #696969;
 }
 
 .main button {
@@ -1168,15 +1157,38 @@ input[type="file"] {
   flex: auto;
 }
 
+@media screen and (min-width: 1200px) {
+
+  .left-nav {
+   top: 20px;
+   max-width: 200px;
+   padding-top: 12px;
+   padding-right: 48px; 
+   position: sticky;
+  }
+
+  .left-nav a {
+   text-decoration: none;
+   font-weight: bold;
+   color: #5A595E;
+ }
+
+}
+
+@media screen and (max-width: 1199px) {
+  .left-nav {
+   display:none;
+  }
+}
+
+
 .footer {
   color: #696969;
-  padding-top: 4px;
-  padding-right: 12px;
+  padding-top: 42px;
   font-weight: 300;
-  font-size: 60%;
-  text-align: right;
+  font-size: 80%;
+  text-align: center;
   bottom: 0;
   width: 100%;
-  font-weight: bold;
 }
 
