@@ -25,7 +25,7 @@
         </div>
         <div class="description">
           <h1>Hello Small Shell World, you must be %%user_name</h1>
-          <p>please update html definition refering to the <a href="https://small-shell/cook_book/#htmlcss-design-recipe">recipe</a></p>
+          <p>please update html definition refering to the <a href="https://small-shell.org/cook_book/#htmlcss-design-recipe">recipe</a></p>
           <a href="./%%app?%%session&req=table"><button class="button">SEARCH</button></a>
         </div>
      </div>
