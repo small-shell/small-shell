@@ -113,7 +113,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#job-relationship-with-hosts" class="nav-link">Job relationship with hosts</a>
+            <li class="nav-item" data-level="2"><a href="#define-job-relationship-between-hosts" class="nav-link">Define Job relationship between hosts</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -149,15 +149,15 @@
 <h2 id="job-automation-by-e-cron">Job automation by e-cron</h2>
 <p>e-cron could provide following function on Linux platform.</p>
 <ol>
-<li>Add job entry to cron throgh dialog</li>
+<li>Add job entry to cron through dialog</li>
 <li>Provide CLI status check tool</li>
 <li>Prevent double start of same job</li>
 <li>Logging job result and command dump</li>
 <li>Make relationship between jobs or hosts using messaing function</li>
-<li>Provide dataExchange platform between small shell hosts</li>
+<li>Provide dataExchange platform between small-shell hosts</li>
 </ol>
 <h4 id="basic-concept">Basic concept</h4>
-<p>Basically e-cron extends cron function by providing utility scripts. and wrapper script that will work as job management framework. following ideas are basic functions of e-cron.</p>
+<p>Basically e-cron extends cron function by providing utility scripts. and wrapper script will work as job management framework. following ideas are basic functions of e-cron.</p>
 <h6 id="dialog">DIALOG</h6>
 <pre><code>gen dialog -&gt; generate cron entry
 </code></pre>
@@ -260,7 +260,7 @@ Mon Jan  3 04:10:23 UTC 2022 Hello
 &gt; then input existing job name in the dialog
 </code></pre>
 <h5 id="define-job-relation-ship-in-same-host">Define Job relation ship in same host</h5>
-<p>If you want to define job relationship in same same host. please modify job definition directly. 
+<p>If you want to define job relationship in same same host, please modify job definition directly. 
 This is an exmaple of job relationship. messae wil be exchanged in the host.</p>
 <pre><code>job1.success@host1 --&gt; message (done.1) --&gt; job2@host1 #if message is raedy, kicked
 ! Once message is grabed, message will be cleared
@@ -349,7 +349,7 @@ Mon Jan  3 04:38:38 UTC 2022 Hello
 cat /usr/local/small-shell/util/scripts/log/world.log
 Mon Jan  3 04:38:47 UTC 2022 World
 </code></pre>
-<h2 id="job-relationship-with-hosts">Job relationship with hosts</h2>
+<h2 id="define-job-relationship-between-hosts">Define Job relationship between hosts</h2>
 <p>If you will define relation ship between serveral hosts, you need to generate Base APP first on HUB server. #see <a href="../app_shell_tour/">APP shell tour</a> for further details for Base APP.
 Once API HUB is ready, you can define job relationship using message.</p>
 <pre><code> -----------------------------------------------
@@ -449,7 +449,7 @@ filter: job2
 2022-01-07 14:19:12 job2 successfully completed
 </code></pre>
 <h2 id="data-file-exchange">DATA (file) exchange</h2>
-<p>e-cron could be dataExchange platform between several hosets . dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
+<p>e-cron can be dataExchange platform between several hosets . dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
 <pre><code> -----------------------------------------------
  | API Server #DataExchange                    | -&gt; HUB dir: /usr/local/small-shell/util/e-cron/que/file
  -----------------------------------------------
@@ -467,7 +467,7 @@ cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
 <h4 id="dataexchange-job">DataExchange Job</h4>
-<p>This is exmpale of exchange dummy from host1 to host2 through HUB API.</p>
+<p>This is exmpale of exchange dummy file from host1 to host2 through HUB API.</p>
 <pre><code># data_push@hostA ---&gt; dummy file ---&gt; data_get@hostB
 ! file will not be cleared even if it's synced to other hosts
 </code></pre>
@@ -551,7 +551,7 @@ dummy1 dummy2 dummy3 #data is synced to local dir
 <pre><code>dir: /usr/local/small-shell/util/que/common
 </code></pre>
 <h5 id="function">function</h5>
-<p>Script can load valuables that is in the que file. For examaple mailque contain subjects, mailto, mailfrom, contents. and </p>
+<p>Script can load parameters that is in the que file. For examaple mailque contain subjects, mailto, mailfrom, contents. and </p>
 <pre><code>push   -&gt; que: mail           -&gt; mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID    
 script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID.load
 </code></pre>
@@ -683,7 +683,7 @@ que=&quot;mail&quot;
 </tbody>
 </table>
 <h2 id="util-scripts-for-e-cron">Util scripts for e-cron</h2>
-<p>Scripts are provided on following directory.</p>
+<p>Util scripts are provided on following directory.</p>
 <pre><code>ls /usr/local/small-shell/util/scripts
 </code></pre>
 <p>Usage is written in the shell header. please check more command.</p>

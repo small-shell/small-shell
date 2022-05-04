@@ -405,7 +405,6 @@ fi
 <img alt="Screenshot" src="../img/book_req_form.png" /></p>
 <h3 id="finalize">Finalize</h3>
 <p>Add status and message to end user page</p>
-<h6 id="add-status-and-message-to-end-user-page">Add status and message to end user page</h6>
 <pre><code>sudo vi /var/www/bin/booking_req_get.sh
 --code--
 # gen read only datas
@@ -416,8 +415,8 @@ cat ../tmp/$session/dataset.0.1 | sed &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; 
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_req_status.png" /></p>
 <h3 id="publish-cook-book-as-a-template">Publish cook book as a template</h3>
-<p>You can publish your APP template with copying bin/${APP}<em> and cgi-bin/${APP}</em> descriptor/${APP}*,
-if you add deploy.sh as well to the repository, other user can import APP very easily. following is sample code of deploy.sh</p>
+<p>You can publish your APP template with copying bin/${APP}<em> and cgi-bin/${APP}</em> descriptor/${APP}*.
+If you add deploy.sh as well to the repository, other user can import APP very easily.</p>
 <pre><code>cd $HOME
 git clone https://github.com/21it-org/21it/templates
 cd cookbook
@@ -487,7 +486,7 @@ exit 0
 <pre><code>sudo /usr/local/small-shell/adm/ops set.attr:sys{rw}
 </code></pre>
 <h4 id="push-job-to-small-shell">Push job to small shell</h4>
-<p>You can put job to small shell automation framework very easily, please check detail at <a href="../automation_tour/">e-cron</a> tour.</p>
+<p>You can put job to small shell automation framework very easily. please check detail at <a href="../automation_tour/">e-cron</a> tour.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>Dialog will be started.</p>
@@ -538,7 +537,7 @@ primary databox: noe
 <p>Then default page will be generated like this.
 <img alt="Screenshot" src="../img/static_site_default.png" /></p>
 <h3 id="cook-main-page">Cook main page</h3>
-<p>Le's move on to cook main page, </p>
+<p>Let's move on to cook main page, </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
 </code></pre>
 <div class="admonition note">

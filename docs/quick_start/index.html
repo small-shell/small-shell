@@ -180,7 +180,7 @@ sudo visudo
 www-data   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/local/small-shell/sbin/*
 </code></pre>
 <h2 id="gen-databox">Gen Databox</h2>
-<p>Then Let's generate databox as the data store of WEB APP <br />
+<p>Then Let's generate databox as the data store of WEB APP.
 DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; dialog will be started
@@ -190,7 +190,7 @@ DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
 <p>You can exit dialog anytime with ctrl + C</p>
 </div>
 <h5 id="dialog">Dialog</h5>
-<p>In this dialog, primary_key will be item_name. If so, dedicated item name can be used only 1 time. for example, if you use apple as item name, apple must be used only 1 dataset(record). other dataset could not use name "apple" as item name. then databox could be normalized. If you want to disable this restriction, please use <b>hashid</b> as primary_key in the dialog. detail are in <a href="../app_shell_tour/">APP shell tour</a> </p>
+<p>In this dialog, primary_key will be item_name. If so, dedicated item name can be used only 1 time. for example, if you use apple as item name, apple must be used only 1 dataset(record). other dataset could not use name "apple" as item name. through this restriction, databox could be normalized. If you want to disable this restriction, please use <b>hashid</b> as primary_key in the dialog. detail are in <a href="../app_shell_tour/">APP shell tour</a> </p>
 <pre><code>databox_name: item.db
 primary_key(col1): item_name
 primary_key label: Item Name
@@ -263,8 +263,8 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize
 please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <h4 id="base-app-shell-table-features">Base APP &gt; Shell Table FEATURES</h4>
 <ul>
-<li>Push &amp; Get datas thorough simplest UI</li>
-<li>And search using space [e.g. word1 word2]</li>
+<li>Push or Get datas thorough simplest UI</li>
+<li>Can use "And search" using space [e.g. word1 word2]</li>
 <li>Multi type of sort using sort command</li>
 <li>Serch using specific key of column, [e.g key{wordA}]</li>
 <li>Download search result by CSV format</li>
@@ -278,6 +278,10 @@ please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <li>Show statistics #stats, you need to define statistics job. Please see the <a href="../python_tour/">pyshell</a> for further details.</li>
 </ul>
 <p><img alt="Screenshot" src="../img/console.png" /></p>
+<h4 id="re-generate-initialize-url">Re-generate initialize URL</h4>
+<p>If end user lost their key, you can re-generate initialize URL by following command. In this example, admin will re-generate initialize URL for user name "test"</p>
+<pre><code> sudo /usr/local/small-shell/adm/ops initialize.usr:test
+</code></pre>
 <h4 id="se-linux-setting-change">SE linux setting change</h4>
 <p>If you are using SE linux on CENT OS or RHEL, pelase change to permissive mode and then please make specific rule for SE linux before enforcing.</p>
 <pre><code>## check SE linux
