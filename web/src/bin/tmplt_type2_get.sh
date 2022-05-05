@@ -56,13 +56,13 @@ fi
 
 # render HTML
 if [ "$id" = "new" ];then
-  cat ../descriptor/%%app_get_new.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/%%app_get_new.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%dataset/r ../tmp/$session/dataset" \
   | sed "s/%%dataset//g"\
   | sed "s/%%id/$id/g" \
   | sed "s/%%params/session=$session\&pin=$pin/g"
 else
-  cat ../descriptor/%%app_get.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/%%app_get.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%dataset/r ../tmp/$session/dataset" \
   | sed "s/%%dataset//g"\
   | sed "/%%history/r ../tmp/$session/history" \

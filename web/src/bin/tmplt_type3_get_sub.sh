@@ -90,7 +90,7 @@ elif [ "$form_chk" = "multipart" ];then
 fi
 
 # render HTML
-cat ../descriptor/${view} | sed "s/^ *</</g" \
+cat ../descriptor/${view} | sed -r "s/^( *)</</1" \
 | sed "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
 | sed "/%%common_menu/d" \
 | sed "/%%dataset/r ../tmp/$session/dataset" \

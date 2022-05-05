@@ -105,7 +105,7 @@ if [ "$command" ];then
   databox:$databox type:$type command:$command > ../tmp/$session/exec
   commands=`sudo -u small-shell ${small_shell_path}/bin/meta get.command | sed "s/ /, /g"`
 
-  cat ../descriptor/console.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/console.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%result/r ../tmp/$session/exec" \
   | sed "/%%result/d"\
   | sed "/%%databox_list/r ../tmp/$session/databox_list" \
@@ -148,7 +148,7 @@ elif [ "$statistics" ];then
   fi
 
   commands=`sudo -u small-shell ${small_shell_path}/bin/meta get.command | sed "s/ /, /g"`
-  cat ../descriptor/console.statistics.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/console.statistics.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%statistics/r ../tmp/$session/statistics" \
   | sed "/%%statistics/d"\
   | sed "/%%databox_list/r ../tmp/$session/databox_list" \

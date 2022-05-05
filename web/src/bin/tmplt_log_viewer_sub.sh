@@ -48,7 +48,7 @@ else
 fi
 
 # render HTML
-cat ../descriptor/%%app_log_viewer.html.def | sed "s/^ *</</g" \
+cat ../descriptor/%%app_log_viewer.html.def | sed -r "s/^( *)</</1" \
 | sed "/%%log/r ../tmp/${session}_log/log" \
 | sed "s/%%log//g"\
 | sed "s/%%id/$id/g"

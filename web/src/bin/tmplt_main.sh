@@ -37,7 +37,7 @@ fi
 # render HTML
 # -----------------
 
-cat ../descriptor/%%app_main.html.def | sed "s/^ *</</g" \
+cat ../descriptor/%%app_main.html.def | sed -r "s/^( *)</</1" \
 | sed "/%%common_menu/r ../descriptor/common_parts/%%app_common_menu" \
 | sed "s/%%common_menu//g"\
 | sed "s/%%user_name/$user_name/g" \

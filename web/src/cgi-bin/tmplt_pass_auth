@@ -87,7 +87,7 @@ if [ ! "$app_pass" ];then
   fi
 
   # render standard login form with queyr string and messge
-  cat ../descriptor/%%app_auth_form.html.def | sed "s/^ *</</g"\
+  cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
   | sed "s/%%auth_form_menu//g"\
   | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
@@ -126,7 +126,7 @@ if [ "$app_pass" ];then
 
   else
     # render standard login form with error message
-    cat ../descriptor/%%app_auth_form.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
     | sed "s/%%message/<p><b>! Pass code is wrong, please try again<\/b><\/p>/g" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\

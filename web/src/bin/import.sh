@@ -56,7 +56,7 @@ done
 if [ ! -d ../tmp/$session/binary_file  ];then
 
   # render form HTML
-  cat ../descriptor/import_form.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/import_form.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
   | sed "/%%common_menu/d"\
   | sed "/%%footer/r ../descriptor/common_parts/footer" \
@@ -82,7 +82,7 @@ else
   fi
 
   # render HTML
-  cat ../descriptor/import.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/import.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
   | sed "/%%common_menu/d"\
   | sed "/%%footer/r ../descriptor/common_parts/footer" \

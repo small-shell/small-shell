@@ -210,7 +210,7 @@ if [ "$line_num" = 0 ];then
   fi
 fi
 
-cat ../descriptor/table.html.def | sed "s/^ *</</g" \
+cat ../descriptor/table.html.def | sed -r "s/^( *)</</1" \
 | sed "/%%common_menu/r ../descriptor/common_parts/common_menu_${permission}" \
 | sed "/%%common_menu/d"\
 | sed "/%%table_menu/r ../descriptor/common_parts/table_menu_${permission}" \

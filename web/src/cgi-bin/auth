@@ -99,7 +99,7 @@ if [ "$initialize" ];then
 
   # render success page
   if [ "$user_name" -a "$user_key" ];then
-    cat ../descriptor/auth_initialize.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/auth_initialize.html.def | sed -r "s/^( *)</</1" \
     | sed "/%%footer/r ../descriptor/common_parts/footer" \
     | sed "/%%footer/d"\
     | sed "s/%%IP/$remote_addr/g" \
@@ -120,7 +120,7 @@ if [ ! "$small_shell_authkey" ];then
 
   if [ "$key_placeholder" ];then
     # render first login form with initialized key
-    cat ../descriptor/auth_form_with_key.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/auth_form_with_key.html.def | sed -r "s/^( *)</</1" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
     | sed "/%%footer/r ../descriptor/common_parts/footer" \
@@ -151,7 +151,7 @@ if [ ! "$small_shell_authkey" ];then
     fi
 
     # render standard login form with queyr string and messge
-    cat ../descriptor/auth_form.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/auth_form.html.def | sed -r "s/^( *)</</1" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
     | sed "/%%footer/r ../descriptor/common_parts/footer" \
@@ -197,7 +197,7 @@ if [ "$small_shell_authkey" ];then
     exit 0
   else
     # render standard login form with error message
-    cat ../descriptor/auth_form.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/auth_form.html.def | sed -r "s/^( *)</</1" \
     | sed "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\

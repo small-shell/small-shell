@@ -213,7 +213,7 @@ else
   view=%%app_table.html.def
 fi
 
-cat ../descriptor/$view | sed "s/^ *</</g" \
+cat ../descriptor/$view | sed -r "s/^( *)</</1" \
 | sed "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
 | sed "/%%common_menu/d"\
 | sed "/%%table_menu/r ../descriptor/common_parts/table_menu_${permission}" \

@@ -142,7 +142,7 @@ elif [ "$form_chk" = "multipart" ];then
   fi
 fi
 
-cat ../descriptor/${view} | sed "s/^ *</</g" \
+cat ../descriptor/${view} | sed -r "s/^( *)</</1" \
 | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
 | sed "/%%common_menu/d" \
 | sed "/%%databox_list/r ../tmp/$session/databox_list" \

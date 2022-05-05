@@ -87,7 +87,7 @@ if [ "$initialize" ];then
 
     # render success page
     if [ "$user_name" -a "$user_key" ];then
-      cat ../descriptor/%%app_auth_initialize.html.def | sed "s/^ *</</g"\
+      cat ../descriptor/%%app_auth_initialize.html.def | sed -r "s/^( *)</</1" \
       | sed "s/%%IP/$remote_addr/g" \
       | sed "s/%%user_name/$user_name/g" \
       | sed "s/%%user_key/$user_key/g" \
@@ -104,7 +104,7 @@ if [ ! "$app_key" ];then
 
   if [ "$key_placeholder" ];then
     # render first login form with initialized key
-    cat ../descriptor/%%app_auth_form_with_key.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/%%app_auth_form_with_key.html.def | sed -r "s/^( *)</</1" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
     | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
@@ -128,7 +128,7 @@ if [ ! "$app_key" ];then
     fi
 
     # render standard login form with queyr string and messge
-    cat ../descriptor/%%app_auth_form.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\
     | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
@@ -169,7 +169,7 @@ if [ "$app_key" ];then
 
   else
     # render standard login form with error message
-    cat ../descriptor/%%app_auth_form.html.def | sed "s/^ *</</g"\
+    cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
     | sed "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
     | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
     | sed "s/%%auth_form_menu//g"\

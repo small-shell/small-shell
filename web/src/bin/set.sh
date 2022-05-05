@@ -61,7 +61,7 @@ action:set id:$id keys:$keys input_dir:../tmp/$session > ../tmp/$session/result
 error_chk=`grep "^error" ../tmp/$session/result`
 
 if [ "$error_chk" ];then
-  cat ../descriptor/set_err.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/set_err.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
   | sed "s/%%common_menu//g"\
   | sed "/%%message/r ../tmp/$session/result" \

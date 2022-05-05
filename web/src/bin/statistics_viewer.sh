@@ -44,7 +44,7 @@ if [ "$type" = "rawdata" ];then
   > ../tmp/${session}_statistics/result
 
   # render HTML
-  cat ../descriptor/statistics_viewer.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/statistics_viewer.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%statistics/r ../tmp/${session}_statistics/result" \
   | sed "s/%%statistics//g"\
   | sed "s/%%target/$target/g"

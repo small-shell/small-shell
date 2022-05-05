@@ -49,7 +49,7 @@ if [ ! "$data_import_session" ];then
   action:get id:$id type:log format:html_tag > ../tmp/${session}_log/log
 
   # render HTML
-  cat ../descriptor/log_viewer.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/log_viewer.html.def | sed -r "s/^( *)</</1" \
   | sed "/%%log/r ../tmp/${session}_log/log" \
   | sed "s/%%log//g"\
   | sed "s/%%id/$id/g"
@@ -60,7 +60,7 @@ else
   sudo -u small-shell ${small_shell_path}/bin/meta get.progress:$data_import_session > ../tmp/${session}_log/log
 
   # render HTML
-  cat ../descriptor/import_log_viewer.html.def | sed "s/^ *</</g" \
+  cat ../descriptor/import_log_viewer.html.def | sed -r "s/^( *)</</1" \
   | sed "s/%%data_import_session/$data_immport_session/g"\
   | sed "/%%log/r ../tmp/${session}_log/log" \
   | sed "s/%%log/-----------------------\n<b>#DATA IMPORT SESSION<\/b>\n------------------------\n/g"
