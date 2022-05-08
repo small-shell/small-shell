@@ -429,7 +429,7 @@ a {
 
 .form-box .description p {
   font-size: 80%;
-  color: #c0c0c0;
+  color: #696969;
 }
 
 .form-box .log {
