@@ -6,6 +6,7 @@
 
 app=$1
 export_dir=$2
+export_dir=`echo $export_dir | sed "s/\/$//g"`
 
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "root" ];then
@@ -49,16 +50,26 @@ cat $main | sed "s/^ *</</g" \
 | sed "/%%common_menu/r ${descriptor}/common_parts/${app}_common_menu" \
 | sed "s/%%common_menu//g"\
 | sed "s/<img src=\"../<img src=\"./g" \
-| sed "s/${app}_css/${app}.css/g" > $export_dir/${app}_main.html
+| sed "s/${app}_css/${app}.css/g" > ${export_dir}/index.html
+
+metalinks=`grep -e %%session -e %%params $export_dir/index.html`
 
 # dist css
 cat $css > $export_dir/${app}.css
 
 
 echo "# INFO #"
-echo "-----------------------------------------------------------------------"
+echo "---------------------------------------------------------------------------------------"
+echo ""
 echo "Main page of $app is successfully exported to $export_dir as static site." 
 echo "please copy both html and css to /var/www/html or other static folder"
-echo "-----------------------------------------------------------------------"
+
+if [ "$metalinks" ];then
+  echo ""
+  echo "!! need to modify following metalinks when you distribute ${export_dir}/index.html to static folder"
+  echo "$metalinks"
+  echo ""
+fi
+echo "---------------------------------------------------------------------------------------"
 
 exit 0
