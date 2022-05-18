@@ -134,9 +134,10 @@ if [ "$que" ];then
         echo "`date +%Y-%m-%d` `date +%T` EXEC ${exec_command} " >> ${job_log}
         echo "`date +%Y-%m-%d` `date +%T` ${exec_command} executed"   >> ${command_dump}
         eval ${exec_command} > ${command_dump_tmp} 2>&1
+        result_status=$?
         permission_chk=`grep "Permission denied" ${command_dump_tmp}`
         cat ${command_dump_tmp} >> ${command_dump}
-        if [ "$permission_chk" -o ! $? -eq 0 ];then
+        if [ "$permission_chk" -o ! "$result_status" -eq 0 ];then
           err_flag="err"
         fi
       else
@@ -158,9 +159,10 @@ else
   echo "`date +%Y-%m-%d` `date +%T` EXEC ${exec_command} " >> ${job_log}
   echo "`date +%Y-%m-%d` `date +%T` ${exec_command} executed"   >> ${command_dump}
   eval ${exec_command} > ${command_dump_tmp} 2>&1
+  result_status=$?
   permission_chk=`grep "Permission denied" ${command_dump_tmp}`
   cat ${command_dump_tmp} >> ${command_dump}
-  if [ "$permission_chk" -o ! $? -eq 0 ];then
+  if [ "$permission_chk" -o ! "$result_status" -eq 0 ];then
     err_flg="err"
   fi
 
