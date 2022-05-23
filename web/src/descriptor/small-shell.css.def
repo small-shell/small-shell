@@ -700,7 +700,7 @@ a {
 }
 
 .form-box a {
-  color: #6495ED;
+  color: #07ADAF;
 }
 
 .form-box .description {
