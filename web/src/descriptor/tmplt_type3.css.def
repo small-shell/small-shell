@@ -407,7 +407,7 @@ a {
 }
 
 .form-box a {
-  color: #008;
+  color: #07ADAF;
 }
 
 .form-box .description {
@@ -1047,7 +1047,7 @@ input[type="file"] {
 }
 
 .main a {
- color: #07ADAF;
+  color: #07ADAF;
 }
 
 .main .table-header {
