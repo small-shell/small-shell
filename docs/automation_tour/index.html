@@ -362,9 +362,9 @@ Once API HUB is ready, you can define job relationship using message.</p>
 </code></pre>
 <h5 id="confirm-base-information-at-api-hub-server">confirm base information at API HUB server</h5>
 <h6 id="hub">@hub</h6>
-<pre><code>cat /usr/local/small-shell/web/base | grep hubapi
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep hubapi
 hubapi=&quot;http://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
-cat /usr/local/small-shell/web/base | grep auth
+sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
 <h5 id="update-job-definition-at-each-hosts">Update job definition at each hosts</h5>
@@ -460,10 +460,10 @@ filter: job2
 </code></pre>
 <h5 id="confirm-base-information-at-api-hub-server_1">confirm base information at API HUB server</h5>
 <h6 id="hub_1">@hub</h6>
-<pre><code>cat /usr/local/small-shell/web/base | grep hubapi
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep hubapi
 hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
 
-cat /usr/local/small-shell/web/base | grep auth
+sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
 <h4 id="dataexchange-job">DataExchange Job</h4>
@@ -523,24 +523,26 @@ API authkey: YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.data_get
 </code></pre>
 <h5 id="execute-manually">Execute manually</h5>
+<h6 id="create-dummy-file">Create dummy file</h6>
 <pre><code>@hostA
 # create dummy file
 echo "dummy" &gt; /tmp/dummy1
 echo "dummy" &gt; /tmp/dummy2
 echo "dummy" &gt; /tmp/dummy3
-
-# push manually
+</code></pre>
+<h6 id="push-data-to-hub">Push data to HUB</h6>
+<pre><code># push manually
 sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_push
 dummy #data is synced to
-
-
-# check file at hub server
-@hub
+</code></pre>
+<h6 id="confirm-file-at-hub-server">Confirm file at HUB server</h6>
+<pre><code>@hub
 ls /usr/local/small-shell/util/e-cron/que/file/
 dummy1  dummy2  dummy3
 </code></pre>
-<h5 id="confirm-file-after-push-and-get-job-completion">Confirm file after push and get job completion</h5>
-<pre><code>@hostB
+<h6 id="get-data-from-hub">Get data from HUB</h6>
+<pre><code># get manually
+@hostB
 sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_get
 ls /tmp/dummy*
 dummy1 dummy2 dummy3 #data is synced to local dir
