@@ -1,9 +1,9 @@
 #########################################################
-# please write down IP num which can be allowed
+# please write down IP addr which can be allowed
 #########################################################
 
 # specific IP
 # 192.168.1.10
 
-# Range IPs
+# Use wild card
 # 10.10.*
