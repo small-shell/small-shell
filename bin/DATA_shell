@@ -1222,98 +1222,57 @@ function get_mergeable_data(){
 
 }
 
-function set_data(){
- local id=$1
- local key=$2
- local value=$3
- local input_dir=$4
- local primary_key=$5
- local set_option=$6
+function gen_id(){
+  local primary_key=$primary_key
 
-
-  if [ ! "$id" = "new" -a ! -d $ROOT/databox/$databox/data/$id ];then  
-     if [ -d  $ROOT/databox/$databox/log/$id ];then
-       echo "error: data has been already deleted, please check data history"
-       echo "--------------------------------------------------------------"
-       cat  $ROOT/databox/$databox/log/$id/history
-       exit 1
-     else
-       echo "error: there is no data id:$id"
-       exit 1
-     fi
+ 
+  if [ "$primary_key" = "hashid" ];then
+    id=`echo "primary key will be generated $gen $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | sha256sum | awk '{print $1}'`
+  elif [ -f ${input_dir}/${primary_key} ];then
+    id=`cat ${input_dir}/${primary_key} | sha256sum | awk '{print $1}'`
+  elif [ "$input_dir" = "null"  ];then
+    id=`echo "$value" | sha256sum | awk '{print $1}'`
+  else
+    echo "error: failed to generate hashid something wrong"
+    exit 1
   fi
 
-  if [ "$id" = "new" ];then
-    flg=new
 
-    if [ -f ${input_dir}/${primary_key} ];then
+  if [ ! -d $ROOT/databox/$databox/data/$id ];then
+    mkdir $ROOT/databox/$databox/data/$id
 
-      id=`cat ${input_dir}/${primary_key} | sha256sum | awk '{print $1}'`
+    if [ ! -d $ROOT/databox/$databox/log/$id ];then
+      mkdir $ROOT/databox/$databox/log/$id
+    fi
 
-    elif [ $primary_key = "hashid" ];then
-      gen=`date +%s`
-      id=`echo "primary key will be generated $gen $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | sha256sum | awk '{print $1}'`
-      if [ ! -d $ROOT/databox/$databox/data/$id ];then
-        mkdir $ROOT/databox/$databox/data/$id
-        mkdir $ROOT/databox/$databox/log/$id
-        chmod 700 $ROOT/databox/$databox/data/$id
-        chmod 700 $ROOT/databox/$databox/log/$id
-        echo "`date +%Y-%m-%d` `date +%T`,created by $user" >> $ROOT/databox/$databox/log/$id/history
-        echo "$id" > $ROOT/databox/$databox/data/$id/hashid
-      else
-        echo "error: failed to generate hashid something wrong"
-        exit 1
-      fi
+    chmod 700 $ROOT/databox/$databox/data/$id
+    chmod 700 $ROOT/databox/$databox/log/$id
+    echo "`date +%Y-%m-%d` `date +%T`,created by $user" >> $ROOT/databox/$databox/log/$id/history
+    echo "$id" > $ROOT/databox/$databox/data/$id/hashid
+  fi
 
-    elif [ "$input_dir" = "null" -a "$key" = "$primary_key" ];then
+  echo "successfuly generated id:$id"
+  return 1
 
-      id=`echo "$value" | sha256sum | awk '{print $1}'`
+}
 
+function set_data(){
+  local id=$1
+  local key=$2
+  local value=$3
+  local input_dir=$4
+  local flag=$5
+  local set_option=$6
+
+  if [ ! -d $ROOT/databox/$databox/data/$id ];then
+    if [ -d  $ROOT/databox/$databox/log/$id ];then
+      echo "error: data has been already deleted, please check data history"
+      echo "--------------------------------------------------------------"
+      cat  $ROOT/databox/$databox/log/$id/history
+      exit 1
     else
-
-      echo "error: please set primary key value first"
-      return 1
-
-    fi
-
-    if [ ! "$key" = "$primary_key" -a ! -d $ROOT/databox/$databox/data/$id ];then
-      echo "error: please set primary key first in order of keys"
-      return 1
-    fi
-
-    if [ "$key" = "$primary_key" ];then
-
-       if [ "$input_dir" = "null" ];then
-         primary_value_check=`echo "$value" | sed "s/ //g" | sed -z "s/\n//g"`
-         if [ ! "$primary_value_check" ];then
-           echo "error: please set value to primary key"
-           exit 1
-         fi
-       else
-         primary_value_check=`cat $input_dir/$primary_key | sed "s/ //g" | sed -z "s/\n//g"`
-         if [ ! "$primary_value_check" ];then
-           echo "error: please set value to primary key"
-           exit 1
-         fi
-       fi
-
-
-       if [ ! -d $ROOT/databox/$databox/data/$id ];then
-         mkdir $ROOT/databox/$databox/data/$id
-         mkdir $ROOT/databox/$databox/log/$id
-         chmod 700 $ROOT/databox/$databox/data/$id
-         chmod 700 $ROOT/databox/$databox/log/$id
-         echo "`date +%Y-%m-%d` `date +%T`,created by $user" >> $ROOT/databox/$databox/log/$id/history
-       else
-         if [ -f  ${input_dir}/${primary_key} ];then
-           echo "error:`cat ${input_dir}/${primary_key}` is already existing. primary key(col1) value can not be duplicated"
-           return 1
-         else
-           echo "error:`echo "$value"` is already existing. primary key(col1) value can not be duplicated"
-           return 1
-         fi
-       fi
-
+      echo "error: there is no data id:$id"
+      exit 1
     fi
   fi
 
@@ -1329,7 +1288,7 @@ function set_data(){
   fi
    
   primary_key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col1`
-  if [ "${primary_key_check}" -a ! "$flg" = "new" ];then
+  if [ "${primary_key_check}" -a ! "$flag" = "new" ];then
     echo "error: you can not change primary key:$key"
     return 1
   fi
@@ -1343,7 +1302,7 @@ function set_data(){
 
   if [ ! "$set_option" = "force" ];then
     if [ ! "$flg" = "new" ];then
-      org_value=`cat $ROOT/databox/$databox/data/${id}/${key} | sha256sum | awk '{print $1}'`
+      org_value=`cat $ROOT/databox/$databox/data/${id}/${key} 2>/dev/null | sha256sum | awk '{print $1}'`
     fi
 
     if [ "$input_dir" = "null" ];then
@@ -1522,7 +1481,7 @@ function merge_data(){
   fi
 
   primary_key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col1`
-  if [ "${primary_key_check}" -a ! "$flg" = "new" ];then
+  if [ "${primary_key_check}" -a ! "$flag" = "new" ];then
     echo "error: you can not change primary key:$key"
     return 1
   fi
@@ -1702,7 +1661,7 @@ if [ "$action" ];then
        exit 1
     fi
 
-    if [ ! -d "$input_dir" -a ! "$value" ];then
+    if [ ! "$input_dir" -a ! "$value" ];then
       echo "error: please define input_dir or value"
       exit 1
     fi
@@ -1745,23 +1704,16 @@ if [ "$action" ];then
       for key in $keys
       do
         if [ -f $input_dir/$key ];then
-          result=`set_data $id $key file_input $input_dir $primary_key $set_option`
+          if [ "$count" -eq 1 -a "$id" = "new" ];then
+            id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+            flag="new"
+          else
+            flag="update"
+          fi
+
+          result=`set_data $id $key file_input $input_dir $flag $set_option`
           if [ $? -eq 0 ];then
             updated_keys="$key,$updated_keys"
-            if [ "$count" -eq 1 -a "$id" = "new" ];then
-              id=`echo "$result" | awk -F "id:" '{print $2}'`
-              set_option=force
-            fi
-          else
-            duplicate_chk=`echo \"$result\" | grep duplicated`
-            if [ "$duplicate_chk" ];then
-              echo "$result"
-              ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
-              if [ $? -eq 0 ];then
-               rm $ROOT/tmp/exec/$exec_session*
-              fi  
-              exit 1
-            fi
           fi
           echo "$result"
 
@@ -1782,17 +1734,29 @@ if [ "$action" ];then
       fi
 
     elif [ "$key" ];then
-      if [ "$value" = file_input ];then
+      if [ "$value" = "file_input" ];then
         if [ ! -f $input_dir/$key ];then
           echo "error: there is no value for $key"
           exit 1
         fi
       fi
-      result=`set_data $id $key $value $input_dir $primary_key $set_option`
-      if [ $? -eq 0 ];then
-        if [ "$id" = "new" ];then
-          id=`echo "$result" | awk -F "id:" '{print $2}'`
+
+      if [ "$id" = "new" ];then
+        if [ "$primary_key" = "hashid" ];then
+          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          flag="new"
+        elif [ "$primary_key" = "$key" -a ! "$primary_key" = "hashid" ];then
+          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          flag="new"
+        else
+          echo "error: plese set primary key fist"
+          exit 1
         fi
+      else
+        flag="update"
+      fi
+      result=`set_data $id $key $value $input_dir $flag $set_option`
+      if [ $? -eq 0 ];then
         cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
         if [ ! "$bat" = "yes" ];then
           $ROOT/sbin/que.sh $databox $id $key $session $pin set $app &
@@ -1897,7 +1861,7 @@ if [ "$action" ];then
     fi
 
     if [ "$keys" ];then
-      echo "error: value can be insert to only 1 key"
+      echo "error: merge value can be insert to only 1 key"
       exit 1
     fi
 
@@ -1909,11 +1873,23 @@ if [ "$action" ];then
         fi
       fi
 
-      result=`merge_data $id $key $value $input_dir $primary_key $set_option`
-      if [ $? -eq 0 ];then
-        if [ "$key" = "$primary_key" -a "$id" = "new" ];then
-          id=`echo "$result" | awk -F "id:" '{print $2}'`
+      if [ "$id" = "new" ];then
+        if [ "$primary_key" = "hashid" ];then
+          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          flag="new"
+        elif [ "$primary_key" = "$key" -a ! "$primary_key" = "hashid" ];then
+          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          flag="new"
+        else
+          echo "error: plese set primary key fist"
+          exit 1
         fi
+      else
+        flag="update"
+      fi
+
+      result=`merge_data $id $key $value $input_dir $flag $set_option`
+      if [ $? -eq 0 ];then
         cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
         if [ ! "$bat" = "yes" ];then
           $ROOT/sbin/que.sh $databox $id $key $session $pin set $app &
