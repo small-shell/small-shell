@@ -111,7 +111,7 @@ else
 fi
 
 # error check
-error_chk=`cat ../tmp/$session/dataset | grep "^error: there is no primary_key:"`
+error_chk=`cat ../tmp/$session/dataset | grep "^error:"`
 
 # form type check
 form_chk=`$META chk.form:$databox`

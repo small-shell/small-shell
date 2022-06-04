@@ -875,12 +875,12 @@ function get_data(){
          value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed "s/\"/\&quot;/g" | sed "s/'/\&apos;/g"`
        else
          if [ -d  $ROOT/databox/$databox/log/$id ];then
-            echo "error: there is no primary_key:$primary_key. data has been already deleted, please check data history"
+            echo "error: there is no id:${id}, data has been already deleted, please check data history"
             echo "------------------------------------------------------------------------------------------------"
             cat  $ROOT/databox/$databox/log/$id/history 2>/dev/null 
             exit 1
          else
-            echo "error: there is no primary_key:$primary_key"
+            echo "error: there is no id:$id"
             exit 1
          fi
       fi
@@ -1200,12 +1200,12 @@ function get_mergeable_data(){
       value=`cat $ROOT/databox/$databox/data/$id/$key | sed "s/\"/\&quot;/g" | sed "s/'/\&apos;/g"`
     else
       if [ -d $ROOT/databox/$databox/log/$id ];then
-        echo "error: there is no primary_key:$primary_key. data has been already deleted, please check data history"
+        echo "error: there is no id:${id},data has been already deleted, please check data history"
         echo "------------------------------------------------------------------------------------------------"
         cat  $ROOT/databox/$databox/log/$id/history
         exit 1
       else
-        echo "error: there is no primary_key:$primary_key"
+        echo "error: there is no id:$id"
         exit 1
       fi
     fi

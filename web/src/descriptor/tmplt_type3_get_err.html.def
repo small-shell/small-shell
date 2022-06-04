@@ -1,33 +1,37 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>DATA: %%id</title>
+        <title>%%id</title>
         <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
+        <link rel="stylesheet" href="./%%app_css">
     </head>
     <body>
     <div class="container">
       <div class="flex-header">
-        <div class="left-header">
-          <b><p>DataBox:%%databox</p></b>
-        </div>
-        <div class="right-header">
+       <div class="left-header">
+         <h3><a href="./%%app?%%params&req=main">%%app</a></h3>
+       </div>
+       <div class="right-header">
         <button class="even-btn-menu">=</button>
         <nav>
         <ul>
-         %%common_menu
-       </ul>
-       </nav>
+          %%common_menu
+        </ul>
+        </nav>
         </div>
       </div>
 
       <div class="form-box">
-      <div class="description">
-      <h1>404 not found</h1>
-      <pre>
-      %%dataset
-      </pre>
-     </div>
+       <div class="description">
+        <h1>404 not found</h1>
+       </div>
+       <pre>
+        %%dataset
+       </pre>
+       <div class="action_links">
+       </div>
+      </div>
+   </div>
    <script>
    const btn = document.querySelector('.even-btn-menu');
    const nav = document.querySelector('nav');
@@ -45,6 +49,13 @@
        btn.innerHTML = '=';
      }
    })
+
+   function del_confirmation(){
+     ret = confirm("Are you OK to delete this data ?");
+     if (ret == true){
+       location.href = "./%%app?%%params&req=del&id=%%id";
+     }
+   }
 
    </script>
    </body>
