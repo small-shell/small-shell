@@ -37,7 +37,7 @@ fi
 
 # check posted param
 if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | sed -z "s/\n/,/g" | sed "s/,$//g" | sed "s/binary_file//g"`
+  keys=`ls ../tmp/$session | grep -v binary_file | sed -z "s/\n/,/g" | sed "s/,$//g"`
 else
   echo "error: No param posted"
   exit 1

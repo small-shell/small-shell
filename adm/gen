@@ -1520,14 +1520,19 @@ if [ "$param" = "-app" ];then
     keys=$key
     datas=`echo $datas | sed "s/ | $key / /g" | sed "s/$key | //g" | sed "s/ | $key//g" | sed "s/^$key$//g"`
 
-    echo -n "Do you want to add more data to the form (yes | no): "
-    read add_form_answer
-    while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
-    do
-      echo "please input yes or no"
-      echo -n "Do you want to add more data to the form ? (yes | no): "
+
+    if [ "$datas" ];then
+      echo -n "Do you want to add more data to the form (yes | no): "
       read add_form_answer
-    done
+      while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
+      do
+        echo "please input yes or no"
+        echo -n "Do you want to add more data to the form ? (yes | no): "
+        read add_form_answer
+      done
+    else
+     add_form_answer="no"
+    fi
 
     while [ "$add_form_answer" = "yes" -a "$datas" ]
     do 
@@ -1632,6 +1637,9 @@ if [ "$param" = "-app" ];then
       cat $ROOT/web/src/descriptor/tmplt_type2_get_new.html.def | sed "s/%%databox/$databox/g" \
       | sed "s/%%app/$form_name/g"  | sed "s/%%description/$description/g" > $cgidir/../descriptor/${form_name}_get_new.html.def
 
+      cat $ROOT/web/src/descriptor/tmplt_type2_get_new_incf.html.def | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  | sed "s/%%description/$description/g" > $cgidir/../descriptor/${form_name}_get_new_incf.html.def
+
       cat $ROOT/web/src/descriptor/tmplt_type2_get.html.def | sed "s/%%databox/$databox/g" \
       | sed "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_get.html.def
 
@@ -1644,6 +1652,11 @@ if [ "$param" = "-app" ];then
       chmod 700 $cgidir/../descriptor/${form_name}*
 
       echo "Form is successfully generated"
+      echo "Please update codes if needed"
+      ls  $cgidir/${form_name}
+      ls  $cgidir/${form_name}_css
+      ls  $cgidir/../bin/${form_name}_*
+      ls  $cgidir/../descriptor/${form_name}_*
     else
       echo "Plese try again from beginning, #gen -app" 
       rm -rf $tmp_dir

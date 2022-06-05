@@ -15,7 +15,7 @@
       <hr>
       <br>
       </div>
-      <form method="post" action="./%%app?req=set&id=%%id">
+      <form method="post" action="./%%app?req=set&id=%%id" onclick="document.charset='utf-8';">
       <ul>
        %%dataset
       </ul>

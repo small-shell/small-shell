@@ -54,22 +54,40 @@ else
 
 fi
 
-# render HTML
-if [ "$id" = "new" ];then
-  cat ../descriptor/%%app_get_new.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%dataset/r ../tmp/$session/dataset" \
-  | sed "s/%%dataset//g"\
-  | sed "s/%%id/$id/g" \
-  | sed "s/%%params/session=$session\&pin=$pin/g"
-else
-  cat ../descriptor/%%app_get.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%dataset/r ../tmp/$session/dataset" \
-  | sed "s/%%dataset//g"\
-  | sed "/%%history/r ../tmp/$session/history" \
-  | sed "s/%%history//g"\
-  | sed "s/%%id/$id/g" \
-  | sed "s/%%params/session=$session\&pin=$pin/g"
+# error check
+error_chk=`cat ../tmp/$session/dataset | grep "^error:"`
+
+# form type check
+form_chk=`$META chk.form:%%databox`
+
+# set view
+if [ "$error_chk" ];then
+  view="%%app_get_err.html.def"
+
+elif [ "$form_chk" = "urlenc" ];then
+  if [ "$id" = "new" ];then
+    view="%%app_get_new.html.def"
+  else
+    view="%%app_get.html.def"
+  fi
+elif [ "$form_chk" = "multipart" ];then
+  if [ "$id" = "new" ];then
+    view="%%app_get_new_incf.html.def"
+  else
+    view="%%app_get.html.def"
+  fi
 fi
+
+# render HTML
+cat ../descriptor/${view} | sed -r "s/^( *)</</1" \
+| sed "/%%dataset/r ../tmp/$session/dataset" \
+| sed "s/%%dataset//g"\
+| sed "/%%history/r ../tmp/$session/history" \
+| sed "s/%%history//g"\
+| sed "s/%%id/$id/g" \
+| sed "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
+| sed "s/%%session/session=$session\&pin=$pin/g" \
+| sed "s/%%params/session=$session\&pin=$pin/g"
 
 if [ "$session" ];then
   rm -rf ../tmp/$session

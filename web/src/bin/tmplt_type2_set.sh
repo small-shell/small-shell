@@ -21,18 +21,6 @@ done
 # load small-shell path
 . ../descriptor/.small_shell_path
 
-# check posted param
-if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | sed -z "s/\n/,/g" | sed "s/,$//g"`
-else
-  echo "error: No param posted"
-  exit 1
-fi
-
-if [ "$id" = "" ];then
-  echo "error: please set correct id"
-  exit 1
-fi
 
 # -----------------
 # Exec command
@@ -42,6 +30,25 @@ fi
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
 DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%app"
 
+# form type check
+form_chk=`$META chk.form:%%databox`
+if [ "$form_chk" = "multipart" ];then
+  file_key=`cat ../tmp/$session/binary_file/input_name`
+  cat ../tmp/$session/binary_file/file_name > ../tmp/$session/$file_key 2>/dev/null
+fi
+
+# check posted param
+if [ -d ../tmp/$session ];then
+  keys=`ls ../tmp/$session | grep -v binary_file | sed -z "s/\n/,/g" | sed "s/,$//g"`
+else
+  echo "error: No param posted"
+  exit 1
+fi
+
+if [ "$id" = "" ];then
+  echo "error: please set correct id"
+  exit 1
+fi
 
 # push datas to databox
 $DATA_SHELL databox:%%databox action:set id:$id keys:$keys input_dir:../tmp/$session  > ../tmp/$session/result
