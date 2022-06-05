@@ -55,7 +55,7 @@ else
 fi
 
 # error check
-error_chk=`cat ../tmp/$session/dataset | grep "^error:"`
+error_chk=`cat ../tmp/$session/dataset.0.1 | grep "^error:"`
 
 # form type check
 form_chk=`$META chk.form:%%databox`

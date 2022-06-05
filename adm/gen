@@ -1643,6 +1643,9 @@ if [ "$param" = "-app" ];then
       cat $ROOT/web/src/descriptor/tmplt_type2_get.html.def | sed "s/%%databox/$databox/g" \
       | sed "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_get.html.def
 
+      cat $ROOT/web/src/descriptor/tmplt_type2_get_err.html.def | sed "s/%%databox/$databox/g" \
+      | sed "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_get_err.html.def
+
       cat $ROOT/web/src/descriptor/tmplt_type2_set.html.def | sed "s/%%databox/$databox/g" \
       | sed "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_set.html.def
 
