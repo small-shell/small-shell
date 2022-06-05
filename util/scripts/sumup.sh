@@ -42,10 +42,8 @@ do
     frequency=`echo $param | awk -F":" '{print $2}'`
   fi
 
-  if [[ $param == gen.graph:no ]]; then
-    graph=no
-  else
-    graph=yes
+  if [[ $param == gen.graph:* ]]; then
+    graph=`echo $param | awk -F":" '{print $2}'`
   fi
 
   if [[ $param == title:* ]]; then
@@ -64,13 +62,19 @@ do
     global_filter=`echo $param | awk -F":" '{print $2}'`
   fi
 
-  if [[ $param == diff:yes ]]; then
-    diff=yes
-  else
-    diff=no
+  if [[ $param == diff:* ]]; then
+    diff=`echo $param | awk -F":" '{print $2}'`
   fi
 
 done
+
+if [ ! "$graph" ];then
+  graph="yes"
+fi
+
+if [ ! "$diff" ];then
+  diff="no"
+fi
 
 # global.conf load
 SCRIPT_DIR=`dirname $0`
