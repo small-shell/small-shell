@@ -6,13 +6,8 @@
 # countup.sh databox:$databox type:line key:$key filters:$word1,$word2 frequcney:daily \
 # title:$title X_label:$xlabel Y_label:$ylabel global_filter:$word diff:no
 #----------------------------------------------------------------------------------------------------
-# NOTES
-# 1.key and filter is optional, key is key column as filtering target. filter is filtering word that will be label of graph.
-# 2.graph type is line or bar or pie, but only 1 line data can not be line graph.it will be bar graph
-# 3.frequency is hourly or daily or monthly or snapshot
-# 4.title, X_label, Y_label is optional
-# 5.global filter is filter to the pipe line from data directly, and it will not be label
-# 6.diff can calculate difference from last statistics number
+# GRAMMER
+# https://small-shell.org/python_tour/#utilscripts
 #----------------------------------------------------------------------------------------------------
 
 # load param
