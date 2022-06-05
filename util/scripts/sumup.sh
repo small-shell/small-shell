@@ -6,13 +6,8 @@
 # countup.sh databox:$databox sumup_key:n \
 # filter_key:n type:line filters:$word,$word2 frequency:daily title:$title diff:no
 #----------------------------------------------------------------------------------------------------
-# NOTES
-# 1.filters is optional
-# 2.graph type is line or bar or pie, but only 1 line data can not be line graph.it will be bar graph
-# 3.frequency is hourly or daily or monthly or snapshot
-# 4.title, X_label, Y_label is optional
-# 5.global filter is filter to the pipe line from data directly, and it will not be label
-# 6.diff can calculate difference from last statistics number
+# GRAMMER
+# https://small-shell.org/python_tour/#utilscripts
 #----------------------------------------------------------------------------------------------------
 
 
@@ -222,6 +217,10 @@ if [ "$filter_key" -a "$filters" ];then
     chmod 755 $tmp
     $tmp > $tmp.result
 
+    if [ ! -s $tmp.result ];then
+      echo 0 > $tmp.result
+    fi
+
     input_chk=`cat $tmp.result | sed "s/[0-9]//g" | sed "s/+//g" | sed "s/ //g"`
     if [ "$input_chk" ];then  
       echo "error: sumup failed. it seems key:$sumup_key contain text character."
@@ -288,6 +287,10 @@ else
  
   chmod 755 $tmp
   $tmp > $tmp.result
+
+  if [ ! -s $tmp.result ];then
+    echo 0 > $tmp.result
+  fi
 
   input_chk=`cat $tmp.result | sed "s/[0-9]//g" | sed "s/+//g" | sed "s/ //g"`
   if [ "$input_chk" ];then  
