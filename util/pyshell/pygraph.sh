@@ -120,14 +120,14 @@ if [[ $type == line* ]]; then
 
     # gen pyexe with changing time format
     cat ${SCRIPT_DIR}/lib/pandas_line_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%Y-%m-%d %H:%M\"))#g" > $pyexe ;;
+    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%Y-%m-%d\"))#g" > $pyexe ;;
 
   "monthly" )
     time_fmt_chk
 
     # gen pyexe with changing time format
     cat ${SCRIPT_DIR}/lib/pandas_line_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%Y-%m-%d\"))#g" > $pyexe ;;
+    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%Y-%m\"))#g" > $pyexe ;;
 
   esac
     
