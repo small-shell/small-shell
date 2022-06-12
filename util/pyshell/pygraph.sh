@@ -33,12 +33,8 @@ fi
 for param in `echo $@`
 do
   if [[ $param == type:* ]]; then
-    type=`echo $param | awk -F":" '{print $2}'`
-  fi
-
-  if [[ $param == *:*} ]]; then
-    min=$param
-    type="$type $min"
+    type=`echo $param | awk -F":" '{print $2}' | awk -F "," '{print $1}'`
+    timeline="`echo $param | awk -F":" '{print $2}' | awk -F "," '{print $2}'`"
   fi
 
   if [[ $param == input:* ]]; then
@@ -64,6 +60,11 @@ done
 
 if [ ! "$type" ];then
   echo "error: please input graph type"
+  exit 1
+fi
+
+if [ ! "$timeline" ];then
+  echo "error: please input graph type with timeline,like type:bar,hourly"
   exit 1
 fi
 
@@ -102,91 +103,35 @@ tmpcsv=${SCRIPT_DIR}/pyexe/csv.`date +%s`.$RANDOM
 tmpcsv_org=$tmpcsv
 
 
-if [[ $type == line* ]]; then
+if [ "$type" = "line" -o "$type" = "bar" ]; then
  
-  timeline=`echo $type | awk -F "," '{print $2}'`
-
-  case "$timeline" in 
-
-  "hourly" )
-    time_fmt_chk
-
-    # gen pyexe with changing time format
-    cat ${SCRIPT_DIR}/lib/pandas_line_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%H:%M:%S\"))#g" > $pyexe ;;
-
-  "daily" )
-    time_fmt_chk
-
-    # gen pyexe with changing time format
-    cat ${SCRIPT_DIR}/lib/pandas_line_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%Y-%m-%d\"))#g" > $pyexe ;;
-
-  "monthly" )
-    time_fmt_chk
-
-    # gen pyexe with changing time format
-    cat ${SCRIPT_DIR}/lib/pandas_line_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%axasis#ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%Y-%m\"))#g" > $pyexe ;;
-
-  esac
-    
-  if [ "$title" ];then
-    title=`echo $title | sed "s/{####}/ /g"`
-    cat $pyexe | sed "s/%%title/$title/g" > $pyexe.title
-    pyexe=$pyexe.title
-  else
-    cat $pyexe | sed -r "s/(.*)%%title(.*)//g" > $pyexe.title
-    pyexe=$pyexe.title
-  fi
-
-  if [ "$X_label" ];then
-    cat $pyexe | sed "s/%%X_label/$X_label/g" > $pyexe.X_label
-    pyexe=$pyexe.X_label
-  else
-    cat $pyexe | sed -r "s/(.*)%%X_label(.*)//g" > $pyexe.X_label
-    pyexe=$pyexe.X_label
-  fi
-
-  if [ "$Y_label" ];then
-    cat $pyexe | sed "s/%%Y_label/$Y_label/g" > $pyexe.Y_label
-    pyexe=$pyexe.Y_label
-  else
-    cat $pyexe | sed -r "s/(.*)%%Y_label(.*)//g" > $pyexe.Y_label
-    pyexe=$pyexe.Y_label
-  fi
-
-fi
-
-if [[ $type == bar* ]]; then                                                                                                                                
-  timeline=`echo $type | awk -F "," '{print $2}'`
                                                                                                                                                                case "$timeline" in
 
   "hourly" )
     time_fmt_chk
 
-    # gen pyexe with changing time format
+    # gen pyexe with changing time format,remove yyyy-mm-dd and sec
     cat $input | sed -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" | sed -r "s/:([0-9]*),/,/g"  > $tmpcsv
     input=$tmpcsv
-    cat ${SCRIPT_DIR}/lib/pandas_bar_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
+    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
     | sed "s#%%index#Time#g" | sed "s#%%legend#True#g" > $pyexe ;;
 
   "daily" )
     time_fmt_chk
 
-    # gen pyexe with changing time format
-    cat $input | sed -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
+    # gen pyexe with changing time format,remove Year and HH:MM and sec
+    cat $input | sed -r "s/^([0-9]*)-//g" | sed -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
     input=$tmpcsv
-    cat ${SCRIPT_DIR}/lib/pandas_bar_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
+    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
     | sed "s#%%index#Time#g" | sed "s#%%legend#True#g"  > $pyexe ;;
 
   "monthly" )
     time_fmt_chk
 
-    # gen pyexe with changing time format
-    cat $input | sed -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
+    # gen pyexe with changing time format,remove Year and HH:MM
+    cat $input | sed -r "s/^([0-9]*)-//g" | sed -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
     input=$tmpcsv
-    cat ${SCRIPT_DIR}/lib/pandas_bar_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
+    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
     | sed "s#%%index#Time#g" | sed "s#%%legend#True#g"  > $pyexe ;;
 
   snapshot* )
@@ -233,11 +178,9 @@ if [[ $type == bar* ]]; then
 
 fi
 
-if [[ $type == pie* ]]; then
-  timeline=`echo $type | awk -F "," '{print $2}'`
-                                                                                                                                                               case "$timeline" in
-  snapshot* )
+if [ "$type" = "pie" ];then
 
+  if [[ $timeline == snapshot* ]]; then
     cat $input | head -1 | sed "s/Time,//g" | sed "s/,/\n/g" > $tmpcsv.items
     time=`echo $timeline | awk -F "{" '{print $2}' | sed "s/}//g"`
     grep "$time" $input | sed -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" \
@@ -245,12 +188,15 @@ if [[ $type == pie* ]]; then
 
     # gen python list
     labels=`cat $tmpcsv.items | sed "s/^/\'/g" | sed "s/$/\'/g" | sed -z "s/\n/,/g" | sed "s/,$//g" `
-    datas=`cat $tmpcsv.nums | sed -z "s/\n/,/g" | sed "s/,$//g" `
+    datas=`cat $tmpcsv.nums | sed -z "s/\n/,/g" | sed "s/,$//g"`
 
     cat ${SCRIPT_DIR}/lib/pyplot_pie.py | sed "s#%%output#$output#g" | sed "s#%%labels#$labels#g" | sed "s#%%datas#$datas#g" \
-    | sed "s#%%font_family#$font_family#g" > $pyexe ;;
+    | sed "s#%%font_family#$font_family#g" > $pyexe 
 
-  esac
+  else 
+    echo "error: graph type pie can be used only for snapshot"
+    exit 1
+  fi
 
   if [ "$title" ];then
     title=`echo $title | sed "s/{####}/ /g" | sed "s/{#####}/:/g"`

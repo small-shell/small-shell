@@ -10,18 +10,9 @@ mpl.rcParams['font.family'] = '%%font_family'
 # ---------------------------------------------------------------------
 # line graph
 # ---------------------------------------------------------------------
-df = pd.read_csv("%%csv", parse_dates=['Time'], encoding="utf-8")
-df.set_index('Time',inplace=True) #index will be xticks
-ax = df.plot(kind='line',rot=20, figsize=(15,7))
-
-# ---------------------------------------------------------------------
-# set major ticks format for line
-# ---------------------------------------------------------------------
-%%axasis
-#ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-#ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-#ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M:%S"))
-# ---------------------------------------------------------------------
+df = pd.read_csv("%%csv")
+df.set_index('%%index',inplace=True) #index will be xticks
+ax = df.plot(kind='line',rot=20, figsize=(15,7), legend=%%legend)
 
 # labeling
 ax.set_xlabel('%%X_label',size=12)

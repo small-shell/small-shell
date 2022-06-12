@@ -65,7 +65,12 @@ do
     diff=`echo $param | awk -F":" '{print $2}'`
   fi
 
+  if [[ $param == set_time:* ]]; then
+    set_time="`echo $param | cut -f 2- -d ":" | sed "s/{####}/ /g"`"
+  fi
+
 done
+
 
 if [ ! "$graph" ];then
   graph="yes"
@@ -74,6 +79,23 @@ fi
 if [ ! "$diff" ];then
   diff="no"
 fi
+
+if [ "$set_time" ];then
+  time_value_chk=`echo $timestamp | sed "s/[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]//g"`
+  if [ "$time_value_chk" ];then
+    echo "error: $time must be yyyy-mm-dd"
+    exit 1
+  fi
+  timestamp="$set_time"
+else
+  timestamp=`date "+%Y-%m-%d %H:%M:%S"`
+fi
+
+year=`echo $timestamp | awk -F "-" '{print $1}'`
+month=`echo $timestamp | awk -F "-" '{print $2}'`
+day=`echo $timestamp | awk -F "-" '{print $3}' | awk '{print $1}'`
+time=`echo $timestamp | awk -F "-" '{print $3}' | awk '{print $2}'`
+
 
 # global.conf load
 SCRIPT_DIR=`dirname $0`
@@ -98,6 +120,14 @@ if [ ! -d $ROOT/databox/$databox ];then
   exit 1
 fi
 
+if [ "$key" ];then
+  key_chk=`$ROOT/bin/meta get.key:${databox}{all} | grep $key`
+  if [ ! "$key_chk" ];then
+    echo "error: there is no key $key"
+    exit 1
+  fi
+fi
+
 if [ ! "$type" ];then
    type=line
 fi
@@ -115,26 +145,25 @@ if [ ! "$frequency" = "hourly" -a ! "$frequency" = "daily" -a ! "$frequency" = "
   echo "error: frequency:$frequency is wrong"
   exit 1
 elif [ "$frequency" = "hourly" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_d_`date +%Y%m%d`_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_d_${year}${month}${day}_db_${databox}
 
 elif [ "$frequency" = "daily" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_m_`date +%Y%m`_db_${databox}
+  poutput=${SCRIPT_DIR}/../statistics/rawdata/countup_m_${year}${month}_db_${databox}
 
 elif [ "$frequency" = "monthly" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_y_`date +%Y`_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_y_${year}_db_${databox}
 
 elif [ "$frequency" = "snapshot" ];then
   
   if [ ! "$type" = "line" ];then
-    output=${SCRIPT_DIR}/../statistics/rawdata/countup_s_`date +%Y%m%d`_db_${databox}
+    output=${SCRIPT_DIR}/../statistics/rawdata/countup_s_${year}${month}${day}_db_${databox}
   else
     frequency=daily
-    output=${SCRIPT_DIR}/../statistics/rawdata/countup_m_`date +%Y%m`_db_${databox}
+    output=${SCRIPT_DIR}/../statistics/rawdata/countup_m_${year}${month}_db_${databox}
   fi
 
 fi
 
-timestamp=`date "+%Y-%m-%d %H:%M:%S"`
 
 # adjust ouput file name
 
@@ -259,13 +288,14 @@ fi
 
 # Generate graph using pyshel
 if [ "$graph" = "yes" ];then
+  titlestamp=`echo $timestamp | sed "s/ /{####}/g" | sed "s/:/{#####}/g"`
 
   if [ ! "$title" ];then
     case "$frequency" in
-      "monthly" ) title="title:`date +%Y-%m`{####}db_$databox.data" ;;
-      "daily" )  title="title:`date +%Y-%m`{####}db_$databox" ;;
-      "hourly" ) title="title:`date +%Y-%m-%d`{####}db_$databox" ;;
-      "snapshot" ) title="title:db_$databox" ;;
+      "monthly" ) title="title:$databox.monthly.stats" ;;
+      "daily" )  title="title:$databox.daily.stats" ;;
+      "hourly" ) title="title:$databox.hourly.stats" ;;
+      "snapshot" ) title="title:$databox.${titlestamp}{####}snapshot" ;;
     esac
   else
     title="title:$title"
@@ -273,9 +303,12 @@ if [ "$graph" = "yes" ];then
 
   if [ ! "$X_label" ];then
     if [ ! "$frequency" = "snapshot" ];then
-      X_label="X_label:${frequency}.stats"
+      case "$frequency" in
+        "monthly" ) X_label="X_label:${year}" ;;
+        "daily" ) X_label="X_label:${year}-${month}" ;;
+        "hourly" ) X_label="X_label:${year}-${month}-${day}" ;;
+      esac
     else
-      titlestamp=`echo $timestamp | sed "s/ /{####}/g" | sed "s/:/{#####}/g"`
       X_label="X_label:snapshot.$titlestamp"
     fi
   else
