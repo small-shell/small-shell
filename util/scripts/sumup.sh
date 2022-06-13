@@ -121,10 +121,18 @@ if [ ! -d $ROOT/databox/$databox ];then
   exit 1
 fi
 
-if [ "$key" ];then
-  key_chk=`$ROOT/bin/meta get.key:${databox}{all} | grep $key`
+if [ "$filter_key" ];then
+  key_chk=`$ROOT/bin/meta get.key:${databox}{all} | grep $filter_key`
   if [ ! "$key_chk" ];then
-    echo "error: there is no key $key"
+    echo "error: there is no key $filter_key"
+    exit 1
+  fi
+fi
+
+if [ "$sumup_key" ];then
+  key_chk=`$ROOT/bin/meta get.key:${databox}{all} | grep $sumup_key`
+  if [ ! "$key_chk" ];then
+    echo "error: there is no key $sumup_key"
     exit 1
   fi
 fi
