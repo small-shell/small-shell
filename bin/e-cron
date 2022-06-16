@@ -46,6 +46,10 @@ if [ ! "$WHOAMI" = "small-shell" ];then
   exit 1
 fi
 
+# define log dir
+message_log=$ROOT/util/e-cron/log/message/exec_log_`date +%Y%m%d`
+fileExchange_log=$ROOT/util/e-cron/log/fileExchange/exec_log_`date +%Y%m%d`
+
 # gen tmpdir
 random=$RANDOM
 while [ -d $ROOT/tmp/gen/$random ]
@@ -315,7 +319,7 @@ if [[ "$action" == exec* ]];then
   if [ $? -eq 0 ];then
     echo "$job successfully completed"
   else
-    echo "$job failed. please check log in $ROOT/util/e-cron/log/joblog"
+    echo "$job failed. please check log in $ROOT/util/e-cron/log/job dir"
   fi
 
 fi
@@ -352,7 +356,7 @@ if [[ $action == get.* ]];then
     if [ $? -eq 0 ];then
       echo "$message"
       rm -f $ROOT/util/e-cron/que/message/$message
-      echo "`date +%Y-%m-%d` `date +%T` $remote_addr grabed $message" >> $ROOT/util/e-cron/log/messagingHUB.log
+      echo "`date +%Y-%m-%d` `date +%T` $remote_addr grabed $message" >> $message_log
     else
       echo "message is not ready"
     fi
@@ -367,7 +371,7 @@ if [[ $action == get.* ]];then
 
     # output binary data
     dd if=$ROOT/util/e-cron/que/file/$file 2>/dev/null
-    echo "`date +%Y-%m-%d` `date +%T` $remote_addr grabed $file" >> $ROOT/util/e-cron/log/fileExchange.log 
+    echo "`date +%Y-%m-%d` `date +%T` $remote_addr grabed $file" >> $fileExchange_log 
     rm -f $ROOT/util/e-cron/que/file/$file
   fi
 fi
@@ -378,7 +382,7 @@ if [[ $action == push.* ]];then
     echo $message > $ROOT/util/e-cron/que/message/$message
     if [ $? -eq 0 ];then
       echo "message pushed successfully"
-      echo "`date +%Y-%m-%d` `date +%T` $remote_addr pushed $message" >> $ROOT/util/e-cron/log/messagingHUB.log
+      echo "`date +%Y-%m-%d` `date +%T` $remote_addr pushed $message" >> $message_log
     else
       echo "message push falied"
     fi
@@ -389,7 +393,7 @@ if [[ $action == push.* ]];then
     if [ $? -eq 0 ];then
       echo "file pushed successfully"
       file=`echo $file | xargs basename -a`
-      echo "`date +%Y-%m-%d` `date +%T` $remote_addr pushed $file" >> $ROOT/util/e-cron/log/fileExchange.log
+      echo "`date +%Y-%m-%d` `date +%T` $remote_addr pushed $file" >> $fileExchange_log
     else
       echo "file push failed"
     fi

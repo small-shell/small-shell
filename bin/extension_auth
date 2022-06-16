@@ -29,6 +29,9 @@ enable_force="yes"
 SCRIPT_DIR=`dirname $0`
  . ${SCRIPT_DIR}/../global.conf
 
+# audit
+access_log=${ROOT}/users/audit/access_log_`date +%Y%m%d`
+
 # exec user check
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "small-shell" ];then
@@ -125,7 +128,7 @@ if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
     if [ $? -eq 0 ];then
       user_key=`echo "${user_name}:${hash_gen_key}" | base64 -w 0`
       echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} generated user_key of user_name:${user_name}" \
-      >> $ROOT/users/audit.log
+      >> $access_log
       echo "user_name:${user_name},user_key:${user_key}"
       rm $ROOT/users/${app}.${user_id}/initialize_key
       exit 0
@@ -161,13 +164,13 @@ if [ "$key_auth" ];then
       session_token=`echo "${app}:${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
       echo "user_name:$user_name,session_token:$session_token,pin:$pin"
       echo "`date +%Y-%m-%d` `date +%T` app:${app} user_name:${user_name} remote_addr:${remote_addr} logged in successfully" \
-      >> $ROOT/users/audit.log
+      >> $access_log
       echo "${user_name}:${remote_addr}" > $ROOT/tmp/session/${session_token}
       chmod 700 $ROOT/tmp/session/${session_token}
       exit 0
     else
      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to login to user_name:${user_name} with wrong key" \
-     >> $ROOT/users/audit.log
+     >> $access_log
      exit 1
     fi
   fi
@@ -235,19 +238,19 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
       else
         echo "error: session token or pin is wrong, need additional authentication" 
         echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to get new session (user_name:${user_name}) due to session check failure" \
-        >> $ROOT/users/audit.log
+        >> $access_log
         exit 1
       fi
     else
       echo "warn: IP address was changed, need additional authentication" 
       echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to get new session (user_name:${user_name}) due to IP change" \
-      >> $ROOT/users/audit.log
+      >> $access_log
       exit 1
     fi
 
   else
     echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} tried to use gone session" \
-    >> $ROOT/users/audit.log
+    >> $access_log
     exit 1
   fi
 fi
