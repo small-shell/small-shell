@@ -14,8 +14,8 @@ if [ ! "$WHOAMI" = "small-shell" ];then
 fi
 
 # define parameter
-job_log=${ROOT}/util/e-cron/log/joblog/${job}_log_`date +%Y%m%d`
-command_dump=${ROOT}/util/e-cron/log/joblog/${job}_command_dump_`date +%Y%m%d`
+job_log=${ROOT}/util/e-cron/log/job/${job}_log_`date +%Y%m%d`
+command_dump=${ROOT}/util/e-cron/log/job/${job}_command_dump_`date +%Y%m%d`
 status_que=${ROOT}/util/e-cron/que/status/${job}
 tmp_que=${ROOT}/util/e-cron/que/tmp/${job}
 file_que=${ROOT}/util/e-cron/que/file
