@@ -60,6 +60,8 @@ if [ "${input_message}" ];then
       message_chk="yes"
       rm -rf $ROOT/util/e-cron/que/message/${input_message}
       echo "`date +%Y-%m-%d` `date +%T` localhost grabed ${input_message}" >> $ROOT/util/e-cron/log/messagingHUB.log
+    else
+      message_chk="message is not ready"
     fi
   fi
 
@@ -98,6 +100,8 @@ if [ "${input_message}" ];then
         message_chk="yes"
         rm -rf $ROOT/util/e-cron/que/message/${input_message}
         echo "`date +%Y-%m-%d` `date +%T` localhost grabed ${input_message}" >> $ROOT/util/e-cron/log/messagingHUB.log
+      else
+        message_chk="message is not ready"
       fi
     fi
     ((count += 1))
