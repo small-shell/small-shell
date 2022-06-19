@@ -411,7 +411,6 @@ http://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/scratch?&amp;subapp=in
 </tr>
 </tbody>
 </table>
-<p>+You can add any databox to the Team APP as subapp</p>
 <h6 id="link-to-code-is-here">Link to code is  <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
 <pre><code>cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
@@ -431,6 +430,18 @@ sudo ./deploy.sh
 <p><img alt="Screenshot" src="../img/team.png" /></p>
 <p>Ofcourse, you can update portal html by your self.</p>
 <pre><code>sudo vi /var/www/descriptor/team_main.html.def
+</code></pre>
+<p>If you want to add other databox to Team APP, please generate subAPP@team</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+app_name: $subapp@team
+primary databox: $databox
+</code></pre>
+<p>then lets add routing to team APP</p>
+<pre><code>sudo vi /usr/lib/cgi-bin/team
+</code></pre>
+<p>also menu can be updated, please insert meta link to the menu</p>
+<pre><code>sudo vi /var/www/descriptor/common_parts/team_common_menu
 </code></pre>
 <h2 id="insert-member-list-to-the-app">Insert member list to the APP</h2>
 <p>Please select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP.</p>

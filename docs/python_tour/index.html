@@ -310,9 +310,9 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/$utilscript param1
 </tr>
 <tr>
 <td>filters</td>
-<td>words for countup or sumup in databox, these words will be labels of graph</td>
+<td>words for countup or sumup in databox, these words will be labels of graph. please set key {key: or filter_key:} at same timing</td>
 <td>any</td>
-<td>filters:word1,word2</td>
+<td>filters:word1,word2 or filter:word</td>
 </tr>
 <tr>
 <td>key</td>
@@ -336,7 +336,7 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/$utilscript param1
 <td>glogal_filter</td>
 <td>filtering data from pipeline from databox, but it will not be label</td>
 <td>any</td>
-<td>global_filter:word,$n</td>
+<td>global_filter:word</td>
 </tr>
 <tr>
 <td>diff</td>
@@ -344,11 +344,20 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/$utilscript param1
 <td>any</td>
 <td>diff:no or diff:yes</td>
 </tr>
+<tr>
+<td>set_time</td>
+<td>set specific date to X line</td>
+<td>line</td>
+<td>set_time:yyyy-mm-dd{####}HH:MM</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you want to put space in the title, please use {####}. it's changed to space internally in th pyshell.</p>
+<ol>
+<li>If you want to put space in the title, please use {####}. it's changed to space internally in th pyshell.</li>
+<li>You can insert command result to the parameter, such like global_filter:`date +%Y-%m-%d`</li>
+</ol>
 </div>
 <h4 id="usage">Usage</h4>
 <p>please set following commands as exec_command in "#sudo gen -job" dialog. <br />

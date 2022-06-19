@@ -117,6 +117,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#apache2-log-analyzer" class="nav-link">apache2 log analyzer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -633,7 +637,75 @@ primary databox: none
 <h3 id="distribute-the-site-to-static-directory">Distribute the site to static directory</h3>
 <p>You can export main page as static stie. then please copy the html to /var/www/html or other static directory.</p>
 <pre><code>/usr/local/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
-</code></pre></div>
+</code></pre>
+<h2 id="apache2-log-analyzer">apache2 log analyzer</h2>
+<p>You can import job for analyzing apache2 log from github. please deploy it to the web server that has apache2 log. by the way, this job is designed for Ubuntu apache2 server. if you want to use this for other platform, please modify log_analyzer.sh</p>
+<h6 id="link-to-code-is-here">Link to code is  <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
+<pre><code>cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+cd small-shell-apps/apache2_analyzer
+
+# Deploy job
+sudo ./deploy.sh
+</code></pre>
+<h4 id="confirm-imported-job">confirm imported job</h4>
+<p>If deploy.sh executed without any error, 1 databox {apache2_analyer} and 3 job will be imported.</p>
+<h6 id="log-analyzer">log analyzer</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.log_analyzer
+</code></pre>
+<pre><code> &gt; JOB: log_analyzer
+def:/usr/local/small-shell/util/e-cron/def/log_analyzer.def
+-------------SCHEDULE----------------
+min: 1
+hour: 0
+date: any
+month: any
+week: any
+-------------DEFINITION----------------
+exec_command=&quot;/usr/local/small-shell/util/scripts/apache2_log_analyzer.sh 21it&quot;
+input_message=&quot;&quot;
+output_message=&quot;analyzer.done&quot;
+hubapi=&quot;&quot;
+api_authkey=&quot;&quot;
+</code></pre>
+<h6 id="page-view">page view</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.pv_statistics
+</code></pre>
+<pre><code> &gt; JOB: pv_statistics
+def:/usr/local/small-shell/util/e-cron/def/pv_statistics.def
+-------------SCHEDULE----------------
+min: 0
+hour: 1
+date: any
+month: any
+week: any
+-------------DEFINITION----------------
+exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:pv frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:apache2_analyzer&quot;
+input_message=&quot;analyzer.done&quot;
+output_message=&quot;pv.done&quot;
+hubapi=&quot;&quot;
+api_authkey=&quot;&quot;
+</code></pre>
+<h6 id="uniq-access">Uniq access</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.uniq_statistics
+</code></pre>
+<pre><code> &gt; JOB: uniq_statistics
+def:/usr/local/small-shell/util/e-cron/def/uniq_statistics.def
+-------------SCHEDULE----------------
+min: 10
+hour: 1
+date: any
+month: any
+week: any
+-------------DEFINITION----------------
+exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:uniq_access frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:apache2_analyzer&quot;
+input_message=&quot;pv.done&quot;
+output_message=&quot;&quot;
+hubapi=&quot;&quot;
+api_authkey=&quot;&quot;
+</code></pre>
+<h4 id="confirm-result">Confirm result</h4>
+<p>Job will push the result to the databox named as apache2_annalyzer. Log analytics target is access.log.1 it means 1 day ago log. you can check the graph on console. using #stats command.</p></div>
             </div>
         </div>
 

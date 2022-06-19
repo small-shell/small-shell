@@ -137,7 +137,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#gen-databox-by-dbdef" class="nav-link">Gen databox by db.def</a>
+            <li class="nav-item" data-level="2"><a href="#gen-databox-using-dbdef-template" class="nav-link">Gen databox using db.def template</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -458,14 +458,9 @@ usage: sudo -u small-shell bat_import.sh $authkey $databox $import_file
 ## list file should just contain IDs of target datasets
 usage: sudo -u small-shell del_datasets.sh $authkey $databox $list_file
 </code></pre>
-<h2 id="gen-databox-by-dbdef">Gen databox by db.def</h2>
-<p>You can define data structure using db.def template, then bat_gen.sh could generate databox without dialog.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>+addcol : declare to add column to dataset
-colX_ : declare which number of column</p>
-</div>
-<h4 id="template">Template</h4>
+<h2 id="gen-databox-using-dbdef-template">Gen databox using db.def template</h2>
+<p>You can define data structure using db.def template, util/scripts/bat_gen.sh can generate databox without dialog if you use db.def. template sample is here.</p>
+<h4 id="dbdef-template">db.def Template</h4>
 <p>please freely add column by using "+addcol" declaration.</p>
 <pre><code>#---------------------------------------------------------------
 # db definition
@@ -514,7 +509,8 @@ col3_primary_databox=&quot;&quot;
 col3_required=&quot;no&quot;
 #-------------------------------------------
 </code></pre>
-<h4 id="generate-databox">Generate Databox</h4>
+<h4 id="generate-databox-by-bat_gensh">Generate Databox by bat_gen.sh</h4>
+<p>Command example is here. In this example we use /tmp as temporary directory. bat_gen.sh will generate databox promptly.</p>
 <pre><code>vi /tmp/db.def #please writedown definition
 cd /usr/local/small-shell/util/scripts
 ./bat_gen.sh /tmp/db.def

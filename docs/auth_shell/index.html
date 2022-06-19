@@ -137,6 +137,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#logging" class="nav-link">Logging</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -316,7 +320,14 @@ https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
 <td>change target from Base APP to Dedicated Scratch APP</td>
 </tr>
 </tbody>
-</table></div>
+</table>
+<h2 id="logging">Logging</h2>
+<p>Admin can check access log for audit purpose. audit log dir is here. 90 days log is stored as default.</p>
+<pre><code>/usr/local/small-shell/users/audit
+</code></pre>
+<p>If you want to change the retantion, please update del_log.sh directory.</p>
+<pre><code>sudo vi /usr/local/small-shell/util/scripts/del_log.sh
+</code></pre></div>
             </div>
         </div>
 
