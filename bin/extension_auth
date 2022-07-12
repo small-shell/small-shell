@@ -206,7 +206,7 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
       if [ "${session}" = "${tokencheck}" ];then
 
         if [ "${logout}" = "yes" ];then
-          rm $ROOT/tmp/session/${org_session}
+          rm $ROOT/tmp/session/${org_session} 2>/dev/null
           exit 0
         fi
 
@@ -215,7 +215,7 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
           if [ "$ln_session" -a -f $ROOT/tmp/session/${ln_session} ];then
             unlink $ROOT/tmp/session/${ln_session}
           fi
-          rm $ROOT/tmp/session/${org_session}
+          rm $ROOT/tmp/session/${org_session} 2>/dev/null
         fi
 
         pin=$RANDOM
