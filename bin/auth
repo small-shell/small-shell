@@ -78,7 +78,7 @@ do
   fi
 
   if [[ $param == logout:* ]]; then
-    logout=yes
+    action=logout
     session=`echo $param | awk -F":" '{print $2}'`
   fi
 
@@ -172,7 +172,7 @@ if [ "$action" = "session_chk" ];then
 fi
 
 
-if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$action" = "session_persist" ];then
+if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$action" = "session_persist" -o "$action" = "logout" ];then
   if [ -f  $ROOT/tmp/session/${session} ];then
     user_name=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $1}'`
     org_addr=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $2}'`
@@ -182,17 +182,18 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
       tokencheck=`echo "${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
       if [ "${session}" = "${tokencheck}" ];then
 
-        if [ "${logout}" = "yes" ];then
-          rm $ROOT/tmp/session/${org_session} 2>/dev/null
-          exit 0
-        fi
-
         if [ ! "$action" = "data_import_session" ];then
           ln_session=`cat $ROOT/tmp/session/${org_session} | awk -F ":" '{print $3}'`
           if [ "$ln_session" -a -f $ROOT/tmp/session/${ln_session} ];then
             unlink $ROOT/tmp/session/${ln_session}
           fi
           rm $ROOT/tmp/session/${org_session} 2>/dev/null
+        fi
+
+        if [ "$action" = "logout" ];then
+         echo "`date +%Y-%m-%d` `date +%T` user_name:${user_name} remote_addr:${remote_addr} logged out successfully" \
+          >> $access_log
+          exit 0
         fi
 
         pin=$RANDOM
