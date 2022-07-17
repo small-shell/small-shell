@@ -231,7 +231,7 @@ a {
   font-size: 80%;
 }
 
-.auth-form .wrapper input[type="text"], 
+.auth-form .wrapper input[type="text"],
 .auth-form .wrapper input[type="password"] {
   flex: 1 1 auto;
   font-weight: 300;
@@ -254,6 +254,272 @@ a {
   cursor: pointer;
   cursor: hand;
   font-size: 80%;
+}
+
+@media screen and (min-width: 640px){
+
+  .main {
+   padding-top: 24px;
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   align-items: flex-start;
+   color: #5A595E;
+  }
+
+  .main .description {
+    flex: none;
+    max-width: 84%;
+    text-align: left;
+    padding: 24px 42px;
+  }
+
+  .main h1 {
+    font-size: 180%;
+  }
+
+  .main p {
+   line-height: 1.1em;
+  }
+
+  .main .calendar {
+    flex: auto;
+    z-index: 1;
+    padding-top: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    line-height: 0.8em;
+    letter-spacing: .09em;
+    text-align: center;
+   }
+
+ .main  #modal-background {
+    z-index:3;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main #modal-content{
+    z-index:4;
+    width:50%;
+    border-radius: 8px;
+    padding: 1em;
+    background:#fff;
+  }
+
+}
+
+@media screen and (max-width: 640px){
+
+ .main {
+   padding: 12px 12px;
+   max-width: 98%;
+   color: #5A595E;
+   overflow-wrap normal;
+  }
+
+  .main .description {
+    padding: 12px 0px;
+    flex: none;
+  }
+
+  .main p {
+   line-height: 1.1em;
+  }
+
+  .main .calendar {
+    z-index: 1;
+    line-height: 0.8em;
+    letter-spacing: .09em;
+    text-align: center;
+   }
+
+  .main  #modal-background {
+    z-index:3;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main #modal-content{
+    z-index:4;
+    width:80%;
+    border-radius: 8px;
+    padding: 1em;
+    background:#fff;
+  }
+
+}
+
+.main a {
+  color: #07ADAF;
+}
+
+.main .flex-table-header {
+  font-weight: 300;
+  font-weight: bold;
+  border-radius: 4px;
+  border: 1px dotted #c0c0c0;
+  color: white;
+  background: #696969;
+}
+
+.main .flex-table {
+  line-height: .04em;
+  padding: 4px 2px;
+  margin: auto;
+  color: #111111;
+  margin-bottom: -24px;
+  overflow-x: auto;
+}
+
+.main .flex-table ul {
+  list-style: none;
+  /* table-width */ min-width: 640px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.main .flex-table li {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.main .flex-table li p {
+  width: 120px;
+  flex: auto;
+  padding-left: 8px;
+  font-size: 70%;
+  white-space: wrap;
+}
+
+.main button {
+  font-weight: bold;
+  padding: 14px 20px;
+  border-style: none;
+  background: #07ADAF;
+  color: #f8f8f8;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  border-radius: 2px;
+  cursor: pointer;
+  cursor: hand;
+  font-size: 80%;
+}
+
+.main button a {
+  color:inherit;
+  text-decoration: none;
+}
+
+.main ul {
+  list-style: none;
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 24px;
+}
+
+.main li {
+  width: 98%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width :220px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.main li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
+    font-size: 80%;
+    text-align: left;
+    color: #444444;
+    min-width:100%;
+    font-weight: 300;
+    margin-right: 2px;
+    letter-spacing: .09em;
+    padding: 6px 6px;
+    font-weight: bold;
+}
+
+.main li input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='date']):not([type='datetime-local']),
+.main li textarea {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  flex: auto;
+  border-radius: 4px;
+}
+
+.main li select {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  flex: auto;
+  border-radius: 4px;
+}
+
+.main input[type="date"],
+.main input[type="datetime-local"] {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid #d3d3d3;
+  flex: auto;
+  border-radius: 4px;
+}
+
+.main input[type="radio"],
+.main input[type="checkbox"]{
+  margin-top: 6px;
+}
+
+.main li pre {
+  text-align: left;
+  background: #f5f5f5;
+  font-size: 12px;
+  margin:0;
+  padding: 6px 6px;
+  border: 1px solid #d3d3d3;
+  letter-spacing: .09em;
+  overflow:auto;
+  flex: auto;
+}
+
+@media screen and (min-width: 1200px) {
+
+  .left-nav {
+   top: 20px;
+   max-width: 200px;
+   padding-top: 12px;
+   padding-right: 48px;
+   position: sticky;
+  }
+
+  .left-nav a {
+   text-decoration: none;
+   font-weight: bold;
+   color: #5A595E;
+ }
+
 }
 
 .table-box {
@@ -386,7 +652,7 @@ a {
  color: blue;
 }
 
-@media screen and (min-width: 640px){ 
+@media screen and (min-width: 640px){
   .form-box {
     max-width: 72%;
     padding: 42px 2px;
@@ -396,7 +662,7 @@ a {
 }
 }
 
-@media screen and (max-width: 640px){ 
+@media screen and (max-width: 640px){
   .form-box {
     max-width: 100%;
     padding: 24px 2px;
@@ -416,7 +682,7 @@ a {
   margin-bottom: -10px;
 }
 
-@media screen and (min-width: 640px){ 
+@media screen and (min-width: 640px){
   .form-box .description h1 {
     font-size: 180%;
     color: #434246;
@@ -424,7 +690,7 @@ a {
 }
 }
 
-@media screen and (max-width: 640px){ 
+@media screen and (max-width: 640px){
   .form-box .description h1 {
     font-size: 180%;
     color: #444444;
@@ -471,7 +737,7 @@ a {
   margin-bottom: 24px;
 }
 
-@media screen and (max-width: 640px){ 
+@media screen and (max-width: 640px){
   .form-box li {
     width: 98%;
     display: flex;
@@ -483,7 +749,7 @@ a {
 }
 }
 
-@media screen and (min-width: 640px){ 
+@media screen and (min-width: 640px){
   .form-box li {
     width: 48%;
     display: flex;
@@ -543,7 +809,7 @@ a {
     border-radius: 4px;
   }
 
-  .form-box input[type="date"], 
+  .form-box input[type="date"],
   .form-box input[type="datetime-local"] {
     letter-spacing: .09em;
     font-size: 12px;
@@ -712,178 +978,9 @@ a {
   color: #808080;
 }
 
-@media screen and (min-width: 640px){
-  .announcement-form-box {
-    max-width: 48%;
-    padding: 42px 2px;
-    text-align: left;
-    border-radius: 4px;
-    line-height: 0.8em;
-    margin: auto;
-}
-}
-
-@media screen and (max-width: 640px){
-  .announcement-form-box {
-    max-width: 100%;
-    padding: 24px 2px;
-    text-align: left;
-    line-height: 0.8em;
-    margin: auto;
-}
-}
-
 .form-box input:focus, .form-box select:focus, .form-box textarea:focus {
   outline-color: #40B9F8;
   outline-width: 2px;
-}
-
-.announcement-form-box a {
-  color: #008;
-}
-
-.announcement-form-box .description {
-  text-align: left;
-  line-height: 0.8em;
-  margin-bottom: -10px;
-}
-
-@media screen and (min-width: 640px){
-  .announcement-form-box .description h1 {
-    font-size: 180%;
-    color: #444444;
-    font-style : italic;
-}
-}
-
-@media screen and (max-width: 640px){
-  .announcement-form-box .description h1 {
-    font-size: 180%;
-    color: #444444;
-    font-style : italic;
-}
-}
-
-.announcement-form-box .description h2 {
-  color: #444444;
-}
-
-.announcement-form-box .description h3 {
-  color: #444444;
-}
-
-.announcement-form-box .description p {
-  font-size: 80%;
-  color: #c0c0c0;
-}
-
-.announcement-form-box .log {
-  text-align: left;
-  line-height: 1.2em;
-  margin-top: 4px;
-  margin-bottom: -10px;
-  color: #008b8b;
-}
-
-.announcement-form-box hr {
-  margin-top: -5px;
-  margin-bottom: 12px;
-  border: 0.5px dotted #d3d3d3;
-}
-
-
-.announcement-form-box ul {
-  list-style: none;
-  align-items: flex-start;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin: 0px;
-  padding: 0px;
-  margin-bottom: 24px;
-}
-
-@media screen and (max-width: 640px){
-  .announcement-form-box li {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    min-width :220px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-}
-
-@media screen and (min-width: 640px){
-  .announcement-form-box li {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    min-width :220px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-}
-
-
-@media screen and (max-width: 640px){
-  .announcement-form-box li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
-    font-size: 70%;
-    text-align: left;
-    color: #444444;
-    min-width:100%;
-    font-weight: 300;
-    margin-right: 2px;
-    letter-spacing: .09em;
-    padding: 6px 6px;
-    font-weight: bold;
-}
-}
-
-@media screen and (min-width: 640px){
-  .announcement-form-box li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
-    font-size: 84%;
-    font-weight:bold;
-    color: #444444;
-    min-width:100%;
-    text-align: left;
-    padding: 3px 3px;
-    margin-right: 2px;
-    letter-spacing: .09em;
-}
-}
-
-.announcement-form-box li input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='date']):not([type='datetime-local']),
-.announcement-form-box li textarea {
-  letter-spacing: .09em;
-  font-size: 12px;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  border-radius: 4px;
-  flex: auto;
-}
-
-@media screen and (min-width: 640px){
-  .announcement-form-box li select {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
-
-  .announcement-form-box input[type="date"],
-  .announcement-form-box input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
 }
 
 .result-box {
@@ -938,242 +1035,6 @@ input[type="file"] {
  display: none;
 }
 
-@media screen and (min-width: 640px){
-
-  .main {
-   padding-top: 24px;
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: center;
-   align-items: flex-start;
-   color: #5A595E;
-  }
-
-  .main .description {
-    flex: none;
-    max-width: 84%;
-    text-align: left;
-    padding: 24px 42px;
-  }
-
-  .main h1 {
-    font-size: 180%;
-  }
-
-  .main p {
-   line-height: 1.1em;
-  }
-
-  .main .calendar {
-    flex: auto;
-    z-index: 1;
-    padding-top: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
-    line-height: 0.8em;
-    letter-spacing: .09em;
-    text-align: center;
-   }
-
- .main  #modal-background {
-    z-index:3;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background-color:rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .main #modal-content{
-    z-index:4;
-    width:50%;
-    border-radius: 8px;
-    padding: 1em;
-    background:#fff;
-  }
-
-}
-
-@media screen and (max-width: 640px){
-
- .main {
-   padding: 12px 12px;
-   max-width: 98%;
-   color: #5A595E;
-   overflow-wrap normal;
-  }
-
-  .main .description {
-    padding: 12px 0px;
-    flex: none;
-  }
-
-  .main p {
-   line-height: 1.1em;
-  }
-
-  .main .calendar {
-    z-index: 1;
-    line-height: 0.8em;
-    letter-spacing: .09em;
-    text-align: center;
-   }
-
-  .main  #modal-background {
-    z-index:3;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background-color:rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .main #modal-content{
-    z-index:4;
-    width:80%;
-    border-radius: 8px;
-    padding: 1em;
-    background:#fff;
-  }
-
-}
-
-.main a {
-  color: #07ADAF;
-}
-
-.main .table-header {
-  font-weight: 300;
-  font-weight: bold;
-  border-radius: 4px;
-  border: 1px dotted #c0c0c0;
-  color: white;
-  background: #696969;
-}
-
-.main button {
-  font-weight: bold;
-  padding: 14px 20px;
-  border-style: none;
-  background: #07ADAF;
-  color: #f8f8f8;
-  text-transform: uppercase;
-  letter-spacing: .09em;
-  border-radius: 2px;
-  cursor: pointer;
-  cursor: hand;
-  font-size: 80%;
-}
-
-.main button a {
-  color:inherit;
-  text-decoration: none;
-}
-
-.main ul {
-  list-style: none;
-  align-items: flex-start;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin: 0px;
-  padding: 0px;
-  margin-bottom: 24px;
-}
-
-.main li {
-  width: 98%;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  min-width :220px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.main li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
-    font-size: 80%;
-    text-align: left;
-    color: #444444;
-    min-width:100%;
-    font-weight: 300;
-    margin-right: 2px;
-    letter-spacing: .09em;
-    padding: 6px 6px;
-    font-weight: bold;
-}
-
-.main li input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='date']):not([type='datetime-local']),
-.main li textarea {
-  letter-spacing: .09em;
-  font-size: 12px;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  flex: auto;
-  border-radius: 4px;
-}
-
-.main li select {
-  letter-spacing: .09em;
-  font-size: 12px;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  flex: auto;
-  border-radius: 4px;
-}
-
-.main input[type="date"],
-.main input[type="datetime-local"] {
-  letter-spacing: .09em;
-  font-size: 12px;
-  padding: 4px 6px;
-  border: 1px solid #d3d3d3;
-  flex: auto;
-  border-radius: 4px;
-}
-
-.main input[type="radio"],
-.main input[type="checkbox"]{
-  margin-top: 6px;
-}
-
-.main li pre {
-  text-align: left;
-  background: #f5f5f5;
-  font-size: 12px;
-  margin:0;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  letter-spacing: .09em;
-  overflow:auto;
-  flex: auto;
-}
-
-@media screen and (min-width: 1200px) {
-
-  .left-nav {
-   top: 20px;
-   max-width: 200px;
-   padding-top: 12px;
-   padding-right: 48px; 
-   position: sticky;
-  }
-
-  .left-nav a {
-   text-decoration: none;
-   font-weight: bold;
-   color: #5A595E;
- }
-
-}
 
 @media screen and (max-width: 1199px) {
   .left-nav {
@@ -1191,4 +1052,3 @@ input[type="file"] {
   bottom: 0;
   width: 100%;
 }
-
