@@ -84,11 +84,10 @@ else
 
   # else means copying data
   keys=`$META get.key:$databox{all}`
-  count=1
   for key in $keys
   do
-     # gen %%data by conpying
-    if [ "$count" = 1 ];then
+    # gen %%data by conpying
+    if [ "$primary_key" = "$key" ];then
       $DATA_SHELL databox:$databox \
       action:get id:new key:$key format:html_tag > ../tmp/$session/dataset
     else
@@ -104,7 +103,6 @@ else
       fi
 
     fi
-    (( count += 1 ))
   done
   id=new
 

@@ -106,7 +106,7 @@ case "$req" in
     ../bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
 
   "get")
-    ../bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id;;
+    ../bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate;;
 
   "set")
     ../bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id;;

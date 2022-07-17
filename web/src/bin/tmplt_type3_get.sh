@@ -24,6 +24,10 @@ do
     id=`echo $param | awk -F":" '{print $2}'`
   fi
 
+  if [[ $param == duplicate:* ]]; then
+    duplicate=`echo $param | awk -F":" '{print $2}'`
+  fi
+
 done
 
 # load small-shell path
@@ -48,18 +52,48 @@ else
   permission="ro"
 fi
 
-if [ ! "$permission" = "ro"  ];then
+if [ ! "$duplicate" = "yes" ];then
+  if [ ! "$permission" = "ro"  ];then
 
-  # gen read/write datas
-  $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:html_tag > ../tmp/$session/dataset
+    # gen read/write datas
+    $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:html_tag > ../tmp/$session/dataset
+
+  else
+
+    # gen read only datas
+    $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:none | grep -v hashid > ../tmp/$session/dataset.0.1
+    cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><pre>/1" | sed "s/$/<\/pre><\/li>/g" \
+    | sed "s/<pre><\/pre>/<pre>-<\/pre>/g" | sed "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
+
+  fi
 
 else
 
-  # gen read only datas
-  $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:none | grep -v hashid > ../tmp/$session/dataset.0.1
-  cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><pre>/1" | sed "s/$/<\/pre><\/li>/g" \
-  | sed "s/<pre><\/pre>/<pre>-<\/pre>/g" | sed "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
+  # else means copying data
+  if [ "$keys" = "all" ];then
+    keys=`$META get.key:$databox{all}`
+    primary_key=`$META get.key:$databox{primary}`
+  fi
+  for key in $keys
+  do
+    # gen %%data by conpying
+    if [ "$primary_key" = "$key" ];then
+      $DATA_SHELL databox:$databox \
+      action:get id:new key:$key format:html_tag > ../tmp/$session/dataset
+    else
+      data=`$DATA_SHELL databox:$databox \
+      action:get id:$id key:$key format:html_tag ` \
+      file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
+      if [ ! "$file_chk" ];then
+        echo $data >> ../tmp/$session/dataset
+      else
+        $DATA_SHELL databox:$databox \
+        action:get id:new key:$key format:html_tag  >> ../tmp/$session/dataset
+      fi
+    fi
+  done
+  id=new
 fi
 
 # error check
