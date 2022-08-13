@@ -240,7 +240,7 @@ if [ "$action" = "add.usr" ];then
   fi
 
   if [ -d $user_dir ];then 
-    echo "error: $user_name is already existing"
+    echo "error: $user_name is already existing. if you want to initialize the user, please execute initialize.usr:$user_name"
     exit 1
   fi
 
