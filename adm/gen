@@ -33,7 +33,7 @@ line_chk=`cat ${SCRIPT_DIR}/../global.conf | wc -l | tr -d " "`
 
 if [ $line_chk -eq 1 ];then
 
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/scripts/*
+  chmod 755 ${SCRIPT_DIR}/../util/scripts/*
   sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/e-cron/bin/*
   sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/pyshell/pygraph.sh
   sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/pyshell/env
