@@ -2800,7 +2800,7 @@ if [ "$param" = "-job" ];then
         if [ "$exchange_type" = "push" ];then
           echo ""
           echo "2. Please upload file:$file_name to the dir"
-          echo "  dir: $ROOT/util/e-cron/que/file/"
+          echo "  dir: $local_dir"
           echo ""
         fi
         if [ "$exchange_type" = "get" ];then
