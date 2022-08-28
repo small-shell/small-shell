@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# load small-shell path
-. ../descriptor/.small_shell_path
+# load small-shell conf
+. ../descriptor/.small_shell_conf
 
 # load remote addr
-remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 
 # IP restriction check
 whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
 if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
-    IP=`echo $IP | sed "s/*//g"`
+    IP=`echo $IP | $SED "s/*//g"`
     if [[ ${remote_addr} == ${IP}* ]];then
       IP_chk_flag=yes
       break
@@ -44,8 +44,8 @@ do
 done
 
 # parse QUERY_STRING
-echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" > ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > ../tmp/${param}.load
 chmod 755 ../tmp/${param}.load
 
 # load query string
@@ -57,9 +57,9 @@ authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
 auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
-user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
-session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
+session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 
 if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
   echo "Content-Type: text/html"

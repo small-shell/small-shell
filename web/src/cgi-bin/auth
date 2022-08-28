@@ -3,21 +3,24 @@
 #read posted param 
 input=`dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -`
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 echo "Content-Type: text/html"
 echo ""
 
-# load small-shell path
-. ../descriptor/.small_shell_path
+# load small-shell conf
+. ../descriptor/.small_shell_conf
 
 # load remote addr
-remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 
 # IP restriction check
 whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
 if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
-    IP=`echo $IP | sed "s/*//g"`
+    IP=`echo $IP | $SED "s/*//g"`
     if [[ ${remote_addr} == ${IP}* ]];then
       IP_chk_flag=yes
       break
@@ -45,12 +48,12 @@ do
 done
 
 # parse QUERY STRING
-echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" |  tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" |  tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
 
 # parse POST param
-echo $input | sed "s/\`//g" | sed "s/&/\n/g"  | sed -r "s/small_shell_authkey(.*)=/small_shell_authkey=/g" \
-| php -r "echo urldecode(file_get_contents('php://stdin'));"  >> ../tmp/${param}
-cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" |  tr -d \$ | tr -d \` > ../tmp/${param}.load
+echo $input | $SED "s/\`//g" | $SED "s/&/\n/g"  | $SED -r "s/small_shell_authkey(.*)=/small_shell_authkey=/g" \
+| $PHP -r "echo urldecode(file_get_contents('php://stdin'));"  >> ../tmp/${param}
+cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" |  tr -d \$ | tr -d \` > ../tmp/${param}.load
 
 chmod 755 ../tmp/${param}.load
 
@@ -77,35 +80,35 @@ do
   ((count +=1 ))
 done
 
-res_chk=`echo $res_list | sed "s/ //g"`
+res_chk=`echo $res_list | $SED "s/ //g"`
 if [ ! "$res_chk" ];then
   echo "<option value=\"./shell.auth?databox=null\">DataBox:null</option>" >> ../tmp/$timestamp/databox_list
   databox=null
 fi
 
 if [ ! "$databox" ];then
-  databox=`echo $res_list | sed "s/ /\n/g" | head -1`
+  databox=`echo $res_list | $SED "s/ /\n/g" | head -1`
 fi
 
 
 # For the access with initialize hashkey which contain in query string and create new user_key
 if [ "$initialize" ];then
-  user_id=`echo $initialize | awk -F "," '{print $1}'`
-  initialize_hash_key=`echo $initialize |  awk -F "," '{print $2}'`
+  user_id=`echo $initialize | $AWK -F "," '{print $1}'`
+  initialize_hash_key=`echo $initialize |  $AWK -F "," '{print $2}'`
   key_gen=`sudo -u small-shell ${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
-  user_name=`echo $key_gen | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
-  user_key=`echo $key_gen | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+  user_name=`echo $key_gen | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
+  user_key=`echo $key_gen | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   server=`sudo -u small-shell ${small_shell_path}/bin/meta get.server`
 
   # render success page
   if [ "$user_name" -a "$user_key" ];then
-    cat ../descriptor/auth_initialize.html.def | sed -r "s/^( *)</</1" \
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
-    | sed "/%%footer/d"\
-    | sed "s/%%IP/$remote_addr/g" \
-    | sed "s/%%user_name/$user_name/g" \
-    | sed "s/%%user_key/$user_key/g" \
-    | sed "s/%%server/$server/g"
+    cat ../descriptor/auth_initialize.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/d"\
+    | $SED "s/%%IP/$remote_addr/g" \
+    | $SED "s/%%user_name/$user_name/g" \
+    | $SED "s/%%user_key/$user_key/g" \
+    | $SED "s/%%server/$server/g"
     rm -rf ../tmp/$timestamp
     exit 0
   else
@@ -120,14 +123,14 @@ if [ ! "$small_shell_authkey" ];then
 
   if [ "$key_placeholder" ];then
     # render first login form with initialized key
-    cat ../descriptor/auth_form_with_key.html.def | sed -r "s/^( *)</</1" \
-    | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
-    | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
-    | sed "/%%footer/d"\
-    | sed "/%%databox_list/r ../tmp/$timestamp/databox_list" \
-    | sed "s/%%databox_list//g"\
-    | sed "s/%%key_placeholder/$key_placeholder/g"
+    cat ../descriptor/auth_form_with_key.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | $SED "s/%%auth_form_menu//g"\
+    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/d"\
+    | $SED "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | $SED "s/%%databox_list//g"\
+    | $SED "s/%%key_placeholder/$key_placeholder/g"
     rm -rf ../tmp/$timestamp
     exit 0
 
@@ -151,15 +154,15 @@ if [ ! "$small_shell_authkey" ];then
     fi
 
     # render standard login form with queyr string and messge
-    cat ../descriptor/auth_form.html.def | sed -r "s/^( *)</</1" \
-    | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
-    | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
-    | sed "/%%footer/d"\
-    | sed "/%%databox_list/r ../tmp/$timestamp/databox_list" \
-    | sed "s/%%databox_list//g"\
-    | sed "s/%%params/${databox}${req}${id}/g"\
-    | sed "s/%%message/${message}/g" 
+    cat ../descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | $SED "s/%%auth_form_menu//g"\
+    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/d"\
+    | $SED "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | $SED "s/%%databox_list//g"\
+    | $SED "s/%%params/${databox}${req}${id}/g"\
+    | $SED "s/%%message/${message}/g" 
     rm -rf ../tmp/$timestamp
     exit 0
   fi
@@ -170,14 +173,14 @@ fi
 # Authentication 
 if [ "$small_shell_authkey" ];then
   if [[ $small_shell_authkey == *:* ]]; then
-    authkey=`echo $small_shell_authkey | awk -F ":" '{print $2}'`
+    authkey=`echo $small_shell_authkey | $AWK -F ":" '{print $2}'`
   else
     authkey="$small_shell_authkey"
   fi
   auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
-  user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
-  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+  user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
+  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
    
   if [ "$user_name" -a "$session" -a "$pin" ];then
 
@@ -197,15 +200,15 @@ if [ "$small_shell_authkey" ];then
     exit 0
   else
     # render standard login form with error message
-    cat ../descriptor/auth_form.html.def | sed -r "s/^( *)</</1" \
-    | sed "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
-    | sed "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
-    | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/footer" \
-    | sed "/%%footer/d"\
-    | sed "/%%databox_list/r ../tmp/$timestamp/databox_list" \
-    | sed "s/%%databox_list//g"\
-    | sed "s/%%params//g"
+    cat ../descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
+    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | $SED "s/%%auth_form_menu//g"\
+    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/d"\
+    | $SED "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | $SED "s/%%databox_list//g"\
+    | $SED "s/%%params//g"
     rm -rf ../tmp/$timestamp
     exit 1
   fi

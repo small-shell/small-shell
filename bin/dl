@@ -36,27 +36,27 @@ for param in `echo $@`
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == authkey:* ]]; then
-    authkey=`echo $param | awk -F":" '{print $2}'`
+    authkey=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == app:* ]];then
-    app=`echo $param | awk -F":" '{print $2}'`
+    app=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
@@ -65,22 +65,22 @@ done
 # authentication
 if [ "$authkey" ];then
   auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
-  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 fi
 
 # authorized session check
 if [ -f $ROOT/tmp/session/$session ];then
-  user=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $1}'`
-  remote_addr=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $2}'`
+  user=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $1}'`
+  remote_addr=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $2}'`
 
   if [ ! "$app" ];then
     # check token
-    tokencheck=`echo "${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    tokencheck=`echo "${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
     app=shell.app
   else
     # check app token
-    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
   fi
 
   if [ ! "$session" = "$tokencheck" ];then
@@ -108,7 +108,7 @@ if [ ! -f $ROOT/databox/$databox/file/$id ];then
 fi
 
 # get primary key
-primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
 primary_key_value=`cat $ROOT/databox/${databox}/data/${id}/${primary_key}`
 
 # output binary data

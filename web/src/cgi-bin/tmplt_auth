@@ -3,11 +3,11 @@
 echo "Content-Type: text/html"
 echo ""
 
-# load small-shell path
-. ../descriptor/.small_shell_path
+# load small-shell conf
+. ../descriptor/.small_shell_conf
 
 # load remote addr
-remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 
 # required
 IP_whitelisting=%%IP_whitelisting
@@ -19,7 +19,7 @@ if [ "$IP_whitelisting" = "yes" ];then
   if [ "$whitelist_chk" ];then
     for IP in $whitelist_chk
     do
-      IP=`echo $IP | sed "s/*//g"`
+      IP=`echo $IP | $SED "s/*//g"`
       if [[ ${remote_addr} == ${IP}* ]];then
         IP_chk_flag=yes
         break
@@ -48,8 +48,8 @@ do
 done
 
 # parse QUERY STRING
-echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
 chmod 755 ../tmp/${param}.load
 
 # load query string
@@ -77,21 +77,21 @@ rm -rf ../tmp/${param}*
 
 # For the access with initialize hashkey which contain in query string and create new user_key
 if [ "$initialize" ];then
-    user_id=`echo $initialize | awk -F "," '{print $1}'`
-    initialize_hash_key=`echo $initialize |  awk -F "," '{print $2}'`
+    user_id=`echo $initialize | $AWK -F "," '{print $1}'`
+    initialize_hash_key=`echo $initialize |  $AWK -F "," '{print $2}'`
     key_gen=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app initialize:${user_id}{${initialize_hash_key}} \
              remote_addr:${remote_addr}`
-    user_name=`echo $key_gen | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
-    user_key=`echo $key_gen | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
+    user_name=`echo $key_gen | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
+    user_key=`echo $key_gen | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
     server=`sudo -u small-shell ${small_shell_path}/bin/meta get.server`
 
     # render success page
     if [ "$user_name" -a "$user_key" ];then
-      cat ../descriptor/%%app_auth_initialize.html.def | sed -r "s/^( *)</</1" \
-      | sed "s/%%IP/$remote_addr/g" \
-      | sed "s/%%user_name/$user_name/g" \
-      | sed "s/%%user_key/$user_key/g" \
-      | sed "s/%%server/$server/g"
+      cat ../descriptor/%%app_auth_initialize.html.def | $SED -r "s/^( *)</</1" \
+      | $SED "s/%%IP/$remote_addr/g" \
+      | $SED "s/%%user_name/$user_name/g" \
+      | $SED "s/%%user_key/$user_key/g" \
+      | $SED "s/%%server/$server/g"
       exit 0
     else
       echo "error: Your initialize URL should be wrong, please contact to your web admin"
@@ -104,12 +104,12 @@ if [ ! "$app_key" ];then
 
   if [ "$key_placeholder" ];then
     # render first login form with initialized key
-    cat ../descriptor/%%app_auth_form_with_key.html.def | sed -r "s/^( *)</</1" \
-    | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
-    | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
-    | sed "/%%footer/d"\
-    | sed "s/%%key_placeholder/$key_placeholder/g"
+    cat ../descriptor/%%app_auth_form_with_key.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
+    | $SED "s/%%auth_form_menu//g"\
+    | $SED "/%%footer/r ../descriptor/common_parts/%%app_footer" \
+    | $SED "/%%footer/d"\
+    | $SED "s/%%key_placeholder/$key_placeholder/g"
     exit 0
 
   else
@@ -128,13 +128,13 @@ if [ ! "$app_key" ];then
     fi
 
     # render standard login form with queyr string and messge
-    cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
-    | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
-    | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
-    | sed "/%%footer/d"\
-    | sed "s/%%message/${message}/g" \
-    | sed "s/?%%params/${req}${id}/g"
+    cat ../descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
+    | $SED "s/%%auth_form_menu//g"\
+    | $SED "/%%footer/r ../descriptor/common_parts/%%app_footer" \
+    | $SED "/%%footer/d"\
+    | $SED "s/%%message/${message}/g" \
+    | $SED "s/?%%params/${req}${id}/g"
     exit 0
   fi
 
@@ -143,14 +143,14 @@ fi
 # Authentication 
 if [ "$app_key" ];then
   if [[ $app_key == *:* ]]; then
-    authkey=`echo $app_key | awk -F ":" '{print $2}'`
+    authkey=`echo $app_key | $AWK -F ":" '{print $2}'`
   else
     authkey="$app_key"
   fi
   auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr}`
-  user_name=`echo $auth_req | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
-  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+  user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
+  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
    
   if [ "$user_name" -a "$session" -a "$pin" ];then
 
@@ -169,13 +169,13 @@ if [ "$app_key" ];then
 
   else
     # render standard login form with error message
-    cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
-    | sed "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
-    | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
-    | sed "s/%%auth_form_menu//g"\
-    | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
-    | sed "/%%footer/d"\
-    | sed "s/%%params//g"
+    cat ../descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
+    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
+    | $SED "s/%%auth_form_menu//g"\
+    | $SED "/%%footer/r ../descriptor/common_parts/%%app_footer" \
+    | $SED "/%%footer/d"\
+    | $SED "s/%%params//g"
     exit 1
   fi
   

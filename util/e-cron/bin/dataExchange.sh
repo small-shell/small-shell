@@ -22,7 +22,7 @@ file_que=${ROOT}/util/e-cron/que/file
 
 # resource lock
 exec 9>${tmp_que}
-flock -n 9
+$FLOCK -n 9
 if [ $? -ne 0 ]; then
   echo "`date +%Y-%m-%d` `date +%T` job is already running" >> ${job_log}
   exit 1
@@ -52,7 +52,7 @@ if [ "${get_file}" ];then
     if [ ! -d ${file_que}/.${job} ];then
        mkdir ${file_que}/.${job}
     fi
-    files=`curl -X GET "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
+    files=`$CURL -X GET "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
     while [ ! "$files" ]; do
       sleep 10
       sleep_time=`expr ${count} \* 10`
@@ -67,14 +67,14 @@ if [ "${get_file}" ];then
         exit 1
       fi
       ((count += 1))
-      files=`curl "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
+      files=`$CURL "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
     done
 
     for file in $files
     do 
-      echo "`date +%Y-%m-%d` `date +%T` curl -OLJ \"${hubapi}?req=get&filename=${file}\" \
+      echo "`date +%Y-%m-%d` `date +%T` $CURL -OLJ \"${hubapi}?req=get&filename=${file}\" \
        -H \"X-small-shell-authkey:$api_authkey\"" >> ${command_dump} 2>&1
-      (cd ${file_que}/.${job} && curl -OLJ "${hubapi}?req=get&filename=${file}"\
+      (cd ${file_que}/.${job} && $CURL -OLJ "${hubapi}?req=get&filename=${file}"\
        -H "X-small-shell-authkey:$api_authkey" >> ${command_dump} 2>&1) 
     done
   fi
@@ -101,11 +101,11 @@ if [ "${push_file}" ];then
     else
       for file in $files
       do
-        echo "`date +%Y-%m-%d` `date +%T` curl -X POST \"${hubapi}?req=push&filename=${file}\" -H \"Content-Type:application/octet-stream\" \
+        echo "`date +%Y-%m-%d` `date +%T` $CURL -X POST \"${hubapi}?req=push&filename=${file}\" -H \"Content-Type:application/octet-stream\" \
         -H \"X-small-shell-authkey:${api_authkey}\" \
         --data-binary @${local_dir}/${file}" >> ${command_dump} 2>&1
 
-        curl -X POST "${hubapi}?req=push&filename=${file}" -H "Content-Type:application/octet-stream" \
+        $CURL -X POST "${hubapi}?req=push&filename=${file}" -H "Content-Type:application/octet-stream" \
         -H "X-small-shell-authkey:${api_authkey}" \
         --data-binary @${local_dir}/${file} >> ${command_dump} 2>&1
        

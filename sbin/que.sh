@@ -20,15 +20,15 @@ SCRIPT_DIR=`dirname $0`
 
 # authorized session check
 if [ -f $ROOT/tmp/que/$session ];then
-  user=`cat $ROOT/tmp/que/$session | awk -F ":" '{print $1}'`
-  remote_addr=`cat $ROOT/tmp/que/$session | awk -F ":" '{print $2}'`
+  user=`cat $ROOT/tmp/que/$session | $AWK -F ":" '{print $1}'`
+  remote_addr=`cat $ROOT/tmp/que/$session | $AWK -F ":" '{print $2}'`
 
   if [ "$app" = "shell.app" ];then
     # check token
-    tokencheck=`echo "${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    tokencheck=`echo "${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
   else
     # check app token
-    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
   fi
 
   if [ ! "$session" = "$tokencheck" ];then
@@ -46,7 +46,7 @@ fi
 # check lock file
 lock=no
 exec 4>$ROOT/tmp/exec/lock
-flock -n 4
+$FLOCK -n 4
 if [ $? -eq 0 ];then
   lock=yes  
 fi
@@ -55,7 +55,7 @@ count=0
 while [ "$lock" = "no" ]
 do
  sleep 0.1
- flock -n 4
+ $FLOCK -n 4
  if [ $? -eq 0 ];then
    lock=yes  
  fi
@@ -68,23 +68,23 @@ do
 done
 
 if [ "$flag" = "set" -o "$flag" = "delcol" -o "$flag" = "addcol" ];then
-  primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g"`
+  primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g"`
   primary_key_value=`cat ${ROOT}/databox/${databox}/data/${id}/${primary_key}`
 fi
 
 if [ "$flag" = "del" ];then
-  primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g"`
+  primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g"`
   primary_key_value=`cat ${ROOT}/databox/${databox}/data/${id}.detouched/${primary_key}`
   rm -rf ${ROOT}/databox/${databox}/data/${id}.detouched
 fi
 
 # logging
 if [ "$flag" = "set" -o "$flag" = "addcol" ];then
-  for updated_key in `echo $updated_keys | sed "s/,/ /g"`
+  for updated_key in `echo $updated_keys | $SED "s/,/ /g"`
   do
 
     if [ -f ${ROOT}/databox/${databox}/data/${id}/${updated_key} ];then
-      value=`cat ${ROOT}/databox/${databox}/data/${id}/${updated_key} | sed -z "s/\n//g"`
+      value=`cat ${ROOT}/databox/${databox}/data/${id}/${updated_key} | $SED -z "s/\n//g"`
     fi
 
     if [ ! "$value" ];then
@@ -98,11 +98,11 @@ if [ "$flag" = "set" -o "$flag" = "addcol" ];then
     echo "$log_dump" >> $ROOT/databox/$databox/log.dump
 
     # gen hash
-    hash=`echo "$log_dump" | sha256sum | awk '{print $1}'`
+    hash=`echo "$log_dump" | $SHASUM | $AWK '{print $1}'`
 
     # update hash chain
-    last_hash=`grep synthesis_hash $ROOT/databox/$databox/hashchain | tail -1 | awk -F ":" '{print $2}'`
-    synthesis_hash=` echo ${last_hash}${hash} | sha256sum | awk '{print $1}'`
+    last_hash=`grep synthesis_hash $ROOT/databox/$databox/hashchain | tail -1 | $AWK -F ":" '{print $2}'`
+    synthesis_hash=` echo ${last_hash}${hash} | $SHASUM | $AWK '{print $1}'`
     echo "`date +%Y-%m-%d` `date +%T` id             :$id" >> $ROOT/databox/$databox/hashchain
     echo "`date +%Y-%m-%d` `date +%T` hash           :$hash" >> $ROOT/databox/$databox/hashchain
     echo "`date +%Y-%m-%d` `date +%T` synthesis_hash :$synthesis_hash" >> $ROOT/databox/$databox/hashchain
@@ -111,7 +111,7 @@ if [ "$flag" = "set" -o "$flag" = "addcol" ];then
 fi
 
 if [ "$flag" = "del" -o "$flag" = "delcol" ];then
-  for updated_key in `echo $updated_keys | sed "s/,/ /g"`
+  for updated_key in `echo $updated_keys | $SED "s/,/ /g"`
   do
     value="null(detouched)"
     timestamp="`date +%Y-%m-%d` `date +%T`"
@@ -121,11 +121,11 @@ if [ "$flag" = "del" -o "$flag" = "delcol" ];then
     echo "$log_dump" >> $ROOT/databox/$databox/log.dump
 
     # gen hash
-    hash=`echo "$log_dump" | sha256sum | awk '{print $1}'`
+    hash=`echo "$log_dump" | $SHASUM | $AWK '{print $1}'`
 
     # update hash chain
-    last_hash=`grep synthesis_hash $ROOT/databox/$databox/hashchain | tail -1 | awk -F ":" '{print $2}'`
-    synthesis_hash=` echo ${last_hash}${hash} | sha256sum | awk '{print $1}'`
+    last_hash=`grep synthesis_hash $ROOT/databox/$databox/hashchain | tail -1 | $AWK -F ":" '{print $2}'`
+    synthesis_hash=` echo ${last_hash}${hash} | $SHASUM | $AWK '{print $1}'`
     echo "`date +%Y-%m-%d` `date +%T` id             :$id" >> $ROOT/databox/$databox/hashchain
     echo "`date +%Y-%m-%d` `date +%T` hash           :$hash" >> $ROOT/databox/$databox/hashchain
     echo "`date +%Y-%m-%d` `date +%T` synthesis_hash :$synthesis_hash" >> $ROOT/databox/$databox/hashchain
@@ -137,8 +137,8 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
   csv_data=""
   for col in `ls $ROOT/databox/${databox}/def/col* | sort -V | xargs basename -a`
   do
-    key=`grep "^name=" $ROOT/databox/${databox}/def/$col | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
-    type=`grep "^type=" $ROOT/databox/${databox}/def/$col | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"` 
+    key=`grep "^name=" $ROOT/databox/${databox}/def/$col | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
+    type=`grep "^type=" $ROOT/databox/${databox}/def/$col | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"` 
 
    if [ "$csv_data" ];then
      if [ -f "${ROOT}/databox/${databox}/data/${id}/${key}" ];then
@@ -146,24 +146,24 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
        if [ $type = "url" ];then
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          if [ "$value" ];then
-           value=`echo "$value" | sed  "s/^/<a href=\"/g" \
-           | sed "s/$/\" target=\"_blank\" rel=\"noopener noreferrer\">url<\/a>/g"`
+           value=`echo "$value" | $SED  "s/^/<a href=\"/g" \
+           | $SED "s/$/\" target=\"_blank\" rel=\"noopener noreferrer\">url<\/a>/g"`
          fi
        elif [ $type = "file" ];then
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          if [ "$value" ];then
-           file_name=`echo "$value" | sed -r "s/ #size(.*)//g"`
-           value=`echo "$value" | sed "s/^/<a href=\".\/shell.app?%%params\&req=file\&id=$id\" download=\"$file_name\">/g" \
-           | sed "s/$/<\/a>/g"`
+           file_name=`echo "$value" | $SED -r "s/ #size(.*)//g"`
+           value=`echo "$value" | $SED "s/^/<a href=\".\/shell.app?%%params\&req=file\&id=$id\" download=\"$file_name\">/g" \
+           | $SED "s/$/<\/a>/g"`
          fi
        elif [ $type = "checkbox" ];then
-         value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | sed "s/$/,/g" | sed -z "s/\n//g" | sed "s/,$//g" | sed "s/^,//g"`
+         value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | $SED "s/$/,/g" | $SED -z "s/\n//g" | $SED "s/,$//g" | $SED "s/^,//g"`
        elif [ $type = "pdls" ];then
          addkvl_chk=`grep "^addkvl=" $ROOT/databox/${databox}/def/$col` 
          if [ ! "$addkvl_chk" ];then
            value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          else
-           value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | awk -F "#" '{print $NF}'`
+           value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | $AWK -F "#" '{print $NF}'`
          fi
        else
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
@@ -172,42 +172,42 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
        if [ ! "$value" ];then
          value="-"
        fi
-       csv_data="${csv_data},`echo "${value}" | sed -z "s/\n//g" \
-       | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-       | sed "s/:/{%%%}/g" \
-       | sed "s/\&/{%%%%}/g" \
-       | sed "s/\//{%%%%%}/g" \
-       | sed "s/,/{%%%%%%}/g" \
-       | sed "s/_/{%%%%%%%}/g" \
-       | sed "s/(/{%%%%%%%%}/g" \
-       | sed "s/)/{%%%%%%%%%}/g" \
-       | sed "s/\[/{%%%%%%%%%%}/g" \
-       | sed "s/\]/{%%%%%%%%%%%}/g" \
-       | sed "s/|/{%%%%%%%%%%%%}/g" \
-       | sed "s/#/{%%%%%%%%%%%%%}/g" \
-       | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" \
-       | sed "s/*/{%%%%%%%%%%%%%%%}/g" \
-       | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g"`"
+       csv_data="${csv_data},`echo "${value}" | $SED -z "s/\n//g" \
+       | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+       | $SED "s/:/{%%%}/g" \
+       | $SED "s/\&/{%%%%}/g" \
+       | $SED "s/\//{%%%%%}/g" \
+       | $SED "s/,/{%%%%%%}/g" \
+       | $SED "s/_/{%%%%%%%}/g" \
+       | $SED "s/(/{%%%%%%%%}/g" \
+       | $SED "s/)/{%%%%%%%%%}/g" \
+       | $SED "s/\[/{%%%%%%%%%%}/g" \
+       | $SED "s/\]/{%%%%%%%%%%%}/g" \
+       | $SED "s/|/{%%%%%%%%%%%%}/g" \
+       | $SED "s/#/{%%%%%%%%%%%%%}/g" \
+       | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" \
+       | $SED "s/*/{%%%%%%%%%%%%%%%}/g" \
+       | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g"`"
      else
        csv_data="${csv_data},-"
      fi
    else
-     csv_data="`cat ${ROOT}/databox/${databox}/data/${id}/${key} | sed -z "s/\n//g" \
-     | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-     | sed "s/:/{%%%}/g" \
-     | sed "s/\&/{%%%%}/g" \
-     | sed "s/\//{%%%%%}/g" \
-     | sed "s/,/{%%%%%%}/g" \
-     | sed "s/_/{%%%%%%%}/g" \
-     | sed "s/(/{%%%%%%%%}/g" \
-     | sed "s/)/{%%%%%%%%%}/g" \
-     | sed "s/\[/{%%%%%%%%%%}/g" \
-     | sed "s/\]/{%%%%%%%%%%%}/g" \
-     | sed "s/|/{%%%%%%%%%%%%}/g" \
-     | sed "s/#/{%%%%%%%%%%%%%}/g" \
-     | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" \
-     | sed "s/*/{%%%%%%%%%%%%%%%}/g" \
-     | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g"`"
+     csv_data="`cat ${ROOT}/databox/${databox}/data/${id}/${key} | $SED -z "s/\n//g" \
+     | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+     | $SED "s/:/{%%%}/g" \
+     | $SED "s/\&/{%%%%}/g" \
+     | $SED "s/\//{%%%%%}/g" \
+     | $SED "s/,/{%%%%%%}/g" \
+     | $SED "s/_/{%%%%%%%}/g" \
+     | $SED "s/(/{%%%%%%%%}/g" \
+     | $SED "s/)/{%%%%%%%%%}/g" \
+     | $SED "s/\[/{%%%%%%%%%%}/g" \
+     | $SED "s/\]/{%%%%%%%%%%%}/g" \
+     | $SED "s/|/{%%%%%%%%%%%%}/g" \
+     | $SED "s/#/{%%%%%%%%%%%%%}/g" \
+     | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" \
+     | $SED "s/*/{%%%%%%%%%%%%%%%}/g" \
+     | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g"`"
    fi
  done
 fi

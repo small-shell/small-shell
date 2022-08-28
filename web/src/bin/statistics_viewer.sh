@@ -1,25 +1,28 @@
 #!/bin/bash
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == target:* ]]; then
-    target=`echo $param | awk -F":" '{print $2}'`
+    target=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == type:* ]]; then
-    type=`echo $param | awk -F":" '{print $2}'`
+    type=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 if [ "$target" = "" -a ! "$type" ];then
   echo "error: please set target data name and data type"
@@ -44,10 +47,10 @@ if [ "$type" = "rawdata" ];then
   > ../tmp/${session}_statistics/result
 
   # render HTML
-  cat ../descriptor/statistics_viewer.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%statistics/r ../tmp/${session}_statistics/result" \
-  | sed "s/%%statistics//g"\
-  | sed "s/%%target/$target/g"
+  cat ../descriptor/statistics_viewer.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%statistics/r ../tmp/${session}_statistics/result" \
+  | $SED "s/%%statistics//g"\
+  | $SED "s/%%target/$target/g"
 
 elif [ "$type" = "graph" ];then
   echo "Content-Type: image/png"

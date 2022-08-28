@@ -36,8 +36,18 @@
                             <li class="navitem">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="navitem">
-                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Quick Start <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_Mac/" class="dropdown-item">For macOS</a>
+</li>
+                                </ul>
                             </li>
                             <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
@@ -150,7 +160,7 @@ APP for user  = book_search, req.form
 </code></pre>
 <p>Please check the sample definition <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook/def">db.def</a></p>
 <h3 id="launch-base-app">Launch Base APP</h3>
-<p>Let's launch Base APP by refering to <a href="../quick_start/">Quick start</a></p>
+<p>Let's launch Base APP by refering to <a href="../quick_start_linux/">Quick start</a></p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
 #-&gt; Dialog will be started, for making Base APP
@@ -234,6 +244,10 @@ STEP3: message will be update by admin, then you can get book
 <li>Restrict key</li>
 <li>Add link from resource data to master data</li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you insert sed or awk in codes, it's recommended to used $SED and $AWK value. the parameter is defined at /usr/local/small-shlel/global.conf</p>
+</div>
 <h5 id="add-link-from-master-data-to-resource-table">Add link from master data to resource table</h5>
 <pre><code>sudo vi /var/www/descriptor/book_search_get_ro.html.def
 --code--
@@ -246,22 +260,22 @@ STEP3: message will be update by admin, then you can get book
 <pre><code>sudo vi /var/www/bin/book_search_get.sh
 # block1 { get ID book_namd }
 --code--
-book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | awk -F &quot;:&quot; '{print $2}'`
+book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
 --------
-# block2 { update sed logic to insert book_name }
+# block2 { update $SED logic to insert book_name }
 --code--
-cat ../descriptor/${view} | sed &quot;s/^ *&lt;/&lt;/g&quot; \
-| sed &quot;/%%common_menu/r ../descriptor/common_parts/book_adm_common_menu&quot; \
-| sed &quot;/%%common_menu/d&quot; \
-| sed &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
-| sed &quot;s/%%dataset//g&quot;\
-| sed &quot;/%%history/r ../tmp/$session/history&quot; \
-| sed &quot;s/%%history//g&quot;\
-| sed &quot;s/%%id/$id/g&quot; \
-| sed &quot;s/%%book_name/$book_name/g&quot; \
-| sed &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
-| sed &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
-| sed &quot;s/%%params/session=$session\&amp;pin=$pin/g&quot;
+cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%common_menu/r ../descriptor/common_parts/book_adm_common_menu&quot; \
+| $SED &quot;/%%common_menu/d&quot; \
+| $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| $SED &quot;s/%%dataset//g&quot;\
+| $SED &quot;/%%history/r ../tmp/$session/history&quot; \
+| $SED &quot;s/%%history//g&quot;\
+| $SED &quot;s/%%id/$id/g&quot; \
+| $SED &quot;s/%%book_name/$book_name/g&quot; \
+| $SED &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
+| $SED &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
+| $SED &quot;s/%%params/session=$session\&amp;pin=$pin/g&quot;
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_search_location_link.png" /></p>
@@ -298,21 +312,21 @@ keys=hashid,name,location
 --code--
 # render HTML
 resource_id=$id
-book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | awk -F &quot;:&quot; '{print $2}'`
-book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| sed -s &quot;s/\&quot;//g&quot;`
+book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
+book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot;`
 
-cat ../descriptor/${view} | sed &quot;s/^ *&lt;/&lt;/g&quot; \
-| sed &quot;/%%common_menu/r ../descriptor/common_parts/book_search_common_menu&quot; \
-| sed &quot;/%%common_menu/d&quot; \
-| sed &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
-| sed &quot;s/%%dataset//g&quot;\
-| sed &quot;/%%history/r ../tmp/$session/history&quot; \
-| sed &quot;s/%%history//g&quot;\
-| sed &quot;s/%%id/$id/g&quot; \
-| sed &quot;s/%%book_id/$book_id/g&quot; \
-| sed &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
-| sed &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
-| sed &quot;s/%%params/subapp=location\&amp;session=$session\&amp;pin=$pin/g&quot;
+cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%common_menu/r ../descriptor/common_parts/book_search_common_menu&quot; \
+| $SED &quot;/%%common_menu/d&quot; \
+| $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| $SED &quot;s/%%dataset//g&quot;\
+| $SED &quot;/%%history/r ../tmp/$session/history&quot; \
+| $SED &quot;s/%%history//g&quot;\
+| $SED &quot;s/%%id/$id/g&quot; \
+| $SED &quot;s/%%book_id/$book_id/g&quot; \
+| $SED &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
+| $SED &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
+| $SED &quot;s/%%params/subapp=location\&amp;session=$session\&amp;pin=$pin/g&quot;
 
 --------
 </code></pre>
@@ -349,7 +363,7 @@ update : ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:
 # block1, load book_name from controller
 --code--
 if [[ $param == book_name:* ]]; then
-  book_name=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+  book_name=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
 fi
 --------
 
@@ -358,7 +372,7 @@ fi
 # gen reqd/write form #new
 $DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; ../tmp/$session/dataset.0.1
 cat ../tmp/$session/dataset.0.1 \
-| sed &quot;s/name=\&quot;book_name\&quot; value=\&quot;\&quot;/name=\&quot;book_name\&quot; value=\&quot;$book_name\&quot;/g&quot; &gt; ../tmp/$session/dataset
+| $SED &quot;s/name=\&quot;book_name\&quot; value=\&quot;\&quot;/name=\&quot;book_name\&quot; value=\&quot;$book_name\&quot;/g&quot; &gt; ../tmp/$session/dataset
 --------
 
 </code></pre>
@@ -369,7 +383,7 @@ cat ../tmp/$session/dataset.0.1 \
 # load book resource
 book_name=`cat ../tmp/$session/book_name`
 resource_id=`$DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:json \
-| jq '.[] | .id'| sed -s &quot;s/\&quot;//g&quot; | head -1`
+| jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot; | head -1`
 
 if [ &quot;$resource_id&quot; ];then
   # push datas to databox
@@ -379,7 +393,7 @@ if [ &quot;$resource_id&quot; ];then
   $DATA_SHELL databox:request.db action:set id:new keys:$keys input_dir:../tmp/$session  &gt; ../tmp/$session/result
 
   # result check
-  updated_id=`cat ../tmp/$session/result | grep &quot;^successfully set&quot; | awk -F &quot;id:&quot; '{print $2}' | sed '/^$/d' | sort | uniq`
+  updated_id=`cat ../tmp/$session/result | grep &quot;^successfully set&quot; | $AWK -F &quot;id:&quot; '{print $2}' | $SED '/^$/d' | sort | uniq`
   avail_num=`$DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none | wc -l`
 
   if [ &quot;$updated_id&quot; -a $avail_num -ge 1 ];then
@@ -389,7 +403,7 @@ if [ &quot;$resource_id&quot; ];then
     # update status of book.master
     (( avail_num -= 1 ))
     if [ $avail_num -eq 0 ];then
-      book_master_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| sed -s &quot;s/\&quot;//g&quot;`
+      book_master_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot;`
       $DATA_SHELL databox:book.master action:set id:$book_master_id key:available value:-  &gt;&gt; ../tmp/$session/result
     fi
   fi
@@ -413,8 +427,8 @@ fi
 --code--
 # gen read only datas
 $DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name,status,message format:none | grep -v hashid &gt; ../tmp/$session/dataset.0.1
-cat ../tmp/$session/dataset.0.1 | sed &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | sed &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/g&quot; | sed &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
-| sed &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | sed &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/$session/dataset
+cat ../tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/g&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
+| $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/$session/dataset
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_req_status.png" /></p>
@@ -465,8 +479,8 @@ while read line
 do
 
   if [ $count -gt 1  ];then
-    book_id=`echo $line | awk -F &quot;,&quot; '{print $1}'`
-    book_name=`echo $line | awk -F &quot;,&quot; '{print $2}'`
+    book_id=`echo $line | $AWK -F &quot;,&quot; '{print $1}'`
+    book_name=`echo $line | $AWK -F &quot;,&quot; '{print $2}'`
 
     # check on_the_shelve book
     check_shelv=`$ROOT/bin/DATA_shell authkey:$authkey databox:book.res \

@@ -36,8 +36,18 @@
                             <li class="navitem">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="navitem">
-                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Quick Start <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_Mac/" class="dropdown-item">For macOS</a>
+</li>
+                                </ul>
                             </li>
                             <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
@@ -195,7 +205,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 </tbody>
 </table>
 <h4 id="required">Required</h4>
-<p>Please setup Base APP beorehand refering to <a href="../quick_start/">Quick Start</a></p>
+<p>Please setup Base APP beorehand refering to <a href="../quick_start_linux/">Quick Start</a></p>
 <h2 id="common-step">Common STEP</h2>
 <p>Each types of scratch APP have common STEP for launching APP, difference is mainly authentication method.</p>
 <ol>
@@ -255,9 +265,10 @@ sudo vi /var/www/descriptor/scratch_table.html.def
 
 e.g.) add &quot;test&quot; user for key APP name &quot;scratch&quot;
 sudo /usr/local/small-shell/adm/ops add.usr:test app:scratch
-
-Initialize url for test on team is created, please share this url to end user to generate access key to the APP
-https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.scratch?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,7534e67ed1c2c311d812e5b3f76ae647c3a814027084cc2a4cb4e32a58ac5309
+-----------------------------------------------------------------
+Initialize URL for naruo on team APP is created
+-----------------------------------------------------------------
+https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
 <p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url. e.g) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.scratch</p>
@@ -265,8 +276,6 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.scratch?initiali
 <h4 id="re-generate-user-key">Re-generate User key</h4>
 <p>If end user lost their key, you can generate URL for re-generating key.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops initialize.usr:test app:scratch
-Initialize url for test on scratch is created, please share this url to end user to generate access key to the APP
-http://XXXXX/cgi-bin/auth.scratch?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,8bd9d3d92fa7d1c64901c3b7ddff1467a7f55035ad1e25cbbb12d7fabdde70f6
 </code></pre>
 <h3 id="update-pass-code">Update Pass code</h3>
 <p>If it's shared Pass code APP, you can update pass code by updating file directly </p>
@@ -526,7 +535,7 @@ https://$fqdn/cgi-bin/auth.oauth_test</p>
 <h6 id="action-script-shell">@action script (shell)</h6>
 <pre><code> # get name which will be issued
  DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
- book_name=`$DATA_SHELL databox:book.master action:get key:name id:$id format:none | awk -F ":" '{print $2}'`
+ book_name=`$DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F ":" '{print $2}'`
 </code></pre>
 <h4 id="2-id-search-by-using-name">2. ID search by using Name</h4>
 <p>You can also get ID using 100% matched text</p>
@@ -547,30 +556,30 @@ https://$fqdn/cgi-bin/auth.oauth_test</p>
 --code--
 ## generate json
 $DATA_SHELL databox:$databox command:show_all[filter=sync{yes}] format:json \
-| sed &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
-| sed &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
-| sed &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
-| sed &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
-| sed &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
-| sed &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
-| sed &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
-| sed &quot;s/{%%%%%%%%%%}/\[/g&quot;\
-| sed &quot;s/{%%%%%%%%%}/)/g&quot;\
-| sed &quot;s/{%%%%%%%%}/(/g&quot;\
-| sed &quot;s/{%%%%%%%}/_/g&quot;\
-| sed &quot;s/{%%%%%%}/,/g&quot;\
-| sed &quot;s/{%%%%%}/\//g&quot;\
-| sed &quot;s/{%%%%}/\&amp;/g&quot;\
-| sed &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/$session/events
+| $SED &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%}/\[/g&quot;\
+| $SED &quot;s/{%%%%%%%%%}/)/g&quot;\
+| $SED &quot;s/{%%%%%%%%}/(/g&quot;\
+| $SED &quot;s/{%%%%%%%}/_/g&quot;\
+| $SED &quot;s/{%%%%%%}/,/g&quot;\
+| $SED &quot;s/{%%%%%}/\//g&quot;\
+| $SED &quot;s/{%%%%}/\&amp;/g&quot;\
+| $SED &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/$session/events
 
 ## then, just insert %%json to events
 cat ../descriptor/team_main.html.def | sed &quot;s/^ *&lt;/&lt;/g&quot; \
-| sed &quot;/%%common_menu/r ../descriptor/common_parts/pintest_common_menu&quot; \
-| sed &quot;s/%%common_menu//g&quot;\
-| sed &quot;s/%%user_name/$user_name/g&quot; \
-| sed &quot;/%%json/r ../tmp/$session/events&quot;\
-| sed &quot;s/%%json//g&quot;\
-| sed &quot;s/%%params/session=$session\&amp;pin=$pin\&amp;databox=$databox/g&quot;
+| $SED &quot;/%%common_menu/r ../descriptor/common_parts/pintest_common_menu&quot; \
+| $SED &quot;s/%%common_menu//g&quot;\
+| $SED &quot;s/%%user_name/$user_name/g&quot; \
+| $SED &quot;/%%json/r ../tmp/$session/events&quot;\
+| $SED &quot;s/%%json//g&quot;\
+| $SED &quot;s/%%params/session=$session\&amp;pin=$pin\&amp;databox=$databox/g&quot;
 -------
 
 </code></pre>

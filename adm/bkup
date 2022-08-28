@@ -17,7 +17,7 @@ SCRIPT_DIR=`dirname $0`
 # load param
 databox=$1
 bkup_dir=$2
-bkup_dir=`echo $bkup_dir | sed "s/\/$//g"`
+bkup_dir=`echo $bkup_dir | $SED "s/\/$//g"`
 
 if [ ! "$databox" ];then
   echo "error: please input databox name"

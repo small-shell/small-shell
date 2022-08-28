@@ -44,74 +44,74 @@ for param in `echo $@`
 do
 
   if [[ $param == authkey:* ]];then
-    authkey=`echo $param | awk -F":" '{print $2}'`
+    authkey=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == session:* ]];then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == pin:* ]];then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == databox:*  ]];then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == db:* ]];then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == type:* ]];then
-    type=`echo $param | awk -F":" '{print $2}'`
+    type=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == format:* ]];then
-    format=`echo $param | awk -F":" '{print $2}'`
+    format=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == command:* ]];then
-    command=`echo $param | awk -F":" '{print $2}'`
+    command=`echo $param | $AWK -F":" '{print $2}'`
 
     if [[ $command == *.dump*csv* ]];then
-      command=`echo $command | sed "s/{%%%}/:/g" | sed -r "s/>>_(.*).dump:csv_\|//g" | sed -r "s/>>(.*).dump:csv_\|//g" \
-      | sed -r "s/>>(.*).dump:csv\|//g" | sed -r "s/(.*).dump:csv_\|//g" |sed -r "s/(.*).dump:csv\|//g" \
-      | sed "s/_filter://g"`
+      command=`echo $command | $SED "s/{%%%}/:/g" | $SED -r "s/>>_(.*).dump:csv_\|//g" | $SED -r "s/>>(.*).dump:csv_\|//g" \
+      | $SED -r "s/>>(.*).dump:csv\|//g" | $SED -r "s/(.*).dump:csv_\|//g" |sed -r "s/(.*).dump:csv\|//g" \
+      | $SED "s/_filter://g"`
     fi
 
   fi 
 
   if [[ $param == action:* ]];then
-    action=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == id:* ]];then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == key:* ]];then
-    key=`echo $param | awk -F":" '{print $2}'`
+    key=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == keys:* ]];then
-    keys=`echo $param | awk -F":" '{print $2}'`
+    keys=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == input_dir:* ]];then
-    input_dir=`echo $param | awk -F":" '{print $2}'`
+    input_dir=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == value:* ]];then
-    value=`echo $param | awk -F":" '{print $2}'`
+    value=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == app:* ]];then
-    app=`echo $param | awk -F":" '{print $2}'`
+    app=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
   if [[ $param == bat:* ]];then
-    bat=`echo $param | awk -F":" '{print $2}'`
+    bat=`echo $param | $AWK -F":" '{print $2}'`
   fi 
 
 done
@@ -155,8 +155,8 @@ fi
 # authentication
 if [ "$authkey" ];then
   auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
-  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 
   if [ ! "$session" ];then
     echo "error: authentication failed"
@@ -166,16 +166,16 @@ fi
 
 # authorized session check
 if [ -f $ROOT/tmp/session/$session ];then
-  user=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $1}'`
-  remote_addr=`cat $ROOT/tmp/session/$session | awk -F ":" '{print $2}'`
+  user=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $1}'`
+  remote_addr=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $2}'`
 
   if [ ! "$app" ];then
     # check token
-    tokencheck=`echo "${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    tokencheck=`echo "${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
     app=shell.app
   else
     # check app token
-    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
   fi
 
   if [ ! "$session" = "$tokencheck" ];then
@@ -194,7 +194,7 @@ fi
 exec_session=$session.$RANDOM.$RANDOM.$RANDOM
 
 # load user attribut
-user_id=`echo ${user} |  sha256sum | awk '{print $1}'`
+user_id=`echo ${user} |  $SHASUM | $AWK '{print $1}'`
 
 
 ## COMMAND HANDLER ###
@@ -219,32 +219,32 @@ if [ "$command" ];then
     fi
    
     if [[ $command == *key=* ]];then
-      command=`echo $command | sed "s/key=/keys=/g"`
+      command=`echo $command | $SED "s/key=/keys=/g"`
     fi
 
-    filter_words=`echo $command | grep filter= | awk -F "filter=" '{print $2}' |  sed "s/\]//g" \
-    | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[match=(.*)//g"`
+    filter_words=`echo $command | grep filter= | $AWK -F "filter=" '{print $2}' |  $SED "s/\]//g" \
+    | $SED -r "s/\[line=(.*)//g" | $SED -r "s/\[keys=(.*)//g" | $SED -r "s/\[sort=(.*)//g" | $SED -r "s/\[match=(.*)//g"`
 
-    match_word=`echo $command | grep match= | awk -F "match=" '{print $2}' |  sed "s/\]//g" \
-    | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[filter=(.*)//g"`
+    match_word=`echo $command | grep match= | $AWK -F "match=" '{print $2}' |  $SED "s/\]//g" \
+    | $SED -r "s/\[line=(.*)//g" | $SED -r "s/\[keys=(.*)//g" | $SED -r "s/\[sort=(.*)//g" | $SED -r "s/\[filter=(.*)//g"`
 
-    line_start=`echo $command | grep line= | awk -F "line=" '{print $2}' | awk -F "-" '{print $1}'`
+    line_start=`echo $command | grep line= | $AWK -F "line=" '{print $2}' | $AWK -F "-" '{print $1}'`
 
-    line_end=`echo $command | grep line= | awk -F "line=" '{print $2}' | awk -F "-" '{print $2}' \
-    | sed "s/]//g" | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[keys=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[match=(.*)//g"`
+    line_end=`echo $command | grep line= | $AWK -F "line=" '{print $2}' | $AWK -F "-" '{print $2}' \
+    | $SED "s/]//g" | $SED -r "s/\[filter=(.*)//g" | $SED -r "s/\[keys=(.*)//g" | $SED -r "s/\[sort=(.*)//g" | $SED -r "s/\[match=(.*)//g"`
 
-    key_list=`echo $command | grep keys= | awk -F "keys=" '{print $2}' |  sed "s/\]//g" | sed -r "s/\[keys=(.*)//g" \
-    | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[line=(.*)//g" | sed -r "s/\[sort=(.*)//g" | sed -r "s/\[match=(.*)//g"`
+    key_list=`echo $command | grep keys= | $AWK -F "keys=" '{print $2}' |  $SED "s/\]//g" | $SED -r "s/\[keys=(.*)//g" \
+    | $SED -r "s/\[filter=(.*)//g" | $SED -r "s/\[line=(.*)//g" | $SED -r "s/\[sort=(.*)//g" | $SED -r "s/\[match=(.*)//g"`
 
     if [ "$key_list" = "all" ];then
       key_list=""
     fi
 
-    sort_key=`echo $command | grep sort= | awk -F "sort=" '{print $2}' | awk -F "," '{print $2}' | sed "s/\]//g" \
-    | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g"`
+    sort_key=`echo $command | grep sort= | $AWK -F "sort=" '{print $2}' | $AWK -F "," '{print $2}' | $SED "s/\]//g" \
+    | $SED -r "s/\[filter=(.*)//g" | $SED -r "s/\[line=(.*)//g" | $SED -r "s/\[keys=(.*)//g"`
 
-    sort_option=`echo $command | grep sort= | awk -F "sort=" '{print $2}' | awk -F "," '{print $1}' | sed "s/\]//g" \
-    | sed -r "s/\[filter=(.*)//g" | sed -r "s/\[line=(.*)//g" | sed -r "s/\[keys=(.*)//g"`
+    sort_option=`echo $command | grep sort= | $AWK -F "sort=" '{print $2}' | $AWK -F "," '{print $1}' | $SED "s/\]//g" \
+    | $SED -r "s/\[filter=(.*)//g" | $SED -r "s/\[line=(.*)//g" | $SED -r "s/\[keys=(.*)//g"`
 
 
     # Handle show_all options
@@ -253,13 +253,13 @@ if [ "$command" ];then
     sort_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.sort
 
     if [ "${sort_key}" -a "${sort_option}" ];then
-       sort_col=`grep -l "^name=\"$sort_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
+       sort_col=`grep -l "^name=\"$sort_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | $SED "s/col//g"`
        (( sort_col += 1 ))
 
        if [ "$sort_col" ];then
-         cat $target_file | sed "s/^:::::://g" | sed "s/::::::/,/g" > ${sort_tmp}.1
+         cat $target_file | $SED "s/^:::::://g" | $SED "s/::::::/,/g" > ${sort_tmp}.1
          cat ${sort_tmp}.1 | sort -t, $sort_option -k $sort_col > ${sort_tmp}.2
-         cat ${sort_tmp}.2  | sed "s/,/::::::/1" | sed "s/^/::::::/g" > ${sort_tmp}.3
+         cat ${sort_tmp}.2  | $SED "s/,/::::::/1" | $SED "s/^/::::::/g" > ${sort_tmp}.3
        fi
        target_file=${sort_tmp}.3
     fi
@@ -270,25 +270,25 @@ if [ "$command" ];then
     if [ "$filter_words" ];then
 
       if [[ $filter_words == *{*} ]];then
-        filter_key=`echo $filter_words | awk -F"{" '{print $1}'`
-        filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
-        filter_words=`echo $filter_words | cut -f 2- -d "{" | sed "s/}$//g"`
+        filter_key=`echo $filter_words | $AWK -F"{" '{print $1}'`
+        filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | $SED "s/col//g"`
+        filter_words=`echo $filter_words | cut -f 2- -d "{" | $SED "s/}$//g"`
       fi
 
-      exec_command=`echo "$filter_words" | sed "s/,/ | grep -i /g" | sed "s/^/grep -i /g"`
+      exec_command=`echo "$filter_words" | $SED "s/,/ | grep -i /g" | $SED "s/^/grep -i /g"`
       echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.filtering.exe
       chmod 700 $ROOT/tmp/exec/$exec_session.filtering.exe
 
       # exec filtering
       $ROOT/tmp/exec/$exec_session.filtering.exe > ${filter_tmp}
 
-      result_count=`cat ${filter_tmp} | wc -l`
+      result_count=`cat ${filter_tmp} | wc -l | tr -d " "`
       target_file=${filter_tmp}
       count=1
-      for filter_word in `echo $filter_words | sed "s/,/ /g"`
+      for filter_word in `echo $filter_words | $SED "s/,/ /g"`
       do
         # remove line which contain filter words inside id hash
-        echo "cat $target_file | awk -F "::::::"  '\
+        echo "cat $target_file | $AWK -F "::::::"  '\
               {\
                  IGNORECASE = 1;\
                  if(match(\$3, /${filter_word}/))\
@@ -302,7 +302,7 @@ if [ "$command" ];then
         if [ "$filter_key" ];then
           if [ "$filter_col" ];then
             # remove out of target column
-            echo "cat $target_file | awk -F ","  '\
+            echo "cat $target_file | $AWK -F ","  '\
                   {\
                      IGNORECASE = 1;\
                      if(match(\$${filter_col}, /${filter_word}/))\
@@ -328,15 +328,15 @@ if [ "$command" ];then
     if [ "$match_word" ];then
 
       if [[ $match_word == *{*} ]];then
-        filter_key=`echo $match_word | awk -F"{" '{print $1}'`
-        filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
-        match_word=`echo $match_word | cut -f 2- -d "{" | sed "s/}$//g"`
+        filter_key=`echo $match_word | $AWK -F"{" '{print $1}'`
+        filter_col=`grep -l "^name=\"$filter_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | $SED "s/col//g"`
+        match_word=`echo $match_word | cut -f 2- -d "{" | $SED "s/}$//g"`
       else
         echo "error: please input specific key name"
         exit 1
       fi
 
-      exec_command=`echo "$match_word" | sed "s/^/grep  /g"`
+      exec_command=`echo "$match_word" | $SED "s/^/grep  /g"`
       echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.match.exe
       chmod 700 $ROOT/tmp/exec/$exec_session.match.exe
 
@@ -349,7 +349,7 @@ if [ "$command" ];then
       if [ "$filter_key" ];then
         if [ "$filter_col" ];then
           # remove result which have columns that is not target column
-          echo "cat $target_file | awk -F ","  '\
+          echo "cat $target_file | $AWK -F ","  '\
            {\
                if(match(\$${filter_col}, /::::::${match_word}$/))\
                print \$0;\
@@ -373,7 +373,7 @@ if [ "$command" ];then
 
     if [ "${line_start}" -a "${line_end}"  ];then
       if [ "${line_start}" -lt "${line_end}" ];then
-        cat $target_file | sed -n ${line_start},${line_end}p > $line_tmp
+        cat $target_file | $SED -n ${line_start},${line_end}p > $line_tmp
         target_file=$line_tmp
       else
         echo "error: please set line adequately"
@@ -390,9 +390,9 @@ if [ "$command" ];then
     keys_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.extract_keys
     if [ "$key_list" ];then
 
-      for key in `echo $key_list | sed "s/,/ /g"`
+      for key in `echo $key_list | $SED "s/,/ /g"`
       do
-        col=`grep -l "^name=\"$key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | sed "s/col//g"`
+        col=`grep -l "^name=\"$key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | $SED "s/col//g"`
         if [ "$col" ];then
           if [ ! "$col_list" ];then
             col_list=$col
@@ -404,7 +404,7 @@ if [ "$command" ];then
 
       # remove ID field with nl
       split_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.split
-      cat $target_file  | awk -F "::::::" '{print $2}' | sed "s/^/::::::/g" | sed "s/$/::::::/g" | nl > ${split_tmp}.id
+      cat $target_file  | $AWK -F "::::::" '{print $2}' | $SED "s/^/::::::/g" | $SED "s/$/::::::/g" | nl > ${split_tmp}.id
 
       if [ "$col_list" ];then
         exec_command="cut -d \",\" -f $col_list"
@@ -412,9 +412,9 @@ if [ "$command" ];then
         chmod 700 $ROOT/tmp/exec/$exec_session.extract_key.exe
         $ROOT/tmp/exec/$exec_session.extract_key.exe | nl > ${split_tmp}.data
         join ${split_tmp}.id ${split_tmp}.data \
-        | sed "s/ ::::::/######/g" | sed "s/:::::: /::::::/g" | sed -r "s/^(.*)######/::::::/g" > $keys_tmp
+        | $SED "s/ ::::::/######/g" | $SED "s/:::::: /::::::/g" | $SED -r "s/^(.*)######/::::::/g" > $keys_tmp
         target_file=$keys_tmp
-        result_count=`cat $target_file | wc -l`
+        result_count=`cat $target_file | wc -l | tr -d " "`
       fi
 
     fi
@@ -428,26 +428,26 @@ if [ "$command" ];then
 
   # exec Unix commands to piplined data or just filtering the data
   if [[ ! $command == show_all* ]];then
-    exec_command=`echo $command | sed "s/_/ /g"`
-    command=`echo $exec_command | awk -F " " '{print $1}'`
+    exec_command=`echo $command | $SED "s/_/ /g"`
+    command=`echo $exec_command | $AWK -F " " '{print $1}'`
 
-    GRP_ALLOWED_COMMANDS=`echo $ALLOWED_COMMANDS | sed "s/,/ -e /g" | sed "s/^/grep -e /g"`
+    GRP_ALLOWED_COMMANDS=`echo $ALLOWED_COMMANDS | $SED "s/,/ -e /g" | $SED "s/^/grep -e /g"`
     COMMAND_CHK="echo \"$command\" | $GRP_ALLOWED_COMMANDS"
     command_chk=`eval $COMMAND_CHK`
 
     if [ "$command_chk" ];then
     # if command_chk is true, it will be executed as Unix command
 
-      exec_command=`echo $exec_command | sed "s/{%%%%%%%%%%%%}/|/g"`
+      exec_command=`echo $exec_command | $SED "s/{%%%%%%%%%%%%}/|/g"`
       if [[ ${org_command} == *\>* ]];then
          cmd_check_error="you can't use redirect"
          exec_command=""
       fi
 
       if [[ ${org_command} == *\|* ]];then
-        for devided_command in `echo $org_command | sed "s/|/ /g"`
+        for devided_command in `echo $org_command | $SED "s/|/ /g"`
         do
-          command=`echo "$devided_command" | sed "s/_/ /g" | awk -F " " '{print $1}'`
+          command=`echo "$devided_command" | $SED "s/_/ /g" | $AWK -F " " '{print $1}'`
 
           if [[ ! $ALLOWED_COMMANDS == *${command}* ]];then
              cmd_check_error="command $command is not allowed"
@@ -459,9 +459,9 @@ if [ "$command" ];then
       fi 
     else
       # else mean there is no allowed unix command to be pipelined to the data and it will be used as just filering words of grep
-      filter_command=`echo $exec_command | sed "s/ / | grep -i /g" | sed "s/^/grep -i /g"`
+      filter_command=`echo $exec_command | $SED "s/ / | grep -i /g" | $SED "s/^/grep -i /g"`
       filter_flag="yes"
-      filter_words=`echo $org_command | sed "s/_/,/g"`
+      filter_words=`echo $org_command | $SED "s/_/,/g"`
     fi
 
     if [ "$filter_flag" = "yes" ];then
@@ -476,9 +476,9 @@ if [ "$command" ];then
         target_file=$log_tmp
         count=1
 
-        for filter_word in `echo $filter_words | sed "s/,/ /g"`
+        for filter_word in `echo $filter_words | $SED "s/,/ /g"`
         do
-          cat $target_file | sed "s/${filter_word}/<b>$filter_word<\/b>/g" > ${target_file}.${count}
+          cat $target_file | $SED "s/${filter_word}/<b>$filter_word<\/b>/g" > ${target_file}.${count}
           target_file="${target_file}.${count}"
           ((count += 1))
         done
@@ -502,10 +502,10 @@ if [ "$command" ];then
         target_file=$filter_tmp
         count=1
       
-        for filter_word in `echo $filter_words | sed "s/,/ /g"`
+        for filter_word in `echo $filter_words | $SED "s/,/ /g"`
         do
           # remove line which contain filter words inside id hash
-          echo "cat $target_file | awk -F "::::::"  '\
+          echo "cat $target_file | $AWK -F "::::::"  '\
                 {\
                    IGNORECASE = 1;\
                    if(match(\$3, /${filter_word}/))\
@@ -519,17 +519,17 @@ if [ "$command" ];then
           if [ "$format" = "html_tag" ];then
 
             # remove ID field with nl
-            cat $target_file  | awk -F "::::::" '{print $2}' | sed "s/^/::::::/g" | sed "s/$/::::::/g" | nl > ${target_file}.id
+            cat $target_file  | $AWK -F "::::::" '{print $2}' | $SED "s/^/::::::/g" | $SED "s/$/::::::/g" | nl > ${target_file}.id
 
             # highlight filter words if it's not contain file or url type of data
             if [ ! "$data_type_chk" ];then
-              cat $target_file  | awk -F "::::::" '{print $3}' | sed "s/${filter_word}/<b>$filter_word<\/b>/g" | nl > ${target_file}.data
+              cat $target_file  | $AWK -F "::::::" '{print $3}' | $SED "s/${filter_word}/<b>$filter_word<\/b>/g" | nl > ${target_file}.data
             else
-              cat $target_file  | awk -F "::::::" '{print $3}' | nl > ${target_file}.data
+              cat $target_file  | $AWK -F "::::::" '{print $3}' | nl > ${target_file}.data
             fi
 
             join  ${target_file}.id ${target_file}.data \
-            | sed "s/ ::::::/######/g" | sed "s/:::::: /::::::/g" | sed -r "s/^(.*)######/::::::/g" > ${target_file}.${count}
+            | $SED "s/ ::::::/######/g" | $SED "s/:::::: /::::::/g" | $SED -r "s/^(.*)######/::::::/g" > ${target_file}.${count}
             target_file="${target_file}.${count}"
 
           fi 
@@ -544,25 +544,25 @@ if [ "$command" ];then
 
       if [ "$type" = "log" ];then
         log_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.log
-        unix_command=`echo "$exec_command" | sed "s/{%%%%%%}/,/g" `
-        echo "cat $target_file |  sed "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
+        unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" `
+        echo "cat $target_file |  $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
         chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
         # execute unix command for log
         $ROOT/tmp/exec/$exec_session.command.exe > $log_tmp
       fi
 
       if [ "$type" = "data" ];then
-        unix_command=`echo "$exec_command" | sed "s/{%%%%%%}/,/g" `
+        unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" `
 
         # detouch hash id  to be accurate input for Unix command. because hash id has so many random characters, it must be detouched.
-        echo "cat $target_file | awk -F "::::::" '{print \$3}' | sed "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
+        echo "cat $target_file | $AWK -F "::::::" '{print \$3}' | $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
         chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
 
         # execute unix command for data
         data_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.data
         $ROOT/tmp/exec/$exec_session.command.exe > $data_tmp
         target_file=$data_tmp
-        num_of_line=`cat $target_file | wc -l`
+        num_of_line=`cat $target_file | wc -l | tr -d " "`
 
 
         # Generate result file
@@ -572,30 +572,30 @@ if [ "$command" ];then
 
           while read line
           do
-            primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | awk -F "name=" '{print $2}' | sed "s/\"//g"`
+            primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g"`
             if [ ! "$primary_key_name" = "hashid" ];then
-              hashid=`echo $line | awk -F "," '{print $1}' \
-              | sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
-              | sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
-              | sed "s/{%%%%%%%%%%%%%%%}/*/g"\
-              | sed "s/{%%%%%%%%%%%%%%}/$/g"\
-              | sed "s/{%%%%%%%%%%%%%}/#/g"\
-              | sed "s/{%%%%%%%%%%%%}/|/g"\
-              | sed "s/{%%%%%%%%%%%}/\]/g"\
-              | sed "s/{%%%%%%%%%%}/\[/g"\
-              | sed "s/{%%%%%%%%%}/)/g"\
-              | sed "s/{%%%%%%%%}/(/g"\
-              | sed "s/{%%%%%%%}/_/g"\
-              | sed "s/{%%%%%%}/,/g"\
-              | sed "s/{%%%%%}/\//g"\
-              | sed "s/{%%%%}/\&/g"\
-              | sed "s/{%%%}/:/g"\
-              | sha256sum | awk '{print $1}'`
+              hashid=`echo $line | $AWK -F "," '{print $1}' \
+              | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+              | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
+              | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
+              | $SED "s/{%%%%%%%%%%%%%%}/$/g"\
+              | $SED "s/{%%%%%%%%%%%%%}/#/g"\
+              | $SED "s/{%%%%%%%%%%%%}/|/g"\
+              | $SED "s/{%%%%%%%%%%%}/\]/g"\
+              | $SED "s/{%%%%%%%%%%}/\[/g"\
+              | $SED "s/{%%%%%%%%%}/)/g"\
+              | $SED "s/{%%%%%%%%}/(/g"\
+              | $SED "s/{%%%%%%%}/_/g"\
+              | $SED "s/{%%%%%%}/,/g"\
+              | $SED "s/{%%%%%}/\//g"\
+              | $SED "s/{%%%%}/\&/g"\
+              | $SED "s/{%%%}/:/g"\
+              | $SHASUM | $AWK '{print $1}'`
             else
-              hashid=`echo $line | awk -F "," '{print $1}'`
+              hashid=`echo $line | $AWK -F "," '{print $1}'`
             fi
 
-            id_chk=`grep "::::::$hashid::::::" $ROOT/databox/$databox/index | awk -F "::::::" '{print $2}'`
+            id_chk=`grep "::::::$hashid::::::" $ROOT/databox/$databox/index | $AWK -F "::::::" '{print $2}'`
 
             if [ "$id_chk" ];then
               echo "::::::$hashid::::::$line" >> $ROOT/tmp/exec/$exec_session.result
@@ -621,13 +621,13 @@ if [ "$command" ];then
   if [ "$format" = "html_tag" -a -f $ROOT/tmp/exec/$exec_session.result ];then
 
     if [ "$col_list" ];then
-      header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" \
-      | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g" | sort -V | awk -F"label=" '{print $2}' | sed "s/\"//g" \
-      | sed "s/ /\&nbsp;/g" | sed -z "s/\n/,/g" | sed "s/,$//g" | sed "s/,/, /g" | cut -d "," -f $col_list`
+      header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | $SED "s/,//g" \
+      | $SED "s/</\&lt;/g" | $SED "s/>/\&gt;/g" | sort -V | $AWK -F"label=" '{print $2}' | $SED "s/\"//g" \
+      | $SED "s/ /\&nbsp;/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g" | $SED "s/,/, /g" | cut -d "," -f $col_list`
     else
-      header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sed "s/,//g" | sort -V \
-      | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g" |  awk -F"label=" '{print $2}' | sed "s/\"//g" \
-      | sed "s/ /\&nbsp;/g" | sed -z "s/\n/,/g" | sed "s/,$//g"`
+      header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | $SED "s/,//g" | sort -V \
+      | $SED "s/</\&lt;/g" | $SED "s/>/\&gt;/g" |  $AWK -F"label=" '{print $2}' | $SED "s/\"//g" \
+      | $SED "s/ /\&nbsp;/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
     fi
 
     # ---------------------------------------------------------------------------
@@ -638,16 +638,16 @@ if [ "$command" ];then
       echo "<ul>"
       echo "<li class=\"table-header\">"
       header_items="#,$header_info"
-      for header_item in `echo $header_info | sed "s/,/ /g"`
+      for header_item in `echo $header_info | $SED "s/,/ /g"`
       do
         echo "<p>$header_item</p>"
       done
       echo "</li>"
-      cat $ROOT/tmp/exec/$exec_session.result  | sed -r "s/^::::::/<li><p><a href=\".\/$app?%%params\&req=get\&id=/g"  \
-      | sed -r "s/::::::/\">/g" \
-      | sed -r "s/,/<\/a><\/p><p>/1" \
-      | sed "s/,/<\/p><p>/g" \
-      | sed "s/$/<\/p><\/li>/g" 
+      cat $ROOT/tmp/exec/$exec_session.result  | $SED -r "s/^::::::/<li><p><a href=\".\/$app?%%params\&req=get\&id=/g"  \
+      | $SED -r "s/::::::/\">/g" \
+      | $SED -r "s/,/<\/a><\/p><p>/1" \
+      | $SED "s/,/<\/p><p>/g" \
+      | $SED "s/$/<\/p><\/li>/g" 
  
       if [ "$result" = "no" ];then
         echo "No result"
@@ -666,18 +666,18 @@ if [ "$command" ];then
     #  echo "<thead>"
     #  echo "<tr>"
     #  header_items="#,$header_info"
-    #  for header_item in `echo $header_info | sed "s/,/ /g"`
+    #  for header_item in `echo $header_info | $SED "s/,/ /g"`
     #  do
     #    echo "<th>$header_item</th>"
     #  done
     #  echo "</tr>"
     #  echo "</thead>"
     #  echo "<tbody>"
-    #  cat $ROOT/tmp/exec/$exec_session.result  | sed -r "s/^::::::/<tr><td><a href=\".\/$app?%%params\&req=get\&id=/g"  \
-    #  | sed -r "s/::::::/\">/g" \
-    #  | sed -r "s/,/<\/a><\/td><td>/1" \
-    #  | sed "s/,/<\/td><td>/g" \
-    #  | sed "s/$/<\/td><\/tr>/g"
+    #  cat $ROOT/tmp/exec/$exec_session.result  | $SED -r "s/^::::::/<tr><td><a href=\".\/$app?%%params\&req=get\&id=/g"  \
+    #  | $SED -r "s/::::::/\">/g" \
+    #  | $SED -r "s/,/<\/a><\/td><td>/1" \
+    #  | $SED "s/,/<\/td><td>/g" \
+    #  | $SED "s/$/<\/td><\/tr>/g"
     #  echo "</tbody>"
     #  echo "</table>"
     #
@@ -706,14 +706,14 @@ if [ "$command" ];then
         if [[ $exec_command == filter:* ]]; then
           if [ "$type" = "data" ];then
             echo ""
-            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l `
+            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l | tr -d " " `
             echo "Result: $line_num"
             #echo "Label:  $header_info"
           fi
 
           if [ "$type" = "log" ];then
             echo ""
-            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l `
+            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l | tr -d " " `
             echo "Result: $line_num"
           fi
 
@@ -726,7 +726,7 @@ if [ "$command" ];then
 
         # dump result
         cat $ROOT/tmp/exec/$exec_session.result \
-        | sed -r "s/^::::::/<a href=\".\/$app?%%params\&req=get\&id=/g" | sed -r "s/::::::/\">link <-  <\/a>/g"
+        | $SED -r "s/^::::::/<a href=\".\/$app?%%params\&req=get\&id=/g" | $SED -r "s/::::::/\">link <-  <\/a>/g"
 
       elif [ "$cmd_check_error" ];then
         echo "<b># Oops! there is a problem</b>"
@@ -748,28 +748,28 @@ if [ "$command" ];then
 
     if [ "$col_list" ];then
       header_info=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V \
-                   | awk -F"=" '{print $2}' | sed "s/\"//g" | tr -d ' ' | sed -z "s/\n/,/g" | sed "s/,$//g"  | cut -d "," -f $col_list`
+                   | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | tr -d ' ' | $SED -z "s/\n/,/g" | $SED "s/,$//g"  | cut -d "," -f $col_list`
     else
       header_info=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V \
-                   |  awk -F"=" '{print $2}' | sed "s/\"//g" | tr -d ' ' | sed -z "s/\n/,/g" | sed "s/,$//g" `
+                   |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" | tr -d ' ' | $SED -z "s/\n/,/g" | $SED "s/,$//g" `
     fi
     header_info="id,$header_info"
 
     # remove hash id separator and others
     if [ ! "$data_type_chk" ];then
-      cat $ROOT/tmp/exec/$exec_session.result | sed "s/^:::::://g" | sed "s/::::::/,/g" | sed "1s/^/$header_info\n/" \
-      | sed "s/,-,/,,/g" | sed "s/,-$/,/g" | sed  "s/<a href=\"//g" \
-      | sed "s/\" (.*)//g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
+      cat $ROOT/tmp/exec/$exec_session.result | $SED "s/^:::::://g" | $SED "s/::::::/,/g" | $SED "1s/^/$header_info\n/" \
+      | $SED "s/,-,/,,/g" | $SED "s/,-$/,/g" | $SED  "s/<a href=\"//g" \
+      | $SED "s/\" (.*)//g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
     else
-      cat $ROOT/tmp/exec/$exec_session.result | sed -r "s/^:::::://g" | sed -r "s/::::::/,/g" | sed "1s/^/$header_info\n/" \
-      | sed "s/,-,/,,/g" | sed "s/,-$/,/g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
+      cat $ROOT/tmp/exec/$exec_session.result | $SED -r "s/^:::::://g" | $SED -r "s/::::::/,/g" | $SED "1s/^/$header_info\n/" \
+      | $SED "s/,-,/,,/g" | $SED "s/,-$/,/g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
     fi
 
   fi
 
   # render by none format
   if [ "$format" = "none" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_error" ];then
-    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | sed -e '1d'
+    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | $SED -e '1d'
   elif [ "$format" = "none"  -a "$cmd_check_error" ];then
     echo "error: $cmd_check_error"
   fi
@@ -820,19 +820,19 @@ if [ "$command" ];then
     # change csv -> json
     json_tmp="$ROOT/tmp/exec/${exec_session}.json.tmp.1"
     echo "[" > $json_tmp
-    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | sed "s/\"/\\\\\"/g" \
-    | sed -e '1d' | sed "s/^/{ %%key/g" | sed "s/$/\" }%%comma/g" >> $json_tmp
+    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | $SED "s/\"/\\\\\"/g" \
+    | $SED -e '1d' | $SED "s/^/{ %%key/g" | $SED "s/$/\" }%%comma/g" >> $json_tmp
     echo "]" >> $json_tmp
 
-    keys=`echo $header_info | sed "s/,/ /g"`
+    keys=`echo $header_info | $SED "s/,/ /g"`
     for key in $keys
     do
-      cat $json_tmp | sed "s/%%key/\"$key\": \"/g" | sed "s/,/\"%%comma %%key/1"  > $json_tmp.1
+      cat $json_tmp | $SED "s/%%key/\"$key\": \"/g" | $SED "s/,/\"%%comma %%key/1"  > $json_tmp.1
       json_tmp="$json_tmp.1"
     done
 
     # render json
-    cat $json_tmp | sed -z "s/\n//g" | sed "s/%%comma/,/g" | sed "s/},]/}]/g" | sed "s/$/\n/g"
+    cat $json_tmp | $SED -z "s/\n//g" | $SED "s/%%comma/,/g" | $SED "s/},]/}]/g" | $SED "s/$/\n/g"
 
 
   elif [ "$format" = "json" -a "$cmd_check_error" ];then
@@ -855,7 +855,7 @@ function get_data(){
   local addkvl=""
 
   # load column profile
-  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | awk -F":" '{print $1}' | xargs basename -a  2>/dev/null`
+  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | $AWK -F":" '{print $1}' | xargs basename -a  2>/dev/null`
   if [ ! "$col" ];then
     echo "error: there is no key:$key"
     return 1
@@ -864,7 +864,7 @@ function get_data(){
   cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/$exec_session.$col
   chmod 700 $ROOT/tmp/exec/$exec_session.$col
   . $ROOT/tmp/exec/$exec_session.$col
-  label=`echo $label | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g"`
+  label=`echo $label | $SED "s/</\&lt;/g" | $SED "s/>/\&gt;/g"`
 
   if [ "$format" = "html_tag" ];then
 
@@ -872,7 +872,7 @@ function get_data(){
        value=""
      else
        if [ -d "$ROOT/databox/$databox/data/$id" ];then
-         value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed "s/\"/\&quot;/g" | sed "s/'/\&apos;/g"`
+         value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | $SED "s/\"/\&quot;/g" | $SED "s/'/\&apos;/g"`
        else
          if [ -d  $ROOT/databox/$databox/log/$id ];then
             echo "error: there is no id:${id}, data has been already deleted, please check data history"
@@ -1008,7 +1008,7 @@ function get_data(){
 
       if [ "$value" ];then
         echo "<input class=\"file\" type=\"file\" name=\"$name\" id=\"file_input\">"
-        file_name=`echo "$value" | sed -r "s/ #size(.*)//g"`
+        file_name=`echo "$value" | $SED -r "s/ #size(.*)//g"`
         echo "<label id=\"file_input_label\" for=\"file_input\">+</label>"
         echo "<label id=\"file_name\"><a href=\"./$app?%%params&req=file&id=$id\" download=\"$file_name\">$value</a></label>"
         echo "</div>"
@@ -1028,9 +1028,9 @@ function get_data(){
       if [ ! "$addkvl" ];then
 
         # no addkvl means only extract primary data values
-        primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $3}' | awk -F "," '{print $1}'`
+        primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}'`
         if [ "$value" ];then
-          pdid=`grep "::::::${value}," $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $2}'`
+          pdid=`grep "::::::${value}," $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $2}'`
           if [ "$app" = "shell.app" ];then
             if [ "$pdid" ];then
               echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}.ln</a></label>"
@@ -1047,24 +1047,24 @@ function get_data(){
       else
 
         # else means add other key value to pdls data
-        kvl_col=`grep -l "name=\"$addkvl\"" $ROOT/databox/$pdlsbox/def/col* | xargs basename -a 2>/dev/null | sed "s/col//g"`
+        kvl_col=`grep -l "name=\"$addkvl\"" $ROOT/databox/$pdlsbox/def/col* | xargs basename -a 2>/dev/null | $SED "s/col//g"`
 
         # generate tmp exe file to extract specific column by awk
-        echo "cat $ROOT/databox/${pdlsbox}/index | awk -F \"::::::\" '{print \$3}' \
-        | awk -F \",\" '{print \$$kvl_col\" #\"\$1}'"  > $ROOT/tmp/exec/$exec_session.pdls.$key
+        echo "cat $ROOT/databox/${pdlsbox}/index | $AWK -F \"::::::\" '{print \$3}' \
+        | $AWK -F \",\" '{print \$$kvl_col\" #\"\$1}'"  > $ROOT/tmp/exec/$exec_session.pdls.$key
 
         chmod 755 $ROOT/tmp/exec/$exec_session.pdls.$key
         primary_key_values=`$ROOT/tmp/exec/$exec_session.pdls.$key`
 
         if [ "$value" ];then
-          primary_value=`echo ${value} | awk -F "#" '{print $NF}'`
-          pdid=`grep "::::::${primary_value}," $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $2}'`
+          primary_value=`echo ${value} | $AWK -F "#" '{print $NF}'`
+          pdid=`grep "::::::${primary_value}," $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $2}'`
 
           if [ "$pdid" ];then
 
             # generate tmp exe file to extract specific column by awk
-            echo "cat $ROOT/databox/${pdlsbox}/index | grep "::::::${primary_value}," | awk -F \"::::::\" '{print \$3}' \
-            | awk -F \",\" '{print \$$kvl_col\" #\"\$1}'"   > $ROOT/tmp/exec/$exec_session.kvl
+            echo "cat $ROOT/databox/${pdlsbox}/index | grep "::::::${primary_value}," | $AWK -F \"::::::\" '{print \$3}' \
+            | $AWK -F \",\" '{print \$$kvl_col\" #\"\$1}'"   > $ROOT/tmp/exec/$exec_session.kvl
 
             chmod 755 $ROOT/tmp/exec/$exec_session.kvl
             value=`$ROOT/tmp/exec/$exec_session.kvl`
@@ -1081,22 +1081,22 @@ function get_data(){
 
       echo "<input type=\"text\" name=\"$name\" value=\"$value\" autocomplete=\"off\" list=\"pdls.$key\" $option>"
       echo "<datalist id=\"pdls.$key\">"
-      echo "$primary_key_values" | sed "s/^/<option value=\"/g" | sed "s/$/\">/g" \
-      | sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
-      | sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
-      | sed "s/{%%%%%%%%%%%%%%%}/*/g"\
-      | sed "s/{%%%%%%%%%%%%%%}/$/g"\
-      | sed "s/{%%%%%%%%%%%%%}/#/g"\
-      | sed "s/{%%%%%%%%%%%%}/|/g"\
-      | sed "s/{%%%%%%%%%%%}/\]/g"\
-      | sed "s/{%%%%%%%%%%}/\[/g"\
-      | sed "s/{%%%%%%%%%}/)/g"\
-      | sed "s/{%%%%%%%%}/(/g"\
-      | sed "s/{%%%%%%%}/_/g"\
-      | sed "s/{%%%%%%}/,/g"\
-      | sed "s/{%%%%%}/\//g"\
-      | sed "s/{%%%%}/\&/g"\
-      | sed "s/{%%%}/:/g"
+      echo "$primary_key_values" | $SED "s/^/<option value=\"/g" | $SED "s/$/\">/g" \
+      | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+      | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
+      | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
+      | $SED "s/{%%%%%%%%%%%%%%}/$/g"\
+      | $SED "s/{%%%%%%%%%%%%%}/#/g"\
+      | $SED "s/{%%%%%%%%%%%%}/|/g"\
+      | $SED "s/{%%%%%%%%%%%}/\]/g"\
+      | $SED "s/{%%%%%%%%%%}/\[/g"\
+      | $SED "s/{%%%%%%%%%}/)/g"\
+      | $SED "s/{%%%%%%%%}/(/g"\
+      | $SED "s/{%%%%%%%}/_/g"\
+      | $SED "s/{%%%%%%}/,/g"\
+      | $SED "s/{%%%%%}/\//g"\
+      | $SED "s/{%%%%}/\&/g"\
+      | $SED "s/{%%%}/:/g"
       echo "</datalist>"
       echo "</li>"
     fi
@@ -1113,7 +1113,7 @@ function get_data(){
       echo "<label>$label</label>"
       echo "<input type=\"text\" name=\"$name\" value=\"$value\" autocomplete=\"off\" list=\"mls.$key\" $option>"
       echo "<datalist id=\"mls.$key\">"
-      echo "$users" | sed "s/^/<option value=\"/g" | sed "s/$/\">/g" 
+      echo "$users" | $SED "s/^/<option value=\"/g" | $SED "s/$/\">/g" 
       echo "</datalist>"
       echo "</li>"
 
@@ -1134,12 +1134,12 @@ function get_data(){
     fi
 
     if [ "$type" = "checkbox" ];then
-      value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/^\n//g" | sed -z "s/\n/ /g" | sed "s/ $//g" \
-      | php -r "echo addslashes(file_get_contents('php://stdin'));"`
+      value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | $SED -z "s/^\n//g" | $SED -z "s/\n/ /g" | $SED "s/ $//g" \
+      | $PHP -r "echo addslashes(file_get_contents('php://stdin'));"`
       echo "  \"$key\": \"$value\"" >> $ROOT/tmp/json/$session.data
     else
-      value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/\n$//g" | sed -z "s/\n/_%%enter_/g"\
-      | php -r "echo addslashes(file_get_contents('php://stdin'));"`
+      value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | $SED -z "s/\n$//g" | $SED -z "s/\n/_%%enter_/g"\
+      | $PHP -r "echo addslashes(file_get_contents('php://stdin'));"`
       echo "  \"$key\": \"$value\"" >> $ROOT/tmp/json/$session.data
     fi
 
@@ -1157,8 +1157,8 @@ function get_data(){
       exit 1 
     fi
 
-    value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | sed -z "s/\n/_%%enter_/g" | sed "s/^ //g" | sed "s/ $//g" \
-    | sed "s/_%%enter_$//g"`
+    value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | $SED -z "s/\n/_%%enter_/g" | $SED "s/^ //g" | $SED "s/ $//g" \
+    | $SED "s/_%%enter_$//g"`
     echo "${key}:${value}"
 
   fi
@@ -1175,7 +1175,7 @@ function get_mergeable_data(){
     return 1
   fi
 
-  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | awk -F":" '{print $1}' | xargs basename -a  2>/dev/null`
+  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | $AWK -F":" '{print $1}' | xargs basename -a  2>/dev/null`
   if [ ! "$col" ];then
     echo "error: there is no key:$key"
     return 1
@@ -1197,7 +1197,7 @@ function get_mergeable_data(){
     
   else
     if [ -d "$ROOT/databox/$databox/data/$id" ];then
-      value=`cat $ROOT/databox/$databox/data/$id/$key | sed "s/\"/\&quot;/g" | sed "s/'/\&apos;/g"`
+      value=`cat $ROOT/databox/$databox/data/$id/$key | $SED "s/\"/\&quot;/g" | $SED "s/'/\&apos;/g"`
     else
       if [ -d $ROOT/databox/$databox/log/$id ];then
         echo "error: there is no id:${id},data has been already deleted, please check data history"
@@ -1227,11 +1227,11 @@ function gen_id(){
 
  
   if [ "$primary_key" = "hashid" ];then
-    id=`echo "primary key will be generated $gen $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | sha256sum | awk '{print $1}'`
+    id=`echo "primary key will be generated $gen $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | $SHASUM | $AWK '{print $1}'`
   elif [ -f ${input_dir}/${primary_key} ];then
-    id=`cat ${input_dir}/${primary_key} | sha256sum | awk '{print $1}'`
+    id=`cat ${input_dir}/${primary_key} | $SHASUM | $AWK '{print $1}'`
   elif [ "$input_dir" = "null"  ];then
-    id=`echo "$value" | sha256sum | awk '{print $1}'`
+    id=`echo "$value" | $SHASUM | $AWK '{print $1}'`
   else
     echo "error: failed to generate hashid something wrong"
     exit 1
@@ -1277,7 +1277,7 @@ function set_data(){
   fi
 
   # load type
-  type=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep type | awk -F "type=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+  type=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep type | $AWK -F "type=" '{print $2}' | $SED "s/\"//g" | $SED '/^$/d'`
 
   # key check
   key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col*`
@@ -1295,31 +1295,31 @@ function set_data(){
 
   # update or insert value
   if [ "$input_dir" = "null" ];then
-    value=`echo "$value" | sed "s/{%%%}/:/g" | sed "s/%%null//g"`
+    value=`echo "$value" | $SED "s/{%%%}/:/g" | $SED "s/%%null//g"`
   else
     value=`cat ${input_dir}/${key}`
   fi
 
   if [ ! "$set_option" = "force" ];then
     if [ ! "$flg" = "new" ];then
-      org_value=`cat $ROOT/databox/$databox/data/${id}/${key} 2>/dev/null | sha256sum | awk '{print $1}'`
+      org_value=`cat $ROOT/databox/$databox/data/${id}/${key} 2>/dev/null | $SHASUM | $AWK '{print $1}'`
     fi
 
     if [ "$input_dir" = "null" ];then
-      new_value=`echo "$value" | sha256sum | awk '{print $1}'`
+      new_value=`echo "$value" | $SHASUM | $AWK '{print $1}'`
     else
-      new_value=`cat ${input_dir}/${key} | sha256sum | awk '{print $1}'`
+      new_value=`cat ${input_dir}/${key} | $SHASUM | $AWK '{print $1}'`
     fi
 
     if [ "$org_value" = "$new_value" -a ! "$type" = "file" ];then
-      echo "info: $key value{`echo $value | sed -z \"s/\n//g\"`} is same as original value"
+      echo "info: $key value{`echo $value | $SED -z \"s/\n//g\"`} is same as original value"
       return 1
     fi
   fi
 
   # for select box or radio or checkbox 
   if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
-    params=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep params | awk -F "params=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+    params=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep params | $AWK -F "params=" '{print $2}' | $SED "s/\"//g" | $SED '/^$/d'`
 
     if [ "$type" = "checkbox" ];then
       if [ "$value" = "-" ];then
@@ -1345,8 +1345,8 @@ function set_data(){
   fi
 
   if [ "$type" = "date" ];then
-    date_value_chk=`echo $value | sed "s/[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]//g"`
-    value_chk=`echo $value | sed -z "s/\n//g"`
+    date_value_chk=`echo $value | $SED "s/[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]//g"`
+    value_chk=`echo $value | $SED -z "s/\n//g"`
     if [ "$date_value_chk" ];then
       if [ "$value_chk" ];then
         echo "error: $key value{$value_chk} must be yyyy-mm-dd"
@@ -1356,8 +1356,8 @@ function set_data(){
   fi
 
   if [ "$type" = "datetime-local" ];then
-    time_value_chk=`echo $value | sed "s/[0-9][0-9]//g" | sed "s/://g" | sed "s/T//g" | sed "s/-//g"`
-    value_chk=`echo $value | sed -z "s/\n//g"`
+    time_value_chk=`echo $value | $SED "s/[0-9][0-9]//g" | $SED "s/://g" | $SED "s/T//g" | $SED "s/-//g"`
+    value_chk=`echo $value | $SED -z "s/\n//g"`
     if [ "$time_value_chk" ];then
       if [ "$value_chk" ];then
         echo "error: $key value{$value_chk} must be yyyy-mm-ddTmm:ss"
@@ -1367,8 +1367,8 @@ function set_data(){
   fi
 
   if [ "$type" = "number" ];then
-    num_value_chk=`echo $value | sed "s/[0-9]//g" | sed "s/-//g"`
-    value_chk=`echo $value | sed -z "s/\n//g"`
+    num_value_chk=`echo $value | $SED "s/[0-9]//g" | $SED "s/-//g"`
+    value_chk=`echo $value | $SED -z "s/\n//g"`
     if [ "$num_value_chk" ];then
       if [ "$value_chk" ];then
         echo "error: $key value{$value_chk} must be numetric character"
@@ -1405,8 +1405,8 @@ function set_data(){
   fi
 
   if [ "$type" = "pdls" ];then
-    pdlsbox=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep pdlsbox | awk -F "pdlsbox=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
-    primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | awk -F "::::::" '{print $3}' | awk -F "," '{print $1}'`
+    pdlsbox=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep pdlsbox | $AWK -F "pdlsbox=" '{print $2}' | $SED "s/\"//g" | $SED '/^$/d'`
+    primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}'`
     value_chk=`echo "$primary_key_values" | grep "^${value}$"`
     if [ ! "$value" -a ! "$value_chk" -a "$set_option" = "force" ];then
       echo "error: $key value{$value} is not alllowed"
@@ -1419,14 +1419,14 @@ function set_data(){
   if [ "$input_dir" = "null" ];then
     if [ "$type" = "file" ];then  
       echo "error: primary_key{`cat $ROOT/databox/$databox/data/$id/$primary_key \
-      | sed -z "s/\n//g"`} file must be set using input_dir:"
+      | $SED -z "s/\n//g"`} file must be set using input_dir:"
       return 1
     fi
     echo "$value" > $ROOT/databox/$databox/data/${id}/${key}
   else
     if [ "$type" = "file" ];then
       file_name=`cat ${input_dir}/${key}`
-      size=`ls -lh ${input_dir}/binary_file/binary.data | awk '{print $5}'`
+      size=`ls -lh ${input_dir}/binary_file/binary.data | $AWK '{print $5}'`
       echo "$file_name #size:$size" > $ROOT/databox/$databox/data/${id}/${key}
       \cp -f ${input_dir}/binary_file/binary.data $ROOT/databox/$databox/file/${id}
     else
@@ -1470,7 +1470,7 @@ function merge_data(){
   fi
 
   # load type
-  type=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep type | awk -F "type=" '{print $2}' | sed "s/\"//g" | sed '/^$/d'`
+  type=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep type | $AWK -F "type=" '{print $2}' | $SED "s/\"//g" | $SED '/^$/d'`
 
   # key check
   key_check=`grep "^name=\"$key\"" $ROOT/databox/${databox}/def/col*`
@@ -1518,7 +1518,7 @@ function del_data(){
   fi
 
   if [ -d $ROOT/databox/$databox/data/$id ];then
-      primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+      primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
       primary_key_value=`cat $ROOT/databox/$databox/data/$id/$primary_key`
       mv $ROOT/databox/$databox/data/$id $ROOT/databox/$databox/data/${id}.detouched
       rm -rf $ROOT/databox/$databox/data/${id}.detouched/*
@@ -1558,7 +1558,7 @@ function get_log(){
   if [ "$format" = "html_tag" ];then 
     if [ -f $ROOT/databox/$databox/log/$id/history ];then
       echo "<pre>"
-      cat $ROOT/databox/$databox/log/$id/history | sed "s/,/ /1"
+      cat $ROOT/databox/$databox/log/$id/history | $SED "s/,/ /1"
       echo "</pre>"
     else
       echo "error: there is no log"
@@ -1568,7 +1568,7 @@ function get_log(){
 
   if [ "$format" = "none" ];then 
     if [ -f $ROOT/databox/$databox/log/$id/history ];then
-      cat $ROOT/databox/$databox/log/$id/history | sed "s/,/ /1"
+      cat $ROOT/databox/$databox/log/$id/history | $SED "s/,/ /1"
     else
       echo "error: there is no log"
       exit 1
@@ -1577,7 +1577,7 @@ function get_log(){
 
   if [ "$format" = "json" ];then 
     if [ -f $ROOT/databox/$databox/log/$id/history ];then
-      cat $ROOT/databox/$databox/log/$id/history | jq -R 'split(",") | {"Time Stamp": .[0], "Message": .[1]}' | jq -s
+      cat $ROOT/databox/$databox/log/$id/history | $JQ -R 'split(",") | {"Time Stamp": .[0], "Message": .[1]}' | $JQ -s
     else
       echo "error: there is no log"
       exit 1
@@ -1595,7 +1595,7 @@ if [ "$action" ];then
 
   if [ "$action" = "get" ];then
 
-    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
 
     if [ "$type" = "log" ];then
        get_log $id $format
@@ -1605,10 +1605,10 @@ if [ "$action" ];then
     if [ "$keys" ];then
 
       if [ "$keys" = "all" ];then
-        keys=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
-        | sed "s/ //g" | sed -z "s/\n/ /g" `
+        keys=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+        | $SED "s/ //g" | $SED -z "s/\n/ /g" `
       else
-        keys=`echo $keys | sed "s/,/ /g"`
+        keys=`echo $keys | $SED "s/,/ /g"`
       fi
      
       for key in $keys
@@ -1626,11 +1626,11 @@ if [ "$action" ];then
     if [ "$format" = "json" ];then
       ls $ROOT/tmp/json/$session.data >/dev/null 2>&1
         if [ $? -eq 0 ];then
-          cat $ROOT/tmp/json/$session.data | sed "s/\"/\\\\\"/g" > $ROOT/tmp/json/$session.data.fin
-          sed -i "1s/^/  \"id\": \"$id\"\n/" $ROOT/tmp/json/$session.data.fin
+          cat $ROOT/tmp/json/$session.data | $SED "s/\"/\\\\\"/g" > $ROOT/tmp/json/$session.data.fin
+          $SED -i "1s/^/  \"id\": \"$id\"\n/" $ROOT/tmp/json/$session.data.fin
           echo "{"
           cat $ROOT/tmp/json/$session.data \
-          | sed "s/$/,/g" | sed -e "$ s/,$//g" | sed "s/_%%enter_/\\\n/g"
+          | $SED "s/$/,/g" | $SED -e "$ s/,$//g" | $SED "s/_%%enter_/\\\n/g"
           echo "}"
           rm -rf $ROOT/tmp/json/$session.data*
         fi
@@ -1654,7 +1654,7 @@ if [ "$action" ];then
       set_option="force"
     fi
 
-    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
 
     if [ "$type" = "log" ];then
        echo "error: you can not set any value to log"
@@ -1686,13 +1686,13 @@ if [ "$action" ];then
       fi
 
       if [ "$keys" = "all" ];then
-        keys=`grep "^name=" $ROOT/databox/${databox}/def/col* | grep -v "name=\"hashid\"" | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
-        | sed "s/ //g" | sed -z "s/\n/ /g" `
+        keys=`grep "^name=" $ROOT/databox/${databox}/def/col* | grep -v "name=\"hashid\"" | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+        | $SED "s/ //g" | $SED -z "s/\n/ /g" `
       else
         if [ ! "$id" = "new" ];then
-          keys=`echo $keys | sed "s/,/ /g"`
+          keys=`echo $keys | $SED "s/,/ /g"`
         else
-          keys=`echo $keys | sed "s/,/ /g" | sed "s/^${primary_key} //g" | sed "s/ ${primary_key} / /g" | sed "s/ ${primary_key}$//g"`
+          keys=`echo $keys | $SED "s/,/ /g" | $SED "s/^${primary_key} //g" | $SED "s/ ${primary_key} / /g" | $SED "s/ ${primary_key}$//g"`
           if [ ! "$primary_key" = "hashid" ];then
             keys="$primary_key $keys"
           fi
@@ -1705,7 +1705,7 @@ if [ "$action" ];then
       do
         if [ -f $input_dir/$key ];then
           if [ "$count" -eq 1 -a "$id" = "new" ];then
-            id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+            id=`gen_id $primary_key | $AWK -F "id:" '{print $2}'`
             flag="new"
           else
             flag="update"
@@ -1743,10 +1743,10 @@ if [ "$action" ];then
 
       if [ "$id" = "new" ];then
         if [ "$primary_key" = "hashid" ];then
-          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          id=`gen_id $primary_key | $AWK -F "id:" '{print $2}'`
           flag="new"
         elif [ "$primary_key" = "$key" -a ! "$primary_key" = "hashid" ];then
-          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          id=`gen_id $primary_key | $AWK -F "id:" '{print $2}'`
           flag="new"
         else
           echo "error: plese set primary key fist"
@@ -1782,8 +1782,8 @@ if [ "$action" ];then
 
     result=`del_data $id `
     if [ $? -eq 0 ];then
-      keys=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  awk -F"=" '{print $2}' | sed "s/\"//g" \
-            | sed "s/ //g" | sed -z "s/\n/ /g" `
+      keys=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+            | $SED "s/ //g" | $SED -z "s/\n/ /g" `
       updated_keys=""
       for key in $keys
       do
@@ -1803,7 +1803,7 @@ if [ "$action" ];then
 
   if [ "$action" = "merge.get" ];then
 
-    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
 
     if [ "$type" = "log" ];then
        echo "error: mege.get could not get log"
@@ -1830,7 +1830,7 @@ if [ "$action" ];then
   fi
 
   if [ "$action" = "merge.set" ];then
-    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | awk -F"=" '{print $2}' | sed "s/\"//g" | sed "s/ //g"`
+    primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
 
     if [ "$type" = "log" ];then
        echo "error: you can not set any value to log"
@@ -1875,10 +1875,10 @@ if [ "$action" ];then
 
       if [ "$id" = "new" ];then
         if [ "$primary_key" = "hashid" ];then
-          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          id=`gen_id $primary_key | $AWK -F "id:" '{print $2}'`
           flag="new"
         elif [ "$primary_key" = "$key" -a ! "$primary_key" = "hashid" ];then
-          id=`gen_id $primary_key | awk -F "id:" '{print $2}'`
+          id=`gen_id $primary_key | $AWK -F "id:" '{print $2}'`
           flag="new"
         else
           echo "error: plese set primary key fist"

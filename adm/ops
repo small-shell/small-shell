@@ -11,7 +11,6 @@
 # ops ls.usr
 # ops add.usr:$user
 # ops initialize.usr:$user
-# ops get.usr:$user{url}
 # ops del.usr:$user
 # ops set.attr:$user{ro}
 # ops set.attr:$user{rw}
@@ -56,54 +55,48 @@ for param in `echo $@`
 do
 
   if [[ $param == ls.usr ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
   fi
 
   if [[ $param == add.usr:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    user_name=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    user_name=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == del.usr:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    user_name=`echo $param |  awk -F":" '{print $2}'`
-  fi
-
-  if [[ $param == get.usr:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    user_name=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-    target=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    user_name=`echo $param |  $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == set.attr* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    user_name=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-    attr_param=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
-    attr_key=`echo $attr_param | grep "=" | awk -F "=" '{print $1}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    user_name=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+    attr_param=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
+    attr_key=`echo $attr_param | grep "=" | $AWK -F "=" '{print $1}'`
 
     if [ ! "$attr_key" ];then
       attr_key=permission
     else
-      attr_param=`echo $attr_param |  awk -F"=" '{print $2}'`
+      attr_param=`echo $attr_param |  $AWK -F"=" '{print $2}'`
     fi
 
   fi
 
   if [[ $param == initialize.usr:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    user_name=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    user_name=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
   fi
 
   if [[ $param == add.tag:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    databox=`echo $param | awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-    filter=`echo $param | sed "s/$action:$databox//g" | sed "s/^{//g" | sed "s/}$//g"`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    databox=`echo $param | $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+    filter=`echo $param | $SED "s/$action:$databox//g" | $SED "s/^{//g" | $SED "s/}$//g"`
   fi
 
   if [[ $param == del.tag:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    databox=`echo $param | awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-    filter=`echo $param | sed "s/$action:$databox//g" | sed "s/^{//g" | sed "s/}$//g"`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    databox=`echo $param | $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+    filter=`echo $param | $SED "s/$action:$databox//g" | $SED "s/^{//g" | $SED "s/}$//g"`
   fi
 
   if [[ $param == set.IP ]]; then
@@ -111,7 +104,7 @@ do
   fi
 
   if [[ $param == app:* ]]; then
-    app=`echo $param | awk -F":" '{print $2}'`
+    app=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
@@ -149,14 +142,17 @@ function initialize_url(){
     exit 1
   fi
 
-  echo "initialize_key:$user_id:$random_key:${RANDOM}" | sha256sum | awk '{print $1}' > $user_dir/initialize_key
+  echo "initialize_key:$user_id:$random_key:${RANDOM}" | $SHASUM | $AWK '{print $1}' > $user_dir/initialize_key
   chown small-shell:small-shell $user_dir/initialize_key
   chmod 700 $user_dir/initialize_key
 
   if [ $? -eq 0 ];then
     initialize_hash_key=`cat $user_dir/initialize_key`
     initialize_url="${base_url}${auth}?initialize=$user_id,$initialize_hash_key"
-    echo "Initialize url for $user_name on $t_app is created, please share this url to end user to generate access key to the APP"
+    clear
+    echo "-----------------------------------------------------------------"
+    echo "Initialize URL for $user_name on $t_app is created"
+    echo "-----------------------------------------------------------------"
     echo "$initialize_url"
   else
     echo "error: failed to create initialize key"
@@ -200,11 +196,11 @@ function set_attr(){
 
 if [ "$action" = "ls.usr" ];then
   echo "----------User List-------------"
-  for id in `ls $ROOT/users | grep -v audit.log | xargs basename -a`
+  for id in `ls $ROOT/users | grep -v audit | xargs basename -a`
   do
-    app_chk=`echo $id | awk -F "." '{print $2}'`
+    app_chk=`echo $id | $AWK -F "." '{print $2}'`
     if [ "$app_chk" ];then
-      app=`echo $id | awk -F "." '{print $1}'`
+      app=`echo $id | $AWK -F "." '{print $1}'`
       echo "${app}/`cat $ROOT/users/$id/user_name`"
     else
       echo "`cat $ROOT/users/$id/user_name`"
@@ -231,7 +227,7 @@ if [ "$action" = "add.usr" ];then
     exit 1
   fi
 
-  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
 
   if [ "$app" ];then
     user_dir="$ROOT/users/${app}.${user_id}"
@@ -240,7 +236,12 @@ if [ "$action" = "add.usr" ];then
   fi
 
   if [ -d $user_dir ];then 
-    echo "error: $user_name is already existing. if you want to initialize the user, please execute initialize.usr:$user_name"
+    echo "warn: $user_name is already existing. if you want to initialize the user,please execute following command"
+    if [ "$app" ];then
+      echo "sudo $ROOT/adm/ops initialize.usr:$user_name app:$app"
+    else
+      echo "sudo $ROOT/adm/ops initialize.usr:$user_name"
+    fi
     exit 1
   fi
 
@@ -261,7 +262,7 @@ if [ "$action" = "initialize.usr" ];then
      exit 1
   fi
 
-  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
 
   if [ "$app" ];then
     user_dir="$ROOT/users/${app}.${user_id}"
@@ -283,7 +284,7 @@ fi
 
 # Handle delete user request
 if [ "$action" = "del.usr" ];then
-  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
 
   if [ "$app" ];then
     user_dir="$ROOT/users/${app}.${user_id}"
@@ -312,7 +313,7 @@ fi
 # Handle attribute setting
 if [[ $action == set.attr* ]];then
 
-  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
+  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
 
   if [ "$app" ];then
     user_dir="$ROOT/users/${app}.${user_id}"
@@ -430,7 +431,6 @@ if [ ! "$action" ];then
  ops ls.usr
  ops add.usr:\$user
  ops initialize.usr:\$user
- ops get.usr:\$user{url}
  ops del.usr:\$user
  ops set.attr:\$user{ro}
  ops set.attr:\$user{rw}
@@ -443,7 +443,6 @@ if [ ! "$action" ];then
 # for Scratch APP
  ops add.usr:\$user app:\$app
  ops initialize.usr:\$user app:\$app
- ops get.usr:\$user app:\$app
  ops del.usr:\$user app:\$app
  ops add.tag:\$databox{\$filter} app:\$app
  ops del.tag:\$databox{\$filter} app:\$app

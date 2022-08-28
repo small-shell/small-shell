@@ -36,8 +36,18 @@
                             <li class="navitem">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="navitem">
-                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Quick Start <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_Mac/" class="dropdown-item">For macOS</a>
+</li>
+                                </ul>
                             </li>
                             <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
@@ -246,7 +256,6 @@ https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
 # ops add.usr:$user
 # ops del.usr:$user
 # ops initialize.usr:$user
-# ops get.usr:$user{url}
 # ops set.attr:$user{ro}
 # ops set.attr:$user{rw}
 # ops set.attr:$user{$attribute_key=$param}
@@ -263,7 +272,6 @@ https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
 # ops add.usr:$user app:$app
 # ops del.usr:$user app:$app
 # ops initialize.usr:$user app:$app
-# ops get.app_usr:$user{url} app:$app
 # ops add.tag:$databox{$filter} app:$app
 # ops del.tag:$databox{$filter} app:$app
 # ops set.attr:$user{rw} app:$app
@@ -294,10 +302,6 @@ https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
 <tr>
 <td>initialize.usr</td>
 <td>initialize user key of Base APP, it could generate URL for initialization</td>
-</tr>
-<tr>
-<td>get.usr:$user{url}</td>
-<td>Get user dedicated URL for initialization</td>
 </tr>
 <tr>
 <td>set.attr:$user{rw}, set.attr:$user{ro}</td>

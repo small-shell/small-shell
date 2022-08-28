@@ -3,26 +3,26 @@
 # Target databox and keys
 databox=%%databox
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 # BASE COMMAND
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
@@ -37,7 +37,7 @@ fi
 
 # check posted param
 if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | grep -v binary_file | sed -z "s/\n/,/g" | sed "s/,$//g"`
+  keys=`ls ../tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
 else
   echo "error: No param posted"
   exit 1
@@ -58,15 +58,15 @@ $DATA_SHELL databox:$databox action:set id:$id keys:$keys input_dir:../tmp/$sess
 error_chk=`grep "^error" ../tmp/$session/result`
 
 if [ "$error_chk" ];then
-  cat ../descriptor/%%app_set_err.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%common_menu/r ../descriptor/common_parts/%%app_common_menu" \
-  | sed "s/%%common_menu//g"\
-  | sed "/%%message/r ../tmp/$session/result" \
-  | sed "/%%message/d"\
-  | sed "s/%%session/session=$session\&pin=$pin/g"
+  cat ../descriptor/%%app_set_err.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r ../descriptor/common_parts/%%app_common_menu" \
+  | $SED "s/%%common_menu//g"\
+  | $SED "/%%message/r ../tmp/$session/result" \
+  | $SED "/%%message/d"\
+  | $SED "s/%%session/session=$session\&pin=$pin/g"
 else
   # wait index update
-  numcol=`$META get.header:${databox}{csv} | sed "s/,/\n/g" | wc -l`
+  numcol=`$META get.header:${databox}{csv} | $SED "s/,/\n/g" | wc -l | tr -d " "`
   buffer=`expr $numcol / 8`
   index_update_time="0.$buffer"
   sleep $index_update_time

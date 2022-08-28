@@ -40,46 +40,46 @@ for param in `echo $@`
 do
 
   if [[ $param == key_auth:* ]]; then
-    key_auth=`echo $param | awk -F":" '{print $2}'`
+    key_auth=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == initialize:* ]]; then
     initialize=yes
-    user_id=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-    initialize_hash_key=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g"`
+    user_id=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+    initialize_hash_key=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
   fi
 
   if [[ $param == session_chk:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    session=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session_refresh:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    session=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session_persist:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    session=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == data_import_session:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    session=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == remote_addr:* ]]; then
-    remote_addr=`echo $param | awk -F":" '{print $2}'`
+    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == logout:* ]]; then
     action=logout
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
@@ -105,11 +105,11 @@ if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
     fi
 
     user_name=`cat $ROOT/users/$user_id/user_name`
-    hash=`echo "${user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+    hash=`echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
     echo "$hash" > $ROOT/users/${user_id}/hash
 
     if [ $? -eq 0 ];then
-      user_key=`echo "${user_name}:${hash_gen_key}" | base64 -w 0`
+      user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
       echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} generated user_key of user_name:${user_name}" \
       >> $access_log
       echo "user_name:${user_name},user_key:${user_key}"
@@ -128,17 +128,17 @@ fi
 
 # key_auth 
 if [ "$key_auth" ];then
-  decrypted_value=`echo "$key_auth" | base64 -d`
-  user_name=`echo "$decrypted_value" | awk -F ":" '{print $1}'`
-  user_id=`echo "$user_name" | sha256sum | awk '{print $1}'`
-  hash_gen_key=`echo "$decrypted_value" | awk -F ":" '{print $2}'`
-  hash=`echo "${user_name}:${hash_gen_key}" | sha256sum | awk '{print $1}'`
+  decrypted_value=`echo "$key_auth" | $BASE64_DEC`
+  user_name=`echo "$decrypted_value" | $AWK -F ":" '{print $1}'`
+  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
+  hash_gen_key=`echo "$decrypted_value" | $AWK -F ":" '{print $2}'`
+  hash=`echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
 
   if [ -f $ROOT/users/${user_id}/hash ];then
     existing_hash=`cat $ROOT/users/${user_id}/hash`
     if [ "$hash" = "$existing_hash" ];then
       pin=$RANDOM
-      session_token=`echo "${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+      session_token=`echo "${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
       echo "user_name:$user_name,session_token:$session_token,pin:${pin}"
       echo "`date +%Y-%m-%d` `date +%T` user_name:${user_name} remote_addr:${remote_addr} logged in successfully" \
       >> $access_log
@@ -159,11 +159,11 @@ fi
 
 if [ "$action" = "session_chk" ];then
   if [ -f  $ROOT/tmp/session/${session} ];then
-    user_name=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $1}'`
-    org_addr=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $2}'`
+    user_name=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $1}'`
+    org_addr=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $2}'`
 
     if [ "$org_addr" = "$remote_addr" ];then
-      tokencheck=`echo "${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+      tokencheck=`echo "${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
       if [ "${session}" = "${tokencheck}" ];then
         cat $ROOT/tmp/session/$session
       fi
@@ -174,16 +174,16 @@ fi
 
 if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$action" = "session_persist" -o "$action" = "logout" ];then
   if [ -f  $ROOT/tmp/session/${session} ];then
-    user_name=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $1}'`
-    org_addr=`cat $ROOT/tmp/session/${session} | awk -F ":" '{print $2}'`
+    user_name=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $1}'`
+    org_addr=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $2}'`
     org_session=$session
  
     if [ "$org_addr" = "$remote_addr" ];then
-      tokencheck=`echo "${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+      tokencheck=`echo "${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
       if [ "${session}" = "${tokencheck}" ];then
 
         if [ ! "$action" = "data_import_session" ];then
-          ln_session=`cat $ROOT/tmp/session/${org_session} | awk -F ":" '{print $3}'`
+          ln_session=`cat $ROOT/tmp/session/${org_session} | $AWK -F ":" '{print $3}'`
           if [ "$ln_session" -a -f $ROOT/tmp/session/${ln_session} ];then
             unlink $ROOT/tmp/session/${ln_session}
           fi
@@ -197,7 +197,7 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
         fi
 
         pin=$RANDOM
-        session_token=`echo "${user_name}:${remote_addr}:${pin}" | sha256sum | awk '{print $1}'`
+        session_token=`echo "${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
         echo "user_name:${user_name},new_token:${session_token},pin:${pin}"
 
         if [ "$action" = "session_persist" ];then

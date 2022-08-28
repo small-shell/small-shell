@@ -36,8 +36,18 @@
                             <li class="navitem">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="navitem">
-                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Quick Start <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_Mac/" class="dropdown-item">For macOS</a>
+</li>
+                                </ul>
                             </li>
                             <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
@@ -172,7 +182,7 @@ CLI  &lt;-&gt; wrapper.sh &lt;- script #result
 <pre><code>Message/DataExchange, prevent_double_start, logging, dump_command_result
 </code></pre>
 <h4 id="required">Required</h4>
-<p>It's required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start/">Quickstart</a>.</p>
+<p>It's required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start_linux/">Quickstart</a>.</p>
 <h5 id="dir">dir</h5>
 <p>Please upload script on following directory.</p>
 <pre><code>/usr/local/small-shell/util/scripts
@@ -700,7 +710,7 @@ sumup.sh            # please see detail at pyshell tour
 </code></pre>
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>API server
-OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+OS: Utuntu 20 (recommnded), macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
 Web : Apache 2.X (recommended), nginx 1.X    
 curl: 7.X

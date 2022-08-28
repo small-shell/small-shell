@@ -1,37 +1,37 @@
 #!/bin/bash
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == user_name:* ]]; then
-    user_name=`echo $param | awk -F":" '{print $2}'`
+    user_name=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == duplicate:* ]]; then
-    duplicate=`echo $param | awk -F":" '{print $2}'`
+    duplicate=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 # SET BASE_COMMAND
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
@@ -75,8 +75,8 @@ if [ ! "$duplicate" = "yes" ];then
 
     # gen read only datas
     $DATA_SHELL databox:$databox action:get id:$id keys:all format:none | grep -v hashid > ../tmp/$session/dataset.0.1
-    cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><pre>/g" | sed "s/$/<\/pre><\/li>/g" \
-    | sed "s/<p><\/p>/<p>-<\/p>/g" | sed "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
+    cat ../tmp/$session/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/g" | $SED "s/$/<\/pre><\/li>/g" \
+    | $SED "s/<p><\/p>/<p>-<\/p>/g" | $SED "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
 
   fi
 
@@ -140,19 +140,19 @@ elif [ "$form_chk" = "multipart" ];then
   fi
 fi
 
-cat ../descriptor/${view} | sed -r "s/^( *)</</1" \
-| sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
-| sed "/%%common_menu/d" \
-| sed "/%%databox_list/r ../tmp/$session/databox_list" \
-| sed "s/%%databox_list//g"\
-| sed "/%%dataset/r ../tmp/$session/dataset" \
-| sed "s/%%databox/$databox/g" \
-| sed "s/%%dataset//g"\
-| sed "s/%%id/$id/g"\
-| sed "s/%%session/$session/g"\
-| sed "s/%%pin/$pin/g"\
-| sed "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
-| sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
+cat ../descriptor/${view} | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r ../descriptor/common_parts/common_menu" \
+| $SED "/%%common_menu/d" \
+| $SED "/%%databox_list/r ../tmp/$session/databox_list" \
+| $SED "s/%%databox_list//g"\
+| $SED "/%%dataset/r ../tmp/$session/dataset" \
+| $SED "s/%%databox/$databox/g" \
+| $SED "s/%%dataset//g"\
+| $SED "s/%%id/$id/g"\
+| $SED "s/%%session/$session/g"\
+| $SED "s/%%pin/$pin/g"\
+| $SED "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
+| $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 
 if [ "$session" ];then
   rm -rf ../tmp/$session

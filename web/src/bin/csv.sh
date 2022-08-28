@@ -1,29 +1,29 @@
 #!/bin/bash
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == filter:* ]]; then
-    filter=`echo $param | awk -F":" '{print $2}'`
+    filter=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 # SET BASE_COMMAND
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
@@ -34,20 +34,20 @@ if [ ! -d ../tmp/$session ];then
 fi
 
 if [[ $filter == *{*} ]]; then
-  filter_key=`echo $filter | awk -F "{" '{print $1}'`
-  filter_word=`echo $filter | awk -F "{" '{print $2}' | sed "s/}//g" | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-  | sed "s/_/{%%%%%%%}/g" | sed "s/\//{%%%%%}/g"  \
-  | sed "s/(/{%%%%%%%%}/g" | sed "s/)/{%%%%%%%%%}/g" | sed "s/\[/{%%%%%%%%%%}/g" | sed "s/\]/{%%%%%%%%%%%}/g" \
-  | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" | sed "s/*/{%%%%%%%%%%%%%%%}/g" | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
-  | sed "s/,/{%%%%%%}/g"  | sed "s/#/{%%%%%%%%%%%%%}/g" |  sed "s/\&/{%%%%}/g" | sed "s/:/{%%%}/g" | sed "s/　/ /g" | sed "s/ /,/g"\
-  | php -r "echo preg_quote(file_get_contents('php://stdin'));"`
+  filter_key=`echo $filter | $AWK -F "{" '{print $1}'`
+  filter_word=`echo $filter | $AWK -F "{" '{print $2}' | $SED "s/}//g" | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+  | $SED "s/_/{%%%%%%%}/g" | $SED "s/\//{%%%%%}/g"  \
+  | $SED "s/(/{%%%%%%%%}/g" | $SED "s/)/{%%%%%%%%%}/g" | $SED "s/\[/{%%%%%%%%%%}/g" | $SED "s/\]/{%%%%%%%%%%%}/g" \
+  | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" | $SED "s/*/{%%%%%%%%%%%%%%%}/g" | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+  | $SED "s/,/{%%%%%%}/g"  | $SED "s/#/{%%%%%%%%%%%%%}/g" |  $SED "s/\&/{%%%%}/g" | $SED "s/:/{%%%}/g" | $SED "s/　/ /g" | $SED "s/ /,/g"\
+  | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
   filter_table="$filter_key{$filter_word}"
 else
-  filter_table=`echo $filter  | sed "s/%/{%%%%%%%%%%%%%%%%}/g" | sed "s/_/{%%%%%%%}/g" | sed "s/\//{%%%%%}/g" | sed "s/,/{%%%%%%}/g" \
-  | sed "s/\[/{%%%%%%%%%%}/g" | sed "s/\]/{%%%%%%%%%%%}/g"| sed "s/(/{%%%%%%%%}/g" | sed "s/)/{%%%%%%%%%}/g" | sed "s/|/{%%%%%%%%%%%%}/g" \
-  | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" | sed "s/*/{%%%%%%%%%%%%%%%}/g" | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
-  | sed "s/#/{%%%%%%%%%%%%%}/g" |  sed "s/\&/{%%%%}/g" | sed "s/:/{%%%}/g" | sed "s/　/ /g" | sed "s/ /,/g" \
-  | php -r "echo preg_quote(file_get_contents('php://stdin'));"`
+  filter_table=`echo $filter  | $SED "s/%/{%%%%%%%%%%%%%%%%}/g" | $SED "s/_/{%%%%%%%}/g" | $SED "s/\//{%%%%%}/g" | $SED "s/,/{%%%%%%}/g" \
+  | $SED "s/\[/{%%%%%%%%%%}/g" | $SED "s/\]/{%%%%%%%%%%%}/g"| $SED "s/(/{%%%%%%%%}/g" | $SED "s/)/{%%%%%%%%%}/g" | $SED "s/|/{%%%%%%%%%%%%}/g" \
+  | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" | $SED "s/*/{%%%%%%%%%%%%%%%}/g" | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+  | $SED "s/#/{%%%%%%%%%%%%%}/g" |  $SED "s/\&/{%%%%}/g" | $SED "s/:/{%%%}/g" | $SED "s/　/ /g" | $SED "s/ /,/g" \
+  | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
 fi
 
 # -----------------
@@ -64,21 +64,21 @@ if [ ! "$filter" = "%%header" ];then
   fi
 
   cat ../tmp/$session/csv \
-  | sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
-  | sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
-  | sed "s/{%%%%%%%%%%%%%%%}/*/g"\
-  | sed "s/{%%%%%%%%%%%%%%}/$/g"\
-  | sed "s/{%%%%%%%%%%%%%}/\#/g"\
-  | sed "s/{%%%%%%%%%%%%}/|/g"\
-  | sed "s/{%%%%%%%%%%%}/\]/g"\
-  | sed "s/{%%%%%%%%%%}/\[/g"\
-  | sed "s/{%%%%%%%%%}/)/g"\
-  | sed "s/{%%%%%%%%}/(/g"\
-  | sed "s/{%%%%%%%}/_/g"\
-  | sed "s/{%%%%%%}/,/g"\
-  | sed "s/{%%%%%}/\//g"\
-  | sed "s/{%%%%}/\&/g"\
-  | sed "s/{%%%}/:/g"
+  | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+  | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
+  | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
+  | $SED "s/{%%%%%%%%%%%%%%}/$/g"\
+  | $SED "s/{%%%%%%%%%%%%%}/\#/g"\
+  | $SED "s/{%%%%%%%%%%%%}/|/g"\
+  | $SED "s/{%%%%%%%%%%%}/\]/g"\
+  | $SED "s/{%%%%%%%%%%}/\[/g"\
+  | $SED "s/{%%%%%%%%%}/)/g"\
+  | $SED "s/{%%%%%%%%}/(/g"\
+  | $SED "s/{%%%%%%%}/_/g"\
+  | $SED "s/{%%%%%%}/,/g"\
+  | $SED "s/{%%%%%}/\//g"\
+  | $SED "s/{%%%%}/\&/g"\
+  | $SED "s/{%%%}/:/g"
 else
   ${small_shell_path}/bin/meta get.header:$databox{csv}
 fi

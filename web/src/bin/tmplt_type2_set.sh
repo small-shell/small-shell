@@ -1,25 +1,25 @@
 #!/bin/bash
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 
 # -----------------
@@ -39,7 +39,7 @@ fi
 
 # check posted param
 if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | grep -v binary_file | sed -z "s/\n/,/g" | sed "s/,$//g"`
+  keys=`ls ../tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
 else
   echo "error: No param posted"
   exit 1
@@ -54,7 +54,7 @@ fi
 $DATA_SHELL databox:%%databox action:set id:$id keys:$keys input_dir:../tmp/$session  > ../tmp/$session/result
 
 # result check
-updated_id=`cat ../tmp/$session/result | grep "^successfully set" | awk -F "id:" '{print $2}' | sed '/^$/d' | sort | uniq`
+updated_id=`cat ../tmp/$session/result | grep "^successfully set" | $AWK -F "id:" '{print $2}' | $SED '/^$/d' | sort | uniq`
 
 # set message
 if [ "$updated_id" ];then
@@ -67,10 +67,10 @@ fi
 # -----------------
 # render HTML
 # -----------------
-cat ../descriptor/%%app_set.html.def | sed -r "s/^( *)</</1" \
-| sed "/%%message/r ../tmp/$session/message" \
-| sed "s/%%message/$message/g"\
-| sed "s/%%id/$id/g"
+cat ../descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
+| $SED "/%%message/r ../tmp/$session/message" \
+| $SED "s/%%message/$message/g"\
+| $SED "s/%%id/$id/g"
 
 if [ "$session" ];then
   rm -rf ../tmp/$session

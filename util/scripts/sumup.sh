@@ -10,64 +10,67 @@
 # https://small-shell.org/python_tour/#utilscripts
 #----------------------------------------------------------------------------------------------------
 
+# global.conf load
+SCRIPT_DIR=`dirname $0`
+. ${SCRIPT_DIR}/../../global.conf
 
 # load param
 for param in `echo $@`
 do
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == type:* ]]; then
-    type=`echo $param | awk -F":" '{print $2}'`
+    type=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == sumup_key:* ]]; then
-    sumup_key=`echo $param | awk -F":" '{print $2}'`
+    sumup_key=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == filter_key:* ]]; then
-    filter_key=`echo $param | awk -F":" '{print $2}'`
+    filter_key=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == filter:* ]]; then
-    filters=`echo $param | awk -F":" '{print $2}'`
+    filters=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == filters:* ]]; then
-    filters=`echo $param | awk -F":" '{print $2}'`
+    filters=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == frequency:* ]]; then
-    frequency=`echo $param | awk -F":" '{print $2}'`
+    frequency=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == gen.graph:* ]]; then
-    graph=`echo $param | awk -F":" '{print $2}'`
+    graph=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == title:* ]]; then
-    title=`echo $param | awk -F":" '{print $2}'`
+    title=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == X_label:* ]]; then
-    X_label=`echo $param | awk -F":" '{print $2}'`
+    X_label=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == Y_label:* ]]; then
-    Y_label=`echo $param | awk -F":" '{print $2}'`
+    Y_label=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == global_filter:* ]]; then
-    global_filter=`echo $param | awk -F":" '{print $2}'`
+    global_filter=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == diff:* ]]; then
-    diff=`echo $param | awk -F":" '{print $2}'`
+    diff=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == set_time:* ]]; then
-    set_time="`echo $param | cut -f 2- -d ":" | sed "s/{####}/ /g"`"
+    set_time="`echo $param | cut -f 2- -d ":" | $SED "s/{####}/ /g"`"
   fi
 
 done
@@ -81,7 +84,7 @@ if [ ! "$diff" ];then
 fi
 
 if [ "$set_time" ];then
-  time_value_chk=`echo $timestamp | sed "s/[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]//g"`
+  time_value_chk=`echo $timestamp | $SED "s/[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]//g"`
   if [ "$time_value_chk" ];then
     echo "error: $time must be yyyy-mm-dd"
     exit 1
@@ -91,14 +94,10 @@ else
   timestamp=`date "+%Y-%m-%d %H:%M:%S"`
 fi
 
-year=`echo $timestamp | awk -F "-" '{print $1}'`
-month=`echo $timestamp | awk -F "-" '{print $2}'`
-day=`echo $timestamp | awk -F "-" '{print $3}' | awk '{print $1}'`
-time=`echo $timestamp | awk -F "-" '{print $3}' | awk '{print $2}'`
-
-# global.conf load
-SCRIPT_DIR=`dirname $0`
-. ${SCRIPT_DIR}/../../global.conf
+year=`echo $timestamp | $AWK -F "-" '{print $1}'`
+month=`echo $timestamp | $AWK -F "-" '{print $2}'`
+day=`echo $timestamp | $AWK -F "-" '{print $3}' | $AWK '{print $1}'`
+time=`echo $timestamp | $AWK -F "-" '{print $3}' | $AWK '{print $2}'`
 
 # load authkey
 . ${SCRIPT_DIR}/.authkey
@@ -156,7 +155,7 @@ if [ ! "$sumup_key" ];then
 fi
 
 # load sumup col
-sumup_col=`grep -l "name=\"${sumup_key}\"" $ROOT/databox/${databox}/def/* | xargs basename -a | sed "s/col//g"`
+sumup_col=`grep -l "name=\"${sumup_key}\"" $ROOT/databox/${databox}/def/* | xargs basename -a | $SED "s/col//g"`
 ((sumup_col += 1))
 
 if [ ! "$frequency" = "hourly" -a ! "$frequency" = "daily" -a ! "$frequency" = "monthly" -a ! "$frequency" = "snapshot" ];then
@@ -184,7 +183,7 @@ fi
 # adjust ouput file name
 
 if [ "$title" ];then
-  output_title=`echo $title | sed "s/{####}/_/g" | sed "s/!//g" | sed "s/\$//g" | sed "s/\///g" | sed "s/\&//g" | sed "s/://g"`
+  output_title=`echo $title | $SED "s/{####}/_/g" | $SED "s/!//g" | $SED "s/\$//g" | $SED "s/\///g" | $SED "s/\&//g" | $SED "s/://g"`
   output="${output}{$title}_sumupkey{$sumup_key}"
 
   if [ "$filters" -o "$filter_key" ];then
@@ -211,8 +210,8 @@ if [ "$filter_key" -a "$filters" ];then
   if [ ! -f ${output}.csv ];then
     echo "Time,$filters" > $output.csv
   else
-    org_column=`head -1 $output.csv | sed -z "s/,/\n/g" | wc -l`
-    filter_num=`echo $filters | sed -z "s/,/\n/g" | wc -l`
+    org_column=`head -1 $output.csv | $SED -z "s/,/\n/g" | wc -l | tr -d " "`
+    filter_num=`echo $filters | $SED -z "s/,/\n/g" | wc -l | tr -d " "`
     (( filter_num +=1 ))
     if [ ! $org_column -eq $filter_num ];then
       echo "error: Number of filter has been changed, please delete $output.csv first"
@@ -221,34 +220,34 @@ if [ "$filter_key" -a "$filters" ];then
   fi
 
   sumups=""
-  for filter in `echo $filters | sed -s "s/,/ /g"`
+  for filter in `echo $filters | $SED -s "s/,/ /g"`
   do
     sumup=0
     tmp=${SCRIPT_DIR}/tmp/exec.`date +%s`.$RANDOM
 
     filter_chmeta=`echo $filter \
-    | sed "s/}//g" | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-    | sed "s/_/{%%%%%%%}/g" | sed "s/\//{%%%%%}/g"  \
-    | sed "s/(/{%%%%%%%%}/g" | sed "s/)/{%%%%%%%%%}/g" | sed "s/\[/{%%%%%%%%%%}/g" | sed "s/\]/{%%%%%%%%%%%}/g" \
-    | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" | sed "s/*/{%%%%%%%%%%%%%%%}/g" | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
-    | sed "s/,/{%%%%%%}/g"  | sed "s/#/{%%%%%%%%%%%%%}/g" |  sed "s/\&/{%%%%}/g" | sed "s/:/{%%%}/g"`
+    | $SED "s/}//g" | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+    | $SED "s/_/{%%%%%%%}/g" | $SED "s/\//{%%%%%}/g"  \
+    | $SED "s/(/{%%%%%%%%}/g" | $SED "s/)/{%%%%%%%%%}/g" | $SED "s/\[/{%%%%%%%%%%}/g" | $SED "s/\]/{%%%%%%%%%%%}/g" \
+    | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" | $SED "s/*/{%%%%%%%%%%%%%%%}/g" | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+    | $SED "s/,/{%%%%%%}/g"  | $SED "s/#/{%%%%%%%%%%%%%}/g" |  $SED "s/\&/{%%%%}/g" | $SED "s/:/{%%%}/g"`
 
     if [ "$global_filter" ];then
       global_filter_chmeta=`echo $global_filter \
-      | sed "s/}//g" | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-      | sed "s/_/{%%%%%%%}/g" | sed "s/\//{%%%%%}/g"  \
-      | sed "s/(/{%%%%%%%%}/g" | sed "s/)/{%%%%%%%%%}/g" | sed "s/\[/{%%%%%%%%%%}/g" | sed "s/\]/{%%%%%%%%%%%}/g" \
-      | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" | sed "s/*/{%%%%%%%%%%%%%%%}/g" | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
-      | sed "s/,/{%%%%%%}/g"  | sed "s/#/{%%%%%%%%%%%%%}/g" |  sed "s/\&/{%%%%}/g" | sed "s/:/{%%%}/g"`
+      | $SED "s/}//g" | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+      | $SED "s/_/{%%%%%%%}/g" | $SED "s/\//{%%%%%}/g"  \
+      | $SED "s/(/{%%%%%%%%}/g" | $SED "s/)/{%%%%%%%%%}/g" | $SED "s/\[/{%%%%%%%%%%}/g" | $SED "s/\]/{%%%%%%%%%%%}/g" \
+      | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" | $SED "s/*/{%%%%%%%%%%%%%%%}/g" | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+      | $SED "s/,/{%%%%%%}/g"  | $SED "s/#/{%%%%%%%%%%%%%}/g" |  $SED "s/\&/{%%%%}/g" | $SED "s/:/{%%%}/g"`
 
       echo "$ROOT/bin/DATA_shell databox:$databox authkey:$authkey \
-      command:show_all[filter=${filter_key}{${filter_chmeta}}] format:none | grep $global_filter_chmeta |  sed -r \"s/^::::::(.*):::::://g\" \
-      | awk -F \",\" '{print \$$sumup_col}'| sed \"s/-/0/g\" | sed -z \"s/\n/ + /g\" | sed \"s/+ $//g\""\
+      command:show_all[filter=${filter_key}{${filter_chmeta}}] format:none | grep $global_filter_chmeta |  $SED -r \"s/^::::::(.*):::::://g\" \
+      | $AWK -F \",\" '{print \$$sumup_col}'| $SED \"s/-/0/g\" | $SED -z \"s/\n/ + /g\" | $SED \"s/+ $//g\""\
       > $tmp
     else
       echo "$ROOT/bin/DATA_shell databox:$databox authkey:$authkey \
-      command:show_all[filter=${filter_key}{${filter_chmeta}}] format:none | sed -r \"s/^::::::(.*):::::://g\" \
-      | awk -F \",\" '{print \$$sumup_col}'| sed \"s/-/0/g\" | sed -z \"s/\n/ + /g\" | sed \"s/+ $//g\""\
+      command:show_all[filter=${filter_key}{${filter_chmeta}}] format:none | $SED -r \"s/^::::::(.*):::::://g\" \
+      | $AWK -F \",\" '{print \$$sumup_col}'| $SED \"s/-/0/g\" | $SED -z \"s/\n/ + /g\" | $SED \"s/+ $//g\""\
       > $tmp
     fi
    
@@ -260,7 +259,7 @@ if [ "$filter_key" -a "$filters" ];then
       echo 0 > $tmp.result
     fi
 
-    input_chk=`cat $tmp.result | sed "s/[0-9]//g" | sed "s/+//g" | sed "s/ //g"`
+    input_chk=`cat $tmp.result | $SED "s/[0-9]//g" | $SED "s/+//g" | $SED "s/ //g"`
     if [ "$input_chk" ];then  
       echo "error: sumup failed. it seems key:$sumup_key contain text character."
       rm -rf $tmp*
@@ -272,14 +271,14 @@ if [ "$filter_key" -a "$filters" ];then
       sumup="expr `cat $tmp.result`"
       sumup=`eval $sumup`
     else
-      sumup=`cat $tmp.result | sed "s/ //g"`
+      sumup=`cat $tmp.result | $SED "s/ //g"`
     fi
 
     if [ ! "$sumup" ];then
       sumup=0
     fi
 
-    numeric_chk=`echo $sumup | sed "s/[0-9]//g"`
+    numeric_chk=`echo $sumup | $SED "s/[0-9]//g"`
     if [ "$numeric_chk" ];then
       echo "error: sumup key's column must be numeric character only"
       rm -rf $tmp*
@@ -314,13 +313,13 @@ else
 
   if [ "$global_filter" ];then
     echo "$ROOT/bin/DATA_shell databox:$databox authkey:$authkey \
-    command:show_all format:none | grep $global_filter | sed -r \"s/^::::::(.*):::::://g\" \
-    | awk -F \",\" '{print \$$sumup_col}'| sed \"s/-/0/g\" | sed -z \"s/\n/ + /g\" | sed \"s/+ $//g\""\
+    command:show_all format:none | grep $global_filter | $SED -r \"s/^::::::(.*):::::://g\" \
+    | $AWK -F \",\" '{print \$$sumup_col}'| $SED \"s/-/0/g\" | $SED -z \"s/\n/ + /g\" | $SED \"s/+ $//g\""\
     > $tmp
   else
     echo "$ROOT/bin/DATA_shell databox:$databox authkey:$authkey \
-    command:show_all format:none | sed -r \"s/^::::::(.*):::::://g\" \
-    | awk -F \",\" '{print \$$sumup_col}'| sed \"s/-/0/g\" | sed -z \"s/\n/ + /g\" | sed \"s/+ $//g\""\
+    command:show_all format:none | $SED -r \"s/^::::::(.*):::::://g\" \
+    | $AWK -F \",\" '{print \$$sumup_col}'| $SED \"s/-/0/g\" | $SED -z \"s/\n/ + /g\" | $SED \"s/+ $//g\""\
     > $tmp
   fi
  
@@ -331,7 +330,7 @@ else
     echo 0 > $tmp.result
   fi
 
-  input_chk=`cat $tmp.result | sed "s/[0-9]//g" | sed "s/+//g" | sed "s/ //g"`
+  input_chk=`cat $tmp.result | $SED "s/[0-9]//g" | $SED "s/+//g" | $SED "s/ //g"`
   if [ "$input_chk" ];then  
     echo "error: sumup failed. it seems key:$sumup_key contain text character."
     rm -rf $tmp*
@@ -343,7 +342,7 @@ else
     sumup="expr `cat $tmp.result`"
     sumup=`eval $sumup`
   else
-    sumup=`cat $tmp.result | sed "s/ //g"`
+    sumup=`cat $tmp.result | $SED "s/ //g"`
   fi
 
   if [ ! -f ${output}.csv ];then
@@ -367,7 +366,7 @@ else
 fi
 
 if [ "$type" = "line" ];then
-  line_chk=`cat $output.csv | wc -l`
+  line_chk=`cat $output.csv | wc -l | tr -d " "`
   if [ $line_chk -le 2 ];then
     echo "warn: you can't generate line graph only 1 time snapshot, it will be chaned to bar"
     type=bar
@@ -376,7 +375,7 @@ fi
 
 # Generate graph using pyshel
 if [ "$graph" = "yes" ];then
-  titlestamp=`echo $timestamp | sed "s/ /{####}/g" | sed "s/:/{#####}/g"`
+  titlestamp=`echo $timestamp | $SED "s/ /{####}/g" | $SED "s/:/{#####}/g"`
 
   if [ ! "$title" ];then
     case "$frequency" in

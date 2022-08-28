@@ -6,11 +6,11 @@ authkey="%%authkey"
 echo "Content-Type: text/html"
 echo ""
 
-# load small-shell path
-. ../descriptor/.small_shell_path
+# load small-shell conf
+. ../descriptor/.small_shell_conf
 
 # load remote addr
-remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 
 # required
 IP_whitelisting=%%IP_whitelisting
@@ -22,7 +22,7 @@ if [ "$IP_whitelisting" = "yes" ];then
   if [ "$whitelist_chk" ];then
     for IP in $whitelist_chk
     do
-      IP=`echo $IP | sed "s/*//g"`
+      IP=`echo $IP | $SED "s/*//g"`
       if [[ ${remote_addr} == ${IP}* ]];then
         IP_chk_flag=yes
         break
@@ -51,8 +51,8 @@ do
 done
 
 # parse QUERY STRING
-echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
 chmod 755 ../tmp/${param}.load
 
 # load query string
@@ -88,13 +88,13 @@ if [ ! "$app_step_in_token" ];then
   fi
 
   # render standard login form with queyr string and messge
-  cat ../descriptor/%%app_auth_form.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
-  | sed "s/%%auth_form_menu//g"\
-  | sed "/%%footer/r ../descriptor/common_parts/%%app_footer" \
-  | sed "/%%footer/d"\
-  | sed "s/%%message/${message}/g" \
-  | sed "s/?%%params/${req}${id}/g"
+  cat ../descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
+  | $SED "s/%%auth_form_menu//g"\
+  | $SED "/%%footer/r ../descriptor/common_parts/%%app_footer" \
+  | $SED "/%%footer/d"\
+  | $SED "s/%%message/${message}/g" \
+  | $SED "s/?%%params/${req}${id}/g"
   exit 0
 fi
 
@@ -103,8 +103,8 @@ fi
 if [ "$app_step_in_token" ];then
   # auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} force_user:${%%app_user} remote_addr:${remote_addr}`
   auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr}`
-  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
    
   if [ "$session" -a "$pin" ];then
     if [ ! "$req" ];then

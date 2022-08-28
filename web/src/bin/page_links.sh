@@ -3,6 +3,9 @@ page=$1
 pages=$2
 table_command=$3
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 if [ "$table_command" ];then
   table_command="&table_command=$table_command"
 fi

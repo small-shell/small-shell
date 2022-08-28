@@ -30,7 +30,7 @@ if [ ! -d "$ROOT/databox/$databox" ];then
 fi
 
 # key check
-for key in `echo $keys | sed "s/,/ /g"`
+for key in `echo $keys | $SED "s/,/ /g"`
 do
   if [ "$flag" = "addcol" ];then
     key_check=`grep "name=\"$key\"" $ROOT/databox/${databox}/def/col*`
@@ -48,7 +48,7 @@ done
 
 # create dummy session as root priviledge
 pin=$RANDOM
-session=`echo "root:localhost:${pin}" | sha256sum | awk '{print $1}'`
+session=`echo "root:localhost:${pin}" | $SHASUM | $AWK '{print $1}'`
 sudo -u small-shell echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $ROOT/users/audit.log
 
 echo "Index rebuild has been successfully started"
@@ -60,10 +60,10 @@ function rebuild(){
  echo "INDEX REBUILD START"  > $ROOT/tmp/log/$session.log
  
  count=1
- for id in `cat $ROOT/databox/$databox/index | awk -F "::::::" '{print $2}'`
+ for id in `cat $ROOT/databox/$databox/index | $AWK -F "::::::" '{print $2}'`
  do 
     if [ "$flag" = "delcol" ];then
-      for key in `echo $keys | sed "s/,/ /g"`
+      for key in `echo $keys | $SED "s/,/ /g"`
       do
         if [ -f $ROOT/databox/$databox/data/$id/$key ];then
           rm $ROOT/databox/$databox/data/$id/$key

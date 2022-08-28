@@ -4,14 +4,18 @@ session=$1
 type=$2
 input=../tmp/$session/input
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
+
 if [ "$type" = "urlenc" ];then
-  cat $input | sed "s/\`//g" | sed "s/\&/_%%separator_/g" | php -r "echo urldecode(file_get_contents('php://stdin'));" \
-  | sed -z "s/\n/_%%enter_/g" |  sed "s/\$/\n/g" | sed "s/_%%separator_/\n/g" \
-  | sed "s/=/_%%equal_/1"  | php -r "echo preg_quote(file_get_contents('php://stdin'));" > ../tmp/$session/params
+  cat $input | $SED "s/\`//g" | $SED "s/\&/_%%separator_/g" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" \
+  | $SED -z "s/\n/_%%enter_/g" |  $SED "s/\$/\n/g" | $SED "s/_%%separator_/\n/g" \
+  | $SED "s/=/_%%equal_/1"  | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" > ../tmp/$session/params
 
   while read line 
   do
-    param_name=`echo $line | awk -F "_%%equal_" '{print $1}'`
+    param_name=`echo $line | $AWK -F "_%%equal_" '{print $1}'`
     meta_chk_result=$(echo $param_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
@@ -19,8 +23,8 @@ if [ "$type" = "urlenc" ];then
       param_name=null
     fi
 
-    param_value=`echo $line | awk -F "_%%equal_" '{print $2}'`
-    echo $param_value |  tr -d \\\r | sed "s/_%%enter_/\n/g" >> ../tmp/$session/$param_name
+    param_value=`echo $line | $AWK -F "_%%equal_" '{print $2}'`
+    echo $param_value |  tr -d \\\r | $SED "s/_%%enter_/\n/g" >> ../tmp/$session/$param_name
   done < ../tmp/$session/params
 
   rm -rf ../tmp/$session/input
@@ -36,14 +40,14 @@ if [ "$type" = "multipart" ];then
   fi
 
   # get boundary
-  boundary=`head -1 $input | sed -r "s/^(-*)//g" | sed "s/.$//g"`
+  boundary=`head -1 $input | $SED -r "s/^(-*)//g" | $SED "s/.$//g"`
 
   # get params
-  grep -a "Content-Disposition: form-data; name=" $input | awk -F "name=" '{print $2}' | awk -F "\"" '{print $2}' > ../tmp/$session/params
+  grep -a "Content-Disposition: form-data; name=" $input | $AWK -F "name=" '{print $2}' | $AWK -F "\"" '{print $2}' > ../tmp/$session/params
 
   # remove binary data
   file_check=`grep -a "Content-Disposition: form-data; name=" ../tmp/$session/input | grep -a "filename="`
-  file_num_check=`echo $file_check | wc -l`
+  file_num_check=`echo $file_check | wc -l | tr -d " "`
   if [ $file_num_check -gt 1 ];then 
     echo "error: file_input must be only 1"
     exit 1
@@ -51,24 +55,24 @@ if [ "$type" = "multipart" ];then
 
   if [ "$file_check" ];then
     grep -n -a -e "$boundary" -e "Content-Disposition: form-data;" ../tmp/$session/input > ../tmp/$session/temp1
-    binary_line_start=`grep "filename=" ../tmp/$session/temp1 | awk -F ":" '{print $1}'`
-    binary_line_end=`grep -A 1 "filename="  ../tmp/$session/temp1 | grep "$boundary" | awk -F ":" '{print $1}'`
+    binary_line_start=`grep "filename=" ../tmp/$session/temp1 | $AWK -F ":" '{print $1}'`
+    binary_line_end=`grep -A 1 "filename="  ../tmp/$session/temp1 | grep "$boundary" | $AWK -F ":" '{print $1}'`
     binary_file_name=`grep -a "Content-Disposition: form-data; name=" ../tmp/$session/temp1 | grep filename= \
-                     | awk -F "filename=" '{print $2}' | awk -F "\"" '{print $2}'| tr -d \\\r`
+                     | $AWK -F "filename=" '{print $2}' | $AWK -F "\"" '{print $2}'| tr -d \\\r`
 
     input_name=`grep -a "Content-Disposition: form-data; name=" ../tmp/$session/temp1 | grep filename= \
-               | awk -F "name=" '{print $2}' | awk -F "\"" '{print $2}'| tr -d \\\r`
+               | $AWK -F "name=" '{print $2}' | $AWK -F "\"" '{print $2}'| tr -d \\\r`
 
     binary_line_start=`expr $binary_line_start + 3`
     binary_line_end=`expr $binary_line_end - 1`
 
     # detouch text line
-    sed ${binary_line_start},${binary_line_end}d  ../tmp/$session/input \
-    | php -r "echo preg_quote(file_get_contents('php://stdin'));" | tr -d \\\r > ../tmp/$session/temp2
+    $SED ${binary_line_start},${binary_line_end}d  ../tmp/$session/input \
+    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" | tr -d \\\r > ../tmp/$session/temp2
     input=../tmp/$session/temp2
 
     # binary data parse
-    sed -n ${binary_line_start},${binary_line_end}p ../tmp/$session/input > ../tmp/$session/binary_file/binary.data
+    $SED -n ${binary_line_start},${binary_line_end}p ../tmp/$session/input > ../tmp/$session/binary_file/binary.data
     echo $binary_file_name > ../tmp/$session/binary_file/file_name
     echo $input_name > ../tmp/$session/binary_file/input_name
   fi
@@ -126,11 +130,11 @@ fi
 
 if [ "$type" = "json" ];then
   # load keys 
-  keys=`cat $input | jq 'keys' | jq -r .[]`
+  keys=`cat $input | $JQ 'keys' | jq -r .[]`
   for key in $keys
   do
-    JQ="cat $input | jq -r '.$key'"
-    eval $JQ >  ../tmp/$session/$key
+    JQ_EXE="cat $input | $JQ -r '.$key'"
+    eval $JQ_EXE >  ../tmp/$session/$key
   done
   rm -rf ../tmp/$session/input
 fi

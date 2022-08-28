@@ -36,8 +36,18 @@
                             <li class="navitem">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="navitem">
-                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Quick Start <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_Mac/" class="dropdown-item">For macOS</a>
+</li>
+                                </ul>
                             </li>
                             <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
@@ -80,7 +90,7 @@
 
                     <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a rel="prev" href="../quick_start/" class="nav-link">
+                                <a rel="prev" href="../quick_start_Mac/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -238,7 +248,7 @@
 </tbody>
 </table>
 <h4 id="required">required</h4>
-<p>Please setup OS Env beorehand refering to <a href="../quick_start/">Quick start</a>,
+<p>Please setup OS Env beorehand refering to <a href="../quick_start_linux/">Quick start</a>,
 then start dialog by gen command.</p>
 <h2 id="gen-base-app">Gen Base APP</h2>
 <p>Once OS setup has been done, let's tart to generate Base APP through gen dialog.</p>
@@ -583,15 +593,15 @@ for param in `echo $@`
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+    databox=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
   fi  
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+    id=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F&quot;:&quot; '{print $2}'`
+    session=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
   fi
 
 done
@@ -617,9 +627,9 @@ action:get id:$id keys:all format:html_tag &gt; ../tmp/$session/dataset
 <pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
-cat ../descriptor/get.html.def | sed &quot;s/^ *&lt;/&lt;/g&quot; \
-| sed &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
-| sed &quot;s/%%dataset//g&quot;
+cat ../descriptor/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| $SED &quot;s/%%dataset//g&quot;
 --------
 </code></pre>
 <h5 id="htmldef-view">html.def (view)</h5>
@@ -829,7 +839,7 @@ If you click the tag, search result will be shown.
 commandapi="https://XXXX/cgi-bin/api"
 databox="XXXX"
 
-(e.g.) exec grep command to index
+(e.g.) exec "grep test" command to index
 curl -X GET "${commandapi}?databox=$databox&amp;command=grep_test" -H "X-small-shell-authkey:$api_authkey"
 
 (e.g.) get DATA
@@ -855,7 +865,7 @@ $id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please i
 curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
 </code></pre>
 <h2 id="verified-environment">Verified environment</h2>
-<pre><code>OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+<pre><code>OS: Utuntu 20 (recommnded), macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
 Web : Apache 2.X (recommended), nginx 1.X    
 curl: 7.X

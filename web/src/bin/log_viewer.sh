@@ -1,33 +1,33 @@
 #!/bin/bash
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == data_import_session:* ]]; then
-    data_import_session=`echo $param | awk -F":" '{print $2}'`
+    data_import_session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 if [ "$id" = "" -a ! "$data_import_session" ];then
   echo "error: please set correct id or session"
@@ -49,10 +49,10 @@ if [ ! "$data_import_session" ];then
   action:get id:$id type:log format:html_tag > ../tmp/${session}_log/log
 
   # render HTML
-  cat ../descriptor/log_viewer.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%log/r ../tmp/${session}_log/log" \
-  | sed "s/%%log//g"\
-  | sed "s/%%id/$id/g"
+  cat ../descriptor/log_viewer.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%log/r ../tmp/${session}_log/log" \
+  | $SED "s/%%log//g"\
+  | $SED "s/%%id/$id/g"
 
 else
 
@@ -60,10 +60,10 @@ else
   sudo -u small-shell ${small_shell_path}/bin/meta get.progress:$data_import_session > ../tmp/${session}_log/log
 
   # render HTML
-  cat ../descriptor/import_log_viewer.html.def | sed -r "s/^( *)</</1" \
-  | sed "s/%%data_import_session/$data_immport_session/g"\
-  | sed "/%%log/r ../tmp/${session}_log/log" \
-  | sed "s/%%log/-----------------------\n<b>#DATA IMPORT SESSION<\/b>\n------------------------\n/g"
+  cat ../descriptor/import_log_viewer.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "s/%%data_import_session/$data_immport_session/g"\
+  | $SED "/%%log/r ../tmp/${session}_log/log" \
+  | $SED "s/%%log/-----------------------\n<b>#DATA IMPORT SESSION<\/b>\n------------------------\n/g"
 
 fi
 

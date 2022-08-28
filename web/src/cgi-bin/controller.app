@@ -4,12 +4,13 @@
 session_update="required"
 auth="%%auth"
 
-# load small-shell params
-. ../descriptor/.small_shell_path
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 IP_whitelisting=%%IP_whitelisting
 
 # load remote addr
-remote_addr=`echo $REMOTE_ADDR | sed "s/:/-/g"`
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 
 # IP restriction check
 if [ "$IP_whitelisting" = "yes" ];then
@@ -17,7 +18,7 @@ if [ "$IP_whitelisting" = "yes" ];then
   if [ "$whitelist_chk" ];then
     for IP in $whitelist_chk
     do
-      IP=`echo $IP | sed "s/*//g"`
+      IP=`echo $IP | $SED "s/*//g"`
       if [[ ${remote_addr} == ${IP}* ]];then
         IP_chk_flag=yes
         break
@@ -45,8 +46,8 @@ do
 done
 
 # parse QUERY_STRING
-echo $QUERY_STRING | php -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | sed "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | sed -e "s/=/=\"/1" | sed "s/$/\"/g" | sed "s/^\"//g" > ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
+cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > ../tmp/${param}.load
 chmod 755 ../tmp/${param}.load
 
 # load query string
@@ -77,7 +78,7 @@ if [ "$auth" = "required" ];then
 
     # session check
     session_chk=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
-    session_ip=`echo $session_chk | awk -F ":" '{print $2}'`
+    session_ip=`echo $session_chk | $AWK -F ":" '{print $2}'`
 
     if [ ! "${session_ip}" = ${remote_addr} ];then
       if [[ ! "$req" == *stats && ! "$req" == *file ]];then
@@ -100,9 +101,9 @@ if [ "$auth" = "required" ];then
     get_session=`sudo -u small-shell ${small_shell_path}/bin/extension_auth session_persist:${session} \
     pin:${pin} remote_addr:${remote_addr} app:%%app`
 
-    user_name=`echo $get_session | awk -F "," '{print $1}' | awk -F ":" '{print $2}'`
-    session=`echo $get_session | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-    pin=`echo $get_session | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+    user_name=`echo $get_session | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
+    session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+    pin=`echo $get_session | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 
     if [ ! "$user_name" -o ! "$session" -o ! "${pin}" ];then
       if [[ $req == *table ]];then
@@ -159,7 +160,7 @@ case "$req" in
     ../bin/%%app_del.sh databox:$databox session:$session pin:$pin id:$id ;;
 
   "table")
-    table_command="`echo $table_command | sed "s/ /{%%space}/g"`"
+    table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
     ../bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command;;
 
   "log_viewer")

@@ -33,28 +33,28 @@ fi
 for param in `echo $@`
 do
   if [[ $param == type:* ]]; then
-    type=`echo $param | awk -F":" '{print $2}' | awk -F "," '{print $1}'`
-    timeline="`echo $param | awk -F":" '{print $2}' | awk -F "," '{print $2}'`"
+    type=`echo $param | $AWK -F":" '{print $2}' | $AWK -F "," '{print $1}'`
+    timeline="`echo $param | $AWK -F":" '{print $2}' | $AWK -F "," '{print $2}'`"
   fi
 
   if [[ $param == input:* ]]; then
-    input=`echo $param | awk -F":" '{print $2}'`
+    input=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == output:* ]]; then
-    output=`echo $param | awk -F":" '{print $2}'`
+    output=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == title:* ]]; then
-    title=`echo $param | awk -F":" '{print $2}'`
+    title=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == X_label:* ]]; then
-    X_label=`echo $param | awk -F":" '{print $2}'`
+    X_label=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == Y_label:* ]]; then
-    Y_label=`echo $param | awk -F":" '{print $2}'`
+    Y_label=`echo $param | $AWK -F":" '{print $2}'`
   fi
 done
 
@@ -83,7 +83,7 @@ if [[ ! $output == *.png ]]; then
 fi
 
 function time_fmt_chk(){
-  fmt_chk=`cat $input | head -1 | awk -F "," '{print $1}'` 
+  fmt_chk=`cat $input | head -1 | $AWK -F "," '{print $1}'` 
   if [ ! "$fmt_chk" = "Time" ];then
     echo "CSV format must be started from \"Time\""
     echo "e.g."
@@ -111,68 +111,68 @@ if [ "$type" = "line" -o "$type" = "bar" ]; then
     time_fmt_chk
 
     # gen pyexe with changing time format,remove yyyy-mm-dd and sec
-    cat $input | sed -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" | sed -r "s/:([0-9]*),/,/g"  > $tmpcsv
+    cat $input | $SED -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" | $SED -r "s/:([0-9]*),/,/g"  > $tmpcsv
     input=$tmpcsv
-    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%index#Time#g" | sed "s#%%legend#True#g" > $pyexe ;;
+    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | $SED "s#%%output#$output#g" | $SED "s#%%csv#$input#g" | $SED "s#%%font_family#$font_family#g" \
+    | $SED "s#%%index#Time#g" | $SED "s#%%legend#True#g" > $pyexe ;;
 
   "daily" )
     time_fmt_chk
 
     # gen pyexe with changing time format,remove Year and HH:MM and sec
-    cat $input | sed -r "s/^([0-9]*)-//g" | sed -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
+    cat $input | $SED -r "s/^([0-9]*)-//g" | $SED -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
     input=$tmpcsv
-    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%index#Time#g" | sed "s#%%legend#True#g"  > $pyexe ;;
+    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | $SED "s#%%output#$output#g" | $SED "s#%%csv#$input#g" | $SED "s#%%font_family#$font_family#g" \
+    | $SED "s#%%index#Time#g" | $SED "s#%%legend#True#g"  > $pyexe ;;
 
   "monthly" )
     time_fmt_chk
 
     # gen pyexe with changing time format,remove Year and HH:MM
-    cat $input | sed -r "s/^([0-9]*)-//g" | sed -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
+    cat $input | $SED -r "s/^([0-9]*)-//g" | $SED -r "s/ ([0-9]*):([0-9]*):([0-9]*),/,/g"  > $tmpcsv
     input=$tmpcsv
-    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | sed "s#%%output#$output#g" | sed "s#%%csv#$input#g" | sed "s#%%font_family#$font_family#g" \
-    | sed "s#%%index#Time#g" | sed "s#%%legend#True#g"  > $pyexe ;;
+    cat ${SCRIPT_DIR}/lib/pandas_${type}_plot.py | $SED "s#%%output#$output#g" | $SED "s#%%csv#$input#g" | $SED "s#%%font_family#$font_family#g" \
+    | $SED "s#%%index#Time#g" | $SED "s#%%legend#True#g"  > $pyexe ;;
 
   snapshot* )
-    cat $input | head -1 | sed "s/Time,//g" | sed "s/,/\n/g" > $tmpcsv.items
-    time=`echo $timeline | awk -F "{" '{print $2}' | sed "s/}//g"`
-    grep "$time" $input | sed -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" \
-    | sed -r "s/([0-9]*):([0-9]*):([0-9]*),//g" | sed "s/,/\n/g" > $tmpcsv.nums
+    cat $input | head -1 | $SED "s/Time,//g" | $SED "s/,/\n/g" > $tmpcsv.items
+    time=`echo $timeline | $AWK -F "{" '{print $2}' | $SED "s/}//g"`
+    grep "$time" $input | $SED -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" \
+    | $SED -r "s/([0-9]*):([0-9]*):([0-9]*),//g" | $SED "s/,/\n/g" > $tmpcsv.nums
 
     # gen python list
-    labels=`cat $tmpcsv.items | sed "s/^/\'/g" | sed "s/$/\'/g" | sed -z "s/\n/,/g" | sed "s/,$//g" `
-    datas=`cat $tmpcsv.nums | sed -z "s/\n/,/g" | sed "s/,$//g" `
+    labels=`cat $tmpcsv.items | $SED "s/^/\'/g" | $SED "s/$/\'/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g" `
+    datas=`cat $tmpcsv.nums | $SED -z "s/\n/,/g" | $SED "s/,$//g" `
 
-    cat ${SCRIPT_DIR}/lib/pyplot_bar_snap.py | sed "s#%%output#$output#g" | sed "s#%%labels#$labels#g" | sed "s#%%datas#$datas#g" \
-    | sed "s#%%font_family#$font_family#g" > $pyexe ;;
+    cat ${SCRIPT_DIR}/lib/pyplot_bar_snap.py | $SED "s#%%output#$output#g" | $SED "s#%%labels#$labels#g" | $SED "s#%%datas#$datas#g" \
+    | $SED "s#%%font_family#$font_family#g" > $pyexe ;;
     
   esac
 
   if [ "$title" ];then
-    title=`echo $title | sed "s/{####}/ /g" | sed "s/{#####}/:/g"`
-    cat $pyexe | sed "s/%%title/$title/g" > $pyexe.title
+    title=`echo $title | $SED "s/{####}/ /g" | $SED "s/{#####}/:/g"`
+    cat $pyexe | $SED "s/%%title/$title/g" > $pyexe.title
     pyexe=$pyexe.title
   else
-    cat $pyexe | sed -r "s/(.*)%%title(.*)//g" > $pyexe.title
+    cat $pyexe | $SED -r "s/(.*)%%title(.*)//g" > $pyexe.title
     pyexe=$pyexe.title
   fi
 
   if [ "$X_label" ];then
-    X_label=`echo $X_label | sed "s/{####}/ /g" | sed "s/{#####}/:/g"`
-    cat $pyexe | sed "s/%%X_label/$X_label/g" > $pyexe.X_label
+    X_label=`echo $X_label | $SED "s/{####}/ /g" | $SED "s/{#####}/:/g"`
+    cat $pyexe | $SED "s/%%X_label/$X_label/g" > $pyexe.X_label
     pyexe=$pyexe.X_label
   else
-    cat $pyexe | sed -r "s/(.*)%%X_label(.*)//g" > $pyexe.X_label
+    cat $pyexe | $SED -r "s/(.*)%%X_label(.*)//g" > $pyexe.X_label
     pyexe=$pyexe.X_label
   fi
 
   if [ "$Y_label" ];then
-    Y_label=`echo $Y_label | sed "s/{####}/ /g" | sed "s/{#####}/:/g"`
-    cat $pyexe | sed "s/%%Y_label/$Y_label/g" > $pyexe.Y_label
+    Y_label=`echo $Y_label | $SED "s/{####}/ /g" | $SED "s/{#####}/:/g"`
+    cat $pyexe | $SED "s/%%Y_label/$Y_label/g" > $pyexe.Y_label
     pyexe=$pyexe.Y_label
   else
-    cat $pyexe | sed -r "s/(.*)%%Y_label(.*)//g" > $pyexe.Y_label
+    cat $pyexe | $SED -r "s/(.*)%%Y_label(.*)//g" > $pyexe.Y_label
     pyexe=$pyexe.Y_label
   fi
 
@@ -181,17 +181,17 @@ fi
 if [ "$type" = "pie" ];then
 
   if [[ $timeline == snapshot* ]]; then
-    cat $input | head -1 | sed "s/Time,//g" | sed "s/,/\n/g" > $tmpcsv.items
-    time=`echo $timeline | awk -F "{" '{print $2}' | sed "s/}//g"`
-    grep "$time" $input | sed -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" \
-    | sed -r "s/([0-9]*):([0-9]*):([0-9]*),//g" | sed "s/,/\n/g" > $tmpcsv.nums
+    cat $input | head -1 | $SED "s/Time,//g" | $SED "s/,/\n/g" > $tmpcsv.items
+    time=`echo $timeline | $AWK -F "{" '{print $2}' | $SED "s/}//g"`
+    grep "$time" $input | $SED -r "s/^([0-9]*)-([0-9]*)-([0-9]*) //g" \
+    | $SED -r "s/([0-9]*):([0-9]*):([0-9]*),//g" | $SED "s/,/\n/g" > $tmpcsv.nums
 
     # gen python list
-    labels=`cat $tmpcsv.items | sed "s/^/\'/g" | sed "s/$/\'/g" | sed -z "s/\n/,/g" | sed "s/,$//g" `
-    datas=`cat $tmpcsv.nums | sed -z "s/\n/,/g" | sed "s/,$//g"`
+    labels=`cat $tmpcsv.items | $SED "s/^/\'/g" | $SED "s/$/\'/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g" `
+    datas=`cat $tmpcsv.nums | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
 
-    cat ${SCRIPT_DIR}/lib/pyplot_pie.py | sed "s#%%output#$output#g" | sed "s#%%labels#$labels#g" | sed "s#%%datas#$datas#g" \
-    | sed "s#%%font_family#$font_family#g" > $pyexe 
+    cat ${SCRIPT_DIR}/lib/pyplot_pie.py | $SED "s#%%output#$output#g" | $SED "s#%%labels#$labels#g" | $SED "s#%%datas#$datas#g" \
+    | $SED "s#%%font_family#$font_family#g" > $pyexe 
 
   else 
     echo "error: graph type pie can be used only for snapshot"
@@ -199,11 +199,11 @@ if [ "$type" = "pie" ];then
   fi
 
   if [ "$title" ];then
-    title=`echo $title | sed "s/{####}/ /g" | sed "s/{#####}/:/g"`
-    cat $pyexe | sed "s/%%title/$title/g" > $pyexe.title
+    title=`echo $title | $SED "s/{####}/ /g" | $SED "s/{#####}/:/g"`
+    cat $pyexe | $SED "s/%%title/$title/g" > $pyexe.title
     pyexe=$pyexe.title
   else
-    cat $pyexe | sed -r "s/(.*)%%title(.*)//g" > $pyexe.title
+    cat $pyexe | $SED -r "s/(.*)%%title(.*)//g" > $pyexe.title
     pyexe=$pyexe.title
   fi
 fi

@@ -22,8 +22,8 @@ SCRIPT_DIR=`dirname $0`
 
 # authorized session check
 get_session=`$ROOT/bin/auth data_import_session:${session} pin:${pin} remote_addr:${remote_addr}`
-session=`echo $get_session | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-pin=`echo $get_session | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+pin=`echo $get_session | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 
 if [ ! "$session" ];then
   echo "error: session is wrong"
@@ -33,9 +33,9 @@ fi
 # change file format
 file_header=`head -1 $import_file`
 header=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V \
-       | awk -F"=" '{print $2}' | sed "s/\"//g" | tr -d ' ' | sed -z "s/\n/,/g" | sed "s/,$//g"`
+       | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | tr -d ' ' | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
 
-primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | awk -F "name=" '{print $2}' | sed "s/\"//g"`
+primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g"`
 if [ "$primary_key_name" = "hashid" ];then
   hashid=yes
 fi
@@ -62,17 +62,17 @@ function import(){
  while read line
   do
     count=1
-    line=`echo $line | tr -d \\\r | sed -z "s/\n//g"`
+    line=`echo $line | tr -d \\\r | $SED -z "s/\n//g"`
     if [ "$line" ];then
 
-      for column in `echo $header | sed "s/,/ /g"`
+      for column in `echo $header | $SED "s/,/ /g"`
       do
 
        if [ $count -eq 1 ];then
 
          if [ ! "$hashid" = "yes" ];then
            echo "$line" | cut -d',' -f$count  > $ROOT/tmp/import/$session/column/$column
-           id=`cat $ROOT/tmp/import/$session/column/$column | sha256sum | awk '{print $1}'`
+           id=`cat $ROOT/tmp/import/$session/column/$column | $SHASUM | $AWK '{print $1}'`
 
            if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
              id="new"

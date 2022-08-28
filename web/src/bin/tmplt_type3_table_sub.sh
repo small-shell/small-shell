@@ -4,35 +4,35 @@
 databox=%%databox
 keys=all
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == user_name:* ]]; then
-    user_name=`echo $param | awk -F":" '{print $2}'`
+    user_name=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == page:* ]]; then
-    page=`echo $param | awk -F":" '{print $2}'`
+    page=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   # filter can be input both query string and post
   if [[ $param == table_command:* ]]; then
-    table_command=`echo $param | awk -F":" '{print $2}' | sed "s/{%%space}/ /g"`
+    table_command=`echo $param | $AWK -F":" '{print $2}' | $SED "s/{%%space}/ /g"`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 # SET BASE_COMMAND
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
@@ -52,9 +52,9 @@ sort_chk_post=`echo $table_command | grep "^sort "`
 sort_chk_query_string=`echo $table_command | grep "^sort,"`
 
 if [ "$sort_chk_post" -o "$sort_chk_query_string" ];then
-  table_command=`echo $table_command | sed "s/ /,/g"`
-  sort_option=`echo $table_command | sed "s/sort,//g" | cut -f 1 -d ","`
-  sort_label=`echo $table_command  | sed "s/sort,//g" | cut -f 2- -d "," | sed "s/,/{%%space}/g"`
+  table_command=`echo $table_command | $SED "s/ /,/g"`
+  sort_option=`echo $table_command | $SED "s/sort,//g" | cut -f 1 -d ","`
+  sort_label=`echo $table_command  | $SED "s/sort,//g" | cut -f 2- -d "," | $SED "s/,/{%%space}/g"`
   sort_col=`$META get.key:$databox{$sort_label}`
 
   if [ ! "$sort_col" ];then
@@ -63,44 +63,44 @@ if [ "$sort_chk_post" -o "$sort_chk_query_string" ];then
   fi
 else
   if [[ $table_command == *{*} ]]; then
-    filter_key=`echo $table_command | awk -F "{" '{print $1}'`
-    filter_word=`echo $table_command | awk -F "{" '{print $2}' | sed "s/}//g" \
-    | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-    | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" \
-    | sed "s/*/{%%%%%%%%%%%%%%%}/g" \
-    | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
-    | sed "s/#/{%%%%%%%%%%%%%}/g" \
-    | sed "s/|/{%%%%%%%%%%%%}/g" \
-    | sed "s/\]/{%%%%%%%%%%%}/g" \
-    | sed "s/\[/{%%%%%%%%%%}/g" \
-    | sed "s/)/{%%%%%%%%%}/g" \
-    | sed "s/(/{%%%%%%%%}/g" \
-    | sed "s/_/{%%%%%%%}/g" \
-    | sed "s/\//{%%%%%}/g"  \
-    | sed "s/,/{%%%%%%}/g"  \
-    | sed "s/\&/{%%%%}/g" \
-    | sed "s/:/{%%%}/g" \
-    | sed "s/　/ /g" | sed "s/ /,/g" \
-    | php -r "echo preg_quote(file_get_contents('php://stdin'));"`
+    filter_key=`echo $table_command | $AWK -F "{" '{print $1}'`
+    filter_word=`echo $table_command | $AWK -F "{" '{print $2}' | $SED "s/}//g" \
+    | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+    | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" \
+    | $SED "s/*/{%%%%%%%%%%%%%%%}/g" \
+    | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+    | $SED "s/#/{%%%%%%%%%%%%%}/g" \
+    | $SED "s/|/{%%%%%%%%%%%%}/g" \
+    | $SED "s/\]/{%%%%%%%%%%%}/g" \
+    | $SED "s/\[/{%%%%%%%%%%}/g" \
+    | $SED "s/)/{%%%%%%%%%}/g" \
+    | $SED "s/(/{%%%%%%%%}/g" \
+    | $SED "s/_/{%%%%%%%}/g" \
+    | $SED "s/\//{%%%%%}/g"  \
+    | $SED "s/,/{%%%%%%}/g"  \
+    | $SED "s/\&/{%%%%}/g" \
+    | $SED "s/:/{%%%}/g" \
+    | $SED "s/　/ /g" | $SED "s/ /,/g" \
+    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
     filter_table="$filter_key{$filter_word}"
   else
     filter_table=`echo $table_command  \
-    | sed "s/%/{%%%%%%%%%%%%%%%%}/g"\
-    | sed "s/'/{%%%%%%%%%%%%%%%%%}/g" \
-    | sed "s/*/{%%%%%%%%%%%%%%%}/g" \
-    | sed "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
-    | sed "s/#/{%%%%%%%%%%%%%}/g" \
-    | sed "s/|/{%%%%%%%%%%%%}/g" \
-    | sed "s/\[/{%%%%%%%%%%}/g" \
-    | sed "s/)/{%%%%%%%%%}/g" \
-    | sed "s/(/{%%%%%%%%}/g" \
-    | sed "s/_/{%%%%%%%}/g" \
-    | sed "s/\//{%%%%%}/g"  \
-    | sed "s/,/{%%%%%%}/g"  \
-    | sed "s/\&/{%%%%}/g" \
-    | sed "s/:/{%%%}/g" \
-    | sed "s/　/ /g" | sed "s/ /,/g" \
-    | php -r "echo preg_quote(file_get_contents('php://stdin'));"`
+    | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
+    | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" \
+    | $SED "s/*/{%%%%%%%%%%%%%%%}/g" \
+    | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+    | $SED "s/#/{%%%%%%%%%%%%%}/g" \
+    | $SED "s/|/{%%%%%%%%%%%%}/g" \
+    | $SED "s/\[/{%%%%%%%%%%}/g" \
+    | $SED "s/)/{%%%%%%%%%}/g" \
+    | $SED "s/(/{%%%%%%%%}/g" \
+    | $SED "s/_/{%%%%%%%}/g" \
+    | $SED "s/\//{%%%%%}/g"  \
+    | $SED "s/,/{%%%%%%}/g"  \
+    | $SED "s/\&/{%%%%}/g" \
+    | $SED "s/:/{%%%}/g" \
+    | $SED "s/　/ /g" | $SED "s/ /,/g" \
+    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
   fi
 fi
 
@@ -112,10 +112,10 @@ fi
 #  Preprocedure
 # -----------------
 if [ "$filter_table" ];then
-  line_num=`$DATA_SHELL databox:$databox command:show_all[filter=${filter_table}][keys=$keys] format:none | wc -l`
+  line_num=`$DATA_SHELL databox:$databox command:show_all[filter=${filter_table}][keys=$keys] format:none | wc -l | tr -d " "`
 
 elif [ "$sort_col" ];then
-  line_num=`$DATA_SHELL databox:$databox command:show_all[sort=${sort_option},${sort_col}] format:none | wc -l`
+  line_num=`$DATA_SHELL databox:$databox command:show_all[sort=${sort_option},${sort_col}] format:none | wc -l | tr -d " "`
 
 else
   line_num=`$META get.num:$databox`
@@ -124,7 +124,7 @@ fi
 
 # calc pages
 ((pages = $line_num / 18))
-adjustment=`echo "scale=6;${line_num}/18" | bc | awk -F "." '{print $2}'`
+adjustment=`echo "scale=6;${line_num}/18" | bc | $AWK -F "." '{print $2}'`
 line_start=$page
 ((line_start = $page * 18 - 17))
 ((line_end = $line_start + 17))
@@ -213,42 +213,42 @@ else
   view=%%app_table.html.def
 fi
 
-cat ../descriptor/$view | sed -r "s/^( *)</</1" \
-| sed "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
-| sed "/%%common_menu/d"\
-| sed "/%%table_menu/r ../descriptor/common_parts/table_menu_${permission}" \
-| sed "/%%table_menu/d"\
-| sed "/%%table/r ../tmp/$session/table" \
-| sed "s/%%table//g"\
-| sed "s/%%databox/$databox/g"\
-| sed "/%%page_link/r ../tmp/$session/page_link" \
-| sed "s/%%page_link//g"\
-| sed "/%%tag/r ../tmp/$session/tag" \
-| sed "s/%%tag//g"\
-| sed "s/%%user/$user_name/g"\
-| sed "s/%%num/$line_num/g"\
-| sed "s/%%filter/$filter_table/g"\
-| sed "s/%%sort/$sort_command/g"\
-| sed "s/%%key/$primary_key_label/g"\
-| sed "s/{%%%%%%%%%%%%%%%%%}/'/g"\
-| sed "s/{%%%%%%%%%%%%%%%%}/%/g"\
-| sed "s/{%%%%%%%%%%%%%%%}/*/g"\
-| sed "s/{%%%%%%%%%%%%%%}/$/g"\
-| sed "s/{%%%%%%%%%%%%%}/\#/g"\
-| sed "s/{%%%%%%%%%%%%}/|/g"\
-| sed "s/{%%%%%%%%%%%}/\]/g"\
-| sed "s/{%%%%%%%%%%}/\[/g"\
-| sed "s/{%%%%%%%%%}/)/g"\
-| sed "s/{%%%%%%%%}/(/g"\
-| sed "s/{%%%%%%%}/_/g"\
-| sed "s/{%%%%%%}/,/g"\
-| sed "s/{%%%%%}/\//g"\
-| sed "s/{%%%%}/\&/g"\
-| sed "s/{%%%}/:/g"\
-| sed "s/{%%space}/ /g"\
-| sed "s/.\/shell.app?/.\/%%parent_app?/g"\
-| sed "s/%%session/session=$session\&pin=$pin/g" \
-| sed "s/%%params/subapp=%%app\&session=$session\&pin=$pin\&databox=$databox/g"
+cat ../descriptor/$view | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
+| $SED "/%%common_menu/d"\
+| $SED "/%%table_menu/r ../descriptor/common_parts/table_menu_${permission}" \
+| $SED "/%%table_menu/d"\
+| $SED "/%%table/r ../tmp/$session/table" \
+| $SED "s/%%table//g"\
+| $SED "s/%%databox/$databox/g"\
+| $SED "/%%page_link/r ../tmp/$session/page_link" \
+| $SED "s/%%page_link//g"\
+| $SED "/%%tag/r ../tmp/$session/tag" \
+| $SED "s/%%tag//g"\
+| $SED "s/%%user/$user_name/g"\
+| $SED "s/%%num/$line_num/g"\
+| $SED "s/%%filter/$filter_table/g"\
+| $SED "s/%%sort/$sort_command/g"\
+| $SED "s/%%key/$primary_key_label/g"\
+| $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+| $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
+| $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
+| $SED "s/{%%%%%%%%%%%%%%}/$/g"\
+| $SED "s/{%%%%%%%%%%%%%}/\#/g"\
+| $SED "s/{%%%%%%%%%%%%}/|/g"\
+| $SED "s/{%%%%%%%%%%%}/\]/g"\
+| $SED "s/{%%%%%%%%%%}/\[/g"\
+| $SED "s/{%%%%%%%%%}/)/g"\
+| $SED "s/{%%%%%%%%}/(/g"\
+| $SED "s/{%%%%%%%}/_/g"\
+| $SED "s/{%%%%%%}/,/g"\
+| $SED "s/{%%%%%}/\//g"\
+| $SED "s/{%%%%}/\&/g"\
+| $SED "s/{%%%}/:/g"\
+| $SED "s/{%%space}/ /g"\
+| $SED "s/.\/shell.app?/.\/%%parent_app?/g"\
+| $SED "s/%%session/session=$session\&pin=$pin/g" \
+| $SED "s/%%params/subapp=%%app\&session=$session\&pin=$pin\&databox=$databox/g"
 
 
 if [ "$session" ];then

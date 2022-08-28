@@ -70,79 +70,79 @@ for param in `echo $@`
 do
 
   if [[ $param == cat* ]]; then
-    action=`echo $param | awk -F"." '{print $1}'`
-    job=`echo $param | awk -F"." '{print $2}'`
+    action=`echo $param | $AWK -F"." '{print $1}'`
+    job=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
   if [[ $param == stat* ]]; then
     action=$param
-    filter=`echo $param | awk -F"." '{print $2}'`
+    filter=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
   if [[ $param == ls* ]] && [[ ! $param == ls.file:* ]] && [[ ! $param == ls.message:* ]]; then
     action=$param
-    filter=`echo $param | awk -F"." '{print $2}'`
+    filter=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
   if [[ $param == enable* ]]; then
     action=$param
-    job=`echo $param | awk -F"." '{print $2}'`
+    job=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
   if [[ $param == disable* ]]; then
     action=$param
-    job=`echo $param | awk -F"." '{print $2}'`
+    job=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
   if [[ $param == exec* ]]; then
     action=$param
-    job=`echo $param | awk -F"." '{print $2}'`
+    job=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
   if [[ $param == get.message:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    message=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    message=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == get.file:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    file=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $1}'`
-    dir=`echo $param |  awk -F":" '{print $2}' | awk -F"{" '{print $2}' | sed "s/}//g" | sed "s/\/$//g"`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    file=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+    dir=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g" | $SED "s/\/$//g"`
   fi
 
   if [[ $param == push.message:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    message=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    message=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == push.file:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    file=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    file=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == push.que:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    que_file=`echo $param |  awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    que_file=`echo $param |  $AWK -F":" '{print $2}'`
     que=`echo "$que_file" | xargs basename -a`
   fi
 
   if [[ $param == ls.message:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    message=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    message=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == ls.file:* ]]; then
-    action=`echo $param | awk -F":" '{print $1}'`
-    file=`echo $param | awk -F":" '{print $2}'`
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    file=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == remote_addr:* ]]; then
-    remote_addr=`echo $param | awk -F":" '{print $2}'`
+    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == clear* ]]; then
     action=$param
-    job=`echo $param | awk -F"." '{print $2}'`
+    job=`echo $param | $AWK -F"." '{print $2}'`
   fi
 
 done
@@ -201,7 +201,7 @@ if [[ "$action" == ls* ]] && [[ ! "$file" ]] && [[ ! "$message" ]];then
     echo "--------------------------------------------------------------"
     echo "job definition: $ROOT/util/e-cron/def"
     echo "--------------------------------------------------------------"
-    for line in `ls $ROOT/util/e-cron/def | sed "s/.def//g" | xargs basename -a`
+    for line in `ls $ROOT/util/e-cron/def | $SED "s/.def//g" | xargs basename -a`
     do
       enable_chk=`grep " $line " $tmp_dir/.crontab_tmp`
       if [ "$enable_chk" ];then
@@ -215,7 +215,7 @@ if [[ "$action" == ls* ]] && [[ ! "$file" ]] && [[ ! "$message" ]];then
     echo "LIST.filtered ($filter)"
     echo "job definition: $ROOT/util/e-cron/def"
     echo "--------------------------------------------------------------"
-    for line in `ls $ROOT/util/e-cron/def | sed "s/.def//g" | grep $filter | xargs basename -a 2>/dev/null`
+    for line in `ls $ROOT/util/e-cron/def | $SED "s/.def//g" | grep $filter | xargs basename -a 2>/dev/null`
     do
       enable_chk=`grep " $line " $tmp_dir/.crontab_tmp`
       if [ "$enable_chk" ];then
@@ -253,10 +253,10 @@ if [[ "$action" == enable* ]];then
   command_chk=`grep "^exec_command=" $ROOT/util/e-cron/def/${job}.def`
   if [ "$command_chk" ];then
     echo "`grep SCHEDULE  $ROOT/util/e-cron/def/${job}.def \
-    | grep -v \# | awk -F [:] '{print $2}'` $ROOT/util/e-cron/bin/jobwrapper.sh ${job} > /dev/null 2>&1" >> $tmp_dir/.crontab_tmp
+    | grep -v \# | $AWK -F [:] '{print $2}'` $ROOT/util/e-cron/bin/jobwrapper.sh ${job} > /dev/null 2>&1" >> $tmp_dir/.crontab_tmp
   else
     echo "`grep SCHEDULE  $ROOT/util/e-cron/def/${job}.def \
-    | grep -v \# | awk -F [:] '{print $2}'` $ROOT/util/e-cron/bin/dataExchange.sh ${job} > /dev/null 2>&1" >> $tmp_dir/.crontab_tmp
+    | grep -v \# | $AWK -F [:] '{print $2}'` $ROOT/util/e-cron/bin/dataExchange.sh ${job} > /dev/null 2>&1" >> $tmp_dir/.crontab_tmp
   fi
 
   # cron update
@@ -306,7 +306,7 @@ if [[ "$action" == exec* ]];then
     rm -rf $tmp_dir
     exit 1
   fi
-  jobtype=`crontab -l | grep " ${job} " | awk -F "small-shell/util/e-cron/bin" '{print $2}' | awk '{print $1}' | xargs basename -a 2>/dev/null` 
+  jobtype=`crontab -l | grep " ${job} " | $AWK -F "small-shell/util/e-cron/bin" '{print $2}' | $AWK '{print $1}' | xargs basename -a 2>/dev/null` 
 
   if [ ! "$jobtype" ];then
     echo "error:failed to execute job, please enable job first"

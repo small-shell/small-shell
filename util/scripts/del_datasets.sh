@@ -26,8 +26,8 @@ SCRIPT_DIR=`dirname $0`
 # authentication
 if [ "$authkey" ];then
   auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
-  session=`echo $auth_req | awk -F "," '{print $2}' | awk -F ":" '{print $2}'`
-  pin=`echo $auth_req | awk -F "," '{print $3}' | awk -F ":" '{print $2}'`
+  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 fi
 
 if [ ! "$session" ];then

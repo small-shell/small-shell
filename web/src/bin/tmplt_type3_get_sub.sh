@@ -4,34 +4,35 @@
 databox=%%databox
 keys=all
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == user_name:* ]]; then
-    user_name=`echo $param | awk -F":" '{print $2}'`
+    user_name=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == duplicate:* ]]; then
-    duplicate=`echo $param | awk -F":" '{print $2}'`
+    duplicate=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 if [ ! "$id"  ];then
   id="new"
@@ -62,8 +63,8 @@ if [ ! "$duplicate" = "yes" ];then
 
     # gen read only datas
     $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:none | grep -v hashid > ../tmp/$session/dataset.0.1
-    cat ../tmp/$session/dataset.0.1 | sed "s/^/<li><label>/g" | sed "s/:/<\/label><pre>/1" | sed "s/$/<\/pre><\/li>/g" \
-    | sed "s/<pre><\/pre>/<pre>-<\/pre>/g" | sed "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
+    cat ../tmp/$session/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/1" | $SED "s/$/<\/pre><\/li>/g" \
+    | $SED "s/<pre><\/pre>/<pre>-<\/pre>/g" | $SED "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
 
   fi
 
@@ -126,17 +127,17 @@ elif [ "$form_chk" = "multipart" ];then
 fi
 
 # render HTML
-cat ../descriptor/${view} | sed -r "s/^( *)</</1" \
-| sed "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
-| sed "/%%common_menu/d" \
-| sed "/%%dataset/r ../tmp/$session/dataset" \
-| sed "s/%%dataset//g"\
-| sed "/%%history/r ../tmp/$session/history" \
-| sed "s/%%history//g"\
-| sed "s/%%id/$id/g" \
-| sed "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
-| sed "s/%%session/session=$session\&pin=$pin/g" \
-| sed "s/%%params/subapp=%%app\&session=$session\&pin=$pin/g"
+cat ../descriptor/${view} | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
+| $SED "/%%common_menu/d" \
+| $SED "/%%dataset/r ../tmp/$session/dataset" \
+| $SED "s/%%dataset//g"\
+| $SED "/%%history/r ../tmp/$session/history" \
+| $SED "s/%%history//g"\
+| $SED "s/%%id/$id/g" \
+| $SED "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
+| $SED "s/%%session/session=$session\&pin=$pin/g" \
+| $SED "s/%%params/subapp=%%app\&session=$session\&pin=$pin/g"
 
 
 if [ "$session" ];then

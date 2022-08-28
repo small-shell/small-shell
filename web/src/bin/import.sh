@@ -1,33 +1,33 @@
 #!/bin/bash
 
+# load small-shell conf
+. ../descriptor/.small_shell_conf
+
 # load query string param
 for param in `echo $@`
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | awk -F":" '{print $2}'`
+    databox=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | awk -F":" '{print $2}'`
+    session=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | awk -F":" '{print $2}'`
+    pin=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == remote_addr:* ]]; then
-    remote_addr=`echo $param | awk -F":" '{print $2}'`
+    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | awk -F":" '{print $2}'`
+    id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
 done
-
-# load small-shell path
-. ../descriptor/.small_shell_path
 
 # SET BASE_COMMAND
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
@@ -56,22 +56,22 @@ done
 if [ ! -d ../tmp/$session/binary_file  ];then
 
   # render form HTML
-  cat ../descriptor/import_form.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
-  | sed "/%%common_menu/d"\
-  | sed "/%%footer/r ../descriptor/common_parts/footer" \
-  | sed "/%%footer/d"\
-  | sed "/%%databox_list/r ../tmp/$session/databox_list" \
-  | sed "s/%%databox_list//g"\
-  | sed "s/%%databox/$databox/g"\
-  | sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
+  cat ../descriptor/import_form.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r ../descriptor/common_parts/common_menu" \
+  | $SED "/%%common_menu/d"\
+  | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+  | $SED "/%%footer/d"\
+  | $SED "/%%databox_list/r ../tmp/$session/databox_list" \
+  | $SED "s/%%databox_list//g"\
+  | $SED "s/%%databox/$databox/g"\
+  | $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 
 else
 
   # gen %%result contents
   sudo -u small-shell ${small_shell_path}/bin/data_import ../tmp/$session/binary_file/binary.data \
   $databox $session $pin $remote_addr > ../tmp/$session/result
-  data_import_session=`cat ../tmp/$session/result | grep Import_session: | awk -F "Import_session:" '{print $2}'`
+  data_import_session=`cat ../tmp/$session/result | grep Import_session: | $AWK -F "Import_session:" '{print $2}'`
 
   error_check=`cat ../tmp/$session/result | grep error`
   if [ ! "$error_check" ];then
@@ -82,17 +82,17 @@ else
   fi
 
   # render HTML
-  cat ../descriptor/import.html.def | sed -r "s/^( *)</</1" \
-  | sed "/%%common_menu/r ../descriptor/common_parts/common_menu" \
-  | sed "/%%common_menu/d"\
-  | sed "/%%footer/r ../descriptor/common_parts/footer" \
-  | sed "/%%footer/d"\
-  | sed "/%%databox_list/r ../tmp/$session/databox_list" \
-  | sed "s/%%databox_list//g"\
-  | sed "s/%%databox/$databox/g"\
-  | sed "/%%result/r ../tmp/$session/result" \
-  | sed "s/%%result/$message/g"\
-  | sed "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
+  cat ../descriptor/import.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r ../descriptor/common_parts/common_menu" \
+  | $SED "/%%common_menu/d"\
+  | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+  | $SED "/%%footer/d"\
+  | $SED "/%%databox_list/r ../tmp/$session/databox_list" \
+  | $SED "s/%%databox_list//g"\
+  | $SED "s/%%databox/$databox/g"\
+  | $SED "/%%result/r ../tmp/$session/result" \
+  | $SED "s/%%result/$message/g"\
+  | $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 
 fi
 

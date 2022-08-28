@@ -36,8 +36,18 @@
                             <li class="navitem">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="navitem">
-                                <a href="../quick_start/" class="nav-link">Quick Start</a>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Quick Start <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_Mac/" class="dropdown-item">For macOS</a>
+</li>
+                                </ul>
                             </li>
                             <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">shell tour <b class="caret"></b></a>
@@ -193,6 +203,14 @@ sudo mkdir -p /home/small-shell/.config/matplotlib
 sudo mkdir -p /home/small-shell/.cache/matplotlib    
 chown -R small-shell:small-shell /home/small-shell
 </code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using macOS, python3 must be installed as default. please just install librarise with following command  </p>
+<p>which pyphon3; which pip3 <br />
+xcode-select --install <br />
+sudo python3 -m pip install --upgrade pip <br />
+sudo pip3 install numpy; sudo pip3 install pandas; sudo pip3 install matplotlib  </p>
+</div>
 <h4 id="define-python-path-at-env">Define python path at env</h4>
 <pre><code>sudo vi /usr/local/small-shell/util/pyshell/env
 --code--
@@ -202,7 +220,7 @@ PYTHON="/usr/local/bin/python3.9"
 <h2 id="make-statistics-job">Make statistics job</h2>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
-<p>It' required to complete OS setup and setup of small-shell Base APP, see detail at <a href="../quick_start/">Quickstart</a>.
+<p>It' required to complete OS setup and setup of small-shell Base APP, see detail at <a href="../quick_start_linux/">Quickstart</a>.
 Following is an expamle that count up number of data of item.db</p>
 <h6 id="dialog-result">dialog result</h6>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
@@ -439,23 +457,28 @@ sudo rm $target
 2021-01-01 02:00:00,1,2
 </code></pre>
 <h2 id="change-fonts-family">Change fonts-family</h2>
-<p>If your charactor is not shown correctly in graph, please install favorite fonts and reflect to pyshell.</p>
-<h4 id="install">install</h4>
-<p>Install IPAexGothic as an example.</p>
-<pre><code>sudo apt install fonts-ipaexfont
-</code></pre>
-<h4 id="change-fonts">change fonts</h4>
-<pre><code>sudo vi /usr/local/small-shell/util/pyshell/env
+<p>If your charactor is not shown correctly in graph, please install favorite fonts and reflect to pyshell. followings are exmaple.</p>
+<h4 id="linux-ubuntu">Linux (ubuntu)</h4>
+<pre><code># installation
+sudo apt install fonts-ipaexfont
+
+# change fonts
+sudo vi /usr/local/small-shell/util/pyshell/env
 --code--
 font_family="IPAexGothic" #modify
 --------
+
+# remove cash
+sudo -u small-shell rm /home/small-shell/.cache/matplotlib/fontlist-v330.json
 </code></pre>
-<h4 id="remove-cache">remove cache</h4>
-<p>Please remove your cache, then please execute graph job again.</p>
-<pre><code>sudo -u small-shell rm /home/small-shell/.cache/matplotlib/fontlist-v330.json
+<h4 id="macos">macOS</h4>
+<pre><code>sudo vi /usr/local/small-shell/util/pyshell/env
+--code--
+font_family="AppleGothic" #modify
+--------
 </code></pre>
 <h2 id="pyshell-verificated-env">pyshell verificated env</h2>
-<pre><code>OS: Utuntu 20 (recommnded), CentOS 7, RHEL 8
+<pre><code>OS: Utuntu 20 (recommnded), macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
 python: 3.8, 3.9
 required: matplotlib(3.X), pandas(1.X), numpy(1.X)

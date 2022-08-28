@@ -6,7 +6,7 @@
 
 app=$1
 export_dir=$2
-export_dir=`echo $export_dir | sed "s/\/$//g"`
+export_dir=`echo $export_dir | $SED "s/\/$//g"`
 
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "root" ];then
@@ -46,11 +46,11 @@ if [ ! -d $export_dir ];then
 fi
 
 # dist main
-cat $main | sed "s/^ *</</g" \
-| sed "/%%common_menu/r ${descriptor}/common_parts/${app}_common_menu" \
-| sed "s/%%common_menu//g"\
-| sed "s/<img src=\"../<img src=\"./g" \
-| sed "s/${app}_css/${app}.css/g" > ${export_dir}/index.html
+cat $main | $SED "s/^ *</</g" \
+| $SED "/%%common_menu/r ${descriptor}/common_parts/${app}_common_menu" \
+| $SED "s/%%common_menu//g"\
+| $SED "s/<img src=\"../<img src=\"./g" \
+| $SED "s/${app}_css/${app}.css/g" > ${export_dir}/index.html
 
 metalinks=`grep -e %%session -e %%params $export_dir/index.html`
 
