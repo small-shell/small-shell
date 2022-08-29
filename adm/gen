@@ -128,6 +128,12 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi
 
+    which curl > /dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install curl command first"
+      exit 1
+    fi
+
     echo "SHASUM=\"`which shasum` -a 256\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BASE64_ENC=\"`which base64`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BASE64_DEC=\"`which base64` -D\"" >> ${SCRIPT_DIR}/../global.conf
@@ -135,6 +141,7 @@ if [ $line_chk -eq 1 ];then
     echo "AWK=\"`which gawk`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "FLOCK=\"`which flock`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "PHP=\"`which php`\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "CURL=\"`which curl`\"" >> ${SCRIPT_DIR}/../global.conf
 
     which jq >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
