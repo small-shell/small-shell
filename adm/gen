@@ -150,13 +150,6 @@ if [ $line_chk -eq 1 ];then
       echo "JQ=\"`which jq`\"" >> ${SCRIPT_DIR}/../global.conf
     fi
 
-    which php > /dev/null 2>&1
-    if [ ! $? -eq 0 ];then
-      echo "warn: please install php command, if you want to use WEB APP"
-    else
-      echo "PHP=\"`which php`\"" >> ${SCRIPT_DIR}/../global.conf
-    fi
-
   fi
 fi
 
