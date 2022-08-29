@@ -233,13 +233,9 @@ sudo chown -R small-shell:small-shell /usr/local/small-shell
 sudo chmod 755 /usr/local/small-shell/adm/gen
 </code></pre>
 <h5 id="sudo-setting">Sudo setting</h5>
-<pre><code># set favorite editor
-sudo update-alternatives --config editor
-
-# change sudo setting
+<pre><code># change sudo setting
 sudo visudo    
-## add to last line 
-## sudo setting for httpd user (e.g.) www-data for apache2
+## -&gt; add to last line
 _www   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/local/small-shell/sbin/*
 </code></pre>
 <h2 id="gen-databox">Gen Databox</h2>
