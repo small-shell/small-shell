@@ -28,7 +28,7 @@
           <p>please update html definition refering to the <a href="https://small-shell.org/cook_book/#htmlcss-design-recipe">recipe</a></p>
           <a href="./%%app?%%session&req=table"><button class="button">SEARCH</button></a>
         </div>
-     </div>
+      </div>
     </div>
     <script>
     const btn = document.querySelector('.even-btn-menu');
