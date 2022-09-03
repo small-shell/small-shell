@@ -2207,8 +2207,10 @@ if [ "$param" = "-app" ];then
         ls  $cgidir/../descriptor/${app}_*
 
         if [ "$auth_method" = "key" ];then
-          echo "then please create user for the APP by following command"
-          echo "sudo $ROOT/adm/ops add.usr:\$user app:${app}"
+          echo "------------------------------------------------------------"
+          echo "please create user for the APP by following command"
+          echo "------------------------------------------------------------"
+          echo "sudo $ROOT/adm/ops app:${app} add.usr:\$user"
         fi
 
       else
