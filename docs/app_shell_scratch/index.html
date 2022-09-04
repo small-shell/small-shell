@@ -261,10 +261,10 @@ sudo vi /var/www/descriptor/scratch_table.html.def
 </code></pre>
 <h3 id="add-user-to-the-app">Add user to the APP</h3>
 <p>If you select Key APP, please add user for the APP. then you can get URL that can generate key for each end user.</p>
-<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$usr app:$app 
+<pre><code>sudo /usr/local/small-shell/adm/ops app:$app add.usr:$usr
 
 e.g.) add &quot;test&quot; user for key APP name &quot;scratch&quot;
-sudo /usr/local/small-shell/adm/ops add.usr:test app:scratch
+sudo /usr/local/small-shell/adm/ops app:scratch add.usr:test 
 -----------------------------------------------------------------
 Initialize URL for naruo on team APP is created
 -----------------------------------------------------------------
@@ -434,7 +434,7 @@ sudo ./deploy.sh
 </code></pre>
 <h6 id="add-user-to-team-app">Add user to Team APP</h6>
 <p>Please add user to the APP, Then you can get key to access team portal.</p>
-<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test app:team
+<pre><code>sudo /usr/local/small-shell/adm/ops app:team add.usr:test
 </code></pre>
 <p><img alt="Screenshot" src="../img/team.png" /></p>
 <p>Ofcourse, you can update portal html by your self.</p>
