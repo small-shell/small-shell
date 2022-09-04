@@ -15,6 +15,7 @@ fi
 
 # define parameter
 job_log=${ROOT}/util/e-cron/log/job/${job}_log_`date +%Y%m%d`
+messaging_log=${ROOT}/util/e-cron/log/message/${job}_`date +%Y%m%d`
 command_dump=${ROOT}/util/e-cron/log/job/${job}_command_dump_`date +%Y%m%d`
 command_dump_tmp=${ROOT}/util/e-cron/log/job/.${job}_command_dump_tmp
 status_que=${ROOT}/util/e-cron/que/status/${job}
@@ -59,7 +60,7 @@ if [ "${input_message}" ];then
     if [ $? -eq 0 ];then
       message_chk="yes"
       rm -rf $ROOT/util/e-cron/que/message/${input_message}
-      echo "`date +%Y-%m-%d` `date +%T` localhost grabed ${input_message}" >> $ROOT/util/e-cron/log/messagingHUB.log
+      echo "`date +%Y-%m-%d` `date +%T` localhost grabed ${input_message}" >> ${messaging_log}
     else
       message_chk="message is not ready"
     fi
@@ -99,7 +100,7 @@ if [ "${input_message}" ];then
       if [ $? -eq 0 ];then
         message_chk="yes"
         rm -rf $ROOT/util/e-cron/que/message/${input_message}
-        echo "`date +%Y-%m-%d` `date +%T` localhost grabed ${input_message}" >> $ROOT/util/e-cron/log/messagingHUB.log
+        echo "`date +%Y-%m-%d` `date +%T` localhost grabed ${input_message}" >> ${messaging_log}
       else
         message_chk="message is not ready"
       fi
@@ -195,7 +196,7 @@ elif [ ! "$err_flg" ];then
       $CURL -X POST "${hubapi}?req=push&message=${output_message}" -H "X-small-shell-authkey:$api_authkey" 
     else
       echo "$output_message" > $ROOT/util/e-cron/que/message/$output_message
-      echo "`date +%Y-%m-%d` `date +%T` localhost push ${output_message}" >> $ROOT/util/e-cron/log/messagingHUB.log
+      echo "`date +%Y-%m-%d` `date +%T` localhost push ${output_message}" >> ${messaging_log}
     fi
     echo "`date +%Y-%m-%d` `date +%T` ${output_message} pushed" >> ${job_log}
     echo "`date +%Y-%m-%d` `date +%T` ${job} INFO ouput_message_${output_message}_pushed" >> ${status_que}
