@@ -12,11 +12,11 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atelier-dune-light.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/atelier-dune-light.min.css">
 
         <script src="../js/jquery-1.10.2.min.js" defer></script>
         <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
 
@@ -521,9 +521,9 @@ vi ./descriptor/${provider}_oauth_form.html.def
 #------------------------------------------------ 
 
 # DEPLOY
-authkey=`grep authkey= /usr/lib/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;`
+authkey=`grep authkey= /usr/lib/cgi-bin/auth.$app | $SED &quot;s/authkey=\&quot;//g&quot; | $SED &quot;s/\&quot;//g&quot;`
 echo $authkey
-cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/$authkey/g&quot; &gt; /usr/lib/cgi-bin/auth.$app
+cat ./cgi-bin/${provider}_auth | $SED &quot;s/%%authkey/$authkey/g&quot; &gt; /usr/lib/cgi-bin/auth.$app
 cat ./descriptor/${provider}_oauth_form.html.def &gt; /var/www/descriptor/${app}_auth_form.html.def
 </code></pre>
 <p>Then you can try to connect APP through Oauth. <br />
@@ -542,7 +542,7 @@ https://$fqdn/cgi-bin/auth.oauth_test</p>
 <h6 id="action-script-shell_1">@action script (shell)</h6>
 <pre><code> # get book ID Based on the name 
  DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
- book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| sed -s "s/\"//g"`
+ book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s "s/\"//g"`
 </code></pre>
 <h4 id="3-json-insert-to-javascript-instance">3. Json insert to javascript instance</h4>
 <p>In terms of integration with javascript frameworks, we would like to recommend to insert bulk of json datas to javascript directly using %% tag because ajax with small-shell will take 1 or 2 sec for getting data.</p>
@@ -573,7 +573,7 @@ $DATA_SHELL databox:$databox command:show_all[filter=sync{yes}] format:json \
 | $SED &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/$session/events
 
 ## then, just insert %%json to events
-cat ../descriptor/team_main.html.def | sed &quot;s/^ *&lt;/&lt;/g&quot; \
+cat ../descriptor/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 | $SED &quot;/%%common_menu/r ../descriptor/common_parts/pintest_common_menu&quot; \
 | $SED &quot;s/%%common_menu//g&quot;\
 | $SED &quot;s/%%user_name/$user_name/g&quot; \
