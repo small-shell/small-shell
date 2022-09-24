@@ -130,7 +130,7 @@ fi
 
 if [ "$type" = "json" ];then
   # load keys 
-  keys=`cat $input | $JQ 'keys' | jq -r .[]`
+  keys=`cat $input | $JQ 'keys' | $JQ -r .[]`
   for key in $keys
   do
     JQ_EXE="cat $input | $JQ -r '.$key'"
