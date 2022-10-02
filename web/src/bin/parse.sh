@@ -46,14 +46,14 @@ if [ "$type" = "multipart" ];then
   grep -a "Content-Disposition: form-data; name=" $input | $AWK -F "name=" '{print $2}' | $AWK -F "\"" '{print $2}' > ../tmp/$session/params
 
   # remove binary data
-  file_check=`grep -a "Content-Disposition: form-data; name=" ../tmp/$session/input | grep -a "filename="`
-  file_num_check=`echo $file_check | wc -l | tr -d " "`
-  if [ $file_num_check -gt 1 ];then 
+  file_chk=`grep -a "Content-Disposition: form-data; name=" ../tmp/$session/input | grep -a "filename="`
+  file_num_chk=`echo $file_chk | wc -l | tr -d " "`
+  if [ $file_num_chk -gt 1 ];then 
     echo "error: file_input must be only 1"
     exit 1
   fi
 
-  if [ "$file_check" ];then
+  if [ "$file_chk" ];then
     grep -n -a -e "$boundary" -e "Content-Disposition: form-data;" ../tmp/$session/input > ../tmp/$session/temp1
     binary_line_start=`grep "filename=" ../tmp/$session/temp1 | $AWK -F ":" '{print $1}'`
     binary_line_end=`grep -A 1 "filename="  ../tmp/$session/temp1 | grep "$boundary" | $AWK -F ":" '{print $1}'`

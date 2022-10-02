@@ -20,12 +20,12 @@ if [ "$whitelist_chk" ];then
   do
     IP=`echo $IP | $SED "s/*//g"`
     if [[ ${remote_addr} == ${IP}* ]];then
-      IP_chk_flag=yes
+      IP_chk=yes
       break
     fi
   done
 
-  if [ ! "$IP_chk_flag" = "yes" ];then
+  if [ ! "$IP_chk" = "yes" ];then
     echo "error: your IP is not allowed to access"
     exit 1
   fi
