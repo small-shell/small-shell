@@ -2259,7 +2259,7 @@ if [ "$param" = "-app" ];then
         echo "1. APP controller"
         echo " please add routing on $cgidir/${parent_app}"
         echo "#---------------------------------------------------------------------------------------------------------"
-        echo "\"${app}.table\") ../bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command;;"
+        echo "\"${app}.table\") ../bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;"
         echo "\"${app}.get\") ../bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;"
         echo "\"${app}.set\") ../bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
         echo "\"${app}.del\") ../bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"

@@ -161,7 +161,7 @@ case "$req" in
 
   "table")
     table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
-    ../bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command;;
+    ../bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line;;
 
   "log_viewer")
     ../bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id ;;

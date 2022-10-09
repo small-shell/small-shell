@@ -154,7 +154,7 @@ case "$req" in
 
   "table")
     table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
-    ../bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command ;;
+    ../bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command line:$line;;
 
   "get")
     ../bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate;;
