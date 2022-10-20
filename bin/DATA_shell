@@ -855,7 +855,7 @@ function get_data(){
   local addkvl=""
 
   # load column profile
-  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | $AWK -F":" '{print $1}' | xargs basename -a  2>/dev/null`
+  col=`grep -l name=\"$key\" $ROOT/databox/${databox}/def/col* | xargs basename -a  2>/dev/null`
   if [ ! "$col" ];then
     echo "error: there is no key:$key"
     return 1
@@ -1175,7 +1175,7 @@ function get_mergeable_data(){
     return 1
   fi
 
-  col=`grep name=\"$key\" $ROOT/databox/${databox}/def/col* | sort -V | $AWK -F":" '{print $1}' | xargs basename -a  2>/dev/null`
+  col=`grep -l name=\"$key\" $ROOT/databox/${databox}/def/col* | xargs basename -a  2>/dev/null`
   if [ ! "$col" ];then
     echo "error: there is no key:$key"
     return 1
