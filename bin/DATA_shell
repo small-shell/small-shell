@@ -1692,9 +1692,12 @@ if [ "$action" ];then
         if [ ! "$id" = "new" ];then
           keys=`echo $keys | $SED "s/,/ /g"`
         else
+          # adjust key order
           keys=`echo $keys | $SED "s/,/ /g" | $SED "s/^${primary_key} //g" | $SED "s/ ${primary_key} / /g" | $SED "s/ ${primary_key}$//g"`
           if [ ! "$primary_key" = "hashid" ];then
-            keys="$primary_key $keys"
+            if [ ! "$primary_key" = "$keys" ];then
+              keys="$primary_key $keys"
+            fi
           fi
         fi
       fi
