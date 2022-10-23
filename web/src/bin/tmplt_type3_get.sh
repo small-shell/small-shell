@@ -5,7 +5,7 @@ databox=%%databox
 keys=all
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -37,8 +37,8 @@ if [ ! "$id"  ];then
   id="new"
 fi
 
-if [ ! -d ../tmp/$session ];then
-  mkdir ../tmp/$session
+if [ ! -d %%www/tmp/$session ];then
+  mkdir %%www/tmp/$session
 fi
 
 # SET BASE_COMMAND
@@ -56,14 +56,14 @@ if [ ! "$duplicate" = "yes" ];then
   if [ ! "$permission" = "ro"  ];then
 
     # gen read/write datas
-    $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:html_tag > ../tmp/$session/dataset
+    $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:html_tag > %%www/tmp/$session/dataset
 
   else
 
     # gen read only datas
-    $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:none | grep -v hashid > ../tmp/$session/dataset.0.1
-    cat ../tmp/$session/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/1" | $SED "s/$/<\/pre><\/li>/g" \
-    | $SED "s/<pre><\/pre>/<pre>-<\/pre>/g" | $SED "s/_%%enter_/\n/g" >> ../tmp/$session/dataset
+    $DATA_SHELL databox:$databox action:get id:$id keys:$keys format:none | grep -v hashid > %%www/tmp/$session/dataset.0.1
+    cat %%www/tmp/$session/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/1" | $SED "s/$/<\/pre><\/li>/g" \
+    | $SED "s/<pre><\/pre>/<pre>-<\/pre>/g" | $SED "s/_%%enter_/\n/g" >> %%www/tmp/$session/dataset
 
   fi
 
@@ -79,17 +79,17 @@ else
     # gen %%data by conpying
     if [ "$primary_key" = "$key" ];then
       $DATA_SHELL databox:$databox \
-      action:get id:new key:$key format:html_tag > ../tmp/$session/dataset
+      action:get id:new key:$key format:html_tag > %%www/tmp/$session/dataset
     else
       data=`$DATA_SHELL databox:$databox \
       action:get id:$id key:$key format:html_tag ` \
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
       if [ ! "$file_chk" ];then
-        echo $data >> ../tmp/$session/dataset
+        echo $data >> %%www/tmp/$session/dataset
       else
         $DATA_SHELL databox:$databox \
-        action:get id:new key:$key format:html_tag  >> ../tmp/$session/dataset
+        action:get id:new key:$key format:html_tag  >> %%www/tmp/$session/dataset
       fi
     fi
   done
@@ -97,7 +97,7 @@ else
 fi
 
 # error check
-error_chk=`cat ../tmp/$session/dataset | grep "^error:"`
+error_chk=`cat %%www/tmp/$session/dataset | grep "^error:"`
 
 # form type check
 form_chk=`$META chk.form:$databox`
@@ -124,12 +124,12 @@ elif [ "$form_chk" = "multipart" ];then
 fi
 
 # render HTML
-cat ../descriptor/${view} | $SED -r "s/^( *)</</1" \
-| $SED "/%%common_menu/r ../descriptor/common_parts/%%app_common_menu" \
+cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
 | $SED "/%%common_menu/d" \
-| $SED "/%%dataset/r ../tmp/$session/dataset" \
+| $SED "/%%dataset/r %%www/tmp/$session/dataset" \
 | $SED "s/%%dataset//g"\
-| $SED "/%%history/r ../tmp/$session/history" \
+| $SED "/%%history/r %%www/tmp/$session/history" \
 | $SED "s/%%history//g"\
 | $SED "s/%%id/$id/g" \
 | $SED "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
@@ -137,7 +137,7 @@ cat ../descriptor/${view} | $SED -r "s/^( *)</</1" \
 | $SED "s/%%params/session=$session\&pin=$pin/g"
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

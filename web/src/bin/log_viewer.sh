@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -34,8 +34,8 @@ if [ "$id" = "" -a ! "$data_import_session" ];then
   exit 1
 fi
 
-if [ ! -d ../tmp/${session}_log ];then
-  mkdir ../tmp/${session}_log
+if [ ! -d %%www/tmp/${session}_log ];then
+  mkdir %%www/tmp/${session}_log
 fi
 
 # -----------------
@@ -46,29 +46,29 @@ if [ ! "$data_import_session" ];then
 
   # gen %%log contents
   sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
-  action:get id:$id type:log format:html_tag > ../tmp/${session}_log/log
+  action:get id:$id type:log format:html_tag > %%www/tmp/${session}_log/log
 
   # render HTML
-  cat ../descriptor/log_viewer.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%log/r ../tmp/${session}_log/log" \
+  cat %%www/descriptor/log_viewer.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%log/r %%www/tmp/${session}_log/log" \
   | $SED "s/%%log//g"\
   | $SED "s/%%id/$id/g"
 
 else
 
   # will be changed to meta.sh
-  sudo -u small-shell ${small_shell_path}/bin/meta get.progress:$data_import_session > ../tmp/${session}_log/log
+  sudo -u small-shell ${small_shell_path}/bin/meta get.progress:$data_import_session > %%www/tmp/${session}_log/log
 
   # render HTML
-  cat ../descriptor/import_log_viewer.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/descriptor/import_log_viewer.html.def | $SED -r "s/^( *)</</1" \
   | $SED "s/%%data_import_session/$data_immport_session/g"\
-  | $SED "/%%log/r ../tmp/${session}_log/log" \
+  | $SED "/%%log/r %%www/tmp/${session}_log/log" \
   | $SED "s/%%log/-----------------------\n<b>#DATA IMPORT SESSION<\/b>\n------------------------\n/g"
 
 fi
 
 if [ "$session" ];then
-  rm -rf ../tmp/${session}_log
+  rm -rf %%www/tmp/${session}_log
 fi
 
 exit 0

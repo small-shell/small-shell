@@ -8,7 +8,7 @@ keys=all
 num_of_line_per_page=12
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -53,8 +53,8 @@ if [ "$page" = "" ];then
 fi
 
 # load post param
-if [ -s ../tmp/$session/table_command ];then
-  table_command=`cat ../tmp/$session/table_command`
+if [ -s %%www/tmp/$session/table_command ];then
+  table_command=`cat %%www/tmp/$session/table_command`
 fi
 
 primary_key_label=`$META get.label:$databox{primary}`
@@ -119,8 +119,8 @@ else
   fi
 fi
 
-if [ ! -d ../tmp/$session ];then 
-  mkdir ../tmp/$session
+if [ ! -d %%www/tmp/$session ];then 
+  mkdir %%www/tmp/$session
 fi
 
 if [ $num_of_line_per_page -lt 2 ];then
@@ -156,20 +156,20 @@ fi
 #-----------------------
 if [ "$filter_table" ];then
   $DATA_SHELL databox:$databox \
-  command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}] > ../tmp/$session/table &
+  command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}] > %%www/tmp/$session/table &
 
 elif [ "$sort_col" ];then
   $DATA_SHELL databox:$databox \
-  command:show_all[line=$line_start-$line_end][keys=$keys][sort=${sort_option},${sort_col}] > ../tmp/$session/table &
+  command:show_all[line=$line_start-$line_end][keys=$keys][sort=${sort_option},${sort_col}] > %%www/tmp/$session/table &
 else
-  $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys] > ../tmp/$session/table &
+  $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys] > %%www/tmp/$session/table &
 fi
 
 # gen %%tag contents
-$META get.tag:%%app{$databox} > ../tmp/$session/tags
-for tag in `cat ../tmp/$session/tags`
+$META get.tag:%%app{$databox} > %%www/tmp/$session/tags
+for tag in `cat %%www/tmp/$session/tags`
 do
- echo "<p><a href=\"./%%parent_app?%%params&req=table&table_command=$tag\">#$tag&nbsp;</a></p>" > ../tmp/$session/tag &
+ echo "<p><a href=\"./%%parent_app?%%params&req=table&table_command=$tag\">#$tag&nbsp;</a></p>" > %%www/tmp/$session/tag &
 done
 
 # load permission
@@ -180,17 +180,17 @@ else
 fi
 
 # gen %%page_link contents
-../bin/%%app_page_links.sh $page $pages "$table_command" $num_of_line_per_page > ../tmp/$session/page_link &
+%%www/bin/%%app_page_links.sh $page $pages "$table_command" $num_of_line_per_page > %%www/tmp/$session/page_link &
 wait
 
 # error check
-err_chk=`grep "error: there is no databox" ../tmp/$session/table`
+err_chk=`grep "error: there is no databox" %%www/tmp/$session/table`
 
 if [ "$err_chk" ];then
 
   echo "<h2>Oops something must be wrong, please check %%app_table.sh</h2>"
   if [ "$session" ];then
-    rm -rf ../tmp/$session
+    rm -rf %%www/tmp/$session
   fi
   exit 1
 fi
@@ -215,33 +215,33 @@ if [ "$line_num" = 0 ];then
 
     view=%%app_table.html.def
     if [ ! "$permission" = "ro" ];then
-      echo "<h4><a href=\"./%%parent_app?&%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> ../tmp/$session/table
+      echo "<h4><a href=\"./%%parent_app?&%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> %%www/tmp/$session/table
     else
-      echo "<h4>= NO DATA</h4>" >> ../tmp/$session/table
+      echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
     fi
 
   elif [ "$sort_col" ];then
-    echo "<h4>sort option $sort_option seems wrong</h4>" >> ../tmp/$session/table
+    echo "<h4>sort option $sort_option seems wrong</h4>" >> %%www/tmp/$session/table
     view=%%app_table.html.def
   else
-    echo "<h4>= NO DATA</h4>" >> ../tmp/$session/table
+    echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
     view=%%app_table.html.def
   fi
 else
   view=%%app_table.html.def
 fi
 
-cat ../descriptor/$view | $SED -r "s/^( *)</</1" \
-| $SED "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
+cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r %%www/descriptor/common_parts/%%parent_app_common_menu" \
 | $SED "/%%common_menu/d"\
-| $SED "/%%table_menu/r ../descriptor/common_parts/table_menu_${permission}" \
+| $SED "/%%table_menu/r %%www/descriptor/common_parts/table_menu_${permission}" \
 | $SED "/%%table_menu/d"\
-| $SED "/%%table/r ../tmp/$session/table" \
+| $SED "/%%table/r %%www/tmp/$session/table" \
 | $SED "s/%%table//g"\
 | $SED "s/%%databox/$databox/g"\
-| $SED "/%%page_link/r ../tmp/$session/page_link" \
+| $SED "/%%page_link/r %%www/tmp/$session/page_link" \
 | $SED "s/%%page_link//g"\
-| $SED "/%%tag/r ../tmp/$session/tag" \
+| $SED "/%%tag/r %%www/tmp/$session/tag" \
 | $SED "s/%%tag//g"\
 | $SED "s/%%user/$user_name/g"\
 | $SED "s/%%num/$line_num/g"\
@@ -270,7 +270,7 @@ cat ../descriptor/$view | $SED -r "s/^( *)</</1" \
 
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

@@ -4,13 +4,13 @@
 input=`dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -`
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load remote addr
 remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
@@ -37,7 +37,7 @@ param=`date +%s`
 param="$param:$RANDOM"
 count=1
 
-while [ -f ../tmp/${param} ]
+while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
  count=`expr $count + 1`
@@ -48,24 +48,24 @@ do
 done
 
 # parse QUERY STRING
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" |  tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" |  tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
 
 # parse POST param
 echo $input | $SED "s/\`//g" | $SED "s/&/\n/g"  | $SED -r "s/small_shell_authkey(.*)=/small_shell_authkey=/g" \
-| $PHP -r "echo urldecode(file_get_contents('php://stdin'));"  >> ../tmp/${param}
-cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" |  tr -d \$ | tr -d \` > ../tmp/${param}.load
+| $PHP -r "echo urldecode(file_get_contents('php://stdin'));"  >> %%www/tmp/${param}
+cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" |  tr -d \$ | tr -d \` > %%www/tmp/${param}.load
 
-chmod 755 ../tmp/${param}.load
+chmod 755 %%www/tmp/${param}.load
 
 # load query string
-.  ../tmp/${param}.load
-rm  ../tmp/${param}*
+.  %%www/tmp/${param}.load
+rm  %%www/tmp/${param}*
 
 # gen res list
 timestamp=`date +%s%3N`
 
-if [ ! -d  ../tmp/$timestamp ];then
-  mkdir ../tmp/$timestamp
+if [ ! -d  %%www/tmp/$timestamp ];then
+  mkdir %%www/tmp/$timestamp
 fi
 
 # gen databox list for left menu
@@ -75,14 +75,14 @@ for res in $res_list
 do
   if [ ! "$databox" = "$res" -o $count -eq 0 ];then
     echo "<option value=\"./shell.auth?databox=$res\">DataBox:$res</option>"\
-    >> ../tmp/$timestamp/databox_list
+    >> %%www/tmp/$timestamp/databox_list
   fi
   ((count +=1 ))
 done
 
 res_chk=`echo $res_list | $SED "s/ //g"`
 if [ ! "$res_chk" ];then
-  echo "<option value=\"./shell.auth?databox=null\">DataBox:null</option>" >> ../tmp/$timestamp/databox_list
+  echo "<option value=\"./shell.auth?databox=null\">DataBox:null</option>" >> %%www/tmp/$timestamp/databox_list
   databox=null
 fi
 
@@ -102,18 +102,18 @@ if [ "$initialize" ];then
 
   # render success page
   if [ "$user_name" -a "$user_key" ];then
-    cat ../descriptor/auth_initialize.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    cat %%www/descriptor/auth_initialize.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
     | $SED "/%%footer/d"\
     | $SED "s/%%IP/$remote_addr/g" \
     | $SED "s/%%user_name/$user_name/g" \
     | $SED "s/%%user_key/$user_key/g" \
     | $SED "s/%%server/$server/g"
-    rm -rf ../tmp/$timestamp
+    rm -rf %%www/tmp/$timestamp
     exit 0
   else
     echo "error: Your initialize URL should be wrong, please contact to your web admin"
-    rm -rf ../tmp/$timestamp
+    rm -rf %%www/tmp/$timestamp
     exit 1 
   fi
 fi
@@ -123,15 +123,15 @@ if [ ! "$small_shell_authkey" ];then
 
   if [ "$key_placeholder" ];then
     # render first login form with initialized key
-    cat ../descriptor/auth_form_with_key.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    cat %%www/descriptor/auth_form_with_key.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
     | $SED "/%%footer/d"\
-    | $SED "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
     | $SED "s/%%databox_list//g"\
     | $SED "s/%%key_placeholder/$key_placeholder/g"
-    rm -rf ../tmp/$timestamp
+    rm -rf %%www/tmp/$timestamp
     exit 0
 
   else
@@ -154,16 +154,16 @@ if [ ! "$small_shell_authkey" ];then
     fi
 
     # render standard login form with queyr string and messge
-    cat ../descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
     | $SED "/%%footer/d"\
-    | $SED "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
     | $SED "s/%%databox_list//g"\
     | $SED "s/%%params/${databox}${req}${id}/g"\
     | $SED "s/%%message/${message}/g" 
-    rm -rf ../tmp/$timestamp
+    rm -rf %%www/tmp/$timestamp
     exit 0
   fi
 
@@ -196,20 +196,20 @@ if [ "$small_shell_authkey" ];then
     else
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&pin=$pin&req=$req\">"
     fi
-    rm -rf ../tmp/$timestamp
+    rm -rf %%www/tmp/$timestamp
     exit 0
   else
     # render standard login form with error message
-    cat ../descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
+    cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
     | $SED "s/%%message/<p><b>! Key is wrong, please try again<\/b><\/p>/g" \
-    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/auth_form_menu" \
+    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r ../descriptor/common_parts/footer" \
+    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
     | $SED "/%%footer/d"\
-    | $SED "/%%databox_list/r ../tmp/$timestamp/databox_list" \
+    | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
     | $SED "s/%%databox_list//g"\
     | $SED "s/%%params//g"
-    rm -rf ../tmp/$timestamp
+    rm -rf %%www/tmp/$timestamp
     exit 1
   fi
   

@@ -2,4 +2,4 @@
 
 echo "Content-Type: text/html"
 echo ""
-../bin/shelltest.sh
+%%www/bin/shelltest.sh

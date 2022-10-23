@@ -5,7 +5,7 @@ session_update="required"
 auth="%%auth"
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 IP_whitelisting=%%IP_whitelisting
 
@@ -35,7 +35,7 @@ fi
 param=`date +%s`
 param="$param:$RANDOM"
 count=1
-while [ -f ../tmp/${param} ]
+while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
  count=`expr $count + 1`
@@ -46,13 +46,13 @@ do
 done
 
 # parse QUERY_STRING
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > ../tmp/${param}.load
-chmod 755 ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > %%www/tmp/${param}.load
+chmod 755 %%www/tmp/${param}.load
 
 # load query string
-.  ../tmp/${param}.load
-rm  ../tmp/${param}*
+.  %%www/tmp/${param}.load
+rm  %%www/tmp/${param}*
 
 if [ ! "$req" ];then
   req=main
@@ -134,10 +134,10 @@ if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
     method=urlenc
   fi
 
-  mkdir ../tmp/$session
+  mkdir %%www/tmp/$session
   # dump posted data
-  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2>/dev/null
-  ../bin/parse.sh $session $method
+  dd bs=${CONTENT_LENGTH} of=%%www/tmp/$session/input 2>/dev/null
+  %%www/bin/parse.sh $session $method
 
 fi
 
@@ -148,26 +148,26 @@ fi
 case "$req" in
   
   "main")
-    ../bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
+    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
 
   "get")
-    ../bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate;;
+    %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate;;
 
   "set")
-    ../bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
+    %%www/bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
 
   "del")
-    ../bin/%%app_del.sh databox:$databox session:$session pin:$pin id:$id ;;
+    %%www/bin/%%app_del.sh databox:$databox session:$session pin:$pin id:$id ;;
 
   "table")
     table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
-    ../bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line;;
+    %%www/bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line;;
 
   "log_viewer")
-    ../bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id ;;
+    %%www/bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
   "file")
-    ../bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;
+    %%www/bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
   *)
     echo "error: wrong request";;

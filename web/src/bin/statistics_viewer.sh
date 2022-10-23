@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -29,8 +29,8 @@ if [ "$target" = "" -a ! "$type" ];then
   exit 1
 fi
 
-if [ ! -d ../tmp/${session}_statistics ];then
-  mkdir ../tmp/${session}_statistics
+if [ ! -d %%www/tmp/${session}_statistics ];then
+  mkdir %%www/tmp/${session}_statistics
 fi
 
 # -----------------
@@ -44,11 +44,11 @@ if [ "$type" = "rawdata" ];then
 
   # gen %%statistics contents
   sudo -u small-shell ${small_shell_path}/bin/meta  get.statistics:${target}{rawdata} \
-  > ../tmp/${session}_statistics/result
+  > %%www/tmp/${session}_statistics/result
 
   # render HTML
-  cat ../descriptor/statistics_viewer.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%statistics/r ../tmp/${session}_statistics/result" \
+  cat %%www/descriptor/statistics_viewer.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%statistics/r %%www/tmp/${session}_statistics/result" \
   | $SED "s/%%statistics//g"\
   | $SED "s/%%target/$target/g"
 
@@ -60,7 +60,7 @@ elif [ "$type" = "graph" ];then
 fi
 
 if [ "$session" ];then
-  rm -rf ../tmp/${session}_statistics
+  rm -rf %%www/tmp/${session}_statistics
 fi
 
 exit 0

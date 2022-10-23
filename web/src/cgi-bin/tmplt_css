@@ -2,4 +2,4 @@
 
 echo "Content-Type: text/html"
 echo ""
-cat ../descriptor/%%app.css.def
+cat %%www/descriptor/%%app.css.def

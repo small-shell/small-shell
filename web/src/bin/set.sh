@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -33,13 +33,13 @@ done
 form_chk=`${small_shell_path}/bin/meta chk.form:$databox`
 
 if [ "$form_chk" = "multipart" ];then
-   file_key=`cat ../tmp/$session/binary_file/input_name`
-   cat ../tmp/$session/binary_file/file_name > ../tmp/$session/$file_key 2>/dev/null
+   file_key=`cat %%www/tmp/$session/binary_file/input_name`
+   cat %%www/tmp/$session/binary_file/file_name > %%www/tmp/$session/$file_key 2>/dev/null
 fi
 
 # check posted param
-if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
+if [ -d %%www/tmp/$session ];then
+  keys=`ls %%www/tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
 else
   echo "error: No param posted"
   exit 1
@@ -56,15 +56,15 @@ fi
 
 # set and get %%result contents
 sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
-action:set id:$id keys:$keys input_dir:../tmp/$session > ../tmp/$session/result
+action:set id:$id keys:$keys input_dir:%%www/tmp/$session > %%www/tmp/$session/result
 
-error_chk=`grep "^error" ../tmp/$session/result`
+error_chk=`grep "^error" %%www/tmp/$session/result`
 
 if [ "$error_chk" ];then
-  cat ../descriptor/set_err.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%common_menu/r ../descriptor/common_parts/common_menu" \
+  cat %%www/descriptor/set_err.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
   | $SED "s/%%common_menu//g"\
-  | $SED "/%%message/r ../tmp/$session/result" \
+  | $SED "/%%message/r %%www/tmp/$session/result" \
   | $SED "/%%message/d"\
   | $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 else
@@ -80,7 +80,7 @@ else
 fi
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

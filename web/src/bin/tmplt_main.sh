@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -21,8 +21,8 @@ do
 
 done
 
-if [ ! -d ../tmp/$session ];then
-  mkdir ../tmp/$session
+if [ ! -d %%www/tmp/$session ];then
+  mkdir %%www/tmp/$session
 fi
 
 # -----------------
@@ -37,15 +37,15 @@ fi
 # render HTML
 # -----------------
 
-cat ../descriptor/%%app_main.html.def | $SED -r "s/^( *)</</1" \
-| $SED "/%%common_menu/r ../descriptor/common_parts/%%app_common_menu" \
+cat %%www/descriptor/%%app_main.html.def | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
 | $SED "s/%%common_menu//g"\
 | $SED "s/%%user_name/$user_name/g" \
 | $SED "s/%%session/session=$session\&pin=$pin/g" \
 | $SED "s/%%params/session=$session\&pin=$pin/g"
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

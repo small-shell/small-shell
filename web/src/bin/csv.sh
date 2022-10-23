@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -29,8 +29,8 @@ done
 META="sudo -u small-shell ${small_shell_path}/bin/meta"
 DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
 
-if [ ! -d ../tmp/$session ];then
-  mkdir ../tmp/$session
+if [ ! -d %%www/tmp/$session ];then
+  mkdir %%www/tmp/$session
 fi
 
 if [[ $filter == *{*} ]]; then
@@ -58,12 +58,12 @@ fi
 if [ ! "$filter" = "%%header" ];then
 
   if [ "$filter" = "-" ];then
-    $DATA_SHELL databox:$databox command:show_all format:csv > ../tmp/$session/csv
+    $DATA_SHELL databox:$databox command:show_all format:csv > %%www/tmp/$session/csv
   else
-    $DATA_SHELL databox:$databox command:show_all[filter=${filter_table}] format:csv > ../tmp/$session/csv
+    $DATA_SHELL databox:$databox command:show_all[filter=${filter_table}] format:csv > %%www/tmp/$session/csv
   fi
 
-  cat ../tmp/$session/csv \
+  cat %%www/tmp/$session/csv \
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
   | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
@@ -84,7 +84,7 @@ else
 fi
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

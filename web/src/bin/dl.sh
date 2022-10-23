@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -41,7 +41,7 @@ echo ""
 sudo -u small-shell ${small_shell_path}/bin/dl session:$session pin:$pin databox:$databox id:$id
 
 if [ "$session" ];then
-  rm -rf ../tmp/${session}_log
+  rm -rf %%www/tmp/${session}_log
 fi
 
 exit 0

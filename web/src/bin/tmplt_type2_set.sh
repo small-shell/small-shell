@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -33,13 +33,13 @@ DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$sess
 # form type check
 form_chk=`$META chk.form:%%databox`
 if [ "$form_chk" = "multipart" ];then
-  file_key=`cat ../tmp/$session/binary_file/input_name`
-  cat ../tmp/$session/binary_file/file_name > ../tmp/$session/$file_key 2>/dev/null
+  file_key=`cat %%www/tmp/$session/binary_file/input_name`
+  cat %%www/tmp/$session/binary_file/file_name > %%www/tmp/$session/$file_key 2>/dev/null
 fi
 
 # check posted param
-if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
+if [ -d %%www/tmp/$session ];then
+  keys=`ls %%www/tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
 else
   echo "error: No param posted"
   exit 1
@@ -51,29 +51,29 @@ if [ "$id" = "" ];then
 fi
 
 # push datas to databox
-$DATA_SHELL databox:%%databox action:set id:$id keys:$keys input_dir:../tmp/$session  > ../tmp/$session/result
+$DATA_SHELL databox:%%databox action:set id:$id keys:$keys input_dir:%%www/tmp/$session  > %%www/tmp/$session/result
 
 # result check
-updated_id=`cat ../tmp/$session/result | grep "^successfully set" | $AWK -F "id:" '{print $2}' | $SED '/^$/d' | sort | uniq`
+updated_id=`cat %%www/tmp/$session/result | grep "^successfully set" | $AWK -F "id:" '{print $2}' | $SED '/^$/d' | sort | uniq`
 
 # set message
 if [ "$updated_id" ];then
-  echo "<h2>SUCCESSFULLY SUBMITTED</h2>" > ../tmp/$session/message
-  echo "<a href=\"./%%app?req=get&id=$updated_id\"><p><b>YOUR LINK</b></p></a>" >> ../tmp/$session/message
+  echo "<h2>SUCCESSFULLY SUBMITTED</h2>" > %%www/tmp/$session/message
+  echo "<a href=\"./%%app?req=get&id=$updated_id\"><p><b>YOUR LINK</b></p></a>" >> %%www/tmp/$session/message
 else
-  echo "<h2>Failed, something is wrong. please contact to your web admin</h2>" > ../tmp/$session/message
+  echo "<h2>Failed, something is wrong. please contact to your web admin</h2>" > %%www/tmp/$session/message
 fi
 
 # -----------------
 # render HTML
 # -----------------
-cat ../descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
-| $SED "/%%message/r ../tmp/$session/message" \
+cat %%www/descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
+| $SED "/%%message/r %%www/tmp/$session/message" \
 | $SED "s/%%message/$message/g"\
 | $SED "s/%%id/$id/g"
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

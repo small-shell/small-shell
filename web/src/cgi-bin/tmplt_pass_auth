@@ -7,7 +7,7 @@ echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load remote addr
 remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
@@ -40,7 +40,7 @@ param=`date +%s`
 param="$param:$RANDOM"
 count=1
 
-while [ -f ../tmp/${param} ]
+while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
  count=`expr $count + 1`
@@ -51,25 +51,25 @@ do
 done
 
 # parse QUERY STRING
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" | tr -d \$ | tr -d \` > ../tmp/${param}.load
-chmod 755 ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" | tr -d \$ | tr -d \` > %%www/tmp/${param}.load
+chmod 755 %%www/tmp/${param}.load
 
 # load query string
-. ../tmp/${param}.load
+. %%www/tmp/${param}.load
 
 # dump posted data
 dummy_session="$param.post"
-mkdir ../tmp/$dummy_session
-dd bs=${CONTENT_LENGTH} of=../tmp/$dummy_session/input 2>/dev/null
-../bin/parse.sh $dummy_session urlenc
+mkdir %%www/tmp/$dummy_session
+dd bs=${CONTENT_LENGTH} of=%%www/tmp/$dummy_session/input 2>/dev/null
+%%www/bin/parse.sh $dummy_session urlenc
 
 # load posted data
-ls ../tmp/$dummy_session/%%app_pass* >/dev/null 2>&1
+ls %%www/tmp/$dummy_session/%%app_pass* >/dev/null 2>&1
 if [ $? -eq 0 ];then
-  app_pass=`cat ../tmp/$dummy_session/%%app_pass*`
+  app_pass=`cat %%www/tmp/$dummy_session/%%app_pass*`
 fi
-rm -rf ../tmp/${param}*
+rm -rf %%www/tmp/${param}*
 
 # render auth form
 if [ ! "$app_pass" ];then
@@ -87,10 +87,10 @@ if [ ! "$app_pass" ];then
   fi
 
   # render standard login form with queyr string and messge
-  cat ../descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
+  cat %%www/descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/%%app_auth_form_menu" \
   | $SED "s/%%auth_form_menu//g"\
-  | $SED "/%%footer/r ../descriptor/common_parts/%%app_footer" \
+  | $SED "/%%footer/r %%www/descriptor/common_parts/%%app_footer" \
   | $SED "/%%footer/d"\
   | $SED "s/%%message/${message}/g" \
   | $SED "s/?%%params/${req}${id}/g"
@@ -126,11 +126,11 @@ if [ "$app_pass" ];then
 
   else
     # render standard login form with error message
-    cat ../descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
+    cat %%www/descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
     | $SED "s/%%message/<p><b>! Pass code is wrong, please try again<\/b><\/p>/g" \
-    | $SED "/%%auth_form_menu/r ../descriptor/common_parts/%%app_auth_form_menu" \
+    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/%%app_auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r ../descriptor/common_parts/%%app_footer" \
+    | $SED "/%%footer/r %%www/descriptor/common_parts/%%app_footer" \
     | $SED "/%%footer/d"\
     | $SED "s/?%%params//g"
     exit 1

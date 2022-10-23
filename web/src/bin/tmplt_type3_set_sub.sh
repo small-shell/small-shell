@@ -4,7 +4,7 @@
 databox=%%databox
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load query string param
 for param in `echo $@`
@@ -31,14 +31,14 @@ DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$sess
 # form type check
 form_chk=`$META chk.form:$databox`
 if [ "$form_chk" = "multipart" ];then
-  file_key=`cat ../tmp/$session/binary_file/input_name`
-  cat ../tmp/$session/binary_file/file_name > ../tmp/$session/$file_key 2>/dev/null
+  file_key=`cat %%www/tmp/$session/binary_file/input_name`
+  cat %%www/tmp/$session/binary_file/file_name > %%www/tmp/$session/$file_key 2>/dev/null
 fi
 
 
 # check posted param
-if [ -d ../tmp/$session ];then
-  keys=`ls ../tmp/$session | $SED -z "s/\n/,/g" | $SED "s/,$//g" | $SED "s/binary_file//g"`
+if [ -d %%www/tmp/$session ];then
+  keys=`ls %%www/tmp/$session | $SED -z "s/\n/,/g" | $SED "s/,$//g" | $SED "s/binary_file//g"`
 else
   echo "error: No param posted"
   exit 1
@@ -54,15 +54,15 @@ fi
 # -----------------
 
 # push datas to databox
-$DATA_SHELL databox:$databox action:set id:$id keys:$keys input_dir:../tmp/$session  > ../tmp/$session/result
+$DATA_SHELL databox:$databox action:set id:$id keys:$keys input_dir:%%www/tmp/$session  > %%www/tmp/$session/result
 
-error_chk=`grep "^error" ../tmp/$session/result`
+error_chk=`grep "^error" %%www/tmp/$session/result`
 
 if [ "$error_chk" ];then
-  cat ../descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%common_menu/r ../descriptor/common_parts/%%parent_app_common_menu" \
+  cat %%www/descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%parent_app_common_menu" \
   | $SED "s/%%common_menu//g"\
-  | $SED "/%%message/r ../tmp/$session/result" \
+  | $SED "/%%message/r %%www/tmp/$session/result" \
   | $SED "/%%message/d"\
   | $SED "s/%%session/session=$session\&pin=$pin/g"
 else
@@ -77,7 +77,7 @@ else
 fi
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

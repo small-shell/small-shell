@@ -2,4 +2,4 @@
 
 echo "Content-Type: text/html"
 echo ""
-cat ../descriptor/small-shell.css.def
+cat %%www/descriptor/small-shell.css.def

@@ -1388,6 +1388,7 @@ if [ "$param" = "-app" ];then
       echo "protocol=\"$protocol\"" > $ROOT/web/base
       echo "server=\"$server\"" >> $ROOT/web/base
       echo "cgiusr=\"$cgiusr\"" >> $ROOT/web/base
+      echo "www=\"$www\"" >> $ROOT/web/base
       echo "cgidir=\"$cgidir\"" >> $ROOT/web/base
       echo "base_url=\"$base_url\"" >> $ROOT/web/base
       chown small-shell:small-shell $ROOT/web/base
@@ -1457,16 +1458,16 @@ if [ "$param" = "-app" ];then
 
       for src in `ls $ROOT/web/src/cgi-bin | grep -v controller | grep -v tmplt | grep -v auth | xargs basename -a`
       do
-        cat $ROOT/web/src/cgi-bin/$src > $cgidir/$src
+        cat $ROOT/web/src/cgi-bin/$src | $SED "s#\%%www#${www}#g" > $cgidir/$src
         chmod 755 $cgidir/$src
       done
-      cat $ROOT/web/src/cgi-bin/controller > $cgidir/shell.app
-      cat $ROOT/web/src/cgi-bin/auth > $cgidir/shell.auth
+      cat $ROOT/web/src/cgi-bin/controller | $SED "s#\%%www#${www}#g" > $cgidir/shell.app
+      cat $ROOT/web/src/cgi-bin/auth | $SED "s#\%%www#${www}#g" > $cgidir/shell.auth
       chmod 755 $cgidir/shell*
 
       for src in `ls $ROOT/web/src/bin | grep -v tmplt | xargs basename -a`
       do
-        cat $ROOT/web/src/bin/$src > $bindir/$src
+        cat $ROOT/web/src/bin/$src | $SED "s#\%%www#${www}#g" > $bindir/$src
         chmod 755 $bindir/$src
       done
 
@@ -1544,7 +1545,7 @@ if [ "$param" = "-app" ];then
         echo "# sudo $ROOT/adm/ops add.usr:\$user"
         echo ""
       else
-        echo "error: it seems something is wrong,this problram tried to get ${base_url}shelltest.cgi and it's failed." 
+        echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
         echo "please check web server setting and url setting, you should start web server beforehand"
         rm -rf $tmp_dir
         exit 1
@@ -1560,6 +1561,9 @@ if [ "$param" = "-app" ];then
       echo "error: please generate BASE APP first"
       rm -rf $tmp_dir
       exit 1
+    else
+     # load web/base
+      . $ROOT/web/base
     fi
 
     apptype="2.FORM"
@@ -1717,49 +1721,49 @@ if [ "$param" = "-app" ];then
       authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
       # deploy form APP
-      cat $ROOT/web/src/cgi-bin/controller.form | $SED "s/%%authkey/$authkey/g" \
+      cat $ROOT/web/src/cgi-bin/controller.form | $SED "s#\%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
       | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" | $SED "s/%%app/$form_name/g" > $cgidir/$form_name
-      cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s/%%app/$form_name/g" > $cgidir/${form_name}_css
+      cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$form_name/g" > $cgidir/${form_name}_css
 
       chown $cgiusr:$cgiusr $cgidir/${form_name}*
       chmod 700 $cgidir/${form_name}*
 
 
-      cat $ROOT/web/src/bin/tmplt_type2_get.sh | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > $cgidir/../bin/${form_name}_get.sh
+      cat $ROOT/web/src/bin/tmplt_type2_get.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+      | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > ${www}/bin/${form_name}_get.sh
 
-      cat $ROOT/web/src/bin/tmplt_type2_set.sh | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > $cgidir/../bin/${form_name}_set.sh
+      cat $ROOT/web/src/bin/tmplt_type2_set.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+      | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > ${www}/bin/${form_name}_set.sh
 
-      chown $cgiusr:$cgiusr $cgidir/../bin/${form_name}*
-      chmod 700 $cgidir/../bin/${form_name}*
+      chown $cgiusr:$cgiusr ${www}/bin/${form_name}*
+      chmod 700 ${www}/bin/${form_name}*
 
       cat $ROOT/web/src/descriptor/tmplt_type2_get_new.html.def | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  | $SED "s/%%description/$description/g" > $cgidir/../descriptor/${form_name}_get_new.html.def
+      | $SED "s/%%app/$form_name/g"  | $SED "s/%%description/$description/g" > ${www}/descriptor/${form_name}_get_new.html.def
 
       cat $ROOT/web/src/descriptor/tmplt_type2_get_new_incf.html.def | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  | $SED "s/%%description/$description/g" > $cgidir/../descriptor/${form_name}_get_new_incf.html.def
+      | $SED "s/%%app/$form_name/g"  | $SED "s/%%description/$description/g" > ${www}/descriptor/${form_name}_get_new_incf.html.def
 
       cat $ROOT/web/src/descriptor/tmplt_type2_get.html.def | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_get.html.def
+      | $SED "s/%%app/$form_name/g"  > ${www}/descriptor/${form_name}_get.html.def
 
       cat $ROOT/web/src/descriptor/tmplt_type2_get_err.html.def | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_get_err.html.def
+      | $SED "s/%%app/$form_name/g"  > ${www}/descriptor/${form_name}_get_err.html.def
 
       cat $ROOT/web/src/descriptor/tmplt_type2_set.html.def | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  > $cgidir/../descriptor/${form_name}_set.html.def
+      | $SED "s/%%app/$form_name/g"  > ${www}/descriptor/${form_name}_set.html.def
 
-      cat $ROOT/web/src/descriptor/tmplt_type2.css.def > $cgidir/../descriptor/${form_name}.css.def
+      cat $ROOT/web/src/descriptor/tmplt_type2.css.def > ${www}/descriptor/${form_name}.css.def
 
-      chown $cgiusr:$cgiusr $cgidir/../descriptor/${form_name}*
-      chmod 700 $cgidir/../descriptor/${form_name}*
+      chown $cgiusr:$cgiusr ${www}/descriptor/${form_name}*
+      chmod 700 ${www}/descriptor/${form_name}*
 
       echo "Form is successfully generated"
       echo "Please update codes if needed"
       ls  $cgidir/${form_name}
       ls  $cgidir/${form_name}_css
-      ls  $cgidir/../bin/${form_name}_*
-      ls  $cgidir/../descriptor/${form_name}_*
+      ls  ${www}/bin/${form_name}_*
+      ls  ${www}/descriptor/${form_name}_*
     else
       echo "Plese try again from beginning, #gen -app" 
       rm -rf $tmp_dir
@@ -1774,6 +1778,9 @@ if [ "$param" = "-app" ];then
       echo "error: please generate BASE APP first"
       rm -rf $tmp_dir
       exit 1
+    else
+      # load web/base
+      . $ROOT/web/base
     fi
 
     # load base info
@@ -1946,28 +1953,44 @@ if [ "$param" = "-app" ];then
           echo "$shared_pass" > $ROOT/web/${app}.code
 
           # deploy psscode and other APP
-          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
+          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" \
+          | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
 
-          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s/%%app/$app/g" > $cgidir/${app}_css
+          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > $cgidir/${app}_css
           chown $cgiusr:$cgiusr $cgidir/${app}_css
           chmod 700 $cgidir/${app}_css
 
-          cat $ROOT/web/src/cgi-bin/tmplt_pass_auth | $SED "s/%%app/$app/g" | $SED "s/%%authkey/$authkey/g" > $cgidir/auth.${app}
+          cat $ROOT/web/src/cgi-bin/tmplt_pass_auth | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" \
+          | $SED "s/%%authkey/$authkey/g" > $cgidir/auth.${app}
           chown $cgiusr:$cgiusr $cgidir/auth.${app}
           chmod 700 $cgidir/auth.${app}
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
-          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
-          chmod 700 $cgidir/../bin/${app}*
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+
+          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+
+          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+
+          chown $cgiusr:$cgiusr ${www}/bin/${app}*
+          chmod 700 ${www}/bin/${app}*
 
           rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
@@ -1975,49 +1998,63 @@ if [ "$param" = "-app" ];then
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
               cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
-              | $SED "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
-              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+              | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
+              chmod 755 ${www}/descriptor/${app}_${html_def}
             else
-              cat $ROOT/web/src/descriptor/$src  > $cgidir/../descriptor/${app}.css.def
-              chmod 755 $cgidir/../descriptor/${app}.css.def
+              cat $ROOT/web/src/descriptor/$src  > ${www}/descriptor/${app}.css.def
+              chmod 755 ${www}/descriptor/${app}.css.def
             fi
           done
 
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
-          > $cgidir/../descriptor/common_parts/${app}_common_menu
-          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+          > ${www}/descriptor/common_parts/${app}_common_menu
+          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
           cat $ROOT/web/src/descriptor/tmplt_pass_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%rand/$rand/g" > $cgidir/../descriptor/${app}_auth_form.html.def
-          chmod 755 $cgidir/../descriptor/${app}_auth_form.html.def
+          | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
+          chmod 755 ${www}/descriptor/${app}_auth_form.html.def
         fi
 
         if [ "$auth_method" = "key" ];then
 
           # deploy key auth APP
-          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
+          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" \
+          | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
 
-          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s/%%app/$app/g" > $cgidir/${app}_css
+          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > $cgidir/${app}_css
           chown $cgiusr:$cgiusr $cgidir/${app}_css
           chmod 700 $cgidir/${app}_css
 
-          cat $ROOT/web/src/cgi-bin/tmplt_auth | $SED "s/%%app/$app/g" > $cgidir/auth.${app}
+          cat $ROOT/web/src/cgi-bin/tmplt_auth | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > $cgidir/auth.${app}
           chown $cgiusr:$cgiusr $cgidir/auth.${app}
           chmod 700 $cgidir/auth.${app}
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
-          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
-          chmod 700 $cgidir/../bin/${app}*
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+
+          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+
+          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+          chown $cgiusr:$cgiusr ${www}/bin/${app}*
+          chmod 700 ${www}/bin/${app}*
 
           rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a`
@@ -2025,17 +2062,17 @@ if [ "$param" = "-app" ];then
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
               cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
-              | $SED "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
-              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+              | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
+              chmod 755 ${www}/descriptor/${app}_${html_def}
             else
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g"  > $cgidir/../descriptor/${app}.css.def
-              chmod 755 $cgidir/../descriptor/${app}.css.def
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g"  > ${www}/descriptor/${app}.css.def
+              chmod 755 ${www}/descriptor/${app}.css.def
             fi
           done
 
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
-          > $cgidir/../descriptor/common_parts/${app}_common_menu
-          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+          > ${www}/descriptor/common_parts/${app}_common_menu
+          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
         fi
 
@@ -2070,28 +2107,45 @@ if [ "$param" = "-app" ];then
           authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
           # deploy psscode and other APP
-          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
+          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" \
+          | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
 
-          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s/%%app/$app/g" > $cgidir/${app}_css
+          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > $cgidir/${app}_css
           chown $cgiusr:$cgiusr $cgidir/${app}_css
           chmod 700 $cgidir/${app}_css
 
-          cat $ROOT/web/src/cgi-bin/tmplt_other_auth | $SED "s/%%app/$app/g" | $SED "s/%%authkey/$authkey/g" > $cgidir/auth.${app}
+          cat $ROOT/web/src/cgi-bin/tmplt_other_auth | $SED "s#\%%www#${www}#g" \
+          | $SED "s/%%app/$app/g" | $SED "s/%%authkey/$authkey/g" > $cgidir/auth.${app}
           chown $cgiusr:$cgiusr $cgidir/auth.${app}
           chmod 700 $cgidir/auth.${app}
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
-          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
-          chmod 700 $cgidir/../bin/${app}*
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+
+          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#\%%www#${www}#g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+
+          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+
+          chown $cgiusr:$cgiusr ${www}/bin/${app}*
+          chmod 700 ${www}/bin/${app}*
 
           rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
@@ -2099,22 +2153,22 @@ if [ "$param" = "-app" ];then
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
               cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
-              | $SED "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
-              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+              | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
+              chmod 755 ${www}/descriptor/${app}_${html_def}
             else
-              cat $ROOT/web/src/descriptor/$src  > $cgidir/../descriptor/${app}.css.def
-              chmod 755 $cgidir/../descriptor/${app}.css.def
+              cat $ROOT/web/src/descriptor/$src  > ${www}/descriptor/${app}.css.def
+              chmod 755 ${www}/descriptor/${app}.css.def
             fi
           done
 
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
-          > $cgidir/../descriptor/common_parts/${app}_common_menu
-          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+          > ${www}/descriptor/common_parts/${app}_common_menu
+          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
           cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%rand/$rand/g" > $cgidir/../descriptor/${app}_auth_form.html.def
-          chmod 755 $cgidir/../descriptor/${app}_auth_form.html.def
+          | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
+          chmod 755 ${www}/descriptor/${app}_auth_form.html.def
 
         fi
 
@@ -2149,25 +2203,40 @@ if [ "$param" = "-app" ];then
           authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
           # deploy none auth APP
-          cat $ROOT/web/src/cgi-bin/controller.app.4 | $SED "s/%%authkey/$authkey/g" \
+          cat $ROOT/web/src/cgi-bin/controller.app.4 | $SED "s#\%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
           | $SED "s/%%app/$app/g" | $SED "s/%%auth//g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
 
-          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s/%%app/$app/g" > $cgidir/${app}_css
+          cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > $cgidir/${app}_css
           chown $cgiusr:$cgiusr $cgidir/${app}_css
           chmod 700 $cgidir/${app}_css
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_main.sh
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
-          chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
-          chmod 700 $cgidir/../bin/${app}*
+          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+
+          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+
+          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+
+          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+
+          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#\%%www#${www}#g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+
+          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
+          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+
+          chown $cgiusr:$cgiusr ${www}/bin/${app}*
+          chmod 700 ${www}/bin/${app}*
 
           rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
@@ -2175,22 +2244,22 @@ if [ "$param" = "-app" ];then
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
               cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
-              | $SED "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
-              chmod 755 $cgidir/../descriptor/${app}_${html_def}
+              | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
+              chmod 755 ${www}/descriptor/${app}_${html_def}
             else
-              cat $ROOT/web/src/descriptor/$src  > $cgidir/../descriptor/${app}.css.def
-              chmod 755 $cgidir/../descriptor/${app}.css.def
+              cat $ROOT/web/src/descriptor/$src  > ${www}/descriptor/${app}.css.def
+              chmod 755 ${www}/descriptor/${app}.css.def
             fi
           done
 
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | grep -v logout \
-          > $cgidir/../descriptor/common_parts/${app}_common_menu
-          chmod 755 $cgidir/../descriptor/common_parts/${app}_common_menu
+          > ${www}/descriptor/common_parts/${app}_common_menu
+          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
           cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%rand/$rand/g" > $cgidir/../descriptor/${app}_auth_form.html.def
-          chmod 755 $cgidir/../descriptor/${app}_auth_form.html.def
+          | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
+          chmod 755 ${www}/descriptor/${app}_auth_form.html.def
 
         fi
 
@@ -2203,8 +2272,8 @@ if [ "$param" = "-app" ];then
 
         ls  $cgidir/${app}
         ls  $cgidir/${app}_css
-        ls  $cgidir/../bin/${app}_*
-        ls  $cgidir/../descriptor/${app}_*
+        ls  ${www}/bin/${app}_*
+        ls  ${www}/descriptor/${app}_*
 
         if [ "$auth_method" = "key" ];then
           echo "------------------------------------------------------------"
@@ -2216,29 +2285,29 @@ if [ "$param" = "-app" ];then
       else
       # else means this is subapp
 
-        cat $ROOT/web/src/bin/tmplt_type3_table_sub.sh | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_table.sh
+        cat $ROOT/web/src/bin/tmplt_type3_table_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
+        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
 
-        cat $ROOT/web/src/bin/tmplt_type3_get_sub.sh | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_get.sh
+        cat $ROOT/web/src/bin/tmplt_type3_get_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
+        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
 
-        cat $ROOT/web/src/bin/tmplt_type3_set_sub.sh | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_set.sh
+        cat $ROOT/web/src/bin/tmplt_type3_set_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
+        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
 
-        cat $ROOT/web/src/bin/tmplt_type3_del_sub.sh | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_del.sh
+        cat $ROOT/web/src/bin/tmplt_type3_del_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
+        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
 
-        cat $ROOT/web/src/bin/tmplt_log_viewer_sub.sh | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_log_viewer.sh
+        cat $ROOT/web/src/bin/tmplt_log_viewer_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
+        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
 
-        cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s/%%app/$parent_app/g" \
-        | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_page_links.sh
+        cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$parent_app/g" \
+        | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
 
-        cat $ROOT/web/src/bin/tmplt_dl_sub.sh | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > $cgidir/../bin/${app}_dl.sh
+        cat $ROOT/web/src/bin/tmplt_dl_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
+        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
 
-        chown $cgiusr:$cgiusr $cgidir/../bin/${app}*
-        chmod 700 $cgidir/../bin/${app}*
+        chown $cgiusr:$cgiusr ${www}/bin/${app}*
+        chmod 700 ${www}/bin/${app}*
 
 
         for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
@@ -2246,11 +2315,11 @@ if [ "$param" = "-app" ];then
           html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
           if [ ! "$src" = "tmplt_type3.css.def" ];then
             cat $ROOT/web/src/descriptor/$src | $SED "s/.\/%%app/.\/$parent_app/g" \
-            | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" > $cgidir/../descriptor/${app}_${html_def}
+            | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
           fi
         done
 
-        chmod 755 $cgidir/../descriptor/${app}*
+        chmod 755 ${www}/descriptor/${app}*
 
         clear
         echo ""
@@ -2259,12 +2328,12 @@ if [ "$param" = "-app" ];then
         echo "1. APP controller"
         echo " please add routing on $cgidir/${parent_app}"
         echo "#---------------------------------------------------------------------------------------------------------"
-        echo "\"${app}.table\") ../bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;"
-        echo "\"${app}.get\") ../bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;"
-        echo "\"${app}.set\") ../bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
-        echo "\"${app}.del\") ../bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
-        echo "\"${app}.log_viewer\") ../bin/${app}_log_viewer.sh session:\$session pin:\$pin id:\$id;;"
-        echo "\"${app}.file\") ../bin/${app}_dl.sh session:\$session pin:\$pin id:\$id;;"
+        echo "\"${app}.table\") ${www}/bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;"
+        echo "\"${app}.get\") ${www}/bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;"
+        echo "\"${app}.set\") ${www}/bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
+        echo "\"${app}.del\") ${www}/bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
+        echo "\"${app}.log_viewer\") ${www}/bin/${app}_log_viewer.sh session:\$session pin:\$pin id:\$id;;"
+        echo "\"${app}.file\") ${www}/bin/${app}_dl.sh session:\$session pin:\$pin id:\$id;;"
         echo "#---------------------------------------------------------------------------------------------------------"
         echo "then you can access to the subapp"
         echo "${base_url}${parent_app}?&subapp=${app}&req=table"

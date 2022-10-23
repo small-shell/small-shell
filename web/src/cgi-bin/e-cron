@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 # load remote addr
 remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
@@ -31,7 +31,7 @@ param=`date +%s`
 param="$param:$RANDOM"
 count=1
 
-while [ -f ../tmp/${param} ]
+while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
  count=`expr $count + 1`
@@ -44,13 +44,13 @@ do
 done
 
 # parse QUERY_STRING
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > ../tmp/${param}
-cat ../tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > ../tmp/${param}.load
-chmod 755 ../tmp/${param}.load
+echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > %%www/tmp/${param}.load
+chmod 755 %%www/tmp/${param}.load
 
 # load query string
-.  ../tmp/${param}.load
-rm  ../tmp/${param}*
+.  %%www/tmp/${param}.load
+rm  %%www/tmp/${param}*
 
 # load from HTML request header 
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
@@ -81,10 +81,10 @@ if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
     method=urlenc
   fi
 
-  mkdir ../tmp/$session
+  mkdir %%www/tmp/$session
   # dump posted data
-  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2>/dev/null
-  ../bin/parse.sh $session $method
+  dd bs=${CONTENT_LENGTH} of=%%www/tmp/$session/input 2>/dev/null
+  %%www/bin/parse.sh $session $method
 
 fi
 
@@ -132,13 +132,13 @@ if [ "$req" = "push" ];then
   if [ "$filename"  ];then
     echo "Content-Type: text/html"
     echo ""
-    mv ../tmp/$session/binary_file/binary.data ../tmp/$session/$filename
-    sudo -u small-shell ${small_shell_path}/bin/e-cron push.file:../tmp/$session/$filename remote_addr:$remote_addr
+    mv %%www/tmp/$session/binary_file/binary.data %%www/tmp/$session/$filename
+    sudo -u small-shell ${small_shell_path}/bin/e-cron push.file:%%www/tmp/$session/$filename remote_addr:$remote_addr
   fi
 fi
 
-if [ -d ../tmp/$session ];then
-  rm -rf ../tmp/$session
+if [ -d %%www/tmp/$session ];then
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0

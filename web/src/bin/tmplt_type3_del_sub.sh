@@ -4,7 +4,7 @@
 databox=%%databox
 
 # load small-shell conf
-. ../descriptor/.small_shell_conf
+. %%www/descriptor/.small_shell_conf
 
 
 # load query string param
@@ -36,8 +36,8 @@ if [ "$id" = "" ];then
   exit 1
 fi
 
-if [ ! -d ../tmp/$session ];then
-  mkdir ../tmp/$session
+if [ ! -d %%www/tmp/$session ];then
+  mkdir %%www/tmp/$session
 fi
 
 # SET BASE_COMMAND
@@ -49,13 +49,13 @@ DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$sess
 # -----------------
 
 # exec and gen %%result 
-$DATA_SHELL databox:$databox action:del id:$id > ../tmp/$session/result
+$DATA_SHELL databox:$databox action:del id:$id > %%www/tmp/$session/result
 
 # redirect to the table
 echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%parent_app?subapp=%%app&session=$session&pin=$pin&req=table\">"
 
 if [ "$session" ];then
-  rm -rf ../tmp/$session
+  rm -rf %%www/tmp/$session
 fi
 
 exit 0
