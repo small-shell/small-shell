@@ -57,7 +57,7 @@ cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g"
 
 chmod 755 %%www/tmp/${param}.load
 
-# load query string
+# load query string and POSTED params
 .  %%www/tmp/${param}.load
 rm  %%www/tmp/${param}*
 
