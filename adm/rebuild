@@ -19,6 +19,9 @@ fi
 SCRIPT_DIR=`dirname $0`
  . ${SCRIPT_DIR}/../global.conf
 
+# set audit log
+access_log=${ROOT}/users/audit/access_log_`date +%Y%m%d`
+
 if [ ! "$databox" -a ! "$keys" -a ! "$flag" ];then
   echo "error: please input params correctly"
   exit 1
@@ -49,7 +52,7 @@ done
 # create dummy session as root priviledge
 pin=$RANDOM
 session=`echo "root:localhost:${pin}" | $SHASUM | $AWK '{print $1}'`
-sudo -u small-shell echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $ROOT/users/audit.log
+sudo -u small-shell echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $access_log
 
 echo "Index rebuild has been successfully started"
 echo "rebild_session:$session"
@@ -87,7 +90,6 @@ function rebuild(){
   echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost index rebuild end" >> $ROOT/databox/$databox/log.dump
   chown small-shell:small-shell $ROOT/tmp/log/$session.log
   chown small-shell:small-shell $ROOT/databox/$databox/log.dump
-  chown small-shell:small-shell $ROOT/users/audit.log
   rm -rf $ROOT/databox/${databox}/def/_col*
 }
 

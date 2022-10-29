@@ -9,6 +9,9 @@
 SCRIPT_DIR=`dirname $0`
  . ${SCRIPT_DIR}/../global.conf
 
+# set audit log
+access_log=${ROOT}/users/audit/access_log_`date +%Y%m%d`
+
 # exec user check
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "small-shell" ];then
@@ -113,7 +116,7 @@ primary_key_value=`cat $ROOT/databox/${databox}/data/${id}/${primary_key}`
 
 # output binary data
 dd if=$ROOT/databox/$databox/file/$id 2>/dev/null
-echo "`date +%Y-%m-%d` `date +%T` user_name:$user $remote_addr download file from databox:$databox primary_key:$primary_key_value" >> $ROOT/users/audit.log
+echo "`date +%Y-%m-%d` `date +%T` user_name:$user $remote_addr download file from databox:$databox primary_key:$primary_key_value" >> $access_log
 
 if [ -d $tmp_dir ];then
   rm -rf $tmp_dir

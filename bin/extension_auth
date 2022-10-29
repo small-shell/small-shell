@@ -29,7 +29,7 @@ enable_force="yes"
 SCRIPT_DIR=`dirname $0`
  . ${SCRIPT_DIR}/../global.conf
 
-# audit
+# set audit log
 access_log=${ROOT}/users/audit/access_log_`date +%Y%m%d`
 
 # exec user check
