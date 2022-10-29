@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #----------------------------------------------------------
-# usage: ./rebild $databox $keys $flag
+# usage: ./rebuild $databox $keys $flag
 #----------------------------------------------------------
 
 # REBUILD INDEX
@@ -52,7 +52,8 @@ done
 # create dummy session as root priviledge
 pin=$RANDOM
 session=`echo "root:localhost:${pin}" | $SHASUM | $AWK '{print $1}'`
-sudo -u small-shell echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $access_log
+echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $access_log
+chown small-shell:small-shell $access_log
 
 echo "Index rebuild has been successfully started"
 echo "rebild_session:$session"
