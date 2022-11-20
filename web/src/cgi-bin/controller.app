@@ -81,11 +81,6 @@ if [ "$auth" = "required" ];then
     session_ip=`echo $session_chk | $AWK -F ":" '{print $2}'`
 
     if [ ! "${session_ip}" = ${remote_addr} ];then
-      if [[ ! "$req" == *stats && ! "$req" == *file ]];then
-        echo "Content-Type: text/html"
-        echo ""
-      fi
-
       if [ "$req" = "log_viewer" ];then
         echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=$req&id=$id&message=!%20Session%20Expired\">"
         exit 1
