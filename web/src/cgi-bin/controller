@@ -74,9 +74,15 @@ if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "sta
       echo "Content-Type: text/html"
       echo ""
     fi
-    req=main
-    echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
-    exit 1
+
+    if [ "$req" = "log_viewer" ];then
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&id=$id&message=!%20Session%20Expired\">"
+      exit 1
+    else
+      req=main
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      exit 1
+    fi
   fi
 fi
 

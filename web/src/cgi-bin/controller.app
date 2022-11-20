@@ -85,8 +85,14 @@ if [ "$auth" = "required" ];then
         echo "Content-Type: text/html"
         echo ""
       fi
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=$req&message=!%20Session%20Expired\">"
-      exit 1
+
+      if [ "$req" = "log_viewer" ];then
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=$req&id=$id&message=!%20Session%20Expired\">"
+        exit 1
+      else
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=$req&message=!%20Session%20Expired\">"
+        exit 1
+      fi
     fi
   fi
 

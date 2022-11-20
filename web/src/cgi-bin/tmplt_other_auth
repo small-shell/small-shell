@@ -114,7 +114,7 @@ if [ "$app_step_in_token" ];then
     # redirect to APP if key auth is OK
     if [[ $req == *table ]];then
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req\">"
-    elif [[ $req == *get ]];then
+    elif [[ $req == *get || $req == *log_viewer ]];then
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req&id=$id\">"
     else
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req\">"

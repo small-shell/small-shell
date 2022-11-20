@@ -189,7 +189,7 @@ if [ "$small_shell_authkey" ];then
     fi
 
     # redirect to controller if key auth is OK
-    if [ "$req" = "get" ];then
+    if [ "$req" = "get" -o "$req" = "log_viewer" ];then
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&req=$req&pin=$pin&id=$id\">"
     elif [ "$req" = "table" ];then
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&pin=$pin&req=$req\">"
