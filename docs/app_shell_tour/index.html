@@ -41,7 +41,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+    <a href="../quick_start_linux/" class="dropdown-item">For Ubuntu + small-shell WEB srv</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_linux_apache2/" class="dropdown-item">For Ubuntu + apache2 </a>
 </li>
                                     
 <li>
@@ -255,27 +259,17 @@ then start dialog by gen command.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app 
 #-&gt; dialog will be started
 </code></pre>
-<pre><code># Dialog result
+<pre><code># Dialog
 -----------------------------------------------------------------
-APP type: 1.BASE
-server: ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
-protocol: https
-APP exec user: www-data
-Root directory: /var/www #root directory for web server
-cgi directory: /usr/lib/cgi-bin
-base url: https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/
+sudo /usr/local/smkall-shell/adm/gen -app^M
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1^M
+Type of server (1.small-shell WEB srv | 2.other WEB srv): 1^M
+protocol (http | https): https^M
+WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com^M
+ssl cert path : /root/cert.pem^M
+ssl privare key path : /root/private.pem^M
+Do you need to use chain certificate ? (yes | no): no^M
 -----------------------------------------------------------------
-</code></pre>
-<h5 id="add-symlink-on-ubuntu">Add symlink on ubuntu</h5>
-<p>If you are using ubuntu and apache2, please add symlink by answering "yes" in the dialog.</p>
-<pre><code>www dir must have relation with CGI dir. Is it OK to make symbolic link on /usr/lib ?
-following command will be executed
------------------------------------------------------------------
-ln -s /var/www/bin /usr/lib/bin
-ln -s /var/www/descriptor /usr/lib/descriptor
-ln -s /var/www/tmp /usr/lib/tmp
------------------------------------------------------------------
-(yes | no): yes
 </code></pre>
 <h2 id="define-data-structure">Define Data structure</h2>
 <p>You can define data type, name, label and options for html form. small shell Base APP will access to the Databx, and then get HTML data structure.</p>
@@ -530,7 +524,7 @@ sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
  |- gen #generate CGI, DATA, Automate shells
 
 # Directory for APP 
-/usr/lib/cgi-bin
+$cgidir (/var/www/cgi-bin #default or /usr/lib/cgi-bin #ubuntu&amp;apache2) 
  |- shell.app # Base APP controller
  |- shell.auth # Base APP authenticator
  |- api
@@ -538,14 +532,14 @@ sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
  |- ${app} # scratch APP controller
  |- auth.${app} # scratch APP authenticator
 
-/var/www/bin　-&gt; /usr/lib/bin #symlink for ubuntu apache2
+$bin (/var/www/bin)
  |- action_scripts # work as Model
  |- parse.sh #it will be used for parsing posted params
 
-/var/www/descriptor -&gt; /usr/lib/description #symlink for ubuntu apache2
+$descriptor (/var/www/descriptor)
  |- html_definitions # work as definition of view
 
-/var/www/tmp -&gt; /usr/lib/tmp #symlink for ubuntu apache2
+$tmp (/var/www/tmp)
 </code></pre>
 <h5 id="data-flow">Data flow</h5>
 <p>Following is a data flow of APP shell it will be used as Base APP or Scratch APP
@@ -561,7 +555,7 @@ These query string will be loaded as following value in the APP
 </code></pre>
 <h5 id="routing-in-controller-base-app">Routing in controller # Base APP</h5>
 <p>Routings to the action scripts are defined in the controller script.</p>
-<pre><code>sudo vi $cgi-bin/shell.app (e.g. /usr/lib/cgi-bin/shell.app)
+<pre><code>sudo vi $cgi-bin/shell.app (e.g. /var/www/cgi-bin/shell.app)
 
 --code--
 #----------------------------
@@ -712,7 +706,8 @@ ls /var/www/tmp/$session/binary_file/file_name #contain file name
 ls /var/www/tmp/$session/binary_file/binary.data #binary data
 </code></pre>
 <h4 id="parse-usage-in-the-app">Parse usage in the APP</h4>
-<pre><code>sudo vi /usr/ilb/cgi-bin/shell.app
+<pre><code># sudo vi $cgidir/shell.app
+sudo vi /var/www/cgi-bin/shell.app
 
 --code--
 # dump POST data
@@ -738,7 +733,11 @@ fi
 </code></pre>
 <h2 id="debug-techniques">Debug techniques</h2>
 <h5 id="check-error-log">Check error log</h5>
-<pre><code>sudo tail -f /var/log/apache2/error_log
+<pre><code># small-shell default web
+sudo tail -f /var/log/srvdump.log
+
+# ubuntu &amp; apache2
+sudo tail -f /var/log/apache2/error_log
 </code></pre>
 <h5 id="posted-param-and-command-result-check">Posted param and command result check</h5>
 <p>comment out tmp dir removal</p>

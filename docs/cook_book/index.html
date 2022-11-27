@@ -41,7 +41,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+    <a href="../quick_start_linux/" class="dropdown-item">For Ubuntu + small-shell WEB srv</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_linux_apache2/" class="dropdown-item">For Ubuntu + apache2 </a>
 </li>
                                     
 <li>
@@ -127,7 +131,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#apache2-log-analyzer" class="nav-link">apache2 log analyzer</a>
+            <li class="nav-item" data-level="2"><a href="#log-analyzer" class="nav-link">Log analyzer</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -601,7 +605,7 @@ primary databox: none
 <pre><code>&lt;button class=&quot;button&quot;&gt;Sample button&lt;/button&gt;
 </code></pre>
 <h5 id="use-image">Use image</h5>
-<p>In this example, we would like to use GitHub logo for image. please upload logo to "/var/www/html" dir if you are using ubuntu&amp;apache2. then write down the path to the HTML page.</p>
+<p>In this example, we would like to use GitHub logo for image. please upload logo to "/var/www/html" that's static site dir. then write down the path to the HTML page.</p>
 <pre><code>&lt;a href=&quot;https://github.com&quot;&gt;&lt;img src=&quot;../GitHub-Mark-32px.png&quot;&gt;&lt;/a&gt;
 </code></pre>
 <h5 id="update-even-menu">Update even menu</h5>
@@ -650,23 +654,24 @@ primary databox: none
 <p>You can export main page as static stie. then please copy the html to /var/www/html or other static directory.</p>
 <pre><code>/usr/local/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
 </code></pre>
-<h2 id="apache2-log-analyzer">apache2 log analyzer</h2>
-<p>You can import job for analyzing apache2 log from github. please deploy it to the web server that has apache2 log. by the way, this job is designed for Ubuntu apache2 server. if you want to use this for other platform, please modify log_analyzer.sh</p>
+<h2 id="log-analyzer">Log analyzer</h2>
+<p>You can import job for analyzing small shell web log from github. please deploy it to the small shell env which using default web server.</p>
 <h6 id="link-to-code-is-here">Link to code is  <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
-<pre><code>cd $HOME
+<pre><code>sudo apt-get install whois
+cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
-cd small-shell-apps/apache2_analyzer
+cd small-shell-apps/ssw_log_analyzer
 
 # Deploy job
 sudo ./deploy.sh
 </code></pre>
 <h4 id="confirm-imported-job">confirm imported job</h4>
-<p>If deploy.sh executed without any error, 1 databox {apache2_analyer} and 3 job will be imported.</p>
-<h6 id="log-analyzer">log analyzer</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.log_analyzer
+<p>If deploy.sh executed without any error, 1 databox {web_analyer} and 3 job will be imported.</p>
+<h6 id="log-analyzer_1">log analyzer</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.ssw_log_analyzer
 </code></pre>
-<pre><code> &gt; JOB: log_analyzer
-def:/usr/local/small-shell/util/e-cron/def/log_analyzer.def
+<pre><code> &gt; JOB: ssw_log_analyzer
+def:/usr/local/small-shell/util/e-cron/def/ssw_log_analyzer.def
 -------------SCHEDULE----------------
 min: 1
 hour: 0
@@ -674,7 +679,7 @@ date: any
 month: any
 week: any
 -------------DEFINITION----------------
-exec_command=&quot;/usr/local/small-shell/util/scripts/apache2_log_analyzer.sh 21it&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/ssw_log_analyzer.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;analyzer.done&quot;
 hubapi=&quot;&quot;
@@ -692,7 +697,7 @@ date: any
 month: any
 week: any
 -------------DEFINITION----------------
-exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:pv frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:apache2_analyzer&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:pv frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:web_analyzer&quot;
 input_message=&quot;analyzer.done&quot;
 output_message=&quot;pv.done&quot;
 hubapi=&quot;&quot;
@@ -710,14 +715,14 @@ date: any
 month: any
 week: any
 -------------DEFINITION----------------
-exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:uniq_access frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:apache2_analyzer&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:uniq_access frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:web_analyzer&quot;
 input_message=&quot;pv.done&quot;
 output_message=&quot;&quot;
 hubapi=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
 <h4 id="confirm-result">Confirm result</h4>
-<p>Job will push the result to the databox named as apache2_annalyzer. Log analytics target is access.log.1 it means 1 day ago log. you can check the graph on console. using #stats command.</p></div>
+<p>Job will push the result to the databox named as web_annalyzer. Log analytics target is srvdump.log.1 it means 1 day ago log. you can check the graph on console. using #stats command.</p></div>
             </div>
         </div>
 

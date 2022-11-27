@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>For Ubuntu + small-shell WEB srv - small-shell.org</title>
+        <title>For Ubuntu + apache2  - small-shell.org</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -41,11 +41,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="./" class="dropdown-item active">For Ubuntu + small-shell WEB srv</a>
+    <a href="../quick_start_linux/" class="dropdown-item">For Ubuntu + small-shell WEB srv</a>
 </li>
                                     
 <li>
-    <a href="../quick_start_linux_apache2/" class="dropdown-item">For Ubuntu + apache2 </a>
+    <a href="./" class="dropdown-item active">For Ubuntu + apache2 </a>
 </li>
                                     
 <li>
@@ -94,12 +94,12 @@
 
                     <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a rel="prev" href=".." class="nav-link">
+                                <a rel="prev" href="../quick_start_linux/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../quick_start_linux_apache2/" class="nav-link">
+                                <a rel="next" href="../quick_start_Mac/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -121,7 +121,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#quick-start" class="nav-link">Quick start</a>
+            <li class="nav-item" data-level="1"><a href="#quick-start-for-ubuntuapapche2" class="nav-link">Quick start for ubuntu+apapche2</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-level="2"><a href="#setup-envubuntu" class="nav-link">Setup Env@ubuntu</a>
               <ul class="nav flex-column">
@@ -143,10 +143,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#re-start-small-shell-web" class="nav-link">Re-start small-shell web</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#upgrade-small-shell" class="nav-link">Upgrade small shell</a>
               <ul class="nav flex-column">
               </ul>
@@ -158,7 +154,7 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="quick-start">Quick start</h1>
+<h1 id="quick-start-for-ubuntuapapche2">Quick start for ubuntu+apapche2</h1>
 <p>This is a quick start guide for ubuntu&amp;apache2. of course you can choose other linux distributor, but so far our recommendation is ubuntu.</p>
 <h2 id="setup-envubuntu">Setup Env@ubuntu</h2>
 <pre><code># addd user
@@ -167,8 +163,14 @@ sudo useradd -s /sbin/nologin small-shell
 # update apt list
 sudo apt-get update
 
-# install npn/php libraries, php will be used for encoding and node.js will be used for writing WEB server
-sudo apt install npm
+# install httpd (e.g. apache)
+sudo apt-get install apache2
+sudo a2enmod cgid
+#sudo systemctl start apache2
+sudo service apache2 start
+sudo update-rc.d apache2 defaults
+
+# install php library, it will be used for url encoding (required)
 sudo apt-get install php
 
 ##install jq
@@ -181,6 +183,13 @@ cd /usr/local
 sudo git clone https://github.com/small-shell/small-shell.git
 sudo chown -R small-shell:small-shell /usr/local/small-shell
 sudo chmod 755 /usr/local/small-shell/adm/gen
+</code></pre>
+<h5 id="sudo-setting">Sudo setting</h5>
+<pre><code># change sudo setting
+sudo visudo    
+## add to last line 
+## sudo setting for httpd user (e.g.) www-data for apache2
+www-data   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/local/small-shell/sbin/*
 </code></pre>
 <h2 id="gen-databox">Gen Databox</h2>
 <p>Then Let's generate databox as the data store of WEB APP.
@@ -225,16 +234,33 @@ Is it OK ? (yes | no): yes
 </code></pre>
 <h2 id="gen-base-app">Gen Base APP</h2>
 <p>Once at least 1 databox is ready, please generate APP shell <br />
-APP shell details are in <a href="../app_shell_tour/">APP shell tour</a> By the way if you will use https, please input path of cert and key of ssl that will be copied to small-shell /var/www/app folder after dialog and https web server will be started automatically.</p>
-<pre><code>sudo /usr/local/smkall-shell/adm/gen -app
+APP shell details are in <a href="../app_shell_tour/">APP shell tour</a> </p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
+Type of server (1.small-shell WEB srv | 2.other WEB srv): 2
+#-&gt; Dialog will be started, for making Base APP
 </code></pre>
-<pre><code>Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
-Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
-protocol (http | https): https
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
-ssl cert path : /root/cert.pem
-ssl privare key path : /root/private.pem
-Do you need to use chain certificate ? (yes | no): no
+<pre><code># Dialog result
+--------------------------------------------------------------------------
+APP type: 1.BASE
+protocol: https
+APP exec user: www-data
+Root directory: /var/www
+CGI directory: /usr/lib/cgi-bin
+server: ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
+base url: https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/
+--------------------------------------------------------------------------
+</code></pre>
+<h5 id="add-symlink-on-ubuntu">Add symlink on ubuntu</h5>
+<p>If you are using ubuntu and apache2, please add symlink by answering "yes" in the dialog.</p>
+<pre><code>www dir must have relation with CGI dir. Is it OK to make symbolic link on /usr/lib ?
+following command will be executed
+-----------------------------------------------------------------
+ln -s /var/www/bin /usr/lib/bin
+ln -s /var/www/descriptor /usr/lib/descriptor
+ln -s /var/www/tmp /usr/lib/tmp
+-----------------------------------------------------------------
+(yes | no): yes
 </code></pre>
 <h4 id="add-user">Add user</h4>
 <p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command</p>
@@ -272,14 +298,15 @@ please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <p>If end user lost their key, you can re-generate initialize URL by following command. In this example, admin will re-generate initialize URL for user name "test"</p>
 <pre><code> sudo /usr/local/small-shell/adm/ops initialize.usr:test
 </code></pre>
-<h2 id="re-start-small-shell-web">Re-start small-shell web</h2>
-<p>If you want to restart small-shell web server please use systemctl command, and please check log.</p>
-<pre><code>sudo systemctl restart small-shell
-
-# check process
-ps -ef | grep app.sh
-# check log
-ls -ltr /var/www/log
+<h4 id="se-linux-setting-change">SE linux setting change</h4>
+<p>If you are using SE linux, pelase change to permissive mode and then please make specific rule for SE linux before enforcing.</p>
+<pre><code>## check SE linux
+sestatus
+## if current mode is enforcing. please change to permissive. then please make rule later.
+sudo vi /etc/selinux/config
+SELINUX=permissive
+##reoobt
+sudo reboot
 </code></pre>
 <h2 id="upgrade-small-shell">Upgrade small shell</h2>
 <p>You can upgrade small-shell very easily. this is exmaples of upgrade command.</p>

@@ -41,7 +41,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../quick_start_linux/" class="dropdown-item">For Linux</a>
+    <a href="../quick_start_linux/" class="dropdown-item">For Ubuntu + small-shell WEB srv</a>
+</li>
+                                    
+<li>
+    <a href="../quick_start_linux_apache2/" class="dropdown-item">For Ubuntu + apache2 </a>
 </li>
                                     
 <li>
@@ -90,7 +94,7 @@
 
                     <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a rel="prev" href="../quick_start_linux/" class="nav-link">
+                                <a rel="prev" href="../quick_start_linux_apache2/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -123,10 +127,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#setup-apache2" class="nav-link">Setup apache2</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#gen-databox" class="nav-link">Gen Databox</a>
               <ul class="nav flex-column">
               </ul>
@@ -136,6 +136,10 @@
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#connect-to-the-base-app" class="nav-link">Connect to the Base APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#re-start-web-server" class="nav-link">Re-start web server</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -177,49 +181,7 @@ brew install gnu-sed
 brew install gnu-awk
 #brew install sha3sum
 brew install flock
-</code></pre>
-<h2 id="setup-apache2">Setup apache2</h2>
-<p>In this example, we would like to use apache2 that is already installed on Mac as default.</p>
-<pre><code>cp httpd.conf httpd.conf.org
-sudo vi /etc/apache2/httpd.conf 
- #------------------------------------------------
- # enable mod_cgi.so module
- #------------------------------------------------
- &lt;IfModule !mpm_prefork_module&gt;
-        LoadModule cgid_module libexec/apache2/mod_cgid.so
- &lt;/IfModule&gt;
- &lt;IfModule mpm_prefork_module&gt;
-        LoadModule cgi_module libexec/apache2/mod_cgi.so
- &lt;/IfModule&gt;
- #------------------------------------------------
- # enable CGI execution
- #------------------------------------------------
-  &lt;Directory &quot;/Library/WebServer/CGI-Executables&quot;&gt;
-    Options ExecCGI
-    SetHandler cgi-script
-    Require all granted
-  &lt;/Directory&gt;
- #------------------------------------------------
-
-diff httpd.conf httpd.conf.org
-171c171
-&lt;   LoadModule cgid_module libexec/apache2/mod_cgid.so
----
-&gt;   #LoadModule cgid_module libexec/apache2/mod_cgid.so
-174c174
-&lt;   LoadModule cgi_module libexec/apache2/mod_cgi.so
----
-&gt;   #LoadModule cgi_module libexec/apache2/mod_cgi.so
-400,401c400,401
-&lt;     Options ExecCGI
-&lt;     SetHandler cgi-script
----
-&gt;     AllowOverride None
-&gt;     Options None
-</code></pre>
-<h4 id="enable-cron-access">Enable cron access</h4>
-<p>You need to allow cron to access data by chaing privacy setting. setting should be done on GUI from System preference &gt; Security &amp; Privacy &gt; FUll Disk Access.</p>
-<pre><code>Please add /usr/sbin/cron by using command+shift+G shortcut on FUll disk Access setting.
+brew install node
 </code></pre>
 <h4 id="change-sleep-setting">Change sleep setting</h4>
 <p>Also you need to change sleep setting on GUI to avoid service down when display is off. setting should be done from System preference &gt; Security &amp; Privacy &gt; Power Adaptor</p>
@@ -284,6 +246,7 @@ Is it OK ? (yes | no): yes
 APP shell details are in <a href="../app_shell_tour/">APP shell tour</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
+Type of server (1.small-shell WEB srv | 2.other WEB srv): 2
 #-&gt; Dialog will be started, for making Base APP
 </code></pre>
 <pre><code># Dialog result
@@ -336,6 +299,21 @@ please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <h4 id="re-generate-initialize-url">Re-generate initialize URL</h4>
 <p>If end user lost their key, you can re-generate initialize URL by following command. In this example, admin will re-generate initialize URL for user name "test"</p>
 <pre><code> sudo /usr/local/small-shell/adm/ops initialize.usr:test
+</code></pre>
+<h2 id="re-start-web-server">Re-start web server</h2>
+<p>You can restart web server by launchctl command    </p>
+<pre><code># restart
+sudo launchctl stop org.small-shell.node
+sudo launchctl start org.small-shell.node
+
+# check process
+ps -ef | grep app.sh
+# check log
+ls /var/www/log
+</code></pre>
+<h4 id="enable-cron-accessm">Enable cron access^M</h4>
+<p>If you want to use e-cron please  allow cron to access data by chaing privacy setting. setting should be done on GUI from System preference &gt; Security &amp; Privacy &gt; FUll Disk Access.</p>
+<pre><code>Please add /usr/sbin/cron by using command+shift+G shortcut on FUll disk Access setting.^M
 </code></pre>
 <h2 id="upgrade-small-shell">Upgrade small shell</h2>
 <p>You can upgrade small-shell very easily. this is exmaples of upgrade command.</p>
