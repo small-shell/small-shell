@@ -43,7 +43,7 @@ if [ "$type" = "rawdata" ];then
   echo ""
 
   # gen %%statistics contents
-  sudo -u small-shell ${small_shell_path}/bin/meta  get.statistics:${target}{rawdata} \
+  ${small_shell_path}/bin/meta  get.statistics:${target}{rawdata} \
   > %%www/tmp/${session}_statistics/result
 
   # render HTML
@@ -56,7 +56,7 @@ elif [ "$type" = "graph" ];then
   echo "Content-Type: image/png"
   echo ""
   # render graph 
-  sudo -u small-shell ${small_shell_path}/bin/meta  get.statistics:${target}{graph} 
+  ${small_shell_path}/bin/meta  get.statistics:${target}{graph} 
 fi
 
 if [ "$session" ];then

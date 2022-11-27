@@ -58,7 +58,7 @@ rm  %%www/tmp/${param}*
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
-auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
 user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
 session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
 pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
@@ -81,7 +81,7 @@ if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
     if [ "$id" -a "$databox" ];then
 
       # set posted data
-      sudo -u small-shell ${small_shell_path}/bin/DATA_shell \
+      ${small_shell_path}/bin/DATA_shell \
       session:$session pin:$pin action:set id:$id databox:$databox keys:$keys \
       input_dir:%%www/tmp/$session databox:$databox  > %%www/tmp/$session/result
       echo "{ \"info\": \"`cat %%www/tmp/$session/result | $SED -z "s/\n/, /g" | $SED "s/, \$//g" | $SED "s/:/->/g"`\" }"
@@ -98,7 +98,7 @@ fi
 if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
   mkdir %%www/tmp/$session
   if [ "$command" ];then
-    sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin command:$command databox:$databox format:json \
+    ${small_shell_path}/bin/DATA_shell session:$session pin:$pin command:$command databox:$databox format:json \
     | $SED "s/{%%%%%%%%%%%%%}/#/g"\
     | $SED "s/{%%%%%%%%%%%%}/|/g"\
     | $SED "s/{%%%%%%%%%%%}/\]/g"\
@@ -121,7 +121,7 @@ if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
     fi
 
   elif [ "$id" ];then
-    sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin \
+    ${small_shell_path}/bin/DATA_shell session:$session pin:$pin \
     action:get keys:$keys id:$id databox:$databox format:json  > %%www/tmp/$session/result
 
     error_chk=`grep error: %%www/tmp/$session/result | $SED "s/error://g"`
@@ -135,7 +135,7 @@ if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
   fi
 fi
 
-sudo -u small-shell ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
+${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
 
 
 if [ "$session" ];then

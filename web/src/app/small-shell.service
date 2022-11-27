@@ -1,0 +1,10 @@
+[Unit]
+Description=small-shell.app by using  Node.js 
+
+[Service]
+WorkingDirectory=%%www/app
+ExecStart=%%www/app/app.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

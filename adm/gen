@@ -1191,88 +1191,114 @@ if [ "$param" = "-app" ];then
   if [ "$apptype" = "1" ];then
     apptype="1.BASE"
 
-    if [ ! "$mac_chk" ];then
-      echo -n "Root directory of web (/var/www): "
-    else
-      echo -n "Root directory of web (/Library/WebServer): "
-    fi
-    read www
-    www=`echo $www | $SED "s/\/$//g"`
-
-    if [ ! "$www" ];then
-      if [ ! "$mac_chk" ];then
-        www=/var/www
-      else
-        www=/Library/WebServer
-      fi
-    fi
-    www=`echo $www | $SED "s/\/$//g"`
-
-    while [ ! -d $www ]
+    echo -n "Type of server (1.small-shell WEB srv | 2.other WEB srv): "
+    read srvtype
+    while [ ! "$srvtype" = "1"  -a  ! "$srvtype" = "2" ]
     do
-      echo "error: $www is not existing, please set root directory for web APP"
-      echo -n "www directory: "
+      echo -n "Type of server (1.small-shell WEB srv | 2.other WEB srv): "
+      read srvtype
+    done
+
+    if [ "$srvtype" = 1 ];then
+      srvtype=default
+      www=/var/www
+      cgidir=/var/www/cgi-bin
+      cgiusr=small-shell
+      which node > /dev/null 2>&1
+      if [ ! $? -eq 0 ];then
+        echo "error: please install node.js beforehand to use small-shell default server"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+    else
+      srvtype=other
+    fi
+
+
+    if [ "$srvtype" = "other" ];then
+      if [ ! "$mac_chk" ];then
+        echo -n "Root directory of web (/var/www): "
+      else
+        echo -n "Root directory of web (/Library/WebServer): "
+      fi
       read www
+      www=`echo $www | $SED "s/\/$//g"`
+
       if [ ! "$www" ];then
-        www=/var/www
+        if [ ! "$mac_chk" ];then
+          www=/var/www
+        else
+          www=/Library/WebServer
+        fi
       fi
       www=`echo $www | $SED "s/\/$//g"`
-    done
 
-    www=`echo $www | $SED "s/\/$//g"`
+      while [ ! -d $www ]
+      do
+        echo "error: $www is not existing, please set root directory for web APP"
+        echo -n "www directory: "
+        read www
+        if [ ! "$www" ];then
+          www=/var/www
+        fi
+        www=`echo $www | $SED "s/\/$//g"`
+      done
 
-    if [ -f /etc/redhat-release ];then
-      cgi_candidate=/var/www/cgi-bin
-    else
-      if [ ! "$mac_chk" ];then
-        cgi_candidate=/usr/lib/cgi-bin
+      www=`echo $www | $SED "s/\/$//g"`
+
+      if [ -f /etc/redhat-release ];then
+        cgi_candidate=/var/www/cgi-bin
       else
-        cgi_candidate=/Library/WebServer/CGI-Executables
+        if [ ! "$mac_chk" ];then
+          cgi_candidate=/usr/lib/cgi-bin
+        else
+          cgi_candidate=/Library/WebServer/CGI-Executables
+        fi
       fi
-    fi
 
-    echo -n "CGI directory ($cgi_candidate): "
-    read cgidir
-    cgidir=`echo $cgidir | $SED "s/\/$//g"`
-
-    if [ ! "$cgidir" ];then
-      cgidir=$cgi_candidate
-    fi
-    cgidir=`echo $cgidir | $SED "s/\/$//g"`
-
-    while [ "$cgidir" = "$www" -o ! -d $cgidir ]
-    do
-      if [ ! -d $cgidir ];then
-        echo "error: $cgidir is not existing, please create CGI directory and then try again"
-      elif [ "$cgidir" = "$www" ];then
-        echo "error: CGI dir:$cgidir must be different directory of WWW dir:$www"
-      fi
-      echo -n "CGI directory: "
+      echo -n "CGI directory ($cgi_candidate): "
       read cgidir
+      cgidir=`echo $cgidir | $SED "s/\/$//g"`
+
       if [ ! "$cgidir" ];then
-        cgidir=/usr/lib/cgi-bin
+        cgidir=$cgi_candidate
       fi
       cgidir=`echo $cgidir | $SED "s/\/$//g"`
-    done
 
-    echo -n "APP exec user (e.g. www-data or _www or apache): "
-    read cgiusr
+      while [ "$cgidir" = "$www" -o ! -d $cgidir ]
+      do
+        if [ ! -d $cgidir ];then
+          echo "error: $cgidir is not existing, please create CGI directory and then try again"
+        elif [ "$cgidir" = "$www" ];then
+          echo "error: CGI dir:$cgidir must be different directory of WWW dir:$www"
+        fi
+        echo -n "CGI directory: "
+        read cgidir
+        if [ ! "$cgidir" ];then
+          cgidir=/usr/lib/cgi-bin
+        fi
+        cgidir=`echo $cgidir | $SED "s/\/$//g"`
+      done
 
-    if [ ! "$cgiusr" ];then
-      cgiusr=www-data
-    fi
-
-    usr_chk_result=$(grep $cgiusr /etc/passwd)
-    sudo_chk_result=$(grep $cgiusr /etc/sudoers | grep small-shell | grep NOPASSWD)
-
-    while [ ! "$usr_chk_result" -o ! "$sudo_chk_result" ]
-    do
-      echo "error: APP exec user seems wrong, please define cgi user which used by web server and please add sudoer setting"
-      echo -n "APP exec user: "
+      echo -n "APP exec user (e.g. www-data or _www or apache): "
       read cgiusr
+
+      if [ ! "$cgiusr" ];then
+        cgiusr=www-data
+      fi
+
       usr_chk_result=$(grep $cgiusr /etc/passwd)
       sudo_chk_result=$(grep $cgiusr /etc/sudoers | grep small-shell | grep NOPASSWD)
-    done
+
+      while [ ! "$usr_chk_result" -o ! "$sudo_chk_result" ]
+      do
+        echo "error: APP exec user seems wrong, please define cgi user which used by web server and please add sudoer setting"
+        echo -n "APP exec user: "
+        read cgiusr
+        usr_chk_result=$(grep $cgiusr /etc/passwd)
+        sudo_chk_result=$(grep $cgiusr /etc/sudoers | grep small-shell | grep NOPASSWD)
+      done
+    fi
 
     echo -n "protocol (http | https): "
     read protocol
@@ -1288,6 +1314,46 @@ if [ "$param" = "-app" ];then
       read protocol
     done
 
+    if [ "$protocol" = "https" -a "$srvtype" = "default" ];then
+
+      echo -n "ssl cert path : "
+      read ssl_cert
+
+      while [ ! -f $ssl_cert ]
+      do
+        echo -n "$cert is not existing, please try to input cert path again : "
+        read ssl_cert
+      done
+
+      echo -n "ssl privare key path : "
+      read private_key
+
+      while [ ! -f $private_key ]
+      do
+        echo -n "$private_key is not existing, please try to input cert path again : "
+        read private_key
+      done
+
+      echo -n "Do you need to use chain certificate ? (yes | no): "
+      read chain_answer
+      while [ ! "$chain_answer" = "yes" -a ! "$chain_answer" = "no" ]
+      do
+        echo "please input yes or no"
+        echo -n "Do you need chain certificate ? (yes | no): "
+        read chain_answer
+      done
+
+      if [ "$chain_answer" = "yes" ];then
+        echo -n "chain cert path : "
+        read chain_cert
+
+        while [ ! -f $chain_cert ]
+        do
+          echo -n "$chain_cert is not existing, please try to input cert path again : "
+          read chain_cert
+        done
+      fi
+    fi
 
     # command check for cgi
     sudo -u small-shell echo $HOME >/dev/null 2>&1
@@ -1323,48 +1389,53 @@ if [ "$param" = "-app" ];then
     fi
   
     base_url="${protocol}://${server}/cgi-bin/"
-    echo -n "BASE URL for WEB APP is ${base_url} is it OK ? (yes | no): "
-    read base_url_answer
 
-    while [ ! "$base_url_answer" = "yes" -a ! "$base_url_answer" = "no" ]
-    do
-      echo "please input yes or no"
-      echo -n "Is it OK to use $base_url as BASE URL for WEB APP ? (yes | no): "
+    if [ "$srvtype" = "other" ];then
+      echo -n "BASE URL for WEB APP is ${base_url} is it OK ? (yes | no): "
       read base_url_answer
-    done
 
-    if [ "$base_url_answer" = "no" ];then
-
-      echo -n "please input base url that defined at web server : "
-      read base_url
-      ascii_chk_result=`ascii_check $base_url`
-      meta_chk_result=$(echo $base_url | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
-      -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
-
-      slash_chk=`echo $base_url | grep \/$`
-      if [ ! "$slash_chk" ];then
-        base_url=`echo $base_url | $SED "s/$/\//g"`
-      fi
-
-      while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$base_url" ]
+      while [ ! "$base_url_answer" = "yes" -a ! "$base_url_answer" = "no" ]
       do
-        if [ ! "$base_url" ];then
-          echo "error: please input base url"
-        else
-          echo "error: base url must be ascii text and you can't use meta charactor including space, please try again"
-        fi
-        echo -n "base url: "
+        echo "please input yes or no"
+        echo -n "Is it OK to use $base_url as BASE URL for WEB APP ? (yes | no): "
+        read base_url_answer
+      done
+
+      if [ "$base_url_answer" = "no" ];then
+
+        echo -n "please input base url that defined at web server : "
         read base_url
         ascii_chk_result=`ascii_check $base_url`
-        meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
-        -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
-      done
+        meta_chk_result=$(echo $base_url | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
+        -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+        slash_chk=`echo $base_url | grep \/$`
+        if [ ! "$slash_chk" ];then
+          base_url=`echo $base_url | $SED "s/$/\//g"`
+        fi
+
+        while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$base_url" ]
+        do
+          if [ ! "$base_url" ];then
+            echo "error: please input base url"
+          else
+            echo "error: base url must be ascii text and you can't use meta charactor including space, please try again"
+          fi
+          echo -n "base url: "
+          read base_url
+          ascii_chk_result=`ascii_check $base_url`
+          meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
+          -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
+        done
  
+      fi
     fi
+
     clear
 
     echo "-----------------------------------------------------------------"
     echo "APP type: $apptype"
+    echo "Srv type: $srvtype"
     echo "protocol: $protocol"
     echo "APP exec user: $cgiusr"
     echo "Root directory: $www"
@@ -1398,6 +1469,96 @@ if [ "$param" = "-app" ];then
       bindir="${www}/bin"
       descrdir="${www}/descriptor"
       cgitmp="${www}/tmp"
+
+      
+      if [ "$srvtype" = "default" ];then
+
+        if [ ! -d $cgidir ];then
+          mkdir -p $cgidir
+          mkdir ${www}/log
+          mkdir ${www}/app
+          if [ ! -d ${www}/html ];then
+            mkdir ${www}/html
+          fi
+          chown $cgiusr:$cgiusr ${www}/log
+          chown $cgiusr:$cgiusr ${www}/app
+          chown $cgiusr:$cgiusr ${www}/html
+        fi
+
+        if [ "$protocol" = "https" ];then
+          cp $ssl_cert ${www}/app/cert.pem
+          cp $private_key ${www}/app/privatekey.pem
+          chmod 600 ${www}/app/privatekey.pem
+          if [ "$chain_cert" ];then
+            cp $chain_cert ${www}/app/chain.pem
+          fi
+        fi
+
+        if [ "$protocol" = "http" ];then
+           port=80
+        else
+           port=443
+        fi
+        (cd ${www}/app;npm init -y;npm install express) 
+
+        if [ "$protocol" = "https" ];then
+          if [ ! "$chain_cert" ];then
+            cat $ROOT/web/src/app/index.js | $SED "s#%%www#${www}#g" | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" > ${www}/app/index.js
+          else
+            cat $ROOT/web/src/app/index.js | $SED "s#%%www#${www}#g" | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" > ${www}/app/index.js
+          fi
+        else
+          cat $ROOT/web/src/app/index.js | $SED "s#%%www#${www}#g" | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+          | $SED "s#%%sed#$SED#g" > ${www}/app/index.js
+        fi
+        NODE=`which node`
+        cat $ROOT/web/src/app/app.sh | $SED "s#%%www#${www}#g"| $SED "s#%%node#$NODE#g" \
+        | $SED "s#%%sed#$SED#g" > ${www}/app/app.sh
+        chmod 755 ${www}/app/app.sh
+
+        if [ ! "$mac_chk" ];then
+          if [ ! -f /etc/systemd/system/small-shell.service ];then
+            cat $ROOT/web/src/app/small-shell.service | $SED "s#%%www#${www}#g" \
+            > /etc/systemd/system/small-shell.service 
+            systemctl enable small-shell.service 
+            systemctl start small-shell 
+            sleep 2
+          else
+            systemctl restart small-shell
+            sleep 2
+          fi
+        else
+
+          httpd_chk=`launchctl list | grep httpd`
+          if [ "$httpd_chk" ];then
+            apachectl stop
+          fi
+
+          if [ ! -f /Library/LaunchDaemons/org.small-shell.node.plist ];then
+
+            cat $ROOT/web/src/app/org.small-shell.node.plist | $SED "s#%%www#${www}#g" \
+            > /Library/LaunchDaemons/org.small-shell.node.plist
+
+            cat $ROOT/web/src/app/org.small-shell.util.plist | $SED "s#%%www#${www}#g" \
+            > /Library/LaunchDaemons/org.small-shell.util.plist
+
+            cat $ROOT/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
+            > ${www}/app/util.sh
+            chmod 755 ${www}/app/util.sh
+ 
+            launchctl load /Library/LaunchDaemons/org.small-shell.node.plist
+            launchctl load /Library/LaunchDaemons/org.small-shell.util.plist
+            launchctl start org.small-shell.node
+            launchctl start org.small-shell.util
+
+          else
+            launchctl stop org.small-shell.node
+            launchctl start org.small-shell.node
+          fi
+        fi
+      fi
   
       if [ ! -d $bindir ];then
         mkdir $bindir
@@ -1475,6 +1636,7 @@ if [ "$param" = "-app" ];then
       for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" > $descrdir/$src
+        cat $ROOT/web/src/descriptor/$src >  $descrdir/$src
         chmod 755 $descrdir/$src
       done
 
@@ -1484,24 +1646,38 @@ if [ "$param" = "-app" ];then
         chmod 755 $descrdir/common_parts/$src
       done
 
-      echo "small_shell_path=$ROOT" > $descrdir/.small_shell_conf
+      if [ "$srvtype" = "default" ];then
+        echo "small_shell_path=$ROOT" > $descrdir/.small_shell_conf
+      else
+        echo "small_shell_path=\"sudo -u small-shell $ROOT\"" > $descrdir/.small_shell_conf
+      fi
+
       cat $ROOT/global.conf | grep -v ROOT >> $descrdir/.small_shell_conf
       chmod 755 $descrdir/.small_shell_conf
 
-      # enable standard jobs
-      if [ ! -f $ROOT/util/e-cron/def/del_session.def ];then
-        sudo -u small-shell echo "SCHEDULE:* * * * *" > $ROOT/util/e-cron/def/del_session.def
-        sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_session.sh\"" >> $ROOT/util/e-cron/def/del_session.def
-      fi
+      if [ ! "$mac_chk" ];then
+        # enable standard jobs
+        if [ ! -f $ROOT/util/e-cron/def/del_session.def ];then
+          sudo -u small-shell echo "SCHEDULE:* * * * *" > $ROOT/util/e-cron/def/del_session.def
+         sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_session.sh\"" >> $ROOT/util/e-cron/def/del_session.def
+        fi
 
-      if [ ! -f $ROOT/util/e-cron/def/del_util_log.def ];then
-        sudo -u small-shell echo "SCHEDULE:5 0 * * *" > $ROOT/util/e-cron/def/del_util_log.def
-        sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_log.sh\"" >> $ROOT/util/e-cron/def/del_util_log.def
-      fi
+        if [ ! -f $ROOT/util/e-cron/def/del_util_log.def ];then
+          sudo -u small-shell echo "SCHEDULE:5 0 * * *" > $ROOT/util/e-cron/def/del_util_log.def
+          sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_log.sh\"" >> $ROOT/util/e-cron/def/del_util_log.def
+        fi
  
-      sudo -u small-shell $ROOT/bin/e-cron enable.del_session
-      sudo -u small-shell $ROOT/bin/e-cron enable.del_util_log
+        sudo -u small-shell $ROOT/bin/e-cron enable.del_session
+        sudo -u small-shell $ROOT/bin/e-cron enable.del_util_log
 
+        if [ "$srvtype" = "default" ];then
+          if [ ! -f $ROOT/util/e-cron/def/restart_srv.def ];then
+            sudo -u small-shell echo "SCHEDULE:0 0 * * *" > $ROOT/util/e-cron/def/rotate_srv_log.def
+            sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/rotate_srvlog.sh\"" >> $ROOT/util/e-cron/def/rotate_srv_log.def
+          fi
+          sudo -u small-shell $ROOT/bin/e-cron enable.rotate_srv_log
+        fi
+      fi
 
       ls ${cgidir}/../bin/shelltest.sh >/dev/null 2>&1
 
@@ -1533,9 +1709,11 @@ if [ "$param" = "-app" ];then
      
       fi
 
-      get_test=`$CURL ${base_url}shelltest.cgi | grep OK`
+      sleep 2
+      get_test=`$CURL -k ${base_url}shelltest.cgi | grep OK`
 
       if [ "$get_test" ];then
+        clear
         echo ""
         echo "-----------------------------------------------------------------"
         echo "NOTE"
@@ -1543,12 +1721,17 @@ if [ "$param" = "-app" ];then
         echo "APP deployment has been succesfully done, please add user using ops command,"
         echo "and then access key to Base APP will be generated"
         echo "# sudo $ROOT/adm/ops add.usr:\$user"
-        echo ""
       else
-        echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
-        echo "please check web server setting and url setting, you should start web server beforehand"
-        rm -rf $tmp_dir
-        exit 1
+        if [ "$srvtype" = "default" ];then
+          echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
+          rm -rf $tmp_dir
+          exit 1
+        else
+          echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
+          echo "please check web server setting and url setting, you should start web server beforehand"
+          rm -rf $tmp_dir
+          exit 1
+        fi
       fi
     else
       echo "please try again from begining #gen -app"

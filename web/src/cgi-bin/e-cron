@@ -56,7 +56,7 @@ rm  %%www/tmp/${param}*
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
-auth_req=`sudo -u small-shell ${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
 user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
 session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
 pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
@@ -93,7 +93,7 @@ if [ "$req" = "ls" ];then
   if [ "$filename" ];then
     echo "Content-Type: text/html"
     echo ""
-    sudo -u small-shell ${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr
+    ${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr
   fi
 fi
 
@@ -102,16 +102,16 @@ if [ "$req" = "get" ];then
   if [ "$message" ];then
     echo "Content-Type: text/html"
     echo ""
-    sudo -u small-shell ${small_shell_path}/bin/e-cron get.message:$message
+    ${small_shell_path}/bin/e-cron get.message:$message
   fi
 
   if [ "$filename" ];then
-    file_chk=`sudo -u small-shell ${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr`
+    file_chk=`${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr`
     if [ "$file_chk" ];then
       echo "Content-Disposition: attachment; filename=$filename"
       echo "Content-Type: application/octet-stream"
       echo ""
-      sudo -u small-shell ${small_shell_path}/bin/e-cron get.file:$filename remote_addr:$remote_addr
+      ${small_shell_path}/bin/e-cron get.file:$filename remote_addr:$remote_addr
     else
       echo "Content-Disposition: attachment; filename=failed"
       echo "Content-Type: application/octet-stream"
@@ -126,14 +126,14 @@ if [ "$req" = "push" ];then
   if [ "$message" ];then
     echo "Content-Type: text/html"
     echo ""
-    sudo -u small-shell ${small_shell_path}/bin/e-cron push.message:$message remote_addr:$remote_addr
+    ${small_shell_path}/bin/e-cron push.message:$message remote_addr:$remote_addr
   fi
 
   if [ "$filename"  ];then
     echo "Content-Type: text/html"
     echo ""
     mv %%www/tmp/$session/binary_file/binary.data %%www/tmp/$session/$filename
-    sudo -u small-shell ${small_shell_path}/bin/e-cron push.file:%%www/tmp/$session/$filename remote_addr:$remote_addr
+    ${small_shell_path}/bin/e-cron push.file:%%www/tmp/$session/$filename remote_addr:$remote_addr
   fi
 fi
 

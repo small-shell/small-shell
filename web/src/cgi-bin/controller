@@ -64,7 +64,7 @@ if [ ! "$req" = "stats" -a ! "$req" = "file" ];then
 fi
 
 # session check
-session_chk=`sudo -u small-shell ${small_shell_path}/bin/auth session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
+session_chk=`${small_shell_path}/bin/auth session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
 session_ip=`echo $session_chk | $AWK -F ":" '{print $2}'`
   
 if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "stats" -o "$req" = "file" ];then
@@ -87,13 +87,13 @@ if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "sta
 fi
 
 if [ "$req" = "logout" ]; then
-  sudo -u small-shell ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
+  ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
   echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?req=main\">"
   exit 0
 fi
 
 if [ "$session_update" = "required" ];then
-  get_session=`sudo -u small-shell ${small_shell_path}/bin/auth session_persist:${session} \
+  get_session=`${small_shell_path}/bin/auth session_persist:${session} \
   pin:${pin} remote_addr:${remote_addr}`
   user_name=`echo $get_session | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
   session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`

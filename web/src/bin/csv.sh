@@ -26,8 +26,8 @@ do
 done
 
 # SET BASE_COMMAND
-META="sudo -u small-shell ${small_shell_path}/bin/meta"
-DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
+META="${small_shell_path}/bin/meta"
+DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
 
 if [ ! -d %%www/tmp/$session ];then
   mkdir %%www/tmp/$session

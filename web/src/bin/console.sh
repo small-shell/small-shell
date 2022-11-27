@@ -102,9 +102,9 @@ done
 # exec command and render HTML
 if [ "$command" ];then
   #command=`echo $command | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
-  sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin \
+  ${small_shell_path}/bin/DATA_shell session:$session pin:$pin \
   databox:$databox type:$type command:$command > %%www/tmp/$session/exec
-  commands=`sudo -u small-shell ${small_shell_path}/bin/meta get.command | $SED "s/ /, /g"`
+  commands=`${small_shell_path}/bin/meta get.command | $SED "s/ /, /g"`
 
   cat %%www/descriptor/console.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%result/r %%www/tmp/$session/exec" \
@@ -138,17 +138,17 @@ if [ "$command" ];then
 elif [ "$statistics" ];then
 
   if [ "$filters" ];then
-    sudo -u small-shell ${small_shell_path}/bin/meta get.statistics:ls.${filters}{html_tag} > %%www/tmp/$session/statistics 
+    ${small_shell_path}/bin/meta get.statistics:ls.${filters}{html_tag} > %%www/tmp/$session/statistics 
     filters="filters:$filters"
   else 
-    sudo -u small-shell ${small_shell_path}/bin/meta get.statistics:ls.db_${databox}{html_tag} > %%www/tmp/$session/statistics
+    ${small_shell_path}/bin/meta get.statistics:ls.db_${databox}{html_tag} > %%www/tmp/$session/statistics
   fi
 
   if [ ! -s %%www/tmp/$session/statistics ];then
     echo "! statistics will be started once you make statistics job" > %%www/tmp/$session/statistics
   fi
 
-  commands=`sudo -u small-shell ${small_shell_path}/bin/meta get.command | $SED "s/ /, /g"`
+  commands=`${small_shell_path}/bin/meta get.command | $SED "s/ /, /g"`
   cat %%www/descriptor/console.statistics.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%statistics/r %%www/tmp/$session/statistics" \
   | $SED "/%%statistics/d"\

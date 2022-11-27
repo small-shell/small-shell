@@ -77,7 +77,7 @@ if [ "$auth" = "required" ];then
     session_update=no
 
     # session check
-    session_chk=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
+    session_chk=`${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
     session_ip=`echo $session_chk | $AWK -F ":" '{print $2}'`
 
     if [ ! "${session_ip}" = ${remote_addr} ];then
@@ -92,14 +92,14 @@ if [ "$auth" = "required" ];then
   fi
 
   if [ "$req" = "logout" ]; then
-    sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session}
+    ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session}
     echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=main\">"
     exit 0
   fi
 
   # session update
   if [ "$session_update" = "required" ];then
-    get_session=`sudo -u small-shell ${small_shell_path}/bin/extension_auth session_persist:${session} \
+    get_session=`${small_shell_path}/bin/extension_auth session_persist:${session} \
     pin:${pin} remote_addr:${remote_addr} app:%%app`
 
     user_name=`echo $get_session | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`

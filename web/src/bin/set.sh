@@ -55,7 +55,7 @@ fi
 # -----------------
 
 # set and get %%result contents
-sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
 action:set id:$id keys:$keys input_dir:%%www/tmp/$session > %%www/tmp/$session/result
 
 error_chk=`grep "^error" %%www/tmp/$session/result`

@@ -30,6 +30,6 @@ done
 # -----------------
 
 # return hash chain 
-sudo -u small-shell ${small_shell_path}/bin/meta get.chain:$databox 
+${small_shell_path}/bin/meta get.chain:$databox 
 
 exit 0

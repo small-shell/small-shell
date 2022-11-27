@@ -30,8 +30,8 @@ do
 done
 
 # SET BASE_COMMAND
-META="sudo -u small-shell ${small_shell_path}/bin/meta"
-DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
+META="${small_shell_path}/bin/meta"
+DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
 
 if [ ! -d %%www/tmp/$session ];then
   mkdir %%www/tmp/$session
@@ -69,7 +69,7 @@ if [ ! -d %%www/tmp/$session/binary_file  ];then
 else
 
   # gen %%result contents
-  sudo -u small-shell ${small_shell_path}/bin/data_import %%www/tmp/$session/binary_file/binary.data \
+  ${small_shell_path}/bin/data_import %%www/tmp/$session/binary_file/binary.data \
   $databox $session $pin $remote_addr > %%www/tmp/$session/result
   data_import_session=`cat %%www/tmp/$session/result | grep Import_session: | $AWK -F "Import_session:" '{print $2}'`
 

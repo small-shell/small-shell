@@ -45,7 +45,7 @@ fi
 # -----------------
 
 # exec and gen %%result 
-sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
 action:del id:$id  > %%www/tmp/$session/result
 
 # redirect to the table

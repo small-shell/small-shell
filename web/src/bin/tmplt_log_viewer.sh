@@ -30,8 +30,8 @@ if [ ! -d %%www/tmp/${session}_log ];then
 fi
 
 # SET BASE_COMMAND
-META="sudo -u small-shell ${small_shell_path}/bin/meta"
-DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%app"
+META="${small_shell_path}/bin/meta"
+DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%app"
 
 # -----------------
 # Exec command

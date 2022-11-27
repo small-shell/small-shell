@@ -42,7 +42,7 @@ SCRIPT_DIR=`dirname $0`
 # exec user check
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "small-shell" ];then
-  echo "error: user must be small-shell"
+  echo "error: user must be small-shell, please execute with \"sudo -u small-shell\""
   exit 1
 fi
 

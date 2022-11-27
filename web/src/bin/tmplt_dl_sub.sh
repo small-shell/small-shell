@@ -38,7 +38,7 @@ fi
 echo "Content-Disposition: attachment; filename=$filename"
 echo "Content-Type: application/octet-stream"
 echo ""
-sudo -u small-shell ${small_shell_path}/bin/dl session:$session pin:$pin databox:$databox id:$id app:%%parent_app
+${small_shell_path}/bin/dl session:$session pin:$pin databox:$databox id:$id app:%%parent_app
 
 if [ "$session" ];then
   rm -rf %%www/tmp/${session}_log

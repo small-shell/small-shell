@@ -45,7 +45,7 @@ fi
 if [ ! "$data_import_session" ];then
 
   # gen %%log contents
-  sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
+  ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
   action:get id:$id type:log format:html_tag > %%www/tmp/${session}_log/log
 
   # render HTML
@@ -57,7 +57,7 @@ if [ ! "$data_import_session" ];then
 else
 
   # will be changed to meta.sh
-  sudo -u small-shell ${small_shell_path}/bin/meta get.progress:$data_import_session > %%www/tmp/${session}_log/log
+  ${small_shell_path}/bin/meta get.progress:$data_import_session > %%www/tmp/${session}_log/log
 
   # render HTML
   cat %%www/descriptor/import_log_viewer.html.def | $SED -r "s/^( *)</</1" \

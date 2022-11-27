@@ -116,6 +116,13 @@ do
 
 done
 
+# exec user check
+WHOAMI=`whoami`
+if [ ! "$WHOAMI" = "small-shell" ];then
+  echo "error: user must be small-shell, please execute with \"sudo -u small-shell\""
+  exit 1
+fi
+
 # param check
 if [ ! "$databox" ];then
   echo "error: please input databox"
@@ -142,13 +149,6 @@ fi
 
 if [ ! "$authkey" -a ! "$session" ];then
   echo "error: you need authentication"
-  exit 1
-fi
-
-# exec user check
-WHOAMI=`whoami`
-if [ ! "$WHOAMI" = "small-shell" ];then
-  echo "error: user must be small-shell"
   exit 1
 fi
 

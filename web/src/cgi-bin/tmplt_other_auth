@@ -101,8 +101,8 @@ fi
 
 # Just check user name
 if [ "$app_step_in_token" ];then
-  # auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} force_user:${%%app_user} remote_addr:${remote_addr}`
-  auth_req=`sudo -u small-shell ${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr}`
+  # auth_req=`${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} force_user:${%%app_user} remote_addr:${remote_addr}`
+  auth_req=`${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr}`
   session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
    
