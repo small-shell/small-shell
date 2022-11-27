@@ -1636,7 +1636,6 @@ if [ "$param" = "-app" ];then
       for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" > $descrdir/$src
-        cat $ROOT/web/src/descriptor/$src >  $descrdir/$src
         chmod 755 $descrdir/$src
       done
 
