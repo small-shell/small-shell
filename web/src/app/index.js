@@ -114,6 +114,7 @@ app.get("/favicon.ico", (req, res) => {
  res.end(); 
 });
 
+
 // handle static page
 app.get("*", (req, res) => {
   var remote_addr = req.ip.toString();
@@ -121,41 +122,28 @@ app.get("*", (req, res) => {
   var uri = url.parse(req.url).pathname;
   var path = www + "/html" + uri;
 
+  var index_chk = uri.match( /.*\/$/ );
+  if ( index_chk != null ) {
+    var path = path + "index.html";
+  } 
+
   if( fs.existsSync( path ) ){
-    var index_chk = uri.match( /.*\/$/ );
-    if ( index_chk == null ) {
-      fs.stat( path, function(er,stat)  {
-        if ( stat.isFile() ) {
-          var html = execSync("cat " + path ,{ maxBuffer: 1024000000 });
-          res.end(html); 
-          var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-          console.log( time_stamp + remote_addr + ' requested ' + uri );
-        } else {
-          var html = execSync("cat " + path + "/index.html");
-          res.end(html); 
-          var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-          console.log( time_stamp + remote_addr + ' requested ' + uri + "/index.html" );
-        }
-      });
-    } else { 
-      if ( uri == "/" ) {
-        var html = execSync("cat " + path + "index.html");
+    fs.stat( path, function(er,stat)  {
+      if ( stat.isFile() ) {
+        var html = execSync("cat " + path ,{ maxBuffer: 1024000000 });
         res.end(html); 
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-        console.log( time_stamp + remote_addr + ' requested ' + "index.html" );
-      } else {
-        var html = execSync("cat " + path + "index.html");
-        res.end(html); 
-        var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-        console.log( time_stamp + remote_addr + ' requested ' + uri + "index.html" );
+        console.log( time_stamp + remote_addr + ' requested ' + uri );
       }
-    }
+    });
+
   } else {
     res.end("Oops wrong request");
     var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
     console.log( time_stamp + remote_addr + ' requested wrong page ' + uri );
   }
 });
+
 
 server.listen(port, function(){
   process.setuid('small-shell'); 
