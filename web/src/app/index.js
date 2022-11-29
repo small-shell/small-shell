@@ -125,15 +125,27 @@ app.get("*", (req, res) => {
   var index_chk = uri.match( /.*\/$/ );
   if ( index_chk != null ) {
     var path = path + "index.html";
-  } 
+  }
 
   if( fs.existsSync( path ) ){
     fs.stat( path, function(er,stat)  {
       if ( stat.isFile() ) {
         var html = execSync("cat " + path ,{ maxBuffer: 1024000000 });
-        res.end(html); 
+        res.end(html);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
         console.log( time_stamp + remote_addr + ' requested ' + uri );
+      } else {
+        // handle path as directory
+        if( fs.existsSync( path + "/index.html" ) ){
+          var html = execSync("cat " + path + "/index.html" ,{ maxBuffer: 1024000000 });
+          res.end(html);
+          var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+          console.log( time_stamp + remote_addr + ' requested ' + uri );
+        } else {
+          res.end("Oops wrong request");
+          var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+          console.log( time_stamp + remote_addr + ' requested wrong page ' + uri );
+        }
       }
     });
 
