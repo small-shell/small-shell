@@ -1632,7 +1632,13 @@ if [ "$param" = "-app" ];then
         chmod 755 $bindir/$src
       done
 
-      rand=$RANDOM
+      if [ -f $ROOT/web/.rand ];then
+        . $ROOT/web/.rand
+      else
+        rand=$RANDOM
+        echo "rand=$rand" > $ROOT/web/.rand
+      fi
+
       for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" > $descrdir/$src
@@ -1641,7 +1647,7 @@ if [ "$param" = "-app" ];then
 
       for src in `ls $ROOT/web/src/descriptor/common_parts | xargs basename -a`
       do
-        cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%rand/$rand/g" > $descrdir/common_parts/$src
+        cat $ROOT/web/src/descriptor/common_parts/$src  > $descrdir/common_parts/$src
         chmod 755 $descrdir/common_parts/$src
       done
 
@@ -2174,12 +2180,11 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
           chmod 700 ${www}/bin/${app}*
 
-          rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" \
               | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
               chmod 755 ${www}/descriptor/${app}_${html_def}
             else
@@ -2192,10 +2197,18 @@ if [ "$param" = "-app" ];then
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
+          if [ -f $ROOT/web/.rand ];then
+            . $ROOT/web/.rand
+          else
+            rand=$RANDOM
+            echo "rand=$rand" > $ROOT/web/.rand
+          fi
+
           cat $ROOT/web/src/descriptor/tmplt_pass_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
+
         fi
 
         if [ "$auth_method" = "key" ];then
@@ -2238,7 +2251,13 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
           chmod 700 ${www}/bin/${app}*
 
-          rand=$RANDOM
+          if [ -f $ROOT/web/.rand ];then
+            . $ROOT/web/.rand
+          else
+            rand=$RANDOM
+            echo "rand=$rand" > $ROOT/web/.rand
+          fi
+
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a`
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
@@ -2329,12 +2348,11 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
           chmod 700 ${www}/bin/${app}*
 
-          rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" \
               | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
               chmod 755 ${www}/descriptor/${app}_${html_def}
             else
@@ -2346,6 +2364,13 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+
+          if [ -f $ROOT/web/.rand ];then
+            . $ROOT/web/.rand
+          else
+            rand=$RANDOM
+            echo "rand=$rand" > $ROOT/web/.rand
+          fi
 
           cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
@@ -2420,12 +2445,11 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
           chmod 700 ${www}/bin/${app}*
 
-          rand=$RANDOM
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" \
               | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
               chmod 755 ${www}/descriptor/${app}_${html_def}
             else
@@ -2437,11 +2461,6 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | grep -v logout \
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
-
-          cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
-          | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
-          chmod 755 ${www}/descriptor/${app}_auth_form.html.def
 
         fi
 
