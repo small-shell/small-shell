@@ -63,7 +63,7 @@ dummy_session="$param.post"
 mkdir %%www/tmp/$dummy_session
 dd bs=${CONTENT_LENGTH} of=%%www/tmp/$dummy_session/input 2>/dev/null
 
-if [-f%%www/tmp/$dummy_session/input];then
+if [ -f %%www/tmp/$dummy_session/input ];then
   %%www/bin/parse.sh $dummy_session urlenc
 fi
 
