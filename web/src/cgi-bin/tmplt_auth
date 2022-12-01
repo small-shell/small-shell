@@ -59,7 +59,10 @@ chmod 755 %%www/tmp/${param}.load
 dummy_session="$param.post"
 mkdir %%www/tmp/$dummy_session
 dd bs=${CONTENT_LENGTH} of=%%www/tmp/$dummy_session/input 2>/dev/null
-%%www/bin/parse.sh $dummy_session urlenc
+
+if [ -f %%www/tmp/$dummy_session/input ];then
+  %%www/bin/parse.sh $dummy_session urlenc
+fi
 
 # load posted data
 ls %%www/tmp/$dummy_session/%%app_key* >/dev/null 2>&1
