@@ -1519,6 +1519,13 @@ if [ "$param" = "-app" ];then
         chmod 755 ${www}/app/app.sh
 
         if [ ! "$mac_chk" ];then
+
+          apache2_chk=`ps -ef | grep apache2 | grep -v grep`
+          if [ "$apache2_chk" ];then
+            systemctl stop apache2
+            systemctl disable apache2
+          fi
+
           if [ ! -f /etc/systemd/system/small-shell.service ];then
             cat $ROOT/web/src/app/small-shell.service | $SED "s#%%www#${www}#g" \
             > /etc/systemd/system/small-shell.service 
