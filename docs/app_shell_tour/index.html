@@ -261,14 +261,14 @@ then start dialog by gen command.</p>
 </code></pre>
 <pre><code># Dialog
 -----------------------------------------------------------------
-sudo /usr/local/smkall-shell/adm/gen -app^M
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1^M
-Type of server (1.small-shell WEB srv | 2.other WEB srv): 1^M
-protocol (http | https): https^M
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com^M
-ssl cert path : /root/cert.pem^M
-ssl privare key path : /root/private.pem^M
-Do you need to use chain certificate ? (yes | no): no^M
+sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
+protocol (http | https): https
+WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
+ssl cert path : /root/cert.pem
+ssl privare key path : /root/private.pem
+Do you need to use chain certificate ? (yes | no): no
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="define-data-structure">Define Data structure</h2>
@@ -866,7 +866,7 @@ curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-s
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Utuntu 20 (recommnded), macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
-Web : Apache 2.X (recommended), nginx 1.X    
+Web : node.js 10.X  + express 4.X , Apache 2.X , nginx 1.X    
 curl: 7.X
 
 # REQUIRED commands
