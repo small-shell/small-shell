@@ -616,6 +616,19 @@ primary databox: none
 &lt;li&gt;&lt;a href=&quot;&quot;&gt;LINK 2&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;mailto:address&quot;&gt;MAIL&lt;/a&gt;&lt;/li&gt;
 </code></pre>
+<p>or If you don't need to use right header, just delete right header definition on $APP.main.html.def</p>
+<pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
+</code></pre>
+<h5 id="right-header-definition-on-mainhtmldef">right header definition on main.html.def</h5>
+<pre><code>&lt;div class=&quot;right-header&quot;&gt;
+&lt;button class=&quot;even-btn-menu&quot;&gt;=&lt;/button&gt;
+ &lt;nav&gt;
+ &lt;ul&gt;
+ %%common_menu
+ &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/div&gt;
+</code></pre>
 <h5 id="add-footer">Add footer</h5>
 <p>Please use footer class for making footer.</p>
 <pre><code>&lt;div class=&quot;footer&quot;&gt;
