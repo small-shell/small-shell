@@ -4,6 +4,10 @@
 # usage: dist.sh $APP $EXPORT_DIR
 #----------------------------------------------------------------------
 
+# global.conf load
+SCRIPT_DIR=`dirname $0`
+. ${SCRIPT_DIR}/../../global.conf
+
 app=$1
 export_dir=$2
 export_dir=`echo $export_dir | $SED "s/\/$//g"`
@@ -13,10 +17,6 @@ if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
 fi
-
-# global.conf load
-SCRIPT_DIR=`dirname $0`
-. ${SCRIPT_DIR}/../../global.conf
 
 # load base 
 . $ROOT/web/base
