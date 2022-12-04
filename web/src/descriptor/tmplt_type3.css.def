@@ -109,7 +109,6 @@ a {
 
 .right-header nav {
   background: #000011;
-  padding-top: 10px;
   opacity: 0.8;
   position: absolute;
   z-index: 2;
@@ -163,7 +162,6 @@ a {
     margin-right: 20px;
     width: 18%;
     display: block;
-    border: medium solid #ADFBEA;
   }
 }
 @media screen and (max-width: 640px) {
