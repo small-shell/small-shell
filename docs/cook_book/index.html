@@ -380,7 +380,7 @@ cat ../tmp/$session/dataset.0.1 \
 --------
 
 </code></pre>
-<h6 id="update-app_setsh-for-updating-datasets-additionally">update $app_set.sh for updating datasets additionally</h6>
+<h6 id="update-app_setsh-for-updating-datasets-additionally">update $APP_set.sh for updating datasets additionally</h6>
 <pre><code>sudo vi /var/www/bin/booking_req_set.sh
 
 --code--
@@ -559,7 +559,7 @@ primary databox: none
 <p>Then default page will be generated like this.
 <img alt="Screenshot" src="../img/static_site_default.png" /></p>
 <h3 id="cook-main-page">Cook main page</h3>
-<p>Let's move on to cook main page, </p>
+<p>Let's cook main page {$APP_main.html.def}, </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
 </code></pre>
 <div class="admonition note">
@@ -568,6 +568,8 @@ primary databox: none
 </div>
 <h4 id="update-left-header">Update left header</h4>
 <p>You can modify links and logo to the left header, in this example link to Docs is added.</p>
+<pre><code>! please upload image file to /var/www/html
+</code></pre>
 <pre><code>&lt;div class=&quot;left-header&quot;&gt;
   &lt;a href=&quot;https://github.com&quot;&gt;&lt;img src=&quot;../GitHub-Mark-32px.png&quot;&gt;&lt;/a&gt;
   &lt;a href=&quot;https://small-shell.org&quot;&gt;&lt;h2&gt;Docs&lt;/h2&gt;&lt;/a&gt;
@@ -616,7 +618,7 @@ primary databox: none
 &lt;li&gt;&lt;a href=&quot;&quot;&gt;LINK 2&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;mailto:address&quot;&gt;MAIL&lt;/a&gt;&lt;/li&gt;
 </code></pre>
-<p>or If you don't need to use right header, just delete right header definition on $APP.main.html.def</p>
+<p>or If you don't need to use right header, just delete right header definition on $APP_main.html.def</p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
 </code></pre>
 <h5 id="right-header-definition-on-mainhtmldef">right header definition on main.html.def</h5>
@@ -639,7 +641,7 @@ primary databox: none
 <p>Please see the entire sample code here <a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/recipe/sample/static_site_main.html.def">sample</a>,</p>
 <p><img alt="Screenshot" src="../img/site_image.png" /></p>
 <h5 id="change-color">Change color</h5>
-<p>You can change color by updating $app.css.def</p>
+<p>You can change color by updating $APP.css.def</p>
 <pre><code>sudo vi /var/www/descriptor/static_site.css.def
 </code></pre>
 <pre><code>#----------------classes---------------#
@@ -660,12 +662,12 @@ primary databox: none
 .main button
 
 # Change table header of main
-.main .table-header
+.main .flex-table-header
 #----------------------------------------#
 </code></pre>
 <h3 id="distribute-the-site-to-static-directory">Distribute the site to static directory</h3>
 <p>You can export main page as static stie. then please copy the html to /var/www/html or other static directory.</p>
-<pre><code>/usr/local/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
+<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>
 <p>You can import job for analyzing small shell web log from github. please deploy it to the small shell env which using default web server.</p>
