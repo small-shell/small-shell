@@ -36,9 +36,11 @@ app.get('/cgi-bin/*', (req, res)=> {
 
   var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
   console.log( time_stamp + remote_addr + ' requested ' + params );
+
   if ( query_string == undefined ) {
     query_string = "query=null";
   }
+
   if ( query_string.indexOf('req=file') != -1) {
     // handle file contents
     res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
@@ -46,9 +48,23 @@ app.get('/cgi-bin/*', (req, res)=> {
       var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| /usr/bin/sed -e 1,3d" ,{ maxBuffer: 1024000000 });
       res.end(html);
     } else {
-      res.end(html);
+      res.end("Oops wrong request");
+      var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+      console.log( time_stamp + remote_addr + ' requested wrong page ' + uri );
     }
 
+  } else if( query_string.indexOf('type=graph') != -1) {
+    // handle graph contents
+    res.writeHead(200, {'Content-Type' : 'image/png'});
+    if( fs.existsSync( www + "/cgi-bin/" + command ) ){
+      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| /usr/bin/sed -e 1,2d" ,{ maxBuffer: 1024000000 });
+      res.end(html);
+    } else {
+      res.end("Oops wrong request");
+      var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+      console.log( time_stamp + remote_addr + ' requested wrong page ' + uri );
+    }
+ 
   } else {
     // handle normal get request 
     res.writeHead(200, {'Content-Type' : 'text/html'});
@@ -57,6 +73,8 @@ app.get('/cgi-bin/*', (req, res)=> {
        res.end(html);
      } else {
        res.end("Oops wrong request");
+       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+       console.log( time_stamp + remote_addr + ' requested wrong page ' + uri );
      }
   }
 })
@@ -102,7 +120,7 @@ app.post('/cgi-bin/*', (req, res) => {
     res.writeHead(302, {
    'Location': redirect_url
     });
-    res.end("Oops wrong request");
+    res.end();
   } else {
     res.writeHead(200, {'Content-Type' : 'text/html'});
     res.end(html);
@@ -162,5 +180,4 @@ server.listen(port, function(){
   var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
   console.log( time_stamp + "small-shell web srv started");
 });
-
 
