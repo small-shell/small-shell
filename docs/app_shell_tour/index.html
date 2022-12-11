@@ -734,7 +734,7 @@ fi
 <h2 id="debug-techniques">Debug techniques</h2>
 <h5 id="check-error-log">Check error log</h5>
 <pre><code># small-shell default web
-sudo tail -f /var/log/srvdump.log
+sudo tail -f /var/www/log/srvdump.log
 
 # ubuntu &amp; apache2
 sudo tail -f /var/log/apache2/error_log
@@ -866,7 +866,7 @@ curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-s
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Utuntu 20 (recommnded), macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
-Web : node.js 10.X  + express 4.X , Apache 2.X , nginx 1.X    
+Web : node.js 10.X + express 4.X , Apache 2.X , nginx 1.X    
 curl: 7.X
 
 # REQUIRED commands

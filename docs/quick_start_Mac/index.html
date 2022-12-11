@@ -194,12 +194,6 @@ sudo git clone https://github.com/small-shell/small-shell.git
 sudo chown -R small-shell:small-shell /usr/local/small-shell
 sudo chmod 755 /usr/local/small-shell/adm/gen
 </code></pre>
-<h5 id="sudo-setting">Sudo setting</h5>
-<pre><code># change sudo setting
-sudo visudo    
-## -&gt; add to last line
-_www   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/local/small-shell/sbin/*
-</code></pre>
 <h2 id="gen-databox">Gen Databox</h2>
 <p>Then Let's generate databox as the data store of WEB APP.
 DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
