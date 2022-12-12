@@ -7,13 +7,11 @@ var fs = require('fs');
 var path = require('path');
 var www = "%%www"
 
-
 const server = require('%%protocol').createServer({
     // https key: fs.readFileSync( www + '/app/privatekey.pem'),
     // https cert: fs.readFileSync( www + '/app/cert.pem'),
     // https_chain ca: fs.readFileSync( www + '/app/chain.pem')
 }, app)
-
 
 const execSync = require('child_process').execSync;
 // gen session 
@@ -68,9 +66,6 @@ app.get('/cgi-bin/*', (req, res)=> {
     var query_string = params.split("?")[1];
   }
 
-  var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-  console.log( time_stamp + remote_addr + ' requested ' + params );
-
   if ( query_string == undefined ) {
     query_string = "query=null";
   }
@@ -80,11 +75,15 @@ app.get('/cgi-bin/*', (req, res)=> {
       var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,3d",{ maxBuffer: 1024000000 });
       res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
       res.end(html);
+      var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+      console.log( time_stamp + remote_addr + ' requested ' + params );
     } else {
       // normal contents
       var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
       res.writeHead(200, {'Content-Type' : 'text/html'});
       res.end(html);
+      var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+      console.log( time_stamp + remote_addr + ' requested ' + params );
     }
   } else {
     res.end("Oops wrong request");
@@ -117,30 +116,36 @@ app.post('/cgi-bin/*', (req, res) => {
     var query_string = params.split("?")[1];
   }
 
-  var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-  console.log( time_stamp + remote_addr + ' requested ' + params );
-
   if ( query_string == undefined ) {
     query_string = "query=null";
   }
 
-  fs.writeFileSync( www + '/tmp/' + dd_dump, req.body);
-  var html = execSync("export REQUEST_METHOD=POST; export CONTENT_TYPE=\"" + content_type + "\";" + "export CONTENT_LENGTH=" + content_length + ";" +  "export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + "dd if=" + www + "/tmp/" + dd_dump + " 2>/dev/null |" + www + "/cgi-bin/" + command + "| %%sed -e 1d").toString();
+  if( fs.existsSync( www + "/cgi-bin/" + command ) ){
+    fs.writeFileSync( www + '/tmp/' + dd_dump, req.body);
+    var html = execSync("export REQUEST_METHOD=POST; export CONTENT_TYPE=\"" + content_type + "\";" + "export CONTENT_LENGTH=" + content_length + ";" +  "export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + "dd if=" + www + "/tmp/" + dd_dump + " 2>/dev/null |" + www + "/cgi-bin/" + command + "| %%sed -e 1d").toString();
 
-  if ( html.indexOf('meta http-equiv=\"refresh\"') != -1) {
-    var redirect_dump = session ;
-    fs.writeFileSync( www + '/tmp/' + redirect_dump, html);
-    var redirect_url = execSync("cat " + www + "/tmp/" + redirect_dump + "| grep url= | %%sed -r \"s/^(.*)url=//g\" | %%sed -r \"s/..$//g\"").toString();
-    redirect_url = redirect_url.replace(/\r?\n/g, '');
-    res.writeHead(302, {
-   'Location': redirect_url
-    });
-    res.end();
+    var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+    console.log( time_stamp + remote_addr + ' requested ' + params );
+
+    if ( html.indexOf('meta http-equiv=\"refresh\"') != -1) {
+      var redirect_dump = session ;
+      fs.writeFileSync( www + '/tmp/' + redirect_dump, html);
+      var redirect_url = execSync("cat " + www + "/tmp/" + redirect_dump + "| grep url= | %%sed -r \"s/^(.*)url=//g\" | %%sed -r \"s/..$//g\"").toString();
+      redirect_url = redirect_url.replace(/\r?\n/g, '');
+      res.writeHead(302, {
+     'Location': redirect_url
+      });
+      res.end();
+    } else {
+      res.writeHead(200, {'Content-Type' : 'text/html'});
+      res.end(html);
+    }
+    fs.unlinkSync( www + "/tmp/" + session);
   } else {
-    res.writeHead(200, {'Content-Type' : 'text/html'});
-    res.end(html);
+    res.end("Oops wrong request");
+    var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+    console.log( time_stamp + remote_addr + ' requested wrong page ' + uri );
   }
-  fs.unlinkSync( www + "/tmp/" + session);
 })
 
 app.get("/favicon.ico", (req, res) => {
