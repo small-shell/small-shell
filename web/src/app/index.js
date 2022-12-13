@@ -77,6 +77,15 @@ app.get('/cgi-bin/*', (req, res)=> {
       res.end(html);
       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
       console.log( time_stamp + remote_addr + ' requested ' + params );
+
+    } else if( query_string.indexOf('type=graph') != -1) {
+      // handle graph contents
+      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| /usr/bin/sed -e 1,2d" ,{ maxBuffer: 1024000000 });
+      res.writeHead(200, {'Content-Type' : 'image/png'});
+      res.end(html);
+      var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
+      console.log( time_stamp + remote_addr + ' requested ' + params );
+
     } else {
       // normal contents
       var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
