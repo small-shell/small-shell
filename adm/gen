@@ -1503,18 +1503,18 @@ if [ "$param" = "-app" ];then
 
         if [ "$protocol" = "https" ];then
           if [ ! "$chain_cert" ];then
-            cat $ROOT/web/src/app/index.js | $SED "s#%%www#${www}#g" | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
             | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" > ${www}/app/index.js
           else
-            cat $ROOT/web/src/app/index.js | $SED "s#%%www#${www}#g" | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
             | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" > ${www}/app/index.js
           fi
         else
-          cat $ROOT/web/src/app/index.js | $SED "s#%%www#${www}#g" | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+          cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
           | $SED "s#%%sed#$SED#g" > ${www}/app/index.js
         fi
         NODE=`which node`
-        cat $ROOT/web/src/app/app.sh | $SED "s#%%www#${www}#g"| $SED "s#%%node#$NODE#g" \
+        cat $ROOT/web/src/app/app.sh | $SED "s#%%node#$NODE#g" \
         | $SED "s#%%sed#$SED#g" > ${www}/app/app.sh
         chmod 755 ${www}/app/app.sh
 

@@ -5,7 +5,7 @@ var body = require('body-parser');
 var url = require('url');
 var fs = require('fs');
 var path = require('path');
-var www = "%%www"
+var www = "/var/www"
 
 const server = require('%%protocol').createServer({
     // https key: fs.readFileSync( www + '/app/privatekey.pem'),
@@ -208,4 +208,11 @@ server.listen(port, function(){
   var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
   console.log( time_stamp + "small-shell web srv started");
 });
+
+/* forward option start
+var http = require("http");
+http.createServer((express()).all("*", function (request, response) {
+    response.redirect(`https://${request.hostname}${request.url}`);
+})).listen(80);
+option end */
 
