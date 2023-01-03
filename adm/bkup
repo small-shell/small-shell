@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #----------------------------------------------------------
-# usage: ./bkup $databox $backup_directory 
+# usage: ./bkup $backup_directory
 #----------------------------------------------------------
 
 WHOAMI=`whoami`
@@ -12,26 +12,28 @@ fi
 
 # global conf load
 SCRIPT_DIR=`dirname $0`
- . ${SCRIPT_DIR}/../global.conf
+. ${SCRIPT_DIR}/../global.conf
+
+# load web/base
+. $ROOT/web/base
 
 # load param
-databox=$1
-bkup_dir=$2
-bkup_dir=`echo $bkup_dir | $SED "s/\/$//g"`
+bkup_dir=$1
 
-if [ ! "$databox" ];then
-  echo "error: please input databox name"
+# disk util check
+disk_usage=`df -k $bkup_dir | grep -v Avail | awk '{print $4}'`
+small_shell_size=`du -sk $ROOT | awk '{print $1}'`
+
+
+if [ $small_shell_size -gt $disk_usage ];then
+  echo -n "error: disk of $bkup_dir is not enough"
   exit 1
 fi
 
-if [ ! -d $ROOT/databox/$databox ];then
-   echo "error: databox{$databox} seems wrong"
-   exit 1
-fi
 
 if [ ! "$bkup_dir" ];then
-  echo "error: please input backdup directory"
-  exit 1
+   echo "error: please input backup direcotry \"./bkup \$backup_directory\""
+   exit 1
 fi
 
 if [ ! -d $bkup_dir ];then
@@ -39,15 +41,24 @@ if [ ! -d $bkup_dir ];then
    exit 1
 fi
 
-# Exec backup
-(cd $ROOT/databox && tar -Jcf $bkup_dir/${databox}.tar.xz ${databox})
+# backup databoxs
+(cd $ROOT/../ && tar -Jcf $bkup_dir/${server}.core.tar.xz small-shell)
 result=$?
-
-if [ $result -eq 0 ];then
-  echo "Backup has been done successfully"
-  echo "please check $bkup_dir"
-else
-  echo "eror: something seems wrong"
-  exit 1
+if [ ! $result -eq 0 ];then
+  echo "warn: something seems wrong for making backup of small-shell core"
 fi
 
+# backuip apps
+target_www=`echo $www | xargs basename -a`
+
+if [ "$cgidir" = "/var/www/cgi-bin" ];then
+  (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.www.tar.xz $target_www)
+else
+  target_cgi=`echo $cgidir | xargs basename -a`
+  (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.www.tar.xz $target_www)
+  (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.cgi.tar.xz $target_cgi)
+fi
+
+echo "backup completed, please check $bkup_dir"
+
+exit 0
