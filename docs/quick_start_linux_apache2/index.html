@@ -131,11 +131,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#gen-databox" class="nav-link">Gen Databox</a>
+            <li class="nav-item" data-level="2"><a href="#generate-databox" class="nav-link">Generate Databox</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#gen-base-app" class="nav-link">Gen Base APP</a>
+            <li class="nav-item" data-level="2"><a href="#generate-base-app" class="nav-link">Generate Base APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -191,7 +191,7 @@ sudo visudo
 ## sudo setting for httpd user (e.g.) www-data for apache2
 www-data   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/local/small-shell/sbin/*
 </code></pre>
-<h2 id="gen-databox">Gen Databox</h2>
+<h2 id="generate-databox">Generate Databox</h2>
 <p>Then Let's generate databox as the data store of WEB APP.
 DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
@@ -232,7 +232,7 @@ option=&quot;required&quot;
 
 Is it OK ? (yes | no): yes
 </code></pre>
-<h2 id="gen-base-app">Gen Base APP</h2>
+<h2 id="generate-base-app">Generate Base APP</h2>
 <p>Once at least 1 databox is ready, please generate APP shell <br />
 APP shell details are in <a href="../app_shell_tour/">APP shell tour</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app

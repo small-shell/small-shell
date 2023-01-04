@@ -221,12 +221,12 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 <li>Add subAPP #connect additional databox if needed</li>
 </ol>
 <p>Let's create scratch APP by following above steps.</p>
-<h4 id="gen-databox">Gen DataBox</h4>
+<h4 id="generate-databox">Generate DataBox</h4>
 <p>Please generate databox that will be used for Scratch APP. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
-<h3 id="gen-app">Gen APP</h3>
+<h3 id="generate-app">Generate APP</h3>
 <p>Let's start to generate scratch APP named as just scratch with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just scrach.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
@@ -463,7 +463,7 @@ key(col2) label: Assignee
 data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): mls
 </code></pre>
 <h2 id="oauth-integration">Oauth integration</h2>
-<p>Gen APP with other option</p>
+<p>Generate APP with other option</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3  
 app_name: oauth_test

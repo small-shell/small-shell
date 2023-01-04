@@ -135,10 +135,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#backup-restore" class="nav-link">Backup &amp; Restore</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#hash-chain" class="nav-link">Hash chain</a>
               <ul class="nav flex-column">
               </ul>
@@ -399,11 +395,6 @@ $  - {%%%%%%%%%%%%%%}
 '  - {%%%%%%%%%%%%%%%%%}
 null - -
 </code></pre>
-<h2 id="backup-restore">Backup &amp; Restore</h2>
-<p>You can get backup data using bkup command. and then restore the data using rstr command. </p>
-<pre><code>sudo /usr/local/small-shell/adm/bkup $databox $backup_directory
-sudo /usr/local/small-shell/adm/rstr $databox $restore_file
-</code></pre>
 <h2 id="hash-chain">Hash chain</h2>
 <p>Hash chain is created by que.sh which are used for making index and log and hash chain as well.
 see detail at que.sh codes. 
@@ -547,10 +538,9 @@ tail -f /usr/local/small-shell/tmp/log/$session.log
 <p>You can export datas with csv format on Base APP table.
 <img alt="Screenshot" src="../img/export.png" /></p>
 <h2 id="delete-databox">Delete databox</h2>
-<p>Please delete databox with rm command after getting backup. following is example of rm test.box</p>
+<p>Please delete databox with rm command. following is example of rm test.box</p>
 <pre><code>mkdir $HOME/backup
 databox=test.box
-sudo /usr/local/small-shell/adm/bkup $databox $HOME/backup
 cd /usr/local/small-shell/databox
 sudo rm -rf $databox
 </code></pre>

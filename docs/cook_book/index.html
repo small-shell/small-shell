@@ -131,6 +131,14 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#deploy-auto-ssl-cetiricate" class="nav-link">Deploy auto SSL cetiricate</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#backup-restore-example" class="nav-link">Backup &amp; Restore example</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#log-analyzer" class="nav-link">Log analyzer</a>
               <ul class="nav flex-column">
               </ul>
@@ -668,6 +676,92 @@ primary databox: none
 <h3 id="distribute-the-site-to-static-directory">Distribute the site to static directory</h3>
 <p>You can export main page as static stie. then please copy the html to /var/www/html or other static directory.</p>
 <pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
+</code></pre>
+<h2 id="deploy-auto-ssl-cetiricate">Deploy auto SSL cetiricate</h2>
+<p>In this cook, we would like to use Let's Encrypt as ssl certificate provider. and we will use certbot for the deployment. so please install certbot first.</p>
+<h5 id="install-certbot">Install certbot</h5>
+<pre><code>sudo snap install core
+sudo snap refresh core
+sudo snap install --classic certbot 
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A record of the domain must be set on DNS server beforehand. and it must has global IP to be IP reachable from Let's encrypt server </p>
+</div>
+<h5 id="launch-base-app_1">Launch Base APP</h5>
+<p>To be verified your domain by Let's Encrypt server, please launch WEB server with FQDN name that is set as A record on DNS server.so far http should be fine because certificate is not issued yet. deploy job will upgrade it to https later.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
+protocol (http | https): http
+WEB Server FQDN or IP addr (e.g. 192.168.10.1): 
+</code></pre>
+<h4 id="import-job-and-deploy-ssl-certificate">Import job and deploy ssl certificate</h4>
+<p>Once you install certbot and launched Base APP using small-shell web, let's kick deploy.sh. then dialog will be started. please answer your mail address that is reqiured to publish certificate by Let's Encrypt</p>
+<pre><code>cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+cd ./small-shell-apps/ssl_auto
+chmod 755 deploy.sh
+sudo ./deploy.sh
+</code></pre>
+<h4 id="enable-auto-refresh">Enable auto refresh</h4>
+<p>You must add following setting on sudoers.</p>
+<pre><code>sudo visudo
+# add following to bottom of the file
+small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/*
+</code></pre>
+<h2 id="backup-restore-example">Backup &amp; Restore example</h2>
+<p>In this cook, 1 production node will send backup to backuo node through e-cron HUB API</p>
+<pre><code>| prod node | -- | backup node #e-cron HUB|
+</code></pre>
+<h4 id="operation-at-backup-node">Operation at backup node</h4>
+<p>It's required to Launch Base APP and check e-cron URL and key</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+cat /usr/local/small-shell/web/base | grep hubapi
+cat /usr/local/small-shell/web/base | grep api_authkey
+</code></pre>
+<h4 id="operation-at-production-node">Operation at production node</h4>
+<p>Once e-cron HUB is reayd, let's define backup &amp; sync job on pdocution node. by the way sudo privilede is required for executing bkup command. please add sudoers beforehand.</p>
+<pre><code>sudo visudo
+# add folowing line
+small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/*
+
+# define backup job
+sudo /usr/local/smalll-shell/adm/gen -job
+job name: backup
+Type of job (1.job automation | 2.file exchange) : 1
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: any
+Hour  [ any | 0-23 ]: 0 
+Min   [ any | 0-59 ]: 1
+Week  [ any | mon - sun ]: any
+Exec command or batch script: sudo /usr/local/small-shell/adm/bkup /usr/local/small-shell/tmp/que
+
+# define push job
+sudo /usr/local/smalll-shell/adm/gen -job
+Type of job (1.job automation | 2.file exchange) : 2
+--Define schedule--
+Month [ any | 1-12 ]: any
+Date  [ any | 1-31 ]: any
+Hour  [ any | 0-23 ]: 1
+Min   [ any | 0-59 ]: 0
+Week  [ any | mon - sun ]: any
+Type of file exchange (push | get): push
+local directory: /usr/local/small-shell/tmp/que
+file_name: *tar.xz
+HUB API URL: $hubapi
+API authkey: $api_authkey
+</code></pre>
+<h4 id="restore">Restore</h4>
+<p>You can restore to backup node by rstr command. file will be uploaded to e-cron HUB que/file directory as default.  </p>
+<pre><code>ls /usr/local/small-shell/util/e-cron/que/file
+sudo /usr/local/small-shell/adm/rstr /usr/local/small-shell/util/e-cron/que/file
+</code></pre>
+<p>Once restore completed, plase regenerate BaseAPP and enable jobs</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.XXX
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>
 <p>You can import job for analyzing small shell web log from github. please deploy it to the small shell env which using default web server.</p>
