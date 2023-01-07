@@ -708,12 +708,16 @@ sudo ./deploy.sh
 <h4 id="enable-auto-refresh">Enable auto refresh</h4>
 <p>You must add following setting on sudoers.</p>
 <pre><code>sudo visudo
-# add following to bottom of the file
-small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/*
+# add following to bottom of the file, if there is no small-shell entry
+    small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
 </code></pre>
 <h2 id="backup-restore-example">Backup &amp; Restore example</h2>
 <p>In this cook, 1 production node will send backup to backuo node through e-cron HUB API</p>
 <pre><code>| prod node | -- | backup node #e-cron HUB|
+</code></pre>
+<h4 id="usage-of-bkup-and-rstr">Usage of bkup and rstr</h4>
+<pre><code>sudo /usr/local/small-shell/adm/bkup $backup_dir
+sudo /usr/local/small-shell/adm/rstr $backuped_dir
 </code></pre>
 <h4 id="operation-at-backup-node">Operation at backup node</h4>
 <p>It's required to Launch Base APP and check e-cron URL and key</p>
@@ -724,11 +728,11 @@ cat /usr/local/small-shell/web/base | grep api_authkey
 <h4 id="operation-at-production-node">Operation at production node</h4>
 <p>Once e-cron HUB is reayd, let's define backup &amp; sync job on pdocution node. by the way sudo privilede is required for executing bkup command. please add sudoers beforehand.</p>
 <pre><code>sudo visudo
-# add folowing line
-small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/*
+# add folowing line, if there is no small-shell entry
+small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
 
 # define backup job
-sudo /usr/local/smalll-shell/adm/gen -job
+sudo /usr/local/small-shell/adm/gen -job
 job name: backup
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
@@ -737,10 +741,10 @@ Date  [ any | 1-31 ]: any
 Hour  [ any | 0-23 ]: 0 
 Min   [ any | 0-59 ]: 1
 Week  [ any | mon - sun ]: any
-Exec command or batch script: sudo /usr/local/small-shell/adm/bkup /usr/local/small-shell/tmp/que
+Exec command or batch script: sudo /usr/local/small-shell/adm/bkup /var/tmp
 
 # define push job
-sudo /usr/local/smalll-shell/adm/gen -job
+sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 2
 --Define schedule--
 Month [ any | 1-12 ]: any
@@ -749,7 +753,7 @@ Hour  [ any | 0-23 ]: 1
 Min   [ any | 0-59 ]: 0
 Week  [ any | mon - sun ]: any
 Type of file exchange (push | get): push
-local directory: /usr/local/small-shell/tmp/que
+local directory: /var/tmp
 file_name: *tar.xz
 HUB API URL: $hubapi
 API authkey: $api_authkey
