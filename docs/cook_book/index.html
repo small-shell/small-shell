@@ -709,7 +709,7 @@ sudo ./deploy.sh
 <p>You must add following setting on sudoers.</p>
 <pre><code>sudo visudo
 # add following to bottom of the file, if there is no small-shell entry
-    small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
+small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
 </code></pre>
 <h2 id="backup-restore-example">Backup &amp; Restore example</h2>
 <p>In this cook, 1 production node will send backup to backuo node through e-cron HUB API</p>
