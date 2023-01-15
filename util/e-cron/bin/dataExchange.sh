@@ -34,9 +34,6 @@ chmod 766 $ROOT/util/e-cron/que/tmp/.${job}_tmp
 . $ROOT/util/e-cron/que/tmp/.${job}_tmp
 rm $ROOT/util/e-cron/que/tmp/.${job}_tmp
 
-# retry count for message waiting
-retry=100
-
 # get file
 count=0
 sleep_time=10
@@ -53,22 +50,15 @@ if [ "${get_file}" ];then
        mkdir ${file_que}/.${job}
     fi
     files=`$CURL -X GET "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
-    while [ ! "$files" ]; do
-      sleep 10
-      sleep_time=`expr ${count} \* 10`
-
-      if [ ${count} -eq ${retry} ];then
-        ERROR_FLAG="file check failed"
-        echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR target_file_${get_message}_was_not_reqdy_${sleep_time}_sec" > ${status_que}
-        echo "`date +%Y-%m-%d` `date +%T` ERROR target file was not ready ${sleep_time} sec" >> ${job_log}
-        if [ -f $tmp_que ];then
-          rm -rf $tmp_que
-        fi
-        exit 1
+    if [ ! "$files" ];then
+      ERROR_FLAG="file check failed"
+      echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR target_file_was_not_exist" > ${status_que}
+      echo "`date +%Y-%m-%d` `date +%T` ERROR target file was not exist" >> ${job_log}
+      if [ -f $tmp_que ];then
+        rm -rf $tmp_que
       fi
-      ((count += 1))
-      files=`$CURL "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
-    done
+      exit 1
+    fi   
 
     for file in $files
     do 
@@ -115,6 +105,10 @@ if [ "${push_file}" ];then
         else
           echo "`date +%Y-%m-%d` `date +%T` ERROR failed to upload file ${file}" >> ${job_log}
           echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR ${file}_failed_to_upload_to_HUB" > ${status_que}
+          if [ -f $tmp_que ];then
+             rm -rf $tmp_que
+          fi
+	  exit 1
         fi
       done
     fi
