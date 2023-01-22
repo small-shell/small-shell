@@ -127,6 +127,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#set-notification-mail-to-form" class="nav-link">Set notification mail to Form</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#htmlcss-design-recipe" class="nav-link">HTML/CSS design recipe</a>
               <ul class="nav flex-column">
               </ul>
@@ -555,6 +559,31 @@ LATEST STATUS OF JOB
 2022-03-20 00:05:01 del_util_log successfully completed
 2022-03-20 02:45:41 book_master_status_update successfully completed
 2022-03-20 02:46:01 del_session successfully completed
+</code></pre>
+<h2 id="set-notification-mail-to-form">Set notification mail to Form</h2>
+<p>In this coook, we would like to add notification mail to inquiry form of <a href="../app_shell_scratch/#team-app">Team APP</a>
+. you can add same code to any Form APP.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>please set MTA such like postfix beforehand</p>
+</div>
+<p>Let's add code to inquiry_set.sh</p>
+<pre><code># install mail comamnd
+sudo apt install mailutils
+
+# add code
+vi /var/www/bin/inquiry_set.sh
+</code></pre>
+<p>then please add these codes just before session removal</p>
+<pre><code># notification mail 
+notification_addr=&quot;to_addr@XXXX.com&quot;
+sender_addr=&quot;from_addr@XXXX.com&quot;
+. ${small_shell_path}/web/base
+echo &quot;inquiry url is here ${base_url}team?subapp=inquiries&amp;req=get&amp;id=$updated_id&quot; | mail -s &quot;New inquiry added through Form&quot; -aFrom:${sender_addr} ${notification_addr}
+
+if [ &quot;$session&quot; ];then
+  rm -rf /var/www/tmp/$session
+fi
 </code></pre>
 <h2 id="htmlcss-design-recipe">HTML/CSS design recipe</h2>
 <p>In this section, you can learn how you can change design of main page of your APP. let's create main page with no authentication and no databox for making the easiest example.</p>

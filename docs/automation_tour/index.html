@@ -567,7 +567,7 @@ dummy1 dummy2 dummy3 #data is synced to local dir
 <pre><code>dir: /usr/local/small-shell/util/que/common
 </code></pre>
 <h5 id="function">function</h5>
-<p>Script can load parameters that is in the que file. For examaple mailque contain subjects, mailto, mailfrom, contents. and </p>
+<p>Script can load parameters that is in the que file. For examaple mailque contain subjects, mailto, mailfrom, contents. </p>
 <pre><code>push   -&gt; que: mail           -&gt; mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID    
 script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID.load
 </code></pre>
@@ -575,10 +575,16 @@ script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfr
 <pre><code># send mail que to e-cron batch
 session=&quot;`date +%s`.$RANDOM&quot;
 mkdir /tmp/$session
-echo &quot;subject=\&quot;test\&quot;&quot; &gt; /tmp/$session/mail
+echo &quot;subject=\&quot;test1\&quot;&quot; &gt; /tmp/$session/mail
 echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail        
 echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail
-echo &quot;contents=\&quot;test\&quot;&quot; &gt;&gt; /tmp/$session/mail
+echo &quot;contents=\&quot;test1\&quot;&quot; &gt;&gt; /tmp/$session/mail
+
+echo &quot;subject=\&quot;test2\&quot;&quot; &gt; /tmp/$session/mail
+echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail        
+echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail
+echo &quot;contents=\&quot;test2\&quot;&quot; &gt;&gt; /tmp/$session/mail
+
 sudo -u small-shell /usr/local/small-shell/bin/e-cron push.que:/tmp/$session/mail
 #-&gt;&gt;pushed successfully
 rm -rf /tmp/$session
@@ -641,7 +647,8 @@ que=&quot;mail&quot;
 </code></pre>
 <h6 id="check-log">Check log</h6>
 <pre><code>tail -f /usr/local/small-shell/util/e-cron/log/joblog/mailq_command_dump_20210918
-2021-09-18 01:28:01 /usr/local/small-shell/util/scripts/send_mail &quot;to@***.com&quot; &quot;from@***.com&quot; &quot;test&quot; &quot;test&quot; executed
+2021-09-18 01:28:01 /usr/local/small-shell/util/scripts/send_mail &quot;to@***.com&quot; &quot;from@***.com&quot; &quot;test1&quot; &quot;test1&quot; executed
+2021-09-18 01:28:01 /usr/local/small-shell/util/scripts/send_mail &quot;to@***.com&quot; &quot;from@***.com&quot; &quot;test2&quot; &quot;test2&quot; executed
 </code></pre>
 <h2 id="bine-cron">bin/e-cron</h2>
 <p>e-cron must be executed as small-shell permission</p>
