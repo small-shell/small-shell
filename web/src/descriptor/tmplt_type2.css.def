@@ -407,7 +407,6 @@ a {
   .form-box .description h1 {
     font-size: 180%;
     color: #434246;
-    font-style : italic;
 }
 }
 
@@ -415,7 +414,7 @@ a {
   .form-box .description h1 {
     font-size: 180%;
     color: #444444;
-    font-style : italic;
+    line-height: 1.0em;
 }
 }
 
@@ -529,6 +528,7 @@ a {
     border: 1px solid #d3d3d3;
     flex: auto;
     border-radius: 4px;
+    background-color: #FDFEFE;
   }
 
   .form-box input[type="date"], 
@@ -553,6 +553,7 @@ a {
     border: 1px solid #d3d3d3;
     flex: auto;
     border-radius: 4px;
+    background-color: #FDFEFE;
   }
 
   .form-box input[type="date"],

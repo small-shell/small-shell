@@ -799,6 +799,7 @@ a {
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
+  background-color: #FDFEFE;
 }
 
 .form-box input[type="date"],
@@ -980,6 +981,7 @@ a {
   font-size: 12px;
   padding: 6px 6px;
   border-style: none;
+  background-color: #FDFEFE;
 }
 
 .import-form li p {

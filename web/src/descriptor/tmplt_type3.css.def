@@ -271,7 +271,7 @@ a {
 
   .main .description {
     flex: none;
-    max-width: 72%;
+    max-width: 84%;
     text-align: left;
     padding: 24px 42px;
   }
@@ -281,7 +281,7 @@ a {
   }
 
   .main p {
-   line-height: 1.8em;
+   line-height: 1.1em;
   }
 
   .main .calendar {
@@ -333,7 +333,7 @@ a {
   }
 
   .main p {
-   line-height: 1.8em;
+   line-height: 1.1em;
   }
 
   .main .calendar {
@@ -406,7 +406,6 @@ a {
 
 .main .flex-table li p {
   width: 120px;
-  line-height: 1.2em;
   flex: auto;
   padding-left: 8px;
   font-size: 70%;
@@ -814,6 +813,7 @@ a {
     border: 1px solid #d3d3d3;
     flex: auto;
     border-radius: 4px;
+    background-color: #FDFEFE; 
   }
 
   .form-box input[type="date"],
@@ -838,6 +838,7 @@ a {
     border: 1px solid #d3d3d3;
     flex: auto;
     border-radius: 4px;
+    background-color: #FDFEFE;
   }
 
   .form-box input[type="date"],

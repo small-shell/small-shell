@@ -69,8 +69,8 @@ fi
 # -----------------
 cat %%www/descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%message/r %%www/tmp/$session/message" \
-| $SED "s/%%message/$message/g"\
-| $SED "s/%%id/$id/g"
+| $SED "s/%%message/$message/g"
+| $SED "s/%%id/$updated_id/g"
 
 if [ "$session" ];then
   rm -rf %%www/tmp/$session
