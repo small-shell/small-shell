@@ -26,7 +26,7 @@ SCRIPT_DIR=`dirname $0`
 
 if [  ! -x $PYTHON ];then
   echo "please define executable path of python on ${SCRIPT_DIR}/env if you want to gen graph"
-  exit 0
+  exit 1
 fi
 
 # load param
@@ -105,7 +105,7 @@ tmpcsv_org=$tmpcsv
 
 if [ "$type" = "line" -o "$type" = "bar" ]; then
  
-                                                                                                                                                               case "$timeline" in
+  case "$timeline" in
 
   "hourly" )
     time_fmt_chk
