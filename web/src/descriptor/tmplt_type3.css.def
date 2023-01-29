@@ -4,6 +4,7 @@ body {
   letter-spacing: .04em;
   font-size: 94%;
   height: 100%;
+  margin: 0;
   background: #fffafa;
 }
 
@@ -44,6 +45,7 @@ a {
     flex-wrap:wrap;
     margin-top: -10px;
     margin-bottom: 18px;
+    height: 64px;
 
     /* text color */
     color: #dcdcdc;
@@ -70,7 +72,8 @@ a {
   display:flex;
   flex-wrap:wrap;
   margin: auto;
-  padding-top: 4px;
+  padding-top: 6px;
+  padding-left: 4px;
 }
 
 .left-header p {
@@ -92,6 +95,7 @@ a {
   padding-right: 0px;
   margin: auto;
   color: #ADFBEA;
+  padding-top: 6px;
 }
 
 .right-header a {
