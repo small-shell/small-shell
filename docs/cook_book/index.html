@@ -204,18 +204,6 @@ app_name: location@book_search
 Type of Authentication (1.shared pass | 2.user key | 3.Other | 4.None): 4
 primary databox: book.res
 </code></pre>
-<h5 id="add-routing">Add routing</h5>
-<pre><code>sudo vi /usr/lib/cgi-bin/book_search
---code--
-# add routing
-&quot;location.table&quot;) ../bin/location_table.sh session:$session pin:$pin user_name:$user_name page:$page table_command:$table_command;;
-&quot;location.get&quot;) ../bin/location_get.sh session:$session pin:$pin user_name:$user_name id:$id;;
-&quot;location.set&quot;) ../bin/location_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
-&quot;location.del&quot;) ../bin/location_del.sh session:$session pin:$pin user_name:$user_name id:$id;;
-&quot;location.log_viewer&quot;) ../bin/location_log_viewer.sh session:$session pin:$pin id:$id;;
-&quot;location.file&quot;) ../bin/location_dl.sh session:$session pin:$pin id:$id;;
---------
-</code></pre>
 <h3 id="generate-meta-link">Generate meta link</h3>
 <p>meta links can be generated for each APPs. and let's cook it as next step.</p>
 <pre><code># generate link

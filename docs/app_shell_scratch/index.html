@@ -227,7 +227,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 # -&gt; dialog will be started
 </code></pre>
 <h3 id="generate-app">Generate APP</h3>
-<p>Let's start to generate scratch APP named as just scratch with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just scrach.</p>
+<p>Let's start to generate scratch APP named as just scratch with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just scrach but of course you can set any prefer name you want.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: scratch                                                              
@@ -330,42 +330,24 @@ user_name="external_user"
 --------
 </code></pre>
 <h3 id="sub-app">Sub APP</h3>
-<p>Basically scratch APP will connect to only 1 databox. Sub APP can add databox for your APP.</p>
+<p>Basically scratch APP will connect to only 1 databox. and Sub APP is way to add databox to your APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory is aadd to scratch APP. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>subAPP must be blong to parent APP, please define subapp as $subAPP_name@$parentAPP_name    </p>
+</div>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
-#-&gt; please create any databox
+databox_name: inventory.db
+#-&gt; please create any databox that will be added to scratch APP
 
 sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
-app_name: $subAPP@$parentAPP
-
-please generate tasks as subapp in this tour.
--&gt; app_name: inventory@scratch
--&gt; primary databox: inventory.db
+app_name: inventory@scratch
+primary databox: inventory.db
 </code></pre>
-<p>then you can get codes to integrate subapp with parentapp.</p>
-<pre><code>SUB APP template is successfully generated
-
-1. APP controller
- please add routing on /usr/lib/cgi-bin/scratch, when you add routing, please add them before *) routing.
-#---------------------------------------------------------------------------------------------------------
-&quot;inventory.table&quot;) ../bin/inventory_table.sh session:$session pin:$pin user_name:$user_name page:$page table_command:$table_command;;
-&quot;inventory.get&quot;) ../bin/inventory_get.sh session:$session pin:$pin user_name:$user_name id:$id;;
-&quot;inventory.set&quot;) ../bin/inventory_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
-&quot;inventory.del&quot;) ../bin/inventory_del.sh session:$session pin:$pin user_name:$user_name id:$id;;
-&quot;inventory.log_viewer&quot;) ../bin/inventory_log_viewer.sh session:$session pin:$pin id:$id;;
-&quot;inventory.file&quot;) ../bin/inventory_dl.sh session:$session pin:$pin id:$id;;
-#---------------------------------------------------------------------------------------------------------
-then you can access to the subapp
-http://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/scratch?&amp;subapp=inventory&amp;req=table
-
-2. Meta link in the descriptor #html.def
- +link to the APP #e.g please insert scratch_main.html.def
- &lt;a href=&quot;./scratch?%%session&amp;subapp=inventory&amp;req=table&quot;&gt;link to subapp table&lt;/a&gt;
+<p>And then subAPP will be deployed, please check routing and menu that will be updaated automatically.</p>
+<pre><code>cat /var/www/cgi-bin/scratch
+cat /var/www/desciption/common_parts/scratch_common_menu
 </code></pre>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you add rougin aftter [ *) echo "error: wrong request";; ] in the controller, everything will go to error routing.</p>
-</div>
 <h3 id="meta-link">meta link</h3>
 <p>You can generate link that can be used in the APP. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html descriptor of your APP.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
