@@ -2200,7 +2200,7 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
@@ -2278,7 +2278,7 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g"\
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
@@ -2368,7 +2368,7 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" \
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
@@ -2465,8 +2465,8 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | grep -v logout \
-          > ${www}/descriptor/common_parts/${app}_common_menu
+          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g"  | $SED "s/%%databox/$databox/g" \
+          | grep -v logout > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
         fi
@@ -2529,28 +2529,34 @@ if [ "$param" = "-app" ];then
 
         chmod 755 ${www}/descriptor/${app}*
 
-        clear
-        echo ""
-        echo "SUB APP template is successfully generated"
-        echo ""
-        echo "1. APP controller"
-        echo " please add routing on $cgidir/${parent_app}"
-        echo "#---------------------------------------------------------------------------------------------------------"
-        echo "\"${app}.table\") ${www}/bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;"
-        echo "\"${app}.get\") ${www}/bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;"
-        echo "\"${app}.set\") ${www}/bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
-        echo "\"${app}.del\") ${www}/bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;"
-        echo "\"${app}.log_viewer\") ${www}/bin/${app}_log_viewer.sh session:\$session pin:\$pin id:\$id;;"
-        echo "\"${app}.file\") ${www}/bin/${app}_dl.sh session:\$session pin:\$pin id:\$id;;"
-        echo "#---------------------------------------------------------------------------------------------------------"
-        echo "then you can access to the subapp"
-        echo "${base_url}${parent_app}?&subapp=${app}&req=table"
-        echo ""
-        echo "2. Meta link in the descriptor #html.def"
-        echo " +link to the APP #e.g please insert ${parent_app}_main.html.def"
-        echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">link to subapp table</a>"
-        echo ""
-        echo ""
+        echo "  \"${app}.table\") ${www}/bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;" > $tmp_dir/subapp_routing
+        echo "  \"${app}.get\") ${www}/bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;" >> $tmp_dir/subapp_routing
+
+        echo "  \"${app}.set\") ${www}/bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;" >> $tmp_dir/subapp_routing
+
+        echo "  \"${app}.del\") ${www}/bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;" >> $tmp_dir/subapp_routing
+
+        echo "  \"${app}.log_viewer\") ${www}/bin/${app}_log_viewer.sh session:\$session pin:\$pin id:\$id;;" >> $tmp_dir/subapp_routing
+
+        echo "  \"${app}.file\") ${www}/bin/${app}_dl.sh session:\$session pin:\$pin id:\$id;;" >> $tmp_dir/subapp_routing
+
+        # add routing to parent app
+        cat $cgidir/${parent_app} | $SED "/# sub app routing section/r ${tmp_dir}/subapp_routing"  > $tmp_dir/new_parent
+        cat $tmp_dir/new_parent > $cgidir/${parent_app}
+
+        # add menu to common menu
+        if [ -f ${cgidir}/auth.${parent_app} ];then
+          echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">$databox@${app}</a>" >> $tmp_dir/subAPP_link
+          cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Logout/i `cat $tmp_dir/subAPP_link`" > $tmp_dir/new_menu
+          cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
+        else
+          echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">$databox@${app}</a>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
+        fi
+
+        echo "subAPP is successfully generated, parent app is updated -> $cgidir/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"
+        echo "and please update subapp codes if needed"
+        ls  ${www}/bin/${app}_*
+        ls  ${www}/descriptor/${app}_*
 
       fi
 

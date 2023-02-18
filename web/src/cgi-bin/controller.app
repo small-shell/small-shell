@@ -170,6 +170,12 @@ case "$req" in
   "file")
     %%www/bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
+
+   #--------------------------------
+   # sub app routing section
+   #--------------------------------
+
+
   *)
     echo "error: wrong request";;
 
