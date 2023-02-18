@@ -330,14 +330,14 @@ user_name="external_user"
 --------
 </code></pre>
 <h3 id="sub-app">Sub APP</h3>
-<p>Basically scratch APP will connect to only 1 databox. and Sub APP is way to add databox to your APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory is aadd to scratch APP. </p>
+<p>Basically scratch APP will connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory is aadd to scratch APP. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>subAPP must be blong to parent APP, please define subapp as $subAPP_name@$parentAPP_name    </p>
+<p>subAPP must be belong to parent APP, please define subapp as $subAPP_name@$parentAPP_name    </p>
 </div>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 databox_name: inventory.db
-#-&gt; please create any databox that will be added to scratch APP
+#-&gt; dialog will be started
 
 sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
