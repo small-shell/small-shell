@@ -92,11 +92,11 @@ else
       action:get id:new key:$key format:html_tag > %%www/tmp/$session/dataset
     else
       data=`$DATA_SHELL databox:$databox \
-      action:get id:$id key:$key format:html_tag ` \
+      action:get id:$id key:$key format:html_tag `
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
       if [ ! "$file_chk" ];then
-        echo $data >> %%www/tmp/$session/dataset
+        echo "$data" >> %%www/tmp/$session/dataset
       else
         $DATA_SHELL databox:$databox \
         action:get id:new key:$key format:html_tag  >> %%www/tmp/$session/dataset
