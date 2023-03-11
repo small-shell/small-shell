@@ -1016,7 +1016,7 @@ function get_data(){
       else
         echo "<input class=\"file\" type=\"file\" name=\"$name\" id=\"file_input\">"
         echo "<label id=\"file_input_label\" for=\"file_input\">+</label>"
-        echo "<label id=\"file_name\">upload file</label>"
+        echo "<label id=\"file_name\">$label</label>"
         echo "</div>"
         echo "</li>"
       fi

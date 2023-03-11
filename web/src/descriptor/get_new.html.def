@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="form-box">
+      <div class="%%form-class">
       <div class="description">
         <h1>#new</h1>
       </div>
@@ -51,6 +51,8 @@
        btn.innerHTML = '=';
      }
    })
+
+   document.getElementById("txtara").rows="%%text_area_row"
 
    </script>
    </body>

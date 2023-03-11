@@ -1,0 +1,2 @@
+APP Portal: ./%%app?req=main
+Table: ./%%app?req=table

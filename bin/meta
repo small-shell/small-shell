@@ -32,6 +32,7 @@
 # meta get.users:$app
 # meta get.link:$app
 # meta chk.form:$databox
+# meta chk.null:$databox{id}
 #----------------------------------------------------------
 
 # global conf load
@@ -146,6 +147,12 @@ fi
 if [[ $param == chk.form:* ]]; then
   action=`echo $param | $AWK -F":" '{print $1}'`
   databox=`echo $param |  $AWK -F":" '{print $2}'`
+fi
+
+if [[ $param == chk.null:* ]]; then
+  action=`echo $param | $AWK -F":" '{print $1}'`
+  databox=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+  id=`echo $param |  $AWK -F":" '{print $2}' | cut -f 2- -d "{" | $SED "s/}//g"`
 fi
 
 # return meta data
@@ -524,6 +531,33 @@ if [ "$action" = "chk.form" ];then
 
 fi
 
+if [ "$action" = "chk.null" ];then
+  for col in `ls $ROOT/databox/${databox}/def`
+  do
+    #load type
+    . $ROOT/databox/${databox}/def/$col
+    if [ "$type" = "file" ];then
+      ls $ROOT/databox/${databox}/file/${id} >/dev/null 2>&1
+      if [ $? -eq 0 ];then
+        echo "$name:1"
+      else
+        echo "$name:0"
+      fi
+    else
+      if [ ! -f $ROOT/databox/${databox}/data/${id}/${name} ];then 
+        echo "$name:0" 
+      else
+        value=`cat $ROOT/databox/${databox}/data/${id}/${name} 2>/dev/null | $SED -z "s/\n//g"`
+        if [ ! "$value" ];then 
+          echo "$name:0"
+        else
+          echo "$name:1"
+        fi
+      fi
+    fi
+  done
+fi
+
 if [ ! "$action" ];then
 echo "#------------------------------------------------------
 # PARAM FOR META
@@ -556,6 +590,7 @@ echo "#------------------------------------------------------
 # meta get.users:\$app
 # meta get.link:\$app
 # meta chk.form:\$databox
+# meta chk.null:\$databox{id}
 #----------------------------------------------------------"
 fi
 

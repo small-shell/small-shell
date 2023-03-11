@@ -23,7 +23,7 @@
        </div>
       </div>
 
-      <div class="form-box">
+      <div class="%%form-class">
       <div class="description">
         <h1>#values</h1>
         <p><b>#ID </b>%%id</p>
@@ -71,15 +71,11 @@
      formInputs[i].onchange = function () {
        const file = this.files[0].name;
        const label = this.nextElementSibling;
-       if (!label.classList.contains("changed")) {
-         const span = document.createElement("span");
-         span.className = "filename";
-         this.parentNode.appendChild(span);
-         label.classList.add("changed");
-       }
        label.nextElementSibling.innerHTML = file;
      };
    }
+
+   document.getElementById("txtara").rows="%%text_area_row"
 
    </script>
    </body>

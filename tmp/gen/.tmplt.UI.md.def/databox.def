@@ -1,0 +1,98 @@
+#---------------------------------------------------------------
+# db definition
+#---------------------------------------------------------------
+
+# databox
+databox="%%app.UI.md.def"
+
+# col1
+#-------------------------------------------
+primary_key="hashid"
+primary_key_label=""
+#-------------------------------------------
+
++addcol
+# col2
+#-------------------------------------------
+col2_key_name="logo"
+col2_key_label="logo"
+col2_type="file"
+
+# only for select, checkbox
+col2_key_params=""
+
+# only for pdls
+col2_primary_databox=""
+
+# required
+col2_required="no"
+#-------------------------------------------
+
++addcol
+# col3
+#-------------------------------------------
+col3_key_name="description"
+col3_key_label="description.md & html"
+col3_type="textarea"
+
+# only for select, checkbox
+col3_key_params=""
+
+# only for pdls
+col3_primary_databox=""
+
+# required option
+col3_required="yes"
+#-------------------------------------------
+
++addcol
+# col4
+#-------------------------------------------
+col4_key_name="righth"
+col4_key_label="right.yml"
+col4_type="textarea"
+
+# only for select, checkbox
+col4_key_params=""
+
+# only for pdls
+col4_primary_databox=""
+
+# required option
+col4_required="no"
+#-------------------------------------------
+
++addcol
+# col5
+#-------------------------------------------
+col5_key_name="lefth"
+col5_key_label="lefth.yml"
+col5_type="textarea"
+
+# only for select, checkbox
+col5_key_params=""
+
+# only for pdls
+col5_primary_databox=""
+
+# required option
+col5_required="no"
+#-------------------------------------------
+
++addcol
+# col6
+#-------------------------------------------
+col6_key_name="footer"
+col6_key_label="footer"
+col6_type="text"
+
+# only for select, checkbox
+col6_key_params=""
+
+# only for pdls
+col6_primary_databox=""
+
+# required option
+col6_required="no"
+#-------------------------------------------
+

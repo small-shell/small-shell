@@ -1,4 +1,5 @@
 #!/bin/bash
+app=%%app
 
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
@@ -30,8 +31,28 @@ fi
 # -----------------
 
 # SET BASE_COMMAND
-#META="${small_shell_path}/bin/meta"
-#DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%app"
+META="${small_shell_path}/bin/meta"
+DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:$app"
+
+# -----------------
+# Handle markdown
+# -----------------
+num_of_md_def=`$META get.num:${app}.UI.md.def`
+if [ $num_of_md_def -ge 1 ];then
+  if [ -f %%www/descriptor/.${app}.UI.md.def.hash ];then
+    hash=`$META get.chain:${app}.UI.md.def | tail -1 | $AWK -F ":" '{print $4}'`
+    org_hash="`cat %%www/descriptor/.${app}.UI.md.def.hash`"
+    if [ ! "$hash" = "$org_hash" ];then
+      echo "$hash" > %%www/descriptor/.${app}.UI.md.def.hash
+      %%www/bin/md_parse.sh $app $session $pin
+    fi
+  else
+    hash=`$META get.chain:${app}.UI.md.def | tail -1 | $AWK -F ":" '{print $4}'`
+    echo "$hash" > %%www/descriptor/.${app}.UI.md.def.hash
+    %%www/bin/md_prse.sh $app $session $pin
+  fi
+fi
+
 
 # -----------------
 # render HTML

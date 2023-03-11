@@ -92,14 +92,14 @@ else
       action:get id:new key:$key format:html_tag > %%www/tmp/$session/dataset
     else
       data=`$DATA_SHELL databox:$databox \
-      action:get id:$id key:$key format:html_tag `
+      action:get id:$id key:$key format:html_tag` 
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
       if [ ! "$file_chk" ];then
-        echo "$data" >> %%www/tmp/$session/dataset
+        echo "$data"  >> %%www/tmp/$session/dataset
       else
         $DATA_SHELL databox:$databox \
-        action:get id:new key:$key format:html_tag  >> %%www/tmp/$session/dataset
+        action:get id:new key:$key format:html_tag  > %%www/tmp/$session/dataset
       fi
 
     fi
@@ -140,7 +140,18 @@ elif [ "$form_chk" = "multipart" ];then
   fi
 fi
 
+# set class and text row for markdown 
+if [[ $databox == *UI.md.def ]]; then
+   form_class=md-form-box
+   text_area_row=14
+else
+   form_class=form-box
+   text_area_row=10
+fi
+
 cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
+| $SED "s/%%form-class/$form_class/g" \
+| $SED "s/%%text_area_row/$text_area_row/g" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
 | $SED "/%%common_menu/d" \
 | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \

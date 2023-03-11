@@ -694,6 +694,8 @@ if [ "$param" = "-databox" ];then
     echo "databox definition is here :$ROOT/databox/${databox}/def"
   else
     echo "Plese try again from beginning, #gen -databox"
+    rm -rf $tmp_dir
+    exit 1
   fi
 fi
 
@@ -979,6 +981,8 @@ if [ "$param" = "-addcol" ];then
     $ROOT/adm/rebuild $databox $keys addcol
   else
     echo "Plese try again from beginning, #gen -addcol"
+    rm -rf $tmp_dir
+    exit 1
   fi
 fi
 
@@ -1164,6 +1168,8 @@ if [ "$param" = "-delcol" ];then
     $ROOT/adm/rebuild $databox $keys delcol
   else
     echo "Plese try again from beginning, #gen -delcol"
+    rm -rf $tmp_dir
+    exit 1
   fi
 fi
 
@@ -1655,6 +1661,7 @@ if [ "$param" = "-app" ];then
       for src in `ls $ROOT/web/src/descriptor/common_parts | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/common_parts/$src  > $descrdir/common_parts/$src
+        chown $cgiusr:$cgiusr $descrdir/common_parts/$src
         chmod 755 $descrdir/common_parts/$src
       done
 
@@ -1747,6 +1754,8 @@ if [ "$param" = "-app" ];then
       fi
     else
       echo "please try again from begining #gen -app"
+      rm -rf $tmp_dir
+      exit 1
     fi
   fi
 
@@ -2062,7 +2071,11 @@ if [ "$param" = "-app" ];then
       auth_method=none
     fi
 
-    echo -n "primary databox: "
+    if [ ! "$parent_app" ];then
+      echo -n "primary databox: "
+    else
+      echo -n "subapp databox: "
+    fi
     read databox
 
     if [ ! "$databox" = "null" -a ! "$databox" = "none" ];then
@@ -2215,6 +2228,7 @@ if [ "$param" = "-app" ];then
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
+          chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
         fi
 
@@ -2281,6 +2295,7 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g"\
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+          chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
         fi
 
@@ -2383,6 +2398,7 @@ if [ "$param" = "-app" ];then
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
+          chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
         fi
 
@@ -2468,11 +2484,50 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g"  | $SED "s/%%databox/$databox/g" \
           | grep -v logout > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+          chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+
 
         fi
 
+        # create UI.md.def databox
+        cat $ROOT/tmp/gen/.tmplt.UI.md.def/databox.def | $SED "s/%%app/$app/g" > $tmp_dir/${app}.tmplt.UI.md.def
+        $ROOT/util/scripts/bat_gen.sh $tmp_dir/${app}.tmplt.UI.md.def
+        mkdir $tmp_dir/data
+
+        for data in description righth lefth footer
+        do
+          cat $ROOT/tmp/gen/.tmplt.UI.md.def/$data | $SED "s/%%app/$app/g" > $tmp_dir/data/$data
+        done
+
+        if [ ! "$auth_method" = "none" ];then
+          echo "Logout: ./${app}?req=logout" >> $tmp_dir/righth
+        fi
+
+        # push template datas
+        . $ROOT/util/scripts/.authkey
+        permission=`$ROOT/bin/meta get.attr:sys`
+        if [ "$permission" = "ro" ];then
+          $ROOT/adm/ops set.attr:sys{rw}
+          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+          action:set id:new keys:description,righth,lefth,footer input_dir:$tmp_dir/data
+          $ROOT/adm/ops set.attr:sys{ro}
+        else
+          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+          action:set id:new keys:description,righth,lefth,footer input_dir:$tmp_dir/data
+        fi
+
+        clear
+        echo "------------------------------------------------------------"
         echo "SCRATCH APP template is successfully generated"
-        echo "Please update codes"
+
+        if [ "$auth_method" = "none" ];then
+          echo "URL: ${base_url}${app}"
+        else
+          echo "URL: ${base_url}auth.${app}"
+        fi
+        echo "------------------------------------------------------------"
+        echo "Please update following codes freely"
+        echo "by the way, you can also update portal page on ${app}.UI.md.def on Base APP using markdown"
 
         if [ ! "$auth_method" = "none" ];then
           ls  $cgidir/auth.${app}
@@ -2528,6 +2583,7 @@ if [ "$param" = "-app" ];then
         done
 
         chmod 755 ${www}/descriptor/${app}*
+        chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
         echo "  \"${app}.table\") ${www}/bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;" > $tmp_dir/subapp_routing
         echo "  \"${app}.get\") ${www}/bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;" >> $tmp_dir/subapp_routing
@@ -2551,6 +2607,27 @@ if [ "$param" = "-app" ];then
           cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
         else
           echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">$databox@${app}</a>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
+        fi
+
+        # add menu to UI.md.def
+        . $ROOT/util/scripts/.authkey
+        permission=`$ROOT/bin/meta get.attr:sys`
+        id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}'`
+        sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
+        | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > $tmp_dir/UI_md_def_menu
+        mkdir $tmp_dir/data
+
+        if [ "$permission" = "ro" ];then
+          $ROOT/adm/ops set.attr:sys{rw}
+          cat $tmp_dir/UI_md_def_menu | $SED -e "/Logout/i Table@${subapp}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
+          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+          action:set id:$id key:righth input_dir:$tmp_dir/data
+          $ROOT/adm/ops set.attr:sys{ro}
+        else
+          cp $tmp_dir/UI_md_def_menu $tmp_dir/data/righth
+          echo "subapp Table: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
+          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:set \
+          id:$id key:righth input_dir:$tmp_dir/data
         fi
 
         echo "subAPP is successfully generated, parent app is updated -> $cgidir/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"
@@ -2878,6 +2955,8 @@ if [ "$param" = "-job" ];then
       fi
     else
       echo "Plese try again from beginning, #gen -job"
+      rm -rf $tmp_dir
+      exit 1
     fi
   fi
 
@@ -3099,6 +3178,8 @@ if [ "$param" = "-job" ];then
       fi
     else
       echo "Plese try again from beginning, #gen -job"
+      rm -rf $tmp_dir
+      exit 1
     fi
     
   fi

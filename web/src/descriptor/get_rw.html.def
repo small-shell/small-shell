@@ -23,7 +23,7 @@
        </div>
       </div>
 
-      <div class="form-box">
+      <div class="%%form-class">
       <div class="description">
         <h1>#values</h1>
         <p><b>#ID </b>%%id</p>
@@ -65,6 +65,7 @@
      }
    }
 
+   document.getElementById("txtara").rows="%%text_area_row"
    </script>
    </body>
 </html>

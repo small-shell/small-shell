@@ -146,15 +146,15 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
        if [ $type = "url" ];then
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          if [ "$value" ];then
-           value=`echo "$value" | $SED  "s/^/<a href=\"/g" \
-           | $SED "s/$/\" target=\"_blank\" rel=\"noopener noreferrer\">url<\/a>/g"`
+           value=`echo "$value" | $SED  "s/^/a%% href=\"/g" \
+           | $SED "s/$/\" target=\"_blank\" rel=\"noopener noreferrer\">url%%a/g"`
          fi
        elif [ $type = "file" ];then
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          if [ "$value" ];then
            file_name=`echo "$value" | $SED -r "s/ #size(.*)//g"`
-           value=`echo "$value" | $SED "s/^/<a href=\".\/shell.app?%%params\&req=file\&id=$id\" download=\"$file_name\">/g" \
-           | $SED "s/$/<\/a>/g"`
+           value=`echo "$value" | $SED "s/^/a%% href=\".\/shell.app?%%params\&req=file\&id=$id\" download=\"$file_name\">/g" \
+           | $SED "s/$/%%a/g"`
          fi
        elif [ $type = "checkbox" ];then
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | $SED "s/$/,/g" | $SED -z "s/\n//g" | $SED "s/,$//g" | $SED "s/^,//g"`
@@ -187,7 +187,10 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
        | $SED "s/#/{%%%%%%%%%%%%%}/g" \
        | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" \
        | $SED "s/*/{%%%%%%%%%%%%%%%}/g" \
-       | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g"`"
+       | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+       | $SED -r "s/<(.*)>/ #htmltag# /g" \
+       | $SED "s/a{%%%%%%%%%%%%%%%%}{%%%%%%%%%%%%%%%%} /<a /g" \
+       | $SED "s/{%%%%%%%%%%%%%%%%}{%%%%%%%%%%%%%%%%}a/<{%%%%%}a>/g" `"
      else
        csv_data="${csv_data},-"
      fi
@@ -207,7 +210,10 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
      | $SED "s/#/{%%%%%%%%%%%%%}/g" \
      | $SED "s/'/{%%%%%%%%%%%%%%%%%}/g" \
      | $SED "s/*/{%%%%%%%%%%%%%%%}/g" \
-     | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g"`"
+     | $SED "s/\\\\$/{%%%%%%%%%%%%%%}/g" \
+     | $SED -r "s/<(.*)>/ #htmltag# /g" \
+     | $SED "s/a{%%%%%%%%%%%%%%%%}{%%%%%%%%%%%%%%%%} /<a /g" \
+     | $SED "s/{%%%%%%%%%%%%%%%%}{%%%%%%%%%%%%%%%%}a/<{%%%%%}a>/g" `"
    fi
  done
 fi
