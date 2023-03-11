@@ -131,7 +131,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#htmlcss-design-recipe" class="nav-link">HTML/CSS design recipe</a>
+            <li class="nav-item" data-level="2"><a href="#portal-design-recipe" class="nav-link">Portal design recipe</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -573,7 +573,7 @@ if [ &quot;$session&quot; ];then
   rm -rf /var/www/tmp/$session
 fi
 </code></pre>
-<h2 id="htmlcss-design-recipe">HTML/CSS design recipe</h2>
+<h2 id="portal-design-recipe">Portal design recipe</h2>
 <p>In this section, you can learn how you can change design of main page of your APP. let's create main page with no authentication and no databox for making the easiest example.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
@@ -581,10 +581,13 @@ app_name: static_site
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
 primary databox: none
 </code></pre>
-<p>Then default page will be generated like this.
-<img alt="Screenshot" src="../img/static_site_default.png" /></p>
 <h3 id="cook-main-page">Cook main page</h3>
-<p>Let's cook main page {$APP_main.html.def}, </p>
+<p>Let's start to cook main page. you can edit the page by 2 way. 1 is to edit the page on Base APP {$APP_UI.md.def} web UI, in that way you can use both markdown and HTML tag. then portal page could be generated. please check Mark down grammer here.</p>
+<h4 id="update-appuimddef-on-base-app">Update $app.UI.md.def on Base APP</h4>
+<p>Mark down grammer is written in default page.</p>
+<p><img alt="Screenshot" src="../img/test.UI.md.def.png" /></p>
+<h3 id="htmlcss-grammer">HTML/CSS Grammer</h3>
+<p>another portal page edit way is just edit hml.def directly {$APP_main.html.def} on CLI </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
 </code></pre>
 <div class="admonition note">
@@ -662,9 +665,6 @@ primary databox: none
   &lt;p&gt;powered by small-shell.org&lt;/p&gt;
 &lt;/div&gt;
 </code></pre>
-<h5 id="completed-image">completed image</h5>
-<p>Please see the entire sample code here <a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/recipe/sample/static_site_main.html.def">sample</a>,</p>
-<p><img alt="Screenshot" src="../img/site_image.png" /></p>
 <h5 id="change-color">Change color</h5>
 <p>You can change color by updating $APP.css.def</p>
 <pre><code>sudo vi /var/www/descriptor/static_site.css.def
