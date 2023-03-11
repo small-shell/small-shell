@@ -49,7 +49,7 @@ if [ $num_of_md_def -ge 1 ];then
   else
     hash=`$META get.chain:${app}.UI.md.def | tail -1 | $AWK -F ":" '{print $4}'`
     echo "$hash" > %%www/descriptor/.${app}.UI.md.def.hash
-    %%www/bin/md_prse.sh $app $session $pin
+    %%www/bin/md_parse.sh $app $session $pin
   fi
 fi
 
