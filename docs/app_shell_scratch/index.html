@@ -279,7 +279,7 @@ $descriptor(/var/www/descriptor)
 <h4 id="action-script-bin">Action script ($bin)</h4>
 <p>You can control accesible key. default parameter is all.</p>
 <pre><code>e.g) restrict data keys
-sudo vi /var/www/bin/scratch_get.sh
+sudo vi /var/www/bin/test_get.sh
 
 --code--
 # Target databox and keys
@@ -289,8 +289,8 @@ keys=item_name,description
 </code></pre>
 <h4 id="html-descriptor-descriptor">HTML descriptor ($descriptor)</h4>
 <p>Draft design of HTML is already generated, and you could customize them freely.</p>
-<pre><code>sudo vi /var/www/descriptor/scratch_main.html.def
-sudo vi /var/www/descriptor/scratch_table.html.def
+<pre><code>sudo vi /var/www/descriptor/test_main.html.def
+sudo vi /var/www/descriptor/test_table.html.def
 </code></pre>
 <h3 id="tagging-on-scratch-app-table">Tagging on Scratch APP Table</h3>
 <p>You can add search tag in Base App table by ops command</p>
@@ -319,9 +319,9 @@ sudo -u small-shell /usr/local/small-shell/bin/meta get.attr:management/ken{admi
 </code></pre>
 <h6 id="update-descriptor">update descriptor</h6>
 <p>If you delete or put of actionlink please update get.html.def directly</p>
-<pre><code># e.g ) add delete function to scratch APP
+<pre><code># e.g ) add delete function to test APP
 # sudo vi /var/www/descriptor/sapp_get.html.def
-sudo vi /var/www/descriptor/scratch_get.html.def
+sudo vi /var/www/descriptor/test_get.html.def
 ---target code--
        &lt;div class=&quot;action_links&quot;&gt;
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;window.open('./test?%%params&amp;req=log_viewer&amp;id=%%id', 'log_viewer', 'width=820,height=280')&quot;&gt;Show data update history&lt;/p&gt;&lt;/span&gt;
