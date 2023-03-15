@@ -84,7 +84,11 @@ do
        echo "<li class=\"flex-table-header\">" >> ${tmp}/description.tmp
        echo "$line" | $SED "s/|/<p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/\n<\/li>/g" >> ${tmp}/description.tmp
      else
-       echo "$line" | $SED "s/|/<li><p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/<\/li>/g" >> ${tmp}/description.tmp
+       if [[ "$line" == \|--* ]];then
+         echo "" > /dev/null
+       else
+         echo "$line" | $SED "s/|/<li><p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/<\/li>/g" >> ${tmp}/description.tmp
+       fi
      fi
 
    elif [[ "$line" == --* && "$table_flg" == "yes" ]];then
