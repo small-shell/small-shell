@@ -2500,7 +2500,7 @@ if [ "$param" = "-app" ];then
         done
 
         if [ ! "$auth_method" = "none" ];then
-          echo "Logout: ./${app}?req=logout" >> $tmp_dir/righth
+          echo "Logout: ./${app}?req=logout" >> $tmp_dir/data/righth
         fi
 
         # push template datas
@@ -2602,7 +2602,7 @@ if [ "$param" = "-app" ];then
 
         # add menu to common menu
         if [ -f ${cgidir}/auth.${parent_app} ];then
-          echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">$databox@${app}</a>" >> $tmp_dir/subAPP_link
+          echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a>" >> $tmp_dir/subAPP_link
           cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Logout/i `cat $tmp_dir/subAPP_link`" > $tmp_dir/new_menu
           cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
         else
@@ -2619,7 +2619,7 @@ if [ "$param" = "-app" ];then
 
         if [ "$permission" = "ro" ];then
           $ROOT/adm/ops set.attr:sys{rw}
-          cat $tmp_dir/UI_md_def_menu | $SED -e "/Logout/i Table@${subapp}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
+          cat $tmp_dir/UI_md_def_menu | $SED -e "/Logout/i Table@${app}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
           sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
           action:set id:$id key:righth input_dir:$tmp_dir/data
           $ROOT/adm/ops set.attr:sys{ro}
