@@ -123,7 +123,7 @@
             
             <li class="nav-item" data-level="1"><a href="#quick-start-for-mac-os" class="nav-link">Quick start for Mac OS</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#setup-env" class="nav-link">Setup Env</a>
+            <li class="nav-item" data-level="2"><a href="#setup-env-on-mac-terminal" class="nav-link">Setup Env on Mac terminal</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -156,7 +156,7 @@
 
 <h1 id="quick-start-for-mac-os">Quick start for Mac OS</h1>
 <p>You can deploy small-shell to Mac OS as well. We are thinking that Mac mini could be a mini server for working with small team.</p>
-<h2 id="setup-env">Setup Env</h2>
+<h2 id="setup-env-on-mac-terminal">Setup Env on Mac terminal</h2>
 <pre><code># addd user
 sudo dscl . -create /Users/small-shell
 sudo dscl . -create /Users/small-shell UserShell /usr/bin/false
@@ -185,8 +185,10 @@ brew install node
 </code></pre>
 <h4 id="change-sleep-setting">Change sleep setting</h4>
 <p>Also you need to change sleep setting on GUI to avoid service down when display is off. setting should be done from System preference &gt; Security &amp; Privacy &gt; Power Adaptor</p>
-<pre><code>Please check "Prevent your Mac from automatically sleeping when the display is off"
-</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please check "Prevent your Mac from automatically sleeping when the display is off"</p>
+</div>
 <h4 id="installation">Installation</h4>
 <pre><code># install
 cd /usr/local
@@ -293,10 +295,12 @@ ps -ef | grep app.sh
 # check log
 ls /var/www/log
 </code></pre>
-<h4 id="enable-cron-accessm">Enable cron access^M</h4>
+<h4 id="enable-cron-access">Enable cron access</h4>
 <p>If you want to use e-cron please  allow cron to access data by chaing privacy setting. setting should be done on GUI from System preference &gt; Security &amp; Privacy &gt; FUll Disk Access.</p>
-<pre><code>Please add /usr/sbin/cron by using command+shift+G shortcut on FUll disk Access setting.^M
-</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please add /usr/sbin/cron by using command+shift+G shortcut on FUll disk Access setting.</p>
+</div>
 <h2 id="upgrade-small-shell">Upgrade small shell</h2>
 <p>You can upgrade small-shell very easily. this is exmaples of upgrade command.</p>
 <pre><code>cd /var/tmp
