@@ -2105,9 +2105,10 @@ if [ "$param" = "-app" ];then
       else
         echo "Access URL: ${base_url}${app}"
       fi
-
+      echo "Primary databox: $databox"
     else
       echo "Parent APP: $parent_app"
+      echo "sub APP databox: $databox"
     fi
 
     echo ""
@@ -2612,23 +2613,26 @@ if [ "$param" = "-app" ];then
         # add menu to UI.md.def
         . $ROOT/util/scripts/.authkey
         permission=`$ROOT/bin/meta get.attr:sys`
-        id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}'`
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
-        | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > $tmp_dir/UI_md_def_menu
-        mkdir $tmp_dir/data
+	chk_md_def=`$ROOT/bin/meta get.databox | grep ${parent_app}.UI.md.def`
+	if [ "$chk_md_def" ];then
+          id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}'`
+          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
+          | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > $tmp_dir/UI_md_def_menu
+          mkdir $tmp_dir/data
 
-        if [ "$permission" = "ro" ];then
-          $ROOT/adm/ops set.attr:sys{rw}
-          cat $tmp_dir/UI_md_def_menu | $SED -e "/Logout/i Table@${app}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-          action:set id:$id key:righth input_dir:$tmp_dir/data
-          $ROOT/adm/ops set.attr:sys{ro}
-        else
-          cp $tmp_dir/UI_md_def_menu $tmp_dir/data/righth
-          echo "subapp Table: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:set \
-          id:$id key:righth input_dir:$tmp_dir/data
-        fi
+          if [ "$permission" = "ro" ];then
+            $ROOT/adm/ops set.attr:sys{rw}
+            cat $tmp_dir/UI_md_def_menu | $SED -e "/Logout/i Table@${app}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
+            sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+            action:set id:$id key:righth input_dir:$tmp_dir/data
+            $ROOT/adm/ops set.attr:sys{ro}
+          else
+            cp $tmp_dir/UI_md_def_menu $tmp_dir/data/righth
+            echo "subapp Table: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
+            sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:set \
+            id:$id key:righth input_dir:$tmp_dir/data
+          fi
+	fi
 
         echo "subAPP is successfully generated, parent app is updated -> $cgidir/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"
         echo "and please update subapp codes if needed"
