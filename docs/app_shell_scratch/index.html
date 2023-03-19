@@ -127,7 +127,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#meta-link" class="nav-link">meta link</a>
+            <li class="nav-item" data-level="2"><a href="#sub-app" class="nav-link">Sub APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -336,8 +336,8 @@ sudo vi /var/www/descriptor/test_get.html.def
 user_name="external_user"
 --------
 </code></pre>
-<h3 id="sub-app">Sub APP</h3>
-<p>Basically scratch APP will connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory is aadd to scratch APP. </p>
+<h2 id="sub-app">Sub APP</h2>
+<p>Basically scratch APP will connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to scratch APP that name is test. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>subAPP must be belong to parent APP, please define subapp as $subAPP_name@$parentAPP_name    </p>
@@ -351,11 +351,20 @@ Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: inventory@test
 primary databox: inventory.db
 </code></pre>
-<p>And then subAPP will be deployed, please check routing and menu that will be updaated automatically.</p>
-<pre><code>cat /var/www/cgi-bin/test
+<p>And then subAPP will be deployed, please check routing and menu that will be updaated automatically. and you can freely modify them.</p>
+<pre><code># routing
+# sudo cat /var/www/cgi-bin/$parent_app
+sudo cat /var/www/cgi-bin/test
+# menu
+# cat /var/www/desciption/common_parts/$parent_app_common_menu
 cat /var/www/desciption/common_parts/test_common_menu
 </code></pre>
-<h2 id="meta-link">meta link</h2>
+<p>Portal page link will be updated as well. please check on Base APP.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you want to detouch subAPP, plase update above routing and menu</p>
+</div>
+<h3 id="meta-link">meta link</h3>
 <p>You can generate links that can be used in the APP. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html descriptor of your APP and it can connect table of primary databox of your APP or it can connect action links such like new or get data in the APP.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
 </code></pre>
@@ -439,11 +448,11 @@ Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: $subapp@team
 primary databox: $databox
 </code></pre>
-<p>then lets add routing to team APP</p>
-<pre><code>sudo vi /usr/lib/cgi-bin/team
+<p>then please check routing to team APP</p>
+<pre><code>sudo cat /usr/lib/cgi-bin/team
 </code></pre>
 <p>also menu can be updated, please insert meta link to the menu</p>
-<pre><code>sudo vi /var/www/descriptor/common_parts/team_common_menu
+<pre><code>sudo cat /var/www/descriptor/common_parts/team_common_menu
 </code></pre>
 <h2 id="insert-member-list-to-the-app">Insert member list to the APP</h2>
 <p>Please select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP.</p>
