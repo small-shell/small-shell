@@ -37,7 +37,12 @@ done
   
 ((lower_page = $pages -8)) 
 if [ $page -lt $lower_page ];then
-  echo "<a href=\"./%%app?%%params&page=$pages&req=table$table_command&line=$num_of_line_per_page\">...$pages</a>"
+  if [ $count = $pages ];then
+    echo "<a href=\"./%%app?%%params&page=$pages&req=table$table_command&line=$num_of_line_per_page\">$pages</a>"
+  else
+    echo "<a href=\"./shell.app?%%params&page=$pages&req=table$table_command&line=$num_of_line_per_page\">...$pages</a>"
+  fi
+
 fi
 
 exit 0
