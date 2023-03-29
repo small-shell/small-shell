@@ -706,13 +706,13 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <p class="admonition-title">Note</p>
 <p>A record of the domain must be set on DNS server beforehand. and it must has global IP to be IP reachable from Let's encrypt server </p>
 </div>
-<h5 id="launch-base-app_1">Launch Base APP</h5>
-<p>To be verified your domain by Let's Encrypt server, please launch WEB server with FQDN name that is set as A record on DNS server.so far http should be fine because certificate is not issued yet. deploy job will upgrade it to https later.</p>
+<h5 id="launch-base-app-with-fqdn-for-certification">Launch Base APP with FQDN for certification</h5>
+<p>To be verified your domain by Let's Encrypt server, please launch WEB server with FQDN name that you want to deploy ssl certificate and the FQDN name must be same as A record of DNS.so far http should be fine because certificate is not issued yet. deploy job will upgrade it to https later.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
 Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
 protocol (http | https): http
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): 
+WEB Server FQDN or IP addr (e.g. 192.168.10.1): $FQDN
 </code></pre>
 <h4 id="import-job-and-deploy-ssl-certificate">Import job and deploy ssl certificate</h4>
 <p>Once you install certbot and launched Base APP using small-shell web, let's kick deploy.sh. then dialog will be started. please answer your mail address that is reqiured to publish certificate by Let's Encrypt</p>
