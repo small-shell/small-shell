@@ -535,12 +535,12 @@ if [ "$param" = "-databox" ];then
     done   
 
     if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
-      echo -n "please define selectable parameter using space as separator: "
+      echo -n "please define selectable parameter using commma as separator: "
       read params
       char_chk_result=`charset_check "$params"`
       while [ "$char_chk_result" = "ERROR" ]
       do
-        echo "It seems invalid charactor is included, please try again. try to not use backspace as much as possible"
+        echo "It seems invalid charactor is included, please try again. try not to use backspace as much as possible"
         echo -n "parameters: "
         read params
         char_chk_result=`charset_check "$params"`
@@ -861,12 +861,12 @@ if [ "$param" = "-addcol" ];then
     done
     
     if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
-      echo -n "please define selectable parameter using space as separator: "
+      echo -n "please define selectable parameter using commma as separator: "
       read params
       char_chk_result=`charset_check "$params"`
       while [ "$char_chk_result" = "ERROR" ]
       do
-        echo "It seems invalid charactor is included, please try again. try to not use backspace as much as possible"
+        echo "It seems invalid charactor is included, please try again. try not to use backspace as much as possible"
         echo -n "parameters: "
         read params
         char_chk_result=`charset_check "$params"`
