@@ -79,7 +79,7 @@ do
 
    param_chk=`cat $ROOT/util/scripts/tmp/.col${count} | grep -A 1 "type=\"$type\"" \
   | grep key_params= | $SED "s/key_params=//g" | $SED "s/\"//g"`
-  if [ "$type" = "select" -o "$type" = "checkbox" ];then
+  if [ "$type" = "select" -o "$type" = "checkbox" -o "$type" = "radio" ];then
     if [ ! "$param_chk" ];then
       echo "error: please define params after select or checkbox"
       exit 1
