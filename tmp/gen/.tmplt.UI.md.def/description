@@ -90,7 +90,9 @@ List and bold can be defined by using asterisk.
 ## Code
 Please define code block using 4 sequential backquote first and end line.
 ````
+\`\`\`\`
 Code
+\`\`\`\`
 ````
 
 ## Extension syntax
