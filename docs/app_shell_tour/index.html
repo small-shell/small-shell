@@ -127,15 +127,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#define-data-structure" class="nav-link">Define Data structure</a>
+            <li class="nav-item" data-level="2"><a href="#small-shell-web-srv" class="nav-link">small-shell WEB srv</a>
               <ul class="nav flex-column">
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#add-initialize-user" class="nav-link">Add / initialize user</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#import-data-structure-by-batch" class="nav-link">Import data structure by batch</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -271,15 +267,21 @@ ssl privare key path : /root/private.pem
 Do you need to use chain certificate ? (yes | no): no
 -----------------------------------------------------------------
 </code></pre>
-<h2 id="define-data-structure">Define Data structure</h2>
-<p>You can define data type, name, label and options for html form. small shell Base APP will access to the Databx, and then get HTML data structure.</p>
-<ul>
-<li>type = same as HTML data types such like text, select, date and so on</li>
-<li>name = it will be used as HTML form param</li>
-<li>label = it will be used as a text for HTML form label </li>
-</ul>
+<h2 id="small-shell-web-srv">small-shell WEB srv</h2>
+<p>small-shell contain default WEB server that is written by javascipt using Node.js. it will be start automatically by systemctl.</p>
+<h3 id="define-data-structure-of-web-app">Define Data structure of WEB APP</h3>
+<p>Let's create databox that will be refered from Base APP or any Scratch APP by executing gen command and define data type in the dialog. please refer to <a href="../data_shell_tour/">Data structure</a> for understanding data structure more deeply.</p>
+<pre><code>databox_name: item.db
+primary_key(col1): item_name
+primary_key label: Item Name
+Do you want to add column to dataset ? (yes | no): yes
+key(col2) name: description
+key(col2) label: Description
+data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): text
+</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p>By the way there is special type that's defined for small-shell WEB application framework, please </p>
 <p><b>type: select , radio, checkbox</b>  <br />
 You can define parameters in the dialog. and change them anytime later.</p>
 <p><b>type: pdls</b><br />
@@ -287,46 +289,15 @@ You can define parameters in the dialog. and change them anytime later.</p>
 <p><b>type: mls</b> <br />
 "mls" means member list. if you want to import user who already created in small-shell, please use mls.</p>
 </div>
-<h3 id="generate-databox-by-dialog">Generate databox by dialog</h3>
-<p>adm/gen command can generate databox through dialog like following.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -databox
-#-&gt; dialog will be started
-</code></pre>
 <h3 id="hash-id">Hash id</h3>
 <p>Basically primary_key value could not be duplicated for normalization of databox. but in many cases you must want to use duplicatable value. and If you want to disable the restriction, please use <b>hashid</b> as primary_key in the dialog.</p>
 <p>following is an example of using hashid</p>
-<pre><code># result of dialog
-databox_name:inventory.db
-#primary_key
-name=&quot;hashid&quot;
-label=&quot;hashid&quot;
-type=&quot;text&quot;
-option=&quot;required&quot;
-
-#column2
-name=&quot;item_name&quot;
-label=&quot;Item Name&quot;
-type=&quot;text&quot;
-option=&quot;required&quot;
-
-#column3
-name=&quot;type&quot;
-label=&quot;Type&quot;
-type=&quot;select&quot;
-params=&quot;PC network_device audio_visual furniture other&quot;
-option=&quot;required&quot;
-
-#column4
-name=&quot;num&quot;
-label=&quot;Num&quot;
-type=&quot;number&quot;
-option=&quot;required&quot;
-
-#column5
-name=&quot;note&quot;
-label=&quot;Note&quot;
-type=&quot;text&quot;
-option=&quot;&quot;
+<pre><code>databox_name: item.db
+primary_key(col1): hashid
+key(col2) name: item_name
+key(col2) label: item_name
+data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): text
+..
 </code></pre>
 <p><img alt="Screenshot" src="../img/hashid_table.png" /></p>
 <h2 id="add-initialize-user">Add / initialize user</h2>
@@ -342,84 +313,6 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize
 Initialize url for test on Base APP is created, please share this url to end user to generate access key to the APP
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,cb444988e82d38fd71423c53e2f2e7b992b62a7dc61a1ad49b53126036128aa1
 </code></pre>
-<h2 id="import-data-structure-by-batch">Import data structure by batch</h2>
-<p>Instead of gen command, you can create databox without dialog using batch script.</p>
-<h4 id="create-definition">create definition</h4>
-<pre><code># if you already created item.db, please delete it before generate new item.db
-# rm -rf /usr/local/small-shell/databox/item.db
-vi /tmp/db.def
-</code></pre>
-<h5 id="sapmle-of-dbdef">sapmle of db.def</h5>
-<p>please do not delete "+addcol" description that can declare to add column to backend process.</p>
-<pre><code>#---------------------------------------------------------------
-# db definition
-#---------------------------------------------------------------
-
-# databox
-databox=&quot;item.db&quot;
-
-# col1
-#-------------------------------------------
-primary_key=&quot;item_name&quot;
-primary_key_label=&quot;Item Name&quot;
-#-------------------------------------------
-
-+addcol
-# col2
-#-------------------------------------------
-col2_key_name=&quot;description&quot;
-col2_key_label=&quot;Description&quot;
-col2_type=&quot;text&quot;
-
-# only for select, checkbox
-col2_key_params=&quot;&quot;
-
-# only for pdls
-col2_primary_databox=&quot;&quot;
-
-# required
-col2_required=&quot;no&quot;
-#-------------------------------------------
-
-+addcol
-# col3
-#-------------------------------------------
-col3_key_name=&quot;stock&quot;
-col3_key_label=&quot;Stock&quot;
-col3_type=&quot;checkbox&quot;
-
-# only for select, checkbox
-col3_key_params=&quot;yes&quot;
-
-# only for pdls
-col3_primary_databox=&quot;&quot;
-
-# required option
-col3_required=&quot;no&quot;
-#-------------------------------------------
-
-+addcol
-# col4
-#-------------------------------------------
-col4_key_name=&quot;item_type&quot;
-col4_key_label=&quot;Item Type&quot;
-col4_type=&quot;select&quot;
-
-# only for select, checkbox
-col4_key_params=&quot;book furniture electoric other&quot;
-
-# only for pdls
-col4_primary_databox=&quot;&quot;
-
-# required option
-col4_required=&quot;yes&quot;
-#-------------------------------------------
-</code></pre>
-<h6 id="exec-databox-batch">Exec databox batch</h6>
-<pre><code>sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
-</code></pre>
-<p>Then item.db will be generated. you can add the data based on the db.def definition.</p>
-<p><img alt="Screenshot" src="../img/item_new.png" /></p>
 <h2 id="change-data-structure">Change data structure</h2>
 <h5 id="add-del-column">Add | Del Column</h5>
 <p>Column can be added or deleted by gen command</p>

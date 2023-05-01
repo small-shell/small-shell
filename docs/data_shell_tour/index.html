@@ -123,7 +123,11 @@
             
             <li class="nav-item" data-level="1"><a href="#data-shell" class="nav-link">DATA Shell</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#structure" class="nav-link">Structure</a>
+            <li class="nav-item" data-level="2"><a href="#key-value-store" class="nav-link">Key value store</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#directory-structure" class="nav-link">Directory Structure</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -172,7 +176,11 @@
 
 <h1 id="data-shell">DATA Shell</h1>
 <p>You can create DataBox through dialog. Mainly DataBox is designed to be used by WEB APP of APP shell. DATA shell could manage DataBox and it can ensure data integrity utilizing hash chain. </p>
-<h2 id="structure">Structure</h2>
+<h2 id="key-value-store">Key value store</h2>
+<p>Data will be saved in databox as key value type of data sets. like this image.</p>
+<pre><code>databox [ { primary_key: valuex0, key1: valuex1, key2: valuex2 }, { primary_key: valuey0, key1: valuey1, key3: valuey2} ]
+</code></pre>
+<h2 id="directory-structure">Directory Structure</h2>
 <p>Data will be storering on Unix file system with indexing and logging transactions.</p>
 <pre><code> sudo ls /usr/local/small-shell/databox/$databox
  data  def  file  hashchain  index  log  log.dump
