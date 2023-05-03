@@ -135,7 +135,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#change-data-structure" class="nav-link">Change data structure</a>
+            <li class="nav-item" data-level="2"><a href="#change-tableform-column-and-parameters" class="nav-link">Change Table/Form column and parameters</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -206,9 +206,9 @@
 <td>Full &amp; Flat but control rw/ro permission</td>
 </tr>
 <tr>
-<td><a href="../app_shell_form/">Form</a></td>
+<td><a href="../app_shell_form/">WEB Form</a></td>
 <td>No auth</td>
-<td>form</td>
+<td>WEB form</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Just push new data through dedicated Form</td>
@@ -268,9 +268,9 @@ Do you need to use chain certificate ? (yes | no): no
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="small-shell-web-srv">small-shell WEB srv</h2>
-<p>small-shell contain default WEB server that is written by javascipt using Node.js. it will be start automatically by systemctl.</p>
-<h3 id="define-data-structure-of-web-app">Define Data structure of WEB APP</h3>
-<p>Let's create databox that will be refered from Base APP or any Scratch APP by executing gen command and define data type in the dialog. please refer to <a href="../data_shell_tour/">Data structure</a> for understanding data structure more deeply.</p>
+<p>small-shell contain default WEB server that is written by javascipt using Node.js. it will be start automatically by systemctl. ofcourse you can use your favorite WEB server as well, in that case please select "other WEB srv" and input detail to the dialog. we verified that small-shell can be worked without any problem on Apache and Nginx.</p>
+<h3 id="define-tableform-column-of-web-app">Define Table&amp;Form column of WEB APP</h3>
+<p>Let's create databox that will be refered from Base APP or any Scratch APP as table/form. please refer to <a href="../data_shell_tour/">Data structure</a> for understanding data structure more deeply.</p>
 <pre><code>databox_name: item.db
 primary_key(col1): item_name
 primary_key label: Item Name
@@ -285,7 +285,7 @@ data type (text | select | radio | checkbox | email | num | tel | date | date-ti
 <p><b>type: select , radio, checkbox</b>  <br />
 You can define parameters in the dialog. and change them anytime later.</p>
 <p><b>type: pdls</b><br />
-"pdls" means primary data list. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog.</p>
+"pdls" means primary data list. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog. please see detail <a href="./#insert-data-list-to-form">pdls</a></p>
 <p><b>type: mls</b> <br />
 "mls" means member list. if you want to import user who already created in small-shell, please use mls.</p>
 </div>
@@ -313,7 +313,7 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize
 Initialize url for test on Base APP is created, please share this url to end user to generate access key to the APP
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize=f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2,cb444988e82d38fd71423c53e2f2e7b992b62a7dc61a1ad49b53126036128aa1
 </code></pre>
-<h2 id="change-data-structure">Change data structure</h2>
+<h2 id="change-tableform-column-and-parameters">Change Table/Form column and parameters</h2>
 <h5 id="add-del-column">Add | Del Column</h5>
 <p>Column can be added or deleted by gen command</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -addcol
@@ -759,7 +759,7 @@ curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-s
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Utuntu 20 (recommnded), macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
-Web : Node.js 19.X + express 4.X , Apache 2.X , nginx 1.X    
+Web : Node.js 20, 19.X + express 4.X , Apache 2.X , nginx 1.X    
 curl: 7.X
 
 # REQUIRED commands
