@@ -31,11 +31,17 @@ if [ ! "$id" -a ! "$databox" -a ! "$pin" -a "$session" ];then
   exit 1
 fi
 
+# SET BASE_COMMAND
+DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%parent_app"
+
+# load filename
+filename=`$DATA_SHELL databox:$databox action:get key:file id:$id format:none app:%%parent_app | $SED "s/file://g" | $AWK -F " #" '{print $1}'`
+
 # -----------------
 # render contents
 # -----------------
 
-echo "Content-Disposition: attachment; filename=$filename"
+echo "Content-Disposition: attachment; filename=\"$filename\""
 echo "Content-Type: application/octet-stream"
 echo ""
 ${small_shell_path}/bin/dl session:$session pin:$pin databox:$databox id:$id app:%%parent_app
