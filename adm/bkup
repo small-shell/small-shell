@@ -41,7 +41,7 @@ if [ ! -d $bkup_dir ];then
    exit 1
 fi
 
-# backup databoxs
+# backup small-shell core
 (cd $ROOT/../ && tar -Jcf $bkup_dir/${server}.core.tar.xz small-shell)
 result=$?
 if [ ! $result -eq 0 ];then
