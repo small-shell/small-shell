@@ -2079,7 +2079,7 @@ if [ "$param" = "-app" ];then
     read databox
 
     if [ ! "$databox" = "null" -a ! "$databox" = "none" ];then
-      while [ ! "$databox" -o ! -d $ROOT/databox/$databox ]
+      while [[ ! "$databox" || ! -d $ROOT/databox/$databox ]] && [[ ! "$databox" == "null" && ! "$databox" == "none" ]]
       do
         echo "error: databox name seems wrong, please try again"
         echo -n "target databox: "
@@ -2603,11 +2603,11 @@ if [ "$param" = "-app" ];then
 
         # add menu to common menu
         if [ -f ${cgidir}/auth.${parent_app} ];then
-          echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a>" >> $tmp_dir/subAPP_link
+          echo " <li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> $tmp_dir/subAPP_link
           cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Logout/i `cat $tmp_dir/subAPP_link`" > $tmp_dir/new_menu
           cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
         else
-          echo " <a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">$databox@${app}</a>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
+          echo " <li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
         fi
 
         # add menu to UI.md.def
@@ -2622,16 +2622,24 @@ if [ "$param" = "-app" ];then
 
           if [ "$permission" = "ro" ];then
             $ROOT/adm/ops set.attr:sys{rw}
+            tmp_permission_flg=yes
+          fi
+
+          if [ -f ${cgidir}/auth.${parent_app} ];then
             cat $tmp_dir/UI_md_def_menu | $SED -e "/Logout/i Table@${app}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
             sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
             action:set id:$id key:righth input_dir:$tmp_dir/data
-            $ROOT/adm/ops set.attr:sys{ro}
           else
-            cp $tmp_dir/UI_md_def_menu $tmp_dir/data/righth
-            echo "subapp Table: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
-            sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:set \
-            id:$id key:righth input_dir:$tmp_dir/data
+            cat $tmp_dir/UI_md_def_menu > $tmp_dir/data/righth
+            echo "Table@${app}: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
+            sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+            action:set id:$id key:righth input_dir:$tmp_dir/data
           fi
+
+          if [ "$tmp_permission_flg" = "yes" ];then
+              $ROOT/adm/ops set.attr:sys{ro}
+          fi
+
 	fi
 
         echo "subAPP is successfully generated, parent app is updated -> $cgidir/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"

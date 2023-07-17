@@ -186,11 +186,10 @@ fi
 wait
 
 # error check
-err_chk=`grep "error: there is no databox" %%www/tmp/$session/table`
+err_chk=`grep "^error: " %%www/tmp/$session/table`
 
 if [ "$err_chk" ];then
-
-  echo "<h2>Oops something must be wrong, please check  %%app_table.sh</h2>"
+  echo "<h2>Oops something must be wrong, please check %%app_table.sh, error message is $err_chk</h2>"
   if [ "$session" ];then
     rm -rf %%www/tmp/$session
   fi
