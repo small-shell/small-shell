@@ -182,6 +182,10 @@ a {
   }
 }
 
+.flex-header a:hover{
+  color : #4682b4;
+}
+
 @media screen and (min-width: 641px) {
   .console-container {
     margin-right: calc(50% - 50vw);

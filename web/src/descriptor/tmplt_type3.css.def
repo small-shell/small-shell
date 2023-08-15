@@ -66,6 +66,10 @@ a {
   }
 }
 
+.flex-header a:hover{
+  color : #4682b4;
+}
+
 .left-header {
   font-weight: 300;
   line-height: 0.8em;
@@ -316,6 +320,10 @@ a {
 .main a {
   color: #07ADAF;
 }
+
+.main a:hover{
+  color : #4682b4;
+}   
 
 .main .code {
   word-wrap: break-word;
