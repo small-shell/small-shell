@@ -67,7 +67,7 @@ a {
 }
 
 .flex-header a:hover{
-  color : #4682b4;
+  color: #4682b4;
 }
 
 .left-header {
@@ -322,7 +322,7 @@ a {
 }
 
 .main a:hover{
-  color: #07ADAF;
+  color: #AEB6BF;
 }   
 
 .main .code {
