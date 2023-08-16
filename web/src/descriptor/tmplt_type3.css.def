@@ -322,7 +322,7 @@ a {
 }
 
 .main a:hover{
-  color : #4682b4;
+  color: #07ADAF;
 }   
 
 .main .code {
