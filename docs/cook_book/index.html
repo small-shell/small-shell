@@ -288,7 +288,7 @@ cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 <pre><code>sudo vi /var/www/bin/book_search_table.sh
 # e.g.) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=available{yes}]
 </code></pre>
-<p>To filter the location table only on the shelve, let's add match option. by the way {%%%%%%%} is meta charactor of small shell. it will be translated to _, I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve.</p>
+<p>To filter the location table only on the shelve, let's add match option. by the way {%%%%%%%} is meta charactor of small-shell. it will be translated to _, I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve.</p>
 <pre><code>sudo vi /var/www/bin/location_table.sh
 # e.g. ) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=status{on{%%%%%%%}the{%%%%%%%}shelve}]
 
@@ -507,8 +507,8 @@ exit 0
 <p>Before executing the job, please change sys user permission from ro to rw.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops set.attr:sys{rw}
 </code></pre>
-<h4 id="push-job-to-small-shell">Push job to small shell</h4>
-<p>You can put job to small shell automation framework very easily. please check detail at <a href="../automation_tour/">e-cron</a> tour.</p>
+<h4 id="push-job-to-small-shell">Push job to small-shell</h4>
+<p>You can put job to small-shell automation framework very easily. please check detail at <a href="../automation_tour/">e-cron</a> tour.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>Dialog will be started.</p>
@@ -785,7 +785,7 @@ sudo /usr/local/small-shell/adm/rstr /usr/local/small-shell/util/e-cron/que/file
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.XXX
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>
-<p>You can import job for analyzing small shell web log from github. please deploy it to the small shell env which using default web server.</p>
+<p>You can import job for analyzing small-shell web log from github. please deploy it to the small-shell env which using default web server.</p>
 <h6 id="link-to-code-is-here">Link to code is  <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
 <pre><code>sudo apt-get install whois
 cd $HOME
