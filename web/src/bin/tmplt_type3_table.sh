@@ -144,7 +144,7 @@ fi
 
 # calc pages
 ((pages = $line_num / $num_of_line_per_page))
-adjustment=`echo "scale=6;${line_num}/${num_of_line_per_page}" | bc | $AWK -F "." '{print $2}'`
+adjustment=`echo "scale=6;${line_num}/${num_of_line_per_page}" | $BC | $AWK -F "." '{print $2}'`
 ((line_start = $page * ${num_of_line_per_page} - `expr ${num_of_line_per_page} - 1`))
 ((line_end = $line_start + `expr ${num_of_line_per_page} - 1`))
 
