@@ -149,7 +149,7 @@ elif [ "$frequency" = "hourly" ];then
   output=${SCRIPT_DIR}/../statistics/rawdata/countup_d_${year}${month}${day}_db_${databox}
 
 elif [ "$frequency" = "daily" ];then
-  poutput=${SCRIPT_DIR}/../statistics/rawdata/countup_m_${year}${month}_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_m_${year}${month}_db_${databox}
 
 elif [ "$frequency" = "monthly" ];then
   output=${SCRIPT_DIR}/../statistics/rawdata/countup_y_${year}_db_${databox}
