@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>For Ubuntu + small-shell WEB srv - small-shell.org</title>
+        <title>For Ubuntu or debian - small-shell.org</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -41,7 +41,7 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="./" class="dropdown-item active">For Ubuntu + small-shell WEB srv</a>
+    <a href="./" class="dropdown-item active">For Ubuntu or debian</a>
 </li>
                                     
 <li>
@@ -123,7 +123,7 @@
             
             <li class="nav-item" data-level="1"><a href="#quick-start" class="nav-link">Quick start</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#setup-envubuntu" class="nav-link">Setup Env@ubuntu</a>
+            <li class="nav-item" data-level="2"><a href="#setup-envubuntudebian" class="nav-link">Setup Env@ubuntu/debian</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -159,14 +159,17 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="quick-start">Quick start</h1>
-<p>This is a quick start guide for ubuntu with small-shell default web server that's included small-shell package. </p>
-<h2 id="setup-envubuntu">Setup Env@ubuntu</h2>
+<p>This is a quick start guide for ubuntu/debian with small-shell default web server that's included small-shell package. </p>
+<h2 id="setup-envubuntudebian">Setup Env@ubuntu/debian</h2>
 <pre><code># addd user
 sudo useradd -s /sbin/nologin small-shell
 
 # update apt list and install curl
 sudo apt update
 sudo apt install curl
+
+# install bc for debian just in case
+sudo apt install bc
 
 # install npm/php libraries, php will be used for encoding and node.js will be used for writing WEB server
 sudo apt install npm
