@@ -52,10 +52,10 @@ else
   # history #default is head -1
   $DATA_SHELL databox:%%databox action:get type:log id:$id format:none | head -1 > %%www/tmp/$session/history
 
+  # error check
+  error_chk=`cat %%www/tmp/$session/dataset.0.1 | grep "^error:"`
 fi
 
-# error check
-error_chk=`cat %%www/tmp/$session/dataset.0.1 | grep "^error:"`
 
 # form type check
 form_chk=`$META chk.form:%%databox`
