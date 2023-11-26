@@ -743,12 +743,12 @@ cat /usr/local/small-shell/web/base | grep hubapi
 cat /usr/local/small-shell/web/base | grep api_authkey
 </code></pre>
 <h4 id="operation-at-production-node">Operation at production node</h4>
-<p>Once e-cron HUB is reayd, let's define backup &amp; sync job on pdocution node. by the way sudo privilede is required for executing bkup command. please add sudoers beforehand.</p>
+<p>Once e-cron HUB is ready, let's define backup &amp; sync job on pdocution node. by the way sudo privilede is required for executing bkup command. please add sudoers beforehand.</p>
 <pre><code>sudo visudo
 # add folowing line, if there is no small-shell entry
 small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
 
-# define backup job
+# define backup job@production node
 sudo /usr/local/small-shell/adm/gen -job
 job name: backup
 Type of job (1.job automation | 2.file exchange) : 1
@@ -760,7 +760,7 @@ Min   [ any | 0-59 ]: 1
 Week  [ any | mon - sun ]: any
 Exec command or batch script: sudo /usr/local/small-shell/adm/bkup /var/tmp
 
-# define push job
+# define push job@production to backup node, please confirm URL and authkey at backup node beforehand
 sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 2
 --Define schedule--
