@@ -127,6 +127,14 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#add-user-to-the-app" class="nav-link">Add user to the APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#access-url-of-the-app" class="nav-link">Access URL of the APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#sub-app" class="nav-link">Sub APP</a>
               <ul class="nav flex-column">
               </ul>
@@ -245,7 +253,7 @@ primary databox: item.db
 <h3 id="update-portal">Update portal</h3>
 <p>You can update portal by updating markdown description of $app.UI.md.def on Base APP or edit code directly please check <a href="../cook_book/#portal-design-recipe">cookbook</a>. default portal image is here.</p>
 <p><img alt="Screenshot" src="../img/default_portal.png" /></p>
-<h3 id="add-user-to-the-app">Add user to the APP</h3>
+<h2 id="add-user-to-the-app">Add user to the APP</h2>
 <p>If you select Key APP, please add user for the APP. then you can get URL that can generate key for each end user.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops app:$app add.usr:$usr
 
@@ -258,9 +266,11 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
 <p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url.</p>
-<h5 id="access-url">Access URL</h5>
-<p>Your appliation URL must be $server/cgi-bin/auth.$app that will be shown in the dialog of gen command. please check it.</p>
-<pre><code>e.g.) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test
+<h2 id="access-url-of-the-app">Access URL of the APP</h2>
+<p>Your authentication required appliation URL must be $server/cgi-bin/auth.$app that will be shown in the dialog of gen command.
+by the way, if you generate none auth APP, the access URL must be $server/cgi-bin/$app. please be aware.</p>
+<pre><code>Authentication required APP -&gt; https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test
+None auth APP -&gt; https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/test
 </code></pre>
 <p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
 <h4 id="re-generate-user-key">Re-generate User key</h4>

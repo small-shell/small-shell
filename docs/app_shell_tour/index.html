@@ -135,6 +135,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#access-url-of-base-app" class="nav-link">Access URL of Base APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#change-tableform-column-and-parameters" class="nav-link">Change Table/Form column and parameters</a>
               <ul class="nav flex-column">
               </ul>
@@ -307,6 +311,10 @@ Initialize url for test on Base APP is created, please share this url to end use
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth?initialize=634b027b1b69e1242d40d53e312b3b4ac7710f55be81f289b549446ef6778bee,ac6112287652879f0a3b9e98fd3882faa43465234f8eda1c49c546ee4b56080f
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
+<h2 id="access-url-of-base-app">Access URL of Base APP</h2>
+<p>As you already checked, access URL is shown in the result of ops add command. the URL must be $server/cgi-bin/shell.auth</p>
+<pre><code>e.g.) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/shell.auth
+</code></pre>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
 <p>If end user lost their key, you can generate URL for re-generating key.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops initialize.usr:test
