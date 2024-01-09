@@ -243,8 +243,8 @@ primary databox: item.db
 <p>By the way if you don't need to use any databox, please input none or null as primary databox</p>
 </div>
 <h3 id="update-portal">Update portal</h3>
-<p>You can update portal on Base APP or edit code directly please check <a href="../cook_book/#portal-design-recipe">cookbook</a>. default portal image is here.
-<img alt="Screenshot" src="../img/default_portal.png" /></p>
+<p>You can update portal by updating markdown description of $app.UI.md.def on Base APP or edit code directly please check <a href="../cook_book/#portal-design-recipe">cookbook</a>. default portal image is here.</p>
+<p><img alt="Screenshot" src="../img/default_portal.png" /></p>
 <h3 id="add-user-to-the-app">Add user to the APP</h3>
 <p>If you select Key APP, please add user for the APP. then you can get URL that can generate key for each end user.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops app:$app add.usr:$usr
@@ -258,8 +258,8 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
 <p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url.</p>
-<h5 id="app-url">APP URL</h5>
-<p>Your appliation URL must be \$server/cgi-bin/auth.\$app that will be shown in the dialog of gen command. please check it.</p>
+<h5 id="access-url">Access URL</h5>
+<p>Your appliation URL must be $server/cgi-bin/auth.$app that will be shown in the dialog of gen command. please check it.</p>
 <pre><code>e.g.) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test
 </code></pre>
 <p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
