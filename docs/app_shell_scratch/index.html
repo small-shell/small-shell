@@ -257,7 +257,11 @@ Initialize URL for naruo on team APP is created
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
-<p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url. e.g) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test</p>
+<p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url.</p>
+<h5 id="app-url">APP URL</h5>
+<p>Your appliation URL must be \$server/cgi-bin/auth.\$app that will be shown in the dialog of gen command. please check it.</p>
+<pre><code>e.g.) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test
+</code></pre>
 <p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
 <p>If end user lost their key, you can generate URL for re-generating key.</p>
@@ -268,7 +272,8 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=
 <pre><code>sudo vi /usr/local/small-shell/web/$app.code
 </code></pre>
 <h3 id="update-codes-optional">Update codes (optional)</h3>
-<p>Then APP will be generated to directory that you already defined in Base APP dialog. you can update codes freely.</p>
+<p>Then APP will be generated to directory that you already defined in Base APP dialog. you can update codes freely.
+As for small-shell framework please check <a href="../app_shell_tour/#mvc-model">MVC model</a></p>
 <h4 id="target-codes">Target codes</h4>
 <pre><code># actionscripts
 $bin (/var/www/bin)
@@ -276,8 +281,9 @@ $bin (/var/www/bin)
 # HTML descriptors
 $descriptor(/var/www/descriptor)
 </code></pre>
-<h4 id="action-script-bin">Action script ($bin)</h4>
-<p>You can control accesible key. default parameter is all.</p>
+<h4 id="parameter-change-bin">Parameter change ($bin)</h4>
+<p>In this example, accesible key of databox is changed. 
+In the default permission, end user can access all keys of databox from the Scratch APP.</p>
 <pre><code>e.g) restrict data keys
 sudo vi /var/www/bin/test_get.sh
 
