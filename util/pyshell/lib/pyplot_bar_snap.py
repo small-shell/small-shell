@@ -1,8 +1,5 @@
-import numpy as np
 import matplotlib as mpl
-import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 
 
 mpl.rcParams['font.family'] = '%%font_family'

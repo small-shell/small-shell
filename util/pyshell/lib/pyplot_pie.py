@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import numpy as np
 
 mpl.rcParams['font.family'] = '%%font_family'
 
