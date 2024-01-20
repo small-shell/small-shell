@@ -209,6 +209,8 @@ if [ "$filter_key" -a "$filters" ];then
 
   if [ ! -f ${output}.csv ];then
     echo "Time,$filters" > $output.csv
+  elif [ ! $type = line ];then
+    echo "Time,$filters" > $output.csv
   else
     org_column=`head -1 $output.csv | $SED -z "s/,/\n/g" | wc -l | tr -d " "`
     filter_num=`echo $filters | $SED -z "s/,/\n/g" | wc -l | tr -d " "`
@@ -347,6 +349,8 @@ else
 
   if [ ! -f ${output}.csv ];then
     echo "Time,sumup" > $output.csv
+  elif [ ! $type = line ];then
+    echo "Time,$filters" > $output.csv
   fi
 
   if [ "$diff" = "yes" ];then
