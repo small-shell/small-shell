@@ -542,7 +542,7 @@ if [ "$param" = "-databox" ];then
     done   
 
     if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
-      echo -n "please define selectable parameter using commma as separator: "
+      echo -n "please define parameters using comma as separator: "
       read params
       char_chk_result=`charset_check "$params"`
       while [ "$char_chk_result" = "ERROR" ]
@@ -551,6 +551,17 @@ if [ "$param" = "-databox" ];then
         echo -n "parameters: "
         read params
         char_chk_result=`charset_check "$params"`
+      done
+    fi
+
+    if [ "$type" = "select" -o "$type" = "radio" ];then
+      separator_chk=`echo "$params" | grep ,`
+      while [ ! "$separator_chk" ]
+      do
+        echo "There is no separator(comma), please set parameters using comma \",\""
+        echo -n "parameters: "
+        read params
+        separator_chk=`echo "$params" | grep ,`
       done
     fi
 
@@ -868,7 +879,7 @@ if [ "$param" = "-addcol" ];then
     done
     
     if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
-      echo -n "please define selectable parameter using commma as separator: "
+      echo -n "please define parameters using comma as separator: "
       read params
       char_chk_result=`charset_check "$params"`
       while [ "$char_chk_result" = "ERROR" ]
@@ -877,6 +888,17 @@ if [ "$param" = "-addcol" ];then
         echo -n "parameters: "
         read params
         char_chk_result=`charset_check "$params"`
+      done
+    fi
+
+    if [ "$type" = "select" -o "$type" = "radio" ];then
+      separator_chk=`echo "$params" | grep ,`
+      while [ ! "$separator_chk" ]
+      do
+        echo "There is no separator(comma), please set parameters using comma \",\""
+        echo -n "parameters: "
+        read params
+        separator_chk=`echo "$params" | grep ,`
       done
     fi
 
