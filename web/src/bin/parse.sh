@@ -11,10 +11,9 @@ input=%%www/tmp/$session/input
 if [ "$type" = "urlenc" ];then
   cat $input | $SED "s/\`//g" | $SED "s/\&/_%%separator_/g" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" \
   | $SED -z "s/\n/_%%enter_/g" |  $SED "s/\$/\n/g" | $SED "s/_%%separator_/\n/g" \
-  | $SED "s/=/_%%equal_/1"  | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" \
-  | $SED "s/_%%equal_ /_%%equal__%%space_/g" > %%www/tmp/$session/params
+  | $SED "s/=/_%%equal_/1"  | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" > %%www/tmp/$session/params
 
-  while read line 
+  while IFS= read line
   do
     param_name=`echo $line | $AWK -F "_%%equal_" '{print $1}'`
     meta_chk_result=$(echo $param_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
@@ -25,7 +24,7 @@ if [ "$type" = "urlenc" ];then
     fi
 
     param_value=`echo "$line" | $AWK -F "_%%equal_" '{print $2}'`
-    echo "$param_value" |  tr -d \\\r | $SED "s/_%%enter_/\n/g" | $SED "s/_%%space_/ /g" >> %%www/tmp/$session/$param_name
+    echo "$param_value" |  tr -d \\\r | $SED "s/_%%enter_/\n/g" >> %%www/tmp/$session/$param_name
   done < %%www/tmp/$session/params
 
   rm -rf %%www/tmp/$session/input
@@ -69,7 +68,7 @@ if [ "$type" = "multipart" ];then
 
     # detouch text line
     $SED ${binary_line_start},${binary_line_end}d  %%www/tmp/$session/input \
-    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" | tr -d \\\r | $SED "s/^ /_%%space_/g" > %%www/tmp/$session/temp2
+    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" | tr -d \\\r  > %%www/tmp/$session/temp2
     input=%%www/tmp/$session/temp2
 
     # binary data parse
@@ -80,7 +79,7 @@ if [ "$type" = "multipart" ];then
 
 
   # text line parse
-  while read line
+  while IFS= read line
   do
     line_num=`expr $line_num + 1`
     sub_line_num=`expr $sub_line_num + 1`
@@ -110,7 +109,7 @@ if [ "$type" = "multipart" ];then
 
     if [ "$sub_line_num" -gt 3 ];then
       if [ ! "$file" = "yes" ];then
-        echo "$line" | tr -d \\\r  | $SED "s/_%%space_/ /g" >> %%www/tmp/$session/$name
+        echo "$line" | tr -d \\\r  >> %%www/tmp/$session/$name
       else
         file=no
       fi

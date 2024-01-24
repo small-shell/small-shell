@@ -570,11 +570,11 @@ if [ "$command" ];then
         if [ "$num_of_line" -lt 100 ];then
         # will try to recover detouched hash id again. but it will consume CPU resource, so only 100 line will be recovered.
 
-          while read line
+          while IFS= read line
           do
             primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g"`
             if [ ! "$primary_key_name" = "hashid" ];then
-              hashid=`echo $line | $AWK -F "," '{print $1}' \
+              hashid=`echo "$line" | $AWK -F "," '{print $1}' \
               | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
               | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
               | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
@@ -592,7 +592,7 @@ if [ "$command" ];then
               | $SED "s/{%%%}/:/g"\
               | $SHASUM | $AWK '{print $1}'`
             else
-              hashid=`echo $line | $AWK -F "," '{print $1}'`
+              hashid=`echo "$line" | $AWK -F "," '{print $1}'`
             fi
 
             id_chk=`grep "::::::$hashid::::::" $ROOT/databox/$databox/index | $AWK -F "::::::" '{print $2}'`
@@ -600,7 +600,7 @@ if [ "$command" ];then
             if [ "$id_chk" ];then
               echo "::::::$hashid::::::$line" >> $ROOT/tmp/exec/$exec_session.result
             else
-              echo $line >> $ROOT/tmp/exec/$exec_session.result
+              echo "$line" >> $ROOT/tmp/exec/$exec_session.result
             fi
           done < $target_file
         else
