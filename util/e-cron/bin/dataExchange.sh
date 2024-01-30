@@ -21,12 +21,26 @@ tmp_que=${ROOT}/util/e-cron/que/tmp/${job}
 file_que=${ROOT}/util/e-cron/que/file
 
 # resource lock
-exec 9>${tmp_que}
-$FLOCK -n 9
+exec 10>${tmp_que}
+$FLOCK -n 10
 if [ $? -ne 0 ]; then
   echo "`date +%Y-%m-%d` `date +%T` job is already running" >> ${job_log}
   exit 1
 fi
+
+# overwrite commmand dump PATH
+random=$RANDOM
+while [ -f $command_dump.$random ]
+do
+ sleep 0.01
+ count=`expr $count + 1`
+ if [ $count -eq 100 ];then
+   echo "error: something is wrong"
+   exit 1
+ fi
+ random=$RANDOM
+done
+command_dump=$command_dump.$random
 
 # job def load
 grep -v SCHEDULE  $ROOT/util/e-cron/def/${job}.def > $ROOT/util/e-cron/que/tmp/.${job}_tmp
@@ -98,8 +112,10 @@ if [ "${push_file}" ];then
         $CURL -X POST "${hubapi}?req=push&filename=${file}" -H "Content-Type:application/octet-stream" \
         -H "X-small-shell-authkey:${api_authkey}" \
         --data-binary @${local_dir}/${file} >> ${command_dump} 2>&1
-       
-        if [ $? -eq 0 ];then
+        result=$?
+        error_chk=`grep -e error -e FAILED ${command_dump}`
+
+        if [ "$result" -eq 0 -a ! "$error_chk" ];then
           echo "`date +%Y-%m-%d` `date +%T` file ${file} uploaded to Data exchange API HUB" >> ${job_log}
           echo "`date +%Y-%m-%d` `date +%T` ${job} INFO ${file}_uploaded" > ${status_que}
         else
