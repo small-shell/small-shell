@@ -881,7 +881,7 @@ function get_data(){
             exit 1
          else
             echo "error: there is no id:$id"
-            exit 1
+            return 1
          fi
       fi
     fi
@@ -1129,12 +1129,12 @@ function get_data(){
 
     if [ "$id" = "new" ];then
       echo "error: you can't get any data if you set id as new with non format"
-      exit 1
+      return 1
     fi
 
     if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
       echo "error: there is no data #$id"
-      exit 1 
+      return 1 
     fi
 
     if [ "$type" = "checkbox" ];then
@@ -1153,12 +1153,12 @@ function get_data(){
 
     if [ "$id" = "new" ];then
       echo "error: you can't get any data if you set id as new with non format"
-      exit 1
+      return 1
     fi
 
     if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
       echo "error: there is no id:$id"
-      exit 1 
+      return 1 
     fi
 
     value=`cat $ROOT/databox/$databox/data/$id/$key 2>/dev/null | $SED -z "s/\n/_%%enter_/g" | $SED "s/^ //g" | $SED "s/ $//g" \
@@ -1166,6 +1166,7 @@ function get_data(){
     echo "${key}:${value}"
 
   fi
+  return 0
 }
 
 function get_mergeable_data(){
@@ -1207,10 +1208,10 @@ function get_mergeable_data(){
         echo "error: there is no id:${id},data has been already deleted, please check data history"
         echo "------------------------------------------------------------------------------------------------"
         cat  $ROOT/databox/$databox/log/$id/history
-        exit 1
+        return 1
       else
         echo "error: there is no id:$id"
-        exit 1
+        return 1
       fi
     fi
   fi
@@ -1223,13 +1224,12 @@ function get_mergeable_data(){
   echo "<label>+</label>"
   echo "<textarea name=\"$name\" rows=\"3\" id=\"txtara\" $option></textarea>"
   echo "</li>"
-
+  return 0
 }
 
 function gen_id(){
   local primary_key=$primary_key
 
- 
   if [ "$primary_key" = "hashid" ];then
     id=`echo "primary key will be generated $gen $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | $SHASUM | $AWK '{print $1}'`
   elif [ -f ${input_dir}/${primary_key} ];then
@@ -1238,7 +1238,7 @@ function gen_id(){
     id=`echo "$value" | $SHASUM | $AWK '{print $1}'`
   else
     echo "error: failed to generate hashid something wrong"
-    exit 1
+    return 1
   fi
 
 
@@ -1256,8 +1256,7 @@ function gen_id(){
   fi
 
   echo "successfuly generated id:$id"
-  return 1
-
+  return 0
 }
 
 function set_data(){
@@ -1273,10 +1272,10 @@ function set_data(){
       echo "error: data has been already deleted, please check data history"
       echo "--------------------------------------------------------------"
       cat  $ROOT/databox/$databox/log/$id/history
-      exit 1
+      return 1
     else
       echo "error: there is no data id:$id"
-      exit 1
+      return 1
     fi
   fi
 
@@ -1442,10 +1441,10 @@ function set_data(){
 
   if [ $? -eq 0 ];then
     echo "successfully set $key to id:$id"
-    exit 0
+    return 0
   else
     echo "failed to update data id:$id"
-    exit 1
+    return 1
   fi
 
 }
@@ -1463,10 +1462,10 @@ function merge_data(){
        echo "error: data has been already deleted, please check data history"
        echo "--------------------------------------------------------------"
        cat  $ROOT/databox/$databox/log/$id/history
-       exit 1
+       return 1
      else
        echo "error: there is no data id:$id"
-       exit 1
+       return 1
      fi
   fi
 
@@ -1507,10 +1506,10 @@ function merge_data(){
 
   if [ $? -eq 0 ];then
     echo "successfully set $key to id:$id"
-    exit 0
+    return 0
   else
     echo "something is wrong, please contact to system admin"
-    exit 1
+    return 1
   fi
 
 }
@@ -1520,7 +1519,7 @@ function del_data(){
 
   if [ ! "$id" ];then
      echo "error: please set id"
-     exit 1
+     return 1
   fi
 
   if [ -d $ROOT/databox/$databox/data/$id ];then
@@ -1534,7 +1533,7 @@ function del_data(){
        rm -rf $ROOT/databox/$databox/file/$id
        if [ $? -eq 0 ];then
          echo "sucessfully deleted $id"
-         exit 0
+         return 0
        fi
      fi
 
@@ -1543,10 +1542,10 @@ function del_data(){
       echo "error: data is already deleted, please check data history"
       echo "--------------------------------------------------------------"
       cat  $ROOT/databox/$databox/log/$id/history
-      exit 1
+      return 1
     else
       echo "error: there is no data id:$id"
-      exit 1
+      return 1
     fi
   fi
 
@@ -1558,7 +1557,7 @@ function get_log(){
   
   if [ ! "$format" = "html_tag" -a ! "$format" = "none" -a ! "$format" = "json" ];then
     echo "error: log format is provided only html_tag or json or none"
-    exit 1
+    return 1
   fi
 
   if [ "$format" = "html_tag" ];then 
@@ -1568,7 +1567,7 @@ function get_log(){
       echo "</pre>"
     else
       echo "error: there is no log"
-      exit 1
+      return 1
     fi
   fi
 
@@ -1577,7 +1576,7 @@ function get_log(){
       cat $ROOT/databox/$databox/log/$id/history | $SED "s/,/ /1"
     else
       echo "error: there is no log"
-      exit 1
+      return 1
     fi
   fi
 
@@ -1586,7 +1585,7 @@ function get_log(){
       cat $ROOT/databox/$databox/log/$id/history | $JQ -R 'split(",") | {"Time Stamp": .[0], "Message": .[1]}' | $JQ -s
     else
       echo "error: there is no log"
-      exit 1
+      return 1
     fi
   fi
 }
@@ -1605,6 +1604,13 @@ if [ "$action" ];then
 
     if [ "$type" = "log" ];then
        get_log $id $format
+       if [ $? -eq 1 ];then
+         ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+         if [ $? -eq 0 ];then
+           rm $ROOT/tmp/exec/$exec_session*
+         fi
+         exit 1
+       fi
        exit 0
     fi
 
@@ -1620,9 +1626,23 @@ if [ "$action" ];then
       for key in $keys
       do
         get_data $id $key $format $primary_key 
+        if [ $? -eq 1 ];then
+          ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+          if [ $? -eq 0 ];then 
+            rm $ROOT/tmp/exec/$exec_session*
+          fi
+          exit 1
+        fi
       done
     elif [ "$key" ];then
         get_data $id $key $format $primary_key 
+        if [ $? -eq 1 ];then
+          ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+          if [ $? -eq 0 ];then
+            rm $ROOT/tmp/exec/$exec_session*
+          fi
+          exit 1
+        fi
     else
       echo "error: please set key of data"
       exit 1
