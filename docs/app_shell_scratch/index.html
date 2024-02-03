@@ -267,10 +267,8 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=
 <h4 id="connect-to-the-app">Connect to the APP</h4>
 <p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url.</p>
 <h2 id="access-url-of-the-app">Access URL of the APP</h2>
-<p>Your authentication required appliation URL must be $server/cgi-bin/auth.$app that will be shown in the dialog of gen command.
-by the way, if you generate none auth APP, the access URL must be $server/cgi-bin/$app. please be aware.</p>
-<pre><code>Authentication required APP -&gt; https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test
-None auth APP -&gt; https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/test
+<p>If you are using default WEB server, your application URL must be $FQDN/$app that will be shown in the dialog of gen command.</p>
+<pre><code>e.g.) APP:test, URL:https://$FQDN/test
 </code></pre>
 <p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
