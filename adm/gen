@@ -1424,6 +1424,7 @@ if [ "$param" = "-app" ];then
     fi
   
     base_url="${protocol}://${server}/cgi-bin/"
+    index_url="${protocol}://${server}/"
 
     if [ "$srvtype" = "other" ];then
       echo -n "BASE URL for WEB APP is ${base_url} is it OK ? (yes | no): "
@@ -1476,7 +1477,11 @@ if [ "$param" = "-app" ];then
     echo "Root directory: $www"
     echo "CGI directory: $cgidir"
     echo "server: $server"
-    echo "base url: $base_url"
+    if [ "$srvtype" = "default" ];then
+      echo "Access URL: ${index_url}base"
+    else
+      echo "Access URL: ${base_url}shell.auth"
+    fi
     echo "-----------------------------------------------------------------"
 
     echo -n "Is it OK ? (yes | no): "
@@ -1493,10 +1498,14 @@ if [ "$param" = "-app" ];then
       # gen base info
       echo "protocol=\"$protocol\"" > $ROOT/web/base
       echo "server=\"$server\"" >> $ROOT/web/base
+      echo "srvtype=\"$srvtype\"" >> $ROOT/web/base
       echo "cgiusr=\"$cgiusr\"" >> $ROOT/web/base
       echo "www=\"$www\"" >> $ROOT/web/base
       echo "cgidir=\"$cgidir\"" >> $ROOT/web/base
       echo "base_url=\"$base_url\"" >> $ROOT/web/base
+      if [ "$srvtype" = "default" ];then
+        echo "index_url=\"$index_url\"" >> $ROOT/web/base
+      fi
       chown small-shell:small-shell $ROOT/web/base
       chmod 700 $ROOT/web/base
 
@@ -1681,11 +1690,12 @@ if [ "$param" = "-app" ];then
         echo "rand=$rand" > $ROOT/web/.rand
       fi
 
-      for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | xargs basename -a`
+      for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | grep -v redirect.html.def | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" > $descrdir/$src
         chmod 755 $descrdir/$src
       done
+
 
       for src in `ls $ROOT/web/src/descriptor/common_parts | xargs basename -a`
       do
@@ -1696,6 +1706,11 @@ if [ "$param" = "-app" ];then
 
       if [ "$srvtype" = "default" ];then
         echo "small_shell_path=$ROOT" > $descrdir/.small_shell_conf
+        if [ ! -d $www/html/base ];then
+          mkdir $www/html/base
+        fi
+        cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}shell.auth#g" > $www/html/base/index.html
+        chmod 755 $www/html/base/index.html
       else
         echo "small_shell_path=\"sudo -u small-shell $ROOT\"" > $descrdir/.small_shell_conf
       fi
@@ -1912,7 +1927,11 @@ if [ "$param" = "-app" ];then
     echo "description: $description"
     echo "IP_whitelisting: $IP_whitelisting"
     echo "Included keys: $keys"
-    echo "Access URL: ${base_url}${form_name}"
+    if [ "$srvtype" = "default" ];then
+      echo "Access URL: ${index_url}${form_name}"
+    else
+      echo "Access URL: ${base_url}${form_name}"
+    fi
     echo ""
     echo "-----------------------------------------------------------------"
     echo ""
@@ -1990,6 +2009,14 @@ if [ "$param" = "-app" ];then
 
       chown $cgiusr:$cgiusr ${www}/descriptor/${form_name}*
       chmod 700 ${www}/descriptor/${form_name}*
+
+      if [ "$srvtype" = "default" ];then
+        if [ ! -d $www/html/$form_name ];then
+          mkdir $www/html/$form_name
+        fi
+        cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${form_name}#g" > $www/html/$form_name/index.html
+        chmod 755 $www/html/$form_name/index.html
+      fi
 
       echo "Form is successfully generated"
       echo "Please update codes if needed"
@@ -2126,18 +2153,27 @@ if [ "$param" = "-app" ];then
    
     if [ ! "$parent_app" ];then
 
-      if [ "$auth_method" = "key" -o "$auth_method" = "other" ];then
-        echo "Access URL: ${base_url}auth.${app}"
-      elif [ "$auth_method" = "shared_pass" ];then
-        echo "Access URL: ${base_url}auth.${app}"
-        echo "shared pass code: $shared_pass"
+      if [ "$srvtype" = "default" ];then
+        echo "Access URL: ${index_url}${app}"
       else
-        echo "Access URL: ${base_url}${app}"
+        if [ "$auth_method" = "key" -o "$auth_method" = "other" ];then
+          echo "Access URL: ${base_url}auth.${app}"
+        else
+          echo "Access URL: ${base_url}${app}"
+        fi
       fi
+
+      if [ "$auth_method" = "shared_pass" ];then
+          echo "shared pass code: $shared_pass"
+      fi
+
       echo "Primary databox: $databox"
+
     else
+
       echo "Parent APP: $parent_app"
       echo "sub APP databox: $databox"
+
     fi
 
     echo ""
@@ -2260,6 +2296,14 @@ if [ "$param" = "-app" ];then
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
+          if [ "$srvtype" = "default" ];then
+             if [ ! -d $www/html/$app ];then
+               mkdir $www/html/$app
+             fi
+             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > $www/html/$app/index.html
+             chmod 755 $www/html/$app/index.html
+          fi
+
         fi
 
         if [ "$auth_method" = "key" ];then
@@ -2326,6 +2370,14 @@ if [ "$param" = "-app" ];then
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+
+          if [ "$srvtype" = "default" ];then
+             if [ ! -d $www/html/$app ];then
+               mkdir $www/html/$app
+             fi
+             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > $www/html/$app/index.html
+             chmod 755 $www/html/$app/index.html
+          fi
 
         fi
 
@@ -2430,6 +2482,14 @@ if [ "$param" = "-app" ];then
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
+          if [ "$srvtype" = "default" ];then
+             if [ ! -d $www/html/$app ];then
+               mkdir $www/html/$app
+             fi
+             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > $www/html/$app/index.html
+             chmod 755 $www/html/$app/index.html
+          fi
+
         fi
 
         if [ "$auth_method" = "none" ];then
@@ -2516,6 +2576,13 @@ if [ "$param" = "-app" ];then
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
 
+          if [ "$srvtype" = "default" ];then
+             if [ ! -d $www/html/$app ];then
+               mkdir $www/html/$app
+             fi
+             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${app}#g" > $www/html/$app/index.html
+             chmod 755 $www/html/$app/index.html
+          fi
 
         fi
 
@@ -2548,12 +2615,16 @@ if [ "$param" = "-app" ];then
 
         clear
         echo "------------------------------------------------------------"
-        echo "SCRATCH APP template is successfully generated"
+        echo "SCRATCH APP is successfully generated"
 
-        if [ "$auth_method" = "none" ];then
-          echo "URL: ${base_url}${app}"
+        if [ "$srvtype" = "default" ];then
+          echo "URL: ${index_url}${app}"
         else
-          echo "URL: ${base_url}auth.${app}"
+          if [ "$auth_method" = "none" ];then
+            echo "URL: ${base_url}${app}"
+          else
+            echo "URL: ${base_url}auth.${app}"
+          fi
         fi
         echo "------------------------------------------------------------"
         echo "Please update following codes freely"
