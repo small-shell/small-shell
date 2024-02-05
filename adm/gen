@@ -1219,7 +1219,7 @@ if [ "$param" = "-app" ];then
   read apptype 
   while [ ! "$apptype" = "1"  -a  ! "$apptype" = "2" -a ! "$apptype" = "3" ]
   do
-    echo -n "please select number (1.BASE | 2.FORM | 3.SCRATCH) : "
+    echo -n "please input number (1.BASE | 2.FORM | 3.SCRATCH) : "
     read apptype
   done
 
@@ -1230,7 +1230,7 @@ if [ "$param" = "-app" ];then
     read srvtype
     while [ ! "$srvtype" = "1"  -a  ! "$srvtype" = "2" ]
     do
-      echo -n "Type of server (1.small-shell WEB srv | 2.other WEB srv): "
+      echo -n "pleasee input number (1.small-shell WEB srv | 2.other WEB srv): "
       read srvtype
     done
 
@@ -2100,7 +2100,7 @@ if [ "$param" = "-app" ];then
       read auth_method
       while [ ! "$auth_method" = "1"  -a  ! "$auth_method" = "2" -a ! "$auth_method" = "3" -a ! "$auth_method" = "4" ]
       do
-        echo -n "please select number (1.shared pass | 2.user key | 3.other | 4.none) : "
+        echo -n "please input number (1.shared pass | 2.user key | 3.other | 4.none) : "
         read auth_method
       done
     fi
@@ -2936,7 +2936,7 @@ if [ "$param" = "-job" ];then
     read jobtype
     while [ ! "$jobtype" = "1" -a  ! "$jobtype" = "2" ]
     do
-      echo -n "please select number 1 or 2 (1.job automation | 2.file exchange) : "
+      echo -n "please input number (1.job automation | 2.file exchange) : "
       read jobtype
     done
   else
