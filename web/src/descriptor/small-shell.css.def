@@ -459,6 +459,15 @@ a {
   font-size: 80%;
 }
 
+.auth-form button:hover {
+  background: #07ADBF;
+}
+  
+.auth-form button:active {
+  background: #07ADAE;
+}
+
+
 .console-box {
   font-weight: 300;
   line-height: 0.8em;
@@ -892,6 +901,14 @@ a {
   cursor: hand;
 }
 
+.form-box button:hover {
+  background: #07ADBF;
+}
+
+.form-box button:active {
+  background: #07ADAE;
+}
+
 .form-box .action_links {
   padding-top: 4px;
   font-style: oblique;
@@ -1122,6 +1139,15 @@ a {
   cursor: hand;
 }
 
+.md-form-box button:hover {
+  background: #07ADBF;
+}
+  
+.md-form-box button:active { 
+  background: #07ADAE;
+}   
+  
+
 .md-form-box .action_links {
   padding-top: 4px;
   font-style: oblique;
@@ -1211,6 +1237,9 @@ a {
   padding: 4px 12px;
 }
 
+.import-form a {
+  color: #07ADAF;
+}
 
 .import-form li select {
   letter-spacing: .09em;
@@ -1233,23 +1262,27 @@ a {
 .import-form button {
   padding: 8px 16px;
   border-style: none;
-  background: #2f3333;
+  background: #07ADAF;
   color: #f2f2f2;
   text-transform: uppercase;
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
   cursor: hand;
+  font-weight: bold;
+}
+
+.import-form button:hover {
+  background: #07ADBF;
+}
+
+.import-form button:active {
+  background: #07ADAE;
 }
 
 .import-form pre {
   font-size: 16px;
   line-height: 1.4em;
-}
-
-.import-form a {
- color: blue;
- font-weight: bold;
 }
 
 .import-form #file_input_label {
