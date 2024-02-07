@@ -31,7 +31,7 @@
       <ul>
       %%dataset
       </ul>
-      <button class="button" type="submit">PUSH</button>
+      <button class="button" type="submit">SET</button>
       </form>
      </div>
    <script>
