@@ -733,8 +733,8 @@ small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/loca
 <pre><code>| prod node | -- | backup node #e-cron HUB|
 </code></pre>
 <h4 id="usage-of-bkup-and-rstr">Usage of bkup and rstr</h4>
-<pre><code>sudo /usr/local/small-shell/adm/bkup $backup_dir
-sudo /usr/local/small-shell/adm/rstr $backuped_dir
+<pre><code>sudo /usr/local/small-shell/adm/bkup $dir
+sudo /usr/local/small-shell/adm/rstr $dir
 </code></pre>
 <h4 id="operation-at-backup-node">Operation at backup node</h4>
 <p>It's required to Launch Base APP and check e-cron URL and key</p>
@@ -743,7 +743,7 @@ cat /usr/local/small-shell/web/base | grep hubapi
 cat /usr/local/small-shell/web/base | grep api_authkey
 </code></pre>
 <h4 id="operation-at-production-node">Operation at production node</h4>
-<p>Once e-cron HUB is ready, let's define backup &amp; sync job on pdocution node. by the way sudo privilede is required for executing bkup command. please add sudoers beforehand.</p>
+<p>Once e-cron HUB is ready, let's define backup &amp; sync job on pdocution node. bkup command will backup every data of small-shell including user info, databox{data,log}, APP, Job... and sudo privilede is required for executing bkup command. please add sudoers beforehand. </p>
 <pre><code>sudo visudo
 # add folowing line, if there is no small-shell entry
 small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
