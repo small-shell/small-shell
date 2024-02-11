@@ -4,7 +4,7 @@
 # PARAM FOR GEN
 #----------------------------------------------------------
 # generate data box (gen -databox)
-# generate data box (gen -databox db.def)
+# generate data box with db.def (../util/scripts/bat_gen.sh db.def)
 # add column to data box (gen -addcol)
 # delete column of data box (gen -delcol)
 # generate app (gen -app)
