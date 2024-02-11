@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #---------------------------------------------------------------------
-# usage: bat_gen.sh /tmp/db.def
+# usage: bat_gen.sh $db.def
 #----------------------------------------------------------------------
 
 db_def=$1
@@ -17,7 +17,7 @@ SCRIPT_DIR=`dirname $0`
 . ${SCRIPT_DIR}/../../global.conf
 
 if [ ! "$db_def" ];then
-  echo "error: please input db.def for making databox #./bat_gen.sh /tmp/db.def"
+  echo "error: please input db.def for making databox #./bat_gen.sh $db.def"
   exit 1
 fi
 
@@ -33,13 +33,13 @@ SCRIPT_DIR=`dirname $0`
 # gen tmp/db.def.load
 cat $db_def | grep "^databox="  | $SED "s/databox=//g" | $SED "s/\"//g"  > $ROOT/util/scripts/tmp/db.def.load
 
-primary_key=`cat $db_def | grep "^primary_key=" | $AWK -F "=" '{print $2}' | $SED "s/\"//g"`
+primary_key=`cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g"`
 if [ "$primary_key" = "hashid" ];then
   #exclude label
-  cat $db_def | grep "^primary_key=" | $AWK -F "=" '{print $2}' | $SED "s/\"//g" >> $ROOT/util/scripts/tmp/db.def.load
+  cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g" >> $ROOT/util/scripts/tmp/db.def.load
 else
   #include label
-  cat $db_def | grep "^primary_key" | $AWK -F "=" '{print $2}' | $SED "s/\"//g" >> $ROOT/util/scripts/tmp/db.def.load
+  cat $db_def | grep "^primary_key" | cut -d '=' -f 2- | $SED "s/\"//g" >> $ROOT/util/scripts/tmp/db.def.load
   echo "yes" >> $ROOT/util/scripts/tmp/db.def.load
 fi
 
@@ -107,9 +107,9 @@ do
 
   type_chk=`cat $db_def | grep -e "col${count}_type=\"checkbox\"" -e "col${count}_type=\"file\""` 
   if [ ! "$type_chk" ];then
-    cat $db_def | grep "^col${count}_" | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED "/^$/d" >> $ROOT/util/scripts/tmp/db.def.load
+    cat $db_def | grep "^col${count}_" | cut -d '=' -f 2- | $SED "s/\"//g" | $SED "/^$/d" >> $ROOT/util/scripts/tmp/db.def.load
   else 
-    cat $db_def | grep "^col${count}_" | grep -v col${count}_required= | $AWK -F "=" '{print $2}' \
+    cat $db_def | grep "^col${count}_" | grep -v col${count}_required= | cut -d '=' -f 2- \
     | $SED "s/\"//g" | $SED "/^$/d" >> $ROOT/util/scripts/tmp/db.def.load
   fi
   
