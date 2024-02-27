@@ -212,27 +212,11 @@ sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location@book_searc
 </code></pre>
 <h3 id="cook-app">Cook APP</h3>
 <h4 id="update-portal">update portal</h4>
-<p>Portal could be used for some description of the APP, lets modify descpription section.</p>
-<pre><code>sudo vi /var/www/descriptor/book_search_main.html.def
-# -&gt; update HTML
---code--
-&lt;div class=&quot;main&quot;&gt;
-&lt;div class=&quot;description&quot;&gt;
-&lt;h1&gt;Welcome to book_search APP. please search book and request for lending.&lt;/h1&gt;
-&lt;pre&gt;
-STEP1: search book from table
-STEP2: request from book page, then you can get your request link
-STEP3: message will be update by admin, then you can get book
-&lt;/pre&gt;
-&lt;br&gt;&lt;/br&gt;
-&lt;a href=&quot;./book_search?%%params&amp;req=table&quot;&gt;&lt;button class=&quot;button&quot;&gt;Search&lt;/button&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
---------
-</code></pre>
+<p>Portal page can be editted by markdown grammer, lets write down description of this application. detail is in 
+<a href="./#portal-design-recipe">Cook main page</a> section. you can also update menu of portal on Base APP.</p>
 <p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
-<h4 id="update-menu">update menu</h4>
-<p>For better UI, let's add meta link to the menu</p>
+<h4 id="update-menu-of-other-pages">update menu of other pages</h4>
+<p>Menu of other pages must be editted directly. In this example, we updated as following.</p>
 <pre><code>sudo vi /var/www/descriptor/common_parts/book_search_common_menu
 --code--
 &lt;li&gt;&lt;a href=&quot;./book_search?%%session&amp;req=table&quot;&gt;book.master&lt;/a&gt;&lt;/li&gt;
@@ -587,7 +571,7 @@ primary databox: none
 <p>Mark down grammer is written in default page. and you can check it <a href="https://21it.org/markdown.html">here</a> as well.</p>
 <p><img alt="Screenshot" src="../img/test.UI.md.def.png" /></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
-<p>another portal page edit way is just edit hml.def directly {$APP_main.html.def} on CLI </p>
+<p>Another way of updating portal is just editting hml.def directly {$APP_main.html.def} </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
 </code></pre>
 <div class="admonition note">
@@ -663,6 +647,25 @@ primary databox: none
 <p>Please use footer class for making footer.</p>
 <pre><code>&lt;div class=&quot;footer&quot;&gt;
   &lt;p&gt;powered by small-shell.org&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<h5 id="implement-form">Implement form</h5>
+<p>If you want to implement form, it's recommended to use class="form-box" , please check following example.</p>
+<pre><code>&lt;div class=&quot;form-box&quot;&gt;
+  &lt;div class=&quot;description&quot;&gt;
+    &lt;h1&gt;#new&lt;/h1&gt;
+  &lt;/div&gt;
+  &lt;form method=&quot;post&quot; action=&quot;&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;label&gt;name&lt;/label&gt;
+      &lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;&quot; required&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+     &lt;label&gt;description&lt;/label&gt;
+     &lt;input type=&quot;text&quot; name=&quot;description&quot; value=&quot;&quot; &gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
 &lt;/div&gt;
 </code></pre>
 <h5 id="change-color">Change color</h5>
