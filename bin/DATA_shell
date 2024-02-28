@@ -1538,7 +1538,7 @@ function del_data(){
         echo "sucessfully deleted $id"
         return 0
       else
-        echo "failed to delete $id"
+        echo "error: failed to delete $id"
         return 1
       fi
 
