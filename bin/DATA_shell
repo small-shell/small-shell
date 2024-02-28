@@ -1527,15 +1527,20 @@ function del_data(){
       primary_key_value=`cat $ROOT/databox/$databox/data/$id/$primary_key`
       mv $ROOT/databox/$databox/data/$id $ROOT/databox/$databox/data/${id}.detouched
       rm -rf $ROOT/databox/$databox/data/${id}.detouched/*
+      del_result=$?
       echo $primary_key_value > $ROOT/databox/$databox/data/${id}.detouched/$primary_key
 
-     if [ -f $ROOT/databox/$databox/file/$id ];then 
-       rm -rf $ROOT/databox/$databox/file/$id
-       if [ $? -eq 0 ];then
-         echo "sucessfully deleted $id"
-         return 0
-       fi
-     fi
+      if [ -f $ROOT/databox/$databox/file/$id ];then
+        rm -rf $ROOT/databox/$databox/file/$id
+      fi
+
+      if [ $del_result -eq 0 ];then
+        echo "sucessfully deleted $id"
+        return 0
+      else
+        echo "failed to delete $id"
+        return 1
+      fi
 
   else
     if [ -d  $ROOT/databox/$databox/log/$id ];then
