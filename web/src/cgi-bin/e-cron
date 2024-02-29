@@ -56,7 +56,7 @@ rm  %%www/tmp/${param}*
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
-auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:e-cron`
 user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
 session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
 pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`

@@ -21,14 +21,13 @@ SCRIPT_DIR=`dirname $0`
 # authorized session check
 if [ -f $ROOT/tmp/que/$session ];then
   user=`cat $ROOT/tmp/que/$session | $AWK -F ":" '{print $1}'`
-  remote_addr=`cat $ROOT/tmp/que/$session | $AWK -F ":" '{print $2}'`
 
   if [ "$app" = "shell.app" ];then
     # check token
-    tokencheck=`echo "${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    tokencheck=`echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
   else
     # check app token
-    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    tokencheck=`echo "${app}:${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
   fi
 
   if [ ! "$session" = "$tokencheck" ];then

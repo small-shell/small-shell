@@ -75,15 +75,14 @@ fi
 # authorized session check
 if [ -f $ROOT/tmp/session/$session ];then
   user=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $1}'`
-  remote_addr=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $2}'`
 
   if [ ! "$app" ];then
     # check token
-    tokencheck=`echo "${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    tokencheck=`echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
     app=shell.app
   else
     # check app token
-    tokencheck=`echo "${app}:${user}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    tokencheck=`echo "${app}:${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
   fi
 
   if [ ! "$session" = "$tokencheck" ];then

@@ -4,6 +4,7 @@
 #  COMMON
 #-----------------------------------------------------------------------
 #  remote_addr:ip_addr -> IP addreess will be used for audit log and security check
+#  user_agent:HTTP_USER_AGENT ->  HTTP_USER_AGENT will be used for security check
 #  app:$app -> WEB app name for authentication
 
 #-----------------------------------------------------------------------
@@ -79,6 +80,16 @@ do
 
   if [[ $param == remote_addr:* ]]; then
     remote_addr=`echo $param | $AWK -F":" '{print $2}'`
+    if [ ! "$remote_addr" ];then
+      remote_addr="null"
+    fi
+  fi
+
+  if [[ $param == user_agent:* ]]; then
+    user_agent=`echo $param | $AWK -F":" '{print $2}'`
+    if [ ! "$user_agent" ];then
+      user_agent="null"
+    fi
   fi
 
   if [[ $param == logout:* ]]; then
@@ -96,10 +107,12 @@ do
 
 done
 
-# IP addr check
 if [ ! "$remote_addr" ];then
-  echo "error: IP addr is null"
-  exit 1
+  remote_addr="null"
+fi
+
+if [ ! "$user_agent" ];then
+  user_agent="null"
 fi
 
 # APP check
@@ -161,11 +174,11 @@ if [ "$key_auth" ];then
         user_name="${force_user}@${app}"
       fi
 
-      session_token=`echo "${app}:${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+      session_token=`echo "${app}:${user_name}:${pin}" | $SHASUM | $AWK '{print $1}'`
       echo "user_name:$user_name,session_token:$session_token,pin:$pin"
       echo "`date +%Y-%m-%d` `date +%T` app:${app} user_name:${user_name} remote_addr:${remote_addr} logged in successfully" \
       >> $access_log
-      echo "${user_name}:${remote_addr}" > $ROOT/tmp/session/${session_token}
+      echo "${user_name}:${remote_addr}:${user_agent}" > $ROOT/tmp/session/${session_token}
       chmod 700 $ROOT/tmp/session/${session_token}
       exit 0
     else
@@ -184,9 +197,10 @@ if [ "$action" = "session_chk" ];then
   if [ -f  $ROOT/tmp/session/${session} ];then
     user_name=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $1}'`
     org_addr=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $2}'`
+    org_user_agent=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $3}'`
 
     if [ "$org_addr" = "$remote_addr" ];then
-      tokencheck=`echo "${app}:${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+      tokencheck=`echo "${app}:${user_name}:${pin}" | $SHASUM | $AWK '{print $1}'`
       if [ "${session}" = "${tokencheck}" ];then
         cat $ROOT/tmp/session/$session
       fi
@@ -199,14 +213,15 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
   if [ -f  $ROOT/tmp/session/${session} ];then
     user_name=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $1}'`
     org_addr=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $2}'`
+    org_user_agent=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $3}'`
     org_session=$session
  
-    if [ "$org_addr" = "$remote_addr" ];then
-      tokencheck=`echo "${app}:${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    if [ "$org_addr" = "$remote_addr" -a "$org_user_agent" = "$user_agent" ];then
+      tokencheck=`echo "${app}:${user_name}:${pin}" | $SHASUM | $AWK '{print $1}'`
       if [ "${session}" = "${tokencheck}" ];then
 
         if [ ! "$action" = "data_import_session" ];then
-          ln_session=`cat $ROOT/tmp/session/${org_session} | $AWK -F ":" '{print $3}'`
+          ln_session=`cat $ROOT/tmp/session/${org_session} | $AWK -F ":" '{print $4}'`
           if [ "$ln_session" -a -f $ROOT/tmp/session/${ln_session} ];then
             unlink $ROOT/tmp/session/${ln_session}
           fi
@@ -220,16 +235,16 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
         fi
 
         pin=$RANDOM
-        session_token=`echo "${app}:${user_name}:${remote_addr}:${pin}" | $SHASUM | $AWK '{print $1}'`
+        session_token=`echo "${app}:${user_name}:${pin}" | $SHASUM | $AWK '{print $1}'`
         echo "user_name:${user_name},new_token:${session_token},pin:${pin}"
 
         if [ "$action" = "session_persist" ];then
           ln -s $ROOT/tmp/session/${session_token} $ROOT/tmp/session/${org_session}
-          echo "${user_name}:${remote_addr}:${org_session}" > $ROOT/tmp/session/${session_token}
+          echo "${user_name}:${remote_addr}:${user_agent}:${org_session}" > $ROOT/tmp/session/${session_token}
         fi
 
         if [ "$action" = "session_refresh" ];then
-          echo "${user_name}:${remote_addr}" > $ROOT/tmp/session/${session_token}
+          echo "${user_name}:${remote_addr}:${user_agent}" > $ROOT/tmp/session/${session_token}
         fi
 
         chmod 700 $ROOT/tmp/session/${session_token}
@@ -242,11 +257,19 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
         >> $access_log
         exit 1
       fi
-    else
+
+    elif [ ! "$org_addr" = "$remote_addr" ];then
       echo "warn: IP address was changed, need additional authentication" 
       echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} app:${app} failed to get new session (user_name:${user_name}) due to IP change" \
       >> $access_log
       exit 1
+
+    elif [ ! "$org_user_agent" = "$user_agent" ];then
+      echo "warn: User agent was changed, need additional authentication"  
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} failed to get new session (user_name:${user_name}) due to User-agent change" \
+      >> $access_log
+      exit 1
+
     fi
 
   else

@@ -1,13 +1,22 @@
 #!/bin/bash
 
+# set persistence option
+IP_persistence="yes"
+User_agent_persistence="yes"
+
 echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
-# load remote addr
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+# load header
+if [ "$IP_persistence" = "yes" ];then
+  remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+fi
+if [ "$User_agent_persistence" = "yes" ];then
+  user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
+fi
 
 # required
 IP_whitelisting=%%IP_whitelisting
@@ -150,7 +159,7 @@ if [ "$app_key" ];then
   else
     authkey="$app_key"
   fi
-  auth_req=`${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr}`
+  auth_req=`${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent}`
   user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
   session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`

@@ -51,7 +51,7 @@ done
 
 # create dummy session as root priviledge
 pin=$RANDOM
-session=`echo "root:localhost:${pin}" | $SHASUM | $AWK '{print $1}'`
+session=`echo "root:${pin}" | $SHASUM | $AWK '{print $1}'`
 echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $access_log
 chown small-shell:small-shell $access_log
 

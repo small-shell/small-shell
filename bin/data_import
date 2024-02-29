@@ -1,14 +1,15 @@
 #!/bin/bash
 
-#-----------------------------------------------------------------------
-# usage: ./data_import $import_file $databox $session $pin $remote_addr
-#-----------------------------------------------------------------------
+#------------------------------------------------------------------------------------
+# usage: ./data_import $import_file $databox $session $pin $remote_addr $user_agent
+#------------------------------------------------------------------------------------
 
 import_file=$1
 databox=$2
 session=$3
 pin=$4
 remote_addr=$5
+user_agent=$6
 
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "small-shell" ];then
@@ -21,7 +22,7 @@ SCRIPT_DIR=`dirname $0`
  . ${SCRIPT_DIR}/../global.conf
 
 # authorized session check
-get_session=`$ROOT/bin/auth data_import_session:${session} pin:${pin} remote_addr:${remote_addr}`
+get_session=`$ROOT/bin/auth data_import_session:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`
 session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
 pin=`echo $get_session | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #---------------------------------------------------------------------
-# usage:    bat_import.sh $authkey $databox $import_file 
+# usage:  bat_import.sh $authkey $databox $import_file 
 #----------------------------------------------------------------------
 
 authkey=$1
@@ -29,7 +29,7 @@ SCRIPT_DIR=`dirname $0`
 
 # authentication
 if [ "$authkey" ];then
-  auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
+  auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost user_agent:bat_import`
   session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 fi
@@ -40,7 +40,7 @@ if [ ! "$session" ];then
 fi
 
 # import 
-nice -n 19 ${ROOT}/bin/data_import $import_file $databox $session $pin localhost &
+nice -n 19 ${ROOT}/bin/data_import $import_file $databox $session $pin localhost  bat_import &
 sleep 1
 
 exit 0

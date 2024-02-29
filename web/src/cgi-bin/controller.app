@@ -2,6 +2,8 @@
 
 # preprocedure
 session_update="required"
+IP_persistence="yes"
+User_agent_persistence="yes"
 auth="%%auth"
 
 # load small-shell conf
@@ -9,8 +11,14 @@ auth="%%auth"
 
 IP_whitelisting=%%IP_whitelisting
 
-# load remote addr
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+# load header
+if [ "$IP_persistence" = "yes" ];then
+  remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+fi
+if [ "$User_agent_persistence" = "yes" ];then
+  user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
+fi
+
 
 # IP restriction check
 if [ "$IP_whitelisting" = "yes" ];then
@@ -77,10 +85,8 @@ if [ "$auth" = "required" ];then
     session_update=no
 
     # session check
-    session_chk=`${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} remote_addr:${remote_addr}`
-    session_ip=`echo $session_chk | $AWK -F ":" '{print $2}'`
-
-    if [ ! "${session_ip}" = ${remote_addr} ];then
+    session_chk=`${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`
+    if [ ! "$session_chk" ];then
       if [ "$req" = "log_viewer" ];then
         echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=$req&id=$id&message=!%20Session%20Expired\">"
         exit 1
@@ -92,7 +98,7 @@ if [ "$auth" = "required" ];then
   fi
 
   if [ "$req" = "logout" ]; then
-    ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session}
+    ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session} user_agent:${user_agent}
     echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=main\">"
     exit 0
   fi
@@ -100,7 +106,7 @@ if [ "$auth" = "required" ];then
   # session update
   if [ "$session_update" = "required" ];then
     get_session=`${small_shell_path}/bin/extension_auth session_persist:${session} \
-    pin:${pin} remote_addr:${remote_addr} app:%%app`
+    pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} app:%%app`
 
     user_name=`echo $get_session | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
     session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`

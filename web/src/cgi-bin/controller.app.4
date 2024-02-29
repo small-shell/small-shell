@@ -2,16 +2,22 @@
 
 authkey="%%authkey"
 IP_whitelisting=%%IP_whitelisting
+IP_persistence="yes"
+User_agent_persistence="yes"
 
 # load small-shell params
 . %%www/descriptor/.small_shell_conf
 
-# load remote addr
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-
+# load header
+if [ "$IP_persistence" = "yes" ];then
+  remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+fi
+if [ "$User_agent_persistence" = "yes" ];then
+  user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
+fi
 
 # auth for small-shell databox
-auth_req=`${small_shell_path}/bin/extension_auth key_auth:${authkey} remote_addr:${remote_addr} app:%%app`
+auth_req=`${small_shell_path}/bin/extension_auth key_auth:${authkey} remote_addr:${remote_addr} app:%%app user_agent:${user_agent}`
 user_name="guest"
 session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
 pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`

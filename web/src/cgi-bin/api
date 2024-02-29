@@ -6,9 +6,9 @@ echo ""
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
-# load remote addr
+# load remote addr and user_agent
 remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-
+user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
@@ -58,7 +58,7 @@ rm  %%www/tmp/${param}*
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
-auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr}`
+auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent}`
 user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
 session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
 pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
@@ -135,7 +135,8 @@ if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
   fi
 fi
 
-${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} logout:${session}
+${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logout:${session}
+
 
 
 if [ "$session" ];then

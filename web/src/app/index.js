@@ -59,6 +59,7 @@ app.get('/cgi-bin/*', (req, res)=> {
   var params = req_path.split("/")[2];
   var remote_addr = req.ip.toString();
   var remote_addr = remote_addr.replace(/^::ffff:/g, "");
+  var user_agent =  req.headers['user-agent'];
   var api_auth_key = req.headers['x-small-shell-authkey'];
 
   if (params) {
@@ -72,7 +73,7 @@ app.get('/cgi-bin/*', (req, res)=> {
 
   if( fs.existsSync( www + "/cgi-bin/" + command ) ){
     if ( query_string.indexOf('req=file') != -1) {
-      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,3d",{ maxBuffer: 1024000000 });
+      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,3d",{ maxBuffer: 1024000000 });
       res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
       res.end(html);
       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
@@ -80,7 +81,7 @@ app.get('/cgi-bin/*', (req, res)=> {
 
     } else if( query_string.indexOf('type=graph') != -1) {
       // handle graph contents
-      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| /usr/bin/sed -e 1,2d" ,{ maxBuffer: 1024000000 });
+      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| /usr/bin/sed -e 1,2d" ,{ maxBuffer: 1024000000 });
       res.writeHead(200, {'Content-Type' : 'image/png'});
       res.end(html);
       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
@@ -88,7 +89,7 @@ app.get('/cgi-bin/*', (req, res)=> {
 
     } else {
       // normal contents
-      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
+      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
       res.writeHead(200, {'Content-Type' : 'text/html'});
       res.end(html);
       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
@@ -115,6 +116,7 @@ app.post('/cgi-bin/*', (req, res) => {
   var params = req_path.split("/")[2];
   var remote_addr = req.ip.toString();
   var remote_addr = remote_addr.replace(/^::ffff:/g, "");
+  var user_agent =  req.headers['user-agent'];
   var content_type = req.headers['content-type'];
   var api_auth_key = req.headers['x-small-shell-authkey'];
   var content_length = Buffer.byteLength(req.body);
@@ -131,7 +133,7 @@ app.post('/cgi-bin/*', (req, res) => {
 
   if( fs.existsSync( www + "/cgi-bin/" + command ) ){
     fs.writeFileSync( www + '/tmp/' + dd_dump, req.body);
-    var html = execSync("export REQUEST_METHOD=POST; export CONTENT_TYPE=\"" + content_type + "\";" + "export CONTENT_LENGTH=" + content_length + ";" +  "export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + "dd if=" + www + "/tmp/" + dd_dump + " 2>/dev/null |" + www + "/cgi-bin/" + command + "| %%sed -e 1d").toString();
+    var html = execSync("export REQUEST_METHOD=POST; export CONTENT_TYPE=\"" + content_type + "\";" + "export CONTENT_LENGTH=" + content_length + ";" +  "export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + "dd if=" + www + "/tmp/" + dd_dump + " 2>/dev/null |" + www + "/cgi-bin/" + command + "| %%sed -e 1d").toString();
 
     var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
     console.log( time_stamp + remote_addr + ' requested ' + params );

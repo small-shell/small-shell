@@ -23,6 +23,10 @@ do
     remote_addr=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  if [[ $param == user_agent:* ]]; then
+    user_agent=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
   if [[ $param == id:* ]]; then
     id=`echo $param | $AWK -F":" '{print $2}'`
   fi
@@ -70,7 +74,7 @@ else
 
   # gen %%result contents
   ${small_shell_path}/bin/data_import %%www/tmp/$session/binary_file/binary.data \
-  $databox $session $pin $remote_addr > %%www/tmp/$session/result
+  $databox $session $pin $remote_addr $user_agent > %%www/tmp/$session/result
   data_import_session=`cat %%www/tmp/$session/result | grep Import_session: | $AWK -F "Import_session:" '{print $2}'`
 
   error_check=`cat %%www/tmp/$session/result | grep error`
