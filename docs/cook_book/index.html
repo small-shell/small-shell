@@ -212,18 +212,9 @@ sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location@book_searc
 </code></pre>
 <h3 id="cook-app">Cook APP</h3>
 <h4 id="update-portal">update portal</h4>
-<p>Portal page can be editted by markdown grammer, lets write down description of this application. detail is in 
+<p>Portal page can be editted by both markdown grammer and legacy HTML tag, lets write down description of this application. detail is in 
 <a href="./#portal-design-recipe">Cook main page</a> section. you can also update menu of portal on Base APP.</p>
 <p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
-<h4 id="update-menu-of-other-pages">update menu of other pages</h4>
-<p>Menu of other pages must be editted directly. In this example, we updated as following.</p>
-<pre><code>sudo vi /var/www/descriptor/common_parts/book_search_common_menu
---code--
-&lt;li&gt;&lt;a href=&quot;./book_search?%%session&amp;req=table&quot;&gt;book.master&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;./book_search?%%session&amp;subapp=location&amp;req=table&quot;&gt;location.search&lt;/a&gt;&lt;/li&gt;
---------
-</code></pre>
-<p><img alt="Screenshot" src="../img/book_search_menu.png" /></p>
 <h4 id="add-logics-to-the-app">Add logics to the APP</h4>
 <p>In this example, we are adding following functions to book_search APP</p>
 <ol>
@@ -566,10 +557,13 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
 primary databox: none
 </code></pre>
 <h3 id="cook-main-page">Cook main page</h3>
-<p>Let's start to cook main page. you can edit the page by 2 way. 1 is to edit the page on Base APP {$APP_UI.md.def} web UI, in that way you can use both markdown and HTML tag. then portal page could be generated. please check Mark down grammar here.</p>
+<p>Let's start to cook main page. you can edit the page by 2 way. 1 is edit the page on Base APP {$APP_UI.md.def} web UI, then portal page could be generated. </p>
 <h4 id="update-appuimddef-on-base-app">Update $app.UI.md.def on <a href="../app_shell_tour/#access-url-of-base-app">Base APP</a></h4>
-<p>Mark down grammer is written in default page. and you can check it <a href="https://21it.org/markdown.html">here</a> as well.</p>
 <p><img alt="Screenshot" src="../img/test.UI.md.def.png" /></p>
+<p>You can update description using both markdown and legach HTML. 
+please check the markdown grammer <a href="https://21it.org/markdown.html">here</a> if needed. 
+also you can update menu,logo and footer of portal on the same admin page. 
+<img alt="Screenshot" src="../img/UI.md.detail.png" /></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
 <p>Another way of updating portal is just editting hml.def directly {$APP_main.html.def} </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
