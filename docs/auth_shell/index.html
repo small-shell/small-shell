@@ -182,7 +182,7 @@
 <p>Base64 key will be sotred at localstorage on browser using random name per instance in the personal key initializing process.</p>
 </div>
 <h2 id="pin-and-session-token">PIN and Session Token</h2>
-<p>Session itself is temporary hash file that will contain remote address, user name and PIN code that is randomly generated. Besides session key will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key, IP address and PIN check.</p>
+<p>Session itself is temporary hash that will be generated using randome PIN (not stored anywhere) and user name. and session file will contain user name, client remote address and user-agent. Besides session hash will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key. also WEB APP will check change of IP address and user-agent.</p>
 <h2 id="cli-for-base-app">CLI for Base APP</h2>
 <pre><code># for Base App
 sudo /usr/local/small-shell/bin/auth action:target{param}
@@ -191,6 +191,7 @@ sudo /usr/local/small-shell/bin/auth action:target{param}
 <pre><code>#  COMMON
 #-----------------------------------------------------------------------
 #  remote_addr:ip_addr -&gt; IP addreess will be used for audit log and security check
+#  user_agent:HTTP_USER_AGENT -&gt;  HTTP_USER_AGENT will be used for security check
 
 #-----------------------------------------------------------------------
 #  AUTH REQUEST
