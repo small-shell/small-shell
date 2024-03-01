@@ -28,8 +28,12 @@ source=${tmp}/.description.md
 
 while read line
 do
+   # html tag
+   if [[ "$line" == *\<*\> ]];then
+     echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" >> ${tmp}/description.tmp
+
    # code
-   if [[ "$line" == "%code_block%" ]];then 
+   elif [[ "$line" == "%code_block%" ]];then 
      if [ ! "$code_flg"  ];then
        echo -n "<pre class=\"code\">" >> ${tmp}/description.tmp 
        code_flg=yes
@@ -46,14 +50,14 @@ do
      if [ ! "$code_flg" ];then 
        tab_4space=yes
        code_flg=yes 
-       echo -n "<pre class=\"code\"><code>" >> ${tmp}/description.tmp 
+       echo -n "<pre class=\"code\">" >> ${tmp}/description.tmp 
        echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/description.tmp
      elif [ "tab_4space" -a "$code_flg" ];then
        echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/description.tmp
      fi
 
    elif [[ "$line" == "" && "$code_flg" == "yes" && "$tab_4space" == "yes" ]];then
-      echo "</code></pre>" >> ${tmp}/description.tmp
+      echo "</pre>" >> ${tmp}/description.tmp
       code_flg=""
       tab_4space=""
 
@@ -138,36 +142,32 @@ do
 
    #HN
    elif [[ "$line" == \#\#\#\#\#\#* ]];then
-     echo "$line" | $SED "s/^######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/###### /######/g" | $SED "s/######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" >> ${tmp}/description.tmp
 
    elif [[ "$line" == \#\#\#\#\#* ]];then
-     echo "$line" | $SED "s/#####/<h5>/1" | $SED "s/$/<\/h5>/g" |  $SED "s/######//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/##### /#####/g" | $SED "s/#####/<h5>/1" | $SED "s/$/<\/h5>/g" |  $SED "s/######//g" >> ${tmp}/description.tmp
 
    elif [[ "$line" == \#\#\#\#* ]];then
-     echo "$line" | $SED "s/####/<h4>/1" | $SED "s/$/<\/h4>/g" | $SED "s/####//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/#### /####/g"  | $SED "s/####/<h4>/1" | $SED "s/$/<\/h4>/g" | $SED "s/####//g" >> ${tmp}/description.tmp
 
    elif [[ "$line" == \#\#\#* ]];then
-     echo "$line" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/description.tmp
 
    elif [[ "$line" == \#\#* ]];then
      hashlink=`echo $line | $SHASUM | $AWK '{print $1}'`
-     echo "$line" | $SED "s/## /<h2 id=\"$hashlink\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/description.tmp
-     echo "$line" | $SED "s/## /<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
+     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"$hashlink\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
 
    elif [[ "$line" == \#* ]];then
      if [ ! "$home_flg" ];then
        home_flg=yes
-       echo "$line" | $SED "s/# /<h1 id=\"HOME\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"HOME\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/description.tmp
        echo "<a href=\"#HOME\"><p>HOME</p></a>" >> ${tmp}/leftnav.tmp
      else
        hashlink=`echo $line | $SHASUM | $AWK '{print $1}'`
-       echo "$line" | $SED "s/# /<h1 id=\"$hashlink\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/description.tmp
-       echo "$line" | $SED "s/# /<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
-     fi 
-
-   # html tag
-   elif [[ "$line" == \<*\> ]];then
-     echo "$line" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"$hashlink\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
+     fi
 
    # No tag
    else
