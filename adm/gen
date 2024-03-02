@@ -2288,6 +2288,9 @@ if [ "$param" = "-app" ];then
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
 
+          chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu
+
           if [ -f $ROOT/web/.rand ];then
             . $ROOT/web/.rand
           else
@@ -2374,7 +2377,9 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g"\
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu
 
           if [ "$srvtype" = "default" ];then
              if [ ! -d $www/html/$app ];then
@@ -2473,6 +2478,9 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
           > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+
+          chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu
 
           if [ -f $ROOT/web/.rand ];then
             . $ROOT/web/.rand
@@ -2579,7 +2587,9 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g"  | $SED "s/%%databox/$databox/g" \
           | grep -v logout > ${www}/descriptor/common_parts/${app}_common_menu
           chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu 
 
           if [ "$srvtype" = "default" ];then
              if [ ! -d $www/html/$app ];then
@@ -2708,11 +2718,11 @@ if [ "$param" = "-app" ];then
 
         # add menu to common menu
         if [ -f ${cgidir}/auth.${parent_app} ];then
-          echo " <li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> $tmp_dir/subAPP_link
+          echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> $tmp_dir/subAPP_link
           cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Logout/i `cat $tmp_dir/subAPP_link`" > $tmp_dir/new_menu
           cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
         else
-          echo " <li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
+          echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
         fi
 
         # add menu to UI.md.def

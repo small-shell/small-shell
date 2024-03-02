@@ -247,6 +247,7 @@ else
   echo "<!-- no footer-->" > ${tmp}/footer.tmp
 fi
 
+# update main.html.def
 cat %%www/descriptor/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%description/r ${tmp}/description.tmp" | $SED "s/%%description//g" \
 | $SED "/%%leftnav/r ${tmp}/leftnav.tmp" | $SED "s/%%leftnav//g" \
@@ -255,5 +256,10 @@ cat %%www/descriptor/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%footer/r ${tmp}/footer.tmp" | $SED "s/%%footer//g" \
 | $SED "s/?req=/?%%session\&req=/g"\
 > %%www/descriptor/${app}_main.html.def
+
+# update common menu
+cat ${tmp}/righth.tmp | grep \<li\> | $SED "s/?req=/?%%session\&req=/g" \
+> %%www/descriptor/common_parts/${app}_common_menu
+
 
 exit 0
