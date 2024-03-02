@@ -59,7 +59,7 @@ $DATA_SHELL databox:$databox action:set id:$id keys:$keys input_dir:%%www/tmp/$s
 error_chk=`grep "^error" %%www/tmp/$session/result`
 
 if [ "$error_chk" ];then
-  cat %%www/descriptor/%%app_set.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/descriptor/%%app_set_err.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%parent_app_common_menu" \
   | $SED "s/%%common_menu//g"\
   | $SED "/%%message/r %%www/tmp/$session/result" \
