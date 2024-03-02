@@ -47,9 +47,26 @@ fi
 # exec and gen %%result 
 ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
 action:del id:$id  > %%www/tmp/$session/result
+error_chk=`grep "^error" %%www/tmp/$session/result`
+  
+if [ "$error_chk" ];then
+  cat %%www/descriptor/del_err.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
+  | $SED "s/%%common_menu//g"\
+  | $SED "/%%message/r %%www/tmp/$session/result" \
+  | $SED "/%%message/d"\
+  | $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
+else
+    
+  # wait index update
+  numcol=`${small_shell_path}/bin/meta get.header:${databox}{csv} | $SED "s/,/\n/g" | wc -l | tr -d " "`
+  buffer=`expr $numcol / 8`
+  index_update_time="0.$buffer"
+  sleep $index_update_time
 
-# redirect to the table
-echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?session=$session&pin=$pin&databox=$databox&req=table\">"
+  # redirect to the table
+  echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?session=$session&pin=$pin&databox=$databox&req=table\">"
+fi 
 
 if [ "$session" ];then
   rm -rf %%www/tmp/$session
