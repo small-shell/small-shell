@@ -161,7 +161,7 @@
 <table>
 <thead>
 <tr>
-<th>APP</th>
+<th>Name</th>
 <th>Type</th>
 <th>Databox</th>
 <th>User</th>
@@ -172,9 +172,9 @@
 <tr>
 <td>-</td>
 <td>Base APP</td>
-<td>Admin</td>
 <td>ALL</td>
-<td>Manage ALL data at once #need key authentication</td>
+<td>Admin</td>
+<td>Manage ALL data as admin #need key authentication</td>
 </tr>
 <tr>
 <td>book_search</td>
@@ -191,7 +191,7 @@
 <td>Allow limitted access to the resource and location data</td>
 </tr>
 <tr>
-<td>req.form</td>
+<td>booking_req</td>
 <td>Form</td>
 <td>request.db</td>
 <td>End user</td>
@@ -208,7 +208,7 @@
 <pre><code>$ sudo -u small-shell /usr/local/small-shell/gen -databox
 
 1. book.master { name: text, isbn: num, author: text, category: select, desciption: textarea, available: checkbox}
-2. book.res  { hashid, name: pdls(book.master), location: select, status: select }
+2. book.res  { hashid, name: pdls(book.master), location: select, status: select}
 3. request.db  { hashid, requester: text, email: email, book_name: text, status: select, book_resource: pdls(book.res), message: textarea }
 </code></pre>
 <p>Please check the sample definition <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook/def">db.def</a></p>
@@ -314,24 +314,39 @@ cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_search_location_link.png" /></p>
-<h5 id="filter-table-to-show-only-available-data">Filter table to show only available data</h5>
-<p>To filter the master table only available data, let's add match option.</p>
-<pre><code>$ sudo vi /var/www/bin/book_search_table.sh
-# e.g.) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=available{yes}]
-</code></pre>
-<p>To filter the location table only on the shelve, let's add match option. by the way {%%%%%%%} is meta charactor of small-shell. it will be translated to _, I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve.</p>
-<pre><code>$ sudo vi /var/www/bin/location_search_table.sh
-# e.g. ) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=status{on{%%%%%%%}the{%%%%%%%}shelve}]
+<h5 id="filter-table-to-show-only-available-data-that-is-on-the-shelve">Filter table to show only available data that is on the shelve</h5>
+<p>To show only available book, let's add match option to show_all command option. 
+Following example is replacing show_all command at once using sed command.</p>
+<pre><code># get backup
+cp /var/www/bin/book_search_table.sh /var/tmp/book_search_table.sh.org
 
+# replace at once
+cat /var/www/bin/book_search_table.sh | sed &quot;s/command:show_all/command:show_all[match=available{yes}]/g&quot; &gt; /var/tmp/new_book_search_table.sh
+
+# check difference
+diff /var/www/bin/book_search_table.sh /var/tmp/new_book_search_table.sh 
+
+# overwrite
+sudo mv /var/tmp/new_book_search_table.sh /var/www/bin/book_search_table.sh
+sudo chmod 755 /var/www/bin/book_search_table.sh 
+sudo chown small-shell:small-shell /var/www/bin/book_search_table.sh
 </code></pre>
+<p>Then let's modify line calculation logic as following</p>
+<pre><code>$ sudo vi /var/www/bin/book_search_table.sh
+# comment out original line
+#line_num=`$META get.num:$databox`
+# insert new line
+line_num=`$DATA_SHELL databox:$databox command:show_all[match=available{yes}][sort=${sort_option},${sort_col}] format:none | wc -l | tr -d &quot; &quot;`
+</code></pre>
+<p>By the way if you want to filter using meta charactor such like underbar. you must use {%%%%%%%} instead.I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve. for more detail, please check <a href="../data_shell_tour/#meta-charactors">meta charactor</a></p>
 <h5 id="restrict-key">Restrict key</h5>
 <p>To restrict accessable key, please change "all" to specific keys.</p>
 <pre><code>$ sudo vi /var/www/bin/location_search_get.sh
-# -&gt; change keys from all to specific keys.
+# -&gt; change keys from &quot;all&quot; to specific keys.
 keys=hashid,name,location
 </code></pre>
 <pre><code>$ sudo vi /var/www/bin/location_search_table.sh
-# -&gt; change keys from all to specific keys.
+# -&gt; change keys from &quot;all&quot; to specific keys.
 keys=hashid,name,location
 </code></pre>
 <h5 id="add-link-from-resource-data-to-master-data">Add link from resource data to master data</h5>
@@ -390,6 +405,7 @@ IP_whitelisting: no
 Included keys: requester,email,book_name
 Access URL: https://**-**-**/booking_req
 </code></pre>
+<p><img alt="Screenshot" src="../img/booking_req.png" /></p>
 <h3 id="cook-form">Cook Form</h3>
 <p>Once Form APP is generated, let's cook the codes.</p>
 <ol>
@@ -397,33 +413,72 @@ Access URL: https://**-**-**/booking_req
 <li>Booking 1 resource which is available and searchable in book.master</li>
 <li>Change status of other databoxes, #book.master #book.res</li>
 </ol>
-<h6 id="update-controller">update controller</h6>
+<h5 id="update-controller">update controller</h5>
+<p>Controller can load any query string in the URL and it can pass the parameter to action script. in this example, controller will pass book_name additionally to get.sh  </p>
 <pre><code>$ sudo vi /var/www/cgi-bin/booking_req
-org: ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr};;
-update : ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr} book_name:${book_name} ;;
+--code--
+# comment out original line
+#/var/www/bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr};;
+# insert new line
+/var/www/bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr} book_name:${book_name} ;;
+--------
 </code></pre>
-<h6 id="update-get-logic-for-loading-query-string">update get logic for loading QUERY STRING</h6>
+<h5 id="update-get-logic-of-action-script">update get logic of action script</h5>
+<p>For the next, let's update action script to insert book name.</p>
 <pre><code>$ sudo vi /var/www/bin/booking_req_get.sh
 
-# block1, load book_name from controller
+# block1 logic next line of id param loading.
 --code--
-if [[ $param == book_name:* ]]; then
-  book_name=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
-fi
+  if [[ $param == id:* ]]; then
+    id=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+  fi
+   # add block1
+   if [[ $param == book_name:* ]]; then
+      book_name=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+   fi
 --------
 
-# bock2, add book_name to new form. 
+# block2, modify gen new logic. in this example, original line is comment out and new line is inserted 
 --code--
 # gen reqd/write form #new
+# comment out original line
+#$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; /var/www/tmp/$session/dataset
+
+# insert line new lines
 $DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; ../tmp/$session/dataset.0.1
 cat ../tmp/$session/dataset.0.1 \
 | $SED &quot;s/name=\&quot;book_name\&quot; value=\&quot;\&quot;/name=\&quot;book_name\&quot; value=\&quot;$book_name\&quot;/g&quot; &gt; ../tmp/$session/dataset
 --------
 
 </code></pre>
-<h6 id="update-app_setsh-for-updating-datasets-additionally">update $APP_set.sh for updating datasets additionally</h6>
+<h4 id="add-reserve-button-for-book_search-app">Add reserve button for book_search APP</h4>
+<p>Let's add reserve button that will link to booking_req with book_name as query string in the URL. 
+Insert position must be right after add line comment.</p>
+<pre><code>$ sudo vi /var/www/descriptor/book_search_get_ro.html.def
+--code--
+&lt;!-- add line --&gt;
+&lt;a href=&quot;./booking_req?book_name=%%book_name&quot;&gt;&lt;button class=&quot;button&quot;&gt;Reserve&lt;/button&gt;&lt;/a&gt;
+--------
+</code></pre>
+<p><img alt="Screenshot" src="../img/book_search_reserve.png" /></p>
+<h6 id="lets-check-query-string-is-working-or-not">Let's Check QUERY STRING is working or not</h6>
+<p>Once you click Reserve button, request form must contain book information
+<img alt="Screenshot" src="../img/book_req_form.png" /></p>
+<h3 id="finalize-app">Finalize APP</h3>
+<h5 id="update-set-logic-of-request-form">Update Set logic of request form</h5>
+<p>Basially set logic of request form will update only request.db. but in this example, set logic will update book.res data as well to prevent double booking.
+1st step is comment out these original logic.</p>
 <pre><code>$ sudo vi /var/www/bin/booking_req_set.sh
+--code--
+# push datas to databox
+#$DATA_SHELL databox:request.db action:set id:$id keys:$keys input_dir:/var/www/tmp/$session  &gt; /var/www/tmp/$session/result
 
+# result check
+#updated_id=`cat /var/www/tmp/$session/result | grep &quot;^successfully set&quot; | $AWK -F &quot;id:&quot; '{print $2}' | $SED '/^$/d' | sort | uniq`
+--------
+</code></pre>
+<p>2nd step is insert new lines right after original logic that was comment out.</p>
+<pre><code>$ sudo vi /var/www/bin/booking_req_set.sh
 --code--
 # load book resource
 book_name=`cat ../tmp/$session/book_name`
@@ -452,42 +507,39 @@ if [ &quot;$resource_id&quot; ];then
       $DATA_SHELL databox:book.master action:set id:$book_master_id key:available value:-  &gt;&gt; ../tmp/$session/result
     fi
   fi
-
 fi
--------
 </code></pre>
-<h6 id="add-reserve-button-for-book_search-app">Add reserve button for book_search APP</h6>
-<pre><code>$ sudo vi /var/www/descriptor/book_search_get_ro.html.def
---code--
-&lt;a href=&quot;./booking_req?book_name=%%book_name&quot;&gt;&lt;button class=&quot;button&quot;&gt;Reserve&lt;/button&gt;&lt;/a&gt;
---------
-</code></pre>
-<p><img alt="Screenshot" src="../img/book_search_reserve.png" /></p>
-<h6 id="lets-check-query-string-is-working-or-not">Let's Check QUERY STRING is working or not</h6>
-<p>Once you click Reserve button, request form must contain book information
-<img alt="Screenshot" src="../img/book_req_form.png" /></p>
-<h3 id="finalize-app">Finalize APP</h3>
-<p>Add status and message to end user page</p>
+<h4 id="add-status-and-message-to-end-user-page">Add status and message to end user page</h4>
+<p>Originally form contained only these fields { requester,email,book_name} but end user msut want to know the booking status. so lets show these messages.</p>
+<h5 id="before-adding-logic-request">before adding logic request</h5>
+<p><img alt="Screenshot" src="../img/requested_form.png" /></p>
 <pre><code>$ sudo vi /var/www/bin/booking_req_get.sh
+
 --code--
-# gen read only datas
+# gen read only contents
+# comment out original lines
+#$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:none &gt; /var/www/tmp/$session/dataset.0.1
+#cat /var/www/tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/1&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
+#| $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; /var/www/tmp/$session/dataset
+
+# insert new lines 
 $DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name,status,message format:none | grep -v hashid &gt; ../tmp/$session/dataset.0.1
 cat ../tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/g&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
 | $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/$session/dataset
 --------
 </code></pre>
+<h5 id="updated-image">updated image</h5>
+<p><img alt="Screenshot" src="../img/new_requested_form.png" /></p>
 <h3 id="sample-code">sample code</h3>
 <p>This is sample code of prototype. please check it.
 <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">proto type</a> </p>
-<h3 id="make-template">make template</h3>
-<p>You can publish your APP template with copying bin/${APP} and cgi-bin/${APP} descriptor/${APP}*. If you add deploy.sh as well to the repository, other user can import APP very easily.</p>
+<h4 id="import-proto-type">import proto type</h4>
+<p>You can import this proto type APP from github repository.</p>
 <pre><code>cd $HOME
 git clone https://github.com/21it-org/21it/templates
 cd cookbook
 sudo ./deploy.sh
 </code></pre>
-<p>This is sample code of 
-<a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/deploy.sh">deploy.sh</a></p>
 <h3 id="cook-job-for-the-app">Cook Job for the APP</h3>
 <p>Let's create job for updating available status. this job can prevent miss to update available status even if admin return book to shelve and update book resource status.</p>
 <h4 id="create-batch-script">Create batch script</h4>
