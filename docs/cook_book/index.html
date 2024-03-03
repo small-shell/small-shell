@@ -155,20 +155,57 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="cook-book">Cook book</h1>
-<p>In this course, we would like to show how you can utilize APPs { Base APP, Scratch APP, Form } and we would like to also share the recipe of design change of HTML/CSS descriptor.</p>
+<p>In this course, we would like to show how you can utilize APPs { Base APP, Scratch APP, Form } and we would like to also share the recipe of design change of HTML/CSS descriptor.also we will show how to use utilities such like ssl automation, backup automation, sending mail and so on.</p>
 <h2 id="cook-prototype-app">Cook prototype APP</h2>
-<p>In this protoype scinario we would like to cook library booking APP. Base APP will be used for data management of admin, Scrath APP will be used for data search for end user and Form will be used for request form. </p>
-<h5 id="app">APP</h5>
-<pre><code>APP for admin = Base APP
-APP for user  = book_search, req.form
-</code></pre>
+<p>In this prototype APP, we will use several APPs as following. by tbe way, this APP will be constructed in intranet of company in this scenario. so we will not implement any IP whitelist and End user authentication. If you want to implement them, ofcourse you can implement both IP whitelisting and user authentication.</p>
+<table>
+<thead>
+<tr>
+<th>APP</th>
+<th>Type</th>
+<th>Databox</th>
+<th>User</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>Base APP</td>
+<td>Admin</td>
+<td>ALL</td>
+<td>Manage ALL data at once #need key authentication</td>
+</tr>
+<tr>
+<td>book_search</td>
+<td>Scratch APP</td>
+<td>book.master</td>
+<td>End user</td>
+<td>Allow limitted access to the master data</td>
+</tr>
+<tr>
+<td>location_search</td>
+<td>Sub APP of book_search</td>
+<td>book.res</td>
+<td>End user</td>
+<td>Allow limitted access to the resource and location data</td>
+</tr>
+<tr>
+<td>req.form</td>
+<td>Form</td>
+<td>request.db</td>
+<td>End user</td>
+<td>Provide request form to end user</td>
+</tr>
+</tbody>
+</table>
 <h5 id="databox">Databox</h5>
 <p>Databoxes are created as following. book.master will be master data of book information, book.res is resource information including location information each resource, and request.db is databox for request from end user.</p>
-<pre><code>book.master  &lt;-- book.res #res=resource &lt;-- request.db
+<pre><code>book.master &lt;-reference- book.res &lt;--relation-- request.db
 </code></pre>
 <p>Let's start to generate databox</p>
 <h3 id="create-databox">Create databox</h3>
-<pre><code>sudo -u small-shell /usr/local/small-shell/gen -databox
+<pre><code>$ sudo -u small-shell /usr/local/small-shell/gen -databox
 
 1. book.master { name: text, isbn: num, author: text, category: select, desciption: textarea, available: checkbox}
 2. book.res  { hashid, name: pdls(book.master), location: select, status: select }
@@ -177,7 +214,7 @@ APP for user  = book_search, req.form
 <p>Please check the sample definition <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook/def">db.def</a></p>
 <h3 id="launch-base-app">Launch Base APP</h3>
 <p>Let's launch Base APP by refering to <a href="../quick_start_linux/">Quick start</a></p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
 #-&gt; Dialog will be started, for making Base APP
 </code></pre>
@@ -190,7 +227,7 @@ STEP2 Add resource data to bookk.res that will be linked to master data
 <p>Once databoxes and Base APP is created, let's create APPs</p>
 <h4 id="create-main-app">Create Main APP</h4>
 <p>Let's execute gen -app to create book_search APP, then access URL will be shown.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -app 
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: book_search
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
@@ -198,23 +235,29 @@ primary databox: book.master
 </code></pre>
 <h4 id="add-sub-app">Add sub APP</h4>
 <p>Once main APP is created, let's add table to the APP using sub APP. this sub APP is used for searching book resource and location.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -app 
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
-app_name: location@book_search
-Type of Authentication (1.shared pass | 2.user key | 3.Other | 4.None): 4
+app_name: location_search@book_search
 primary databox: book.res
-</code></pre>
-<h3 id="generate-meta-link">Generate meta link</h3>
-<p>meta links can be generated for each APPs. and let's cook it as next step.</p>
-<pre><code># generate link
-sudo -u small-shell /usr/local/small-shell/bin/meta get.link:book_search
-sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location@book_search
 </code></pre>
 <h3 id="cook-app">Cook APP</h3>
 <h4 id="update-portal">update portal</h4>
 <p>Portal page can be editted by both markdown grammer and legacy HTML tag, lets write down description of this application. detail is in 
 <a href="./#portal-design-recipe">Cook main page</a> section. you can also update menu of portal on Base APP.</p>
 <p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
+<h4 id="insert-code-to-description">Insert code to description</h4>
+<p>In this prototype APP, we insert this code to description section. it's using both HTML tag and markdown in the description.</p>
+<pre><code>&lt;h1&gt;This is book search APP. you can search and request book for lending on this APP.&lt;/h1&gt;
+
+    STEP1: Search book from table
+    STEP2: Request from book page, then you can get your request link
+    STEP3: Message will be updated once admin check your request on your link, then you can get the book when you come to office
+
+&lt;a href=&quot;./book_search?req=table&quot;&gt;&lt;button class=&quot;button&quot;&gt;Search&lt;/button&gt;&lt;/a&gt;
+</code></pre>
+<p><img alt="Screenshot" src="../img/update_book_search_portal.png" />
+Updated portal is here.
+<img alt="Screenshot" src="../img/updated_book_search_portal.png" /></p>
 <h4 id="add-logics-to-the-app">Add logics to the APP</h4>
 <p>In this example, we are adding following functions to book_search APP</p>
 <ol>
@@ -228,23 +271,36 @@ sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location@book_searc
 <p>If you insert sed or awk in codes, it's recommended to used $SED and $AWK value. the parameter is defined at /usr/local/small-shlel/global.conf</p>
 </div>
 <h5 id="add-link-from-master-data-to-resource-table">Add link from master data to resource table</h5>
-<pre><code>sudo vi /var/www/descriptor/book_search_get_ro.html.def
+<p>let's get meta link that will be used in Action link.</p>
+<pre><code># generate link of location_search(subapp)
+$ sudo -u small-shell /usr/local/small-shell/bin/meta get.link:location_search@book_search
+APP:location_search@book_search
+Table: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&amp;req=table&quot;&gt;link&lt;/a&gt;
+DATA.new: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&amp;req=get&amp;id=new&quot;&gt;link&lt;/a&gt;
+DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&amp;req=get&amp;id=$id&quot;&gt;link&lt;/a&gt;
+</code></pre>
+<p>then copy and paste to Action link field. by the way, we are adding "table_command" option for searching specific item in this example.</p>
+<pre><code>$ sudo vi /var/www/descriptor/book_search_get_ro.html.def
 --code--
 &lt;div class=&quot;action_links&quot;&gt;
-&lt;span&gt;&lt;a href=&quot;./book_search?%%session&amp;subapp=location&amp;req=table&amp;table_command=%%book_name&quot;&gt;&lt;p&gt;location table&lt;/p&gt;&lt;/a&gt;&lt;/span&gt;
+  &lt;!-- add following line --&gt;
+  &lt;span&gt;&lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&amp;req=table&amp;table_command=%%book_name&quot;&gt;&lt;p&gt;location table&lt;/p&gt;&lt;/a&gt;&lt;/span&gt;
 &lt;/div&gt;
 --------
 </code></pre>
-<p>To insert %%book_name, let's add these logics to get action.</p>
-<pre><code>sudo vi /var/www/bin/book_search_get.sh
-# block1 { get ID book_namd }
---code--
-book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
+<p>To insert %%book_name in above action link, let's add these logics to get action.</p>
+<pre><code>$ sudo vi /var/www/bin/book_search_get.sh
+# block1 { get ID book_namd }, adding to next line of DATA_SHELL setting
+--block1 code--
+DATA_SHELL=&quot;${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:book_search&quot;
+# add block1
+book_name=`$DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
 --------
-# block2 { update $SED logic to insert book_name }
---code--
+# update render HTML logic as block 2
+--block2 code--
+# render HTML
 cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
-| $SED &quot;/%%common_menu/r ../descriptor/common_parts/book_adm_common_menu&quot; \
+| $SED &quot;/%%common_menu/r ../descriptor/common_parts/book_search_common_menu&quot; \
 | $SED &quot;/%%common_menu/d&quot; \
 | $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
 | $SED &quot;s/%%dataset//g&quot;\
@@ -260,34 +316,44 @@ cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 <p><img alt="Screenshot" src="../img/book_search_location_link.png" /></p>
 <h5 id="filter-table-to-show-only-available-data">Filter table to show only available data</h5>
 <p>To filter the master table only available data, let's add match option.</p>
-<pre><code>sudo vi /var/www/bin/book_search_table.sh
+<pre><code>$ sudo vi /var/www/bin/book_search_table.sh
 # e.g.) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=available{yes}]
 </code></pre>
 <p>To filter the location table only on the shelve, let's add match option. by the way {%%%%%%%} is meta charactor of small-shell. it will be translated to _, I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve.</p>
-<pre><code>sudo vi /var/www/bin/location_table.sh
+<pre><code>$ sudo vi /var/www/bin/location_search_table.sh
 # e.g. ) $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}][match=status{on{%%%%%%%}the{%%%%%%%}shelve}]
 
 </code></pre>
 <h5 id="restrict-key">Restrict key</h5>
-<p>To restrict accessable key, please change all to specific keys.</p>
-<pre><code>sudo vi /var/www/bin/location_get.sh
+<p>To restrict accessable key, please change "all" to specific keys.</p>
+<pre><code>$ sudo vi /var/www/bin/location_search_get.sh
 # -&gt; change keys from all to specific keys.
 keys=hashid,name,location
 </code></pre>
-<pre><code>sudo vi /var/www/bin/location_table.sh
+<pre><code>$ sudo vi /var/www/bin/location_search_table.sh
 # -&gt; change keys from all to specific keys.
 keys=hashid,name,location
 </code></pre>
 <h5 id="add-link-from-resource-data-to-master-data">Add link from resource data to master data</h5>
-<pre><code>sudo vi /var/www/descriptor/location_get_ro.html.def
+<p>Let's generate meta link to connecting to book_search</p>
+<pre><code># generate link of book_search(parent app)
+$ sudo -u small-shell /usr/local/small-shell/bin/meta get.link:book_search
+APP:book_search
+Table: &lt;a href=&quot;./book_search?%%session&amp;req=table&quot;&gt;link&lt;/a&gt;
+DATA.new: &lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=new&quot;&gt;link&lt;/a&gt;
+DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=$id&quot;&gt;link&lt;/a&gt;
+</code></pre>
+<p>then copy and past the link to Action link field.</p>
+<pre><code>$ sudo vi /var/www/descriptor/location_search_get_ro.html.def
 --code--
 &lt;div class=&quot;action_links&quot;&gt;
-&lt;span&gt;&lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=%%book_id&quot;&gt;&lt;p&gt;Master data&lt;/p&gt;&lt;/a&gt;&lt;/span&gt;
+  &lt;!-- add following line --&gt;
+  &lt;span&gt;&lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=%%book_id&quot;&gt;&lt;p&gt;Master data&lt;/p&gt;&lt;/a&gt;&lt;/span&gt;
 &lt;/div&gt;
 --------
 </code></pre>
-<p>To insert %%book_id, let's modify render logics to get action.</p>
-<pre><code>sudo vi /var/www/bin/location_get.sh
+<p>To insert %%book_id to action link, let's modify render logics to get action.</p>
+<pre><code>$ sudo vi /var/www/bin/location_search_get.sh
 --code--
 # render HTML
 resource_id=$id
@@ -305,14 +371,14 @@ cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 | $SED &quot;s/%%book_id/$book_id/g&quot; \
 | $SED &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
 | $SED &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
-| $SED &quot;s/%%params/subapp=location\&amp;session=$session\&amp;pin=$pin/g&quot;
+| $SED &quot;s/%%params/subapp=location_search\&amp;session=$session\&amp;pin=$pin/g&quot;
 
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_search_master_link.png" /></p>
 <h3 id="generate-form">Generate form</h3>
 <p>Let's generate form for requesting book.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 2
 </code></pre>
 <h5 id="result-of-dialog">result of dialog</h5>
@@ -332,12 +398,12 @@ Access URL: https://**-**-**/booking_req
 <li>Change status of other databoxes, #book.master #book.res</li>
 </ol>
 <h6 id="update-controller">update controller</h6>
-<pre><code>sudo vi /usr/lib/cgi-bin/booking_req
+<pre><code>$ sudo vi /var/www/cgi-bin/booking_req
 org: ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr};;
 update : ../bin/booking_req_get.sh session:$session pin:$pin id:$id remote_addr:${remote_addr} book_name:${book_name} ;;
 </code></pre>
 <h6 id="update-get-logic-for-loading-query-string">update get logic for loading QUERY STRING</h6>
-<pre><code>sudo vi /var/www/bin/booking_req_get.sh
+<pre><code>$ sudo vi /var/www/bin/booking_req_get.sh
 
 # block1, load book_name from controller
 --code--
@@ -356,7 +422,7 @@ cat ../tmp/$session/dataset.0.1 \
 
 </code></pre>
 <h6 id="update-app_setsh-for-updating-datasets-additionally">update $APP_set.sh for updating datasets additionally</h6>
-<pre><code>sudo vi /var/www/bin/booking_req_set.sh
+<pre><code>$ sudo vi /var/www/bin/booking_req_set.sh
 
 --code--
 # load book resource
@@ -391,18 +457,18 @@ fi
 -------
 </code></pre>
 <h6 id="add-reserve-button-for-book_search-app">Add reserve button for book_search APP</h6>
-<pre><code>sudo vi /var/www/descriptor/book_search_get_ro.html.def
+<pre><code>$ sudo vi /var/www/descriptor/book_search_get_ro.html.def
 --code--
 &lt;a href=&quot;./booking_req?book_name=%%book_name&quot;&gt;&lt;button class=&quot;button&quot;&gt;Reserve&lt;/button&gt;&lt;/a&gt;
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_search_reserve.png" /></p>
-<h6 id="check-query-string-is-working">Check QUERY STRING is working</h6>
+<h6 id="lets-check-query-string-is-working-or-not">Let's Check QUERY STRING is working or not</h6>
 <p>Once you click Reserve button, request form must contain book information
 <img alt="Screenshot" src="../img/book_req_form.png" /></p>
-<h3 id="finalize">Finalize</h3>
+<h3 id="finalize-app">Finalize APP</h3>
 <p>Add status and message to end user page</p>
-<pre><code>sudo vi /var/www/bin/booking_req_get.sh
+<pre><code>$ sudo vi /var/www/bin/booking_req_get.sh
 --code--
 # gen read only datas
 $DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name,status,message format:none | grep -v hashid &gt; ../tmp/$session/dataset.0.1
@@ -410,21 +476,19 @@ cat ../tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot;
 | $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/$session/dataset
 --------
 </code></pre>
-<p><img alt="Screenshot" src="../img/book_req_status.png" /></p>
-<h3 id="publish-cook-book-as-a-template">Publish cook book as a template</h3>
-<p>You can publish your APP template with copying bin/${APP}<em> and cgi-bin/${APP}</em> descriptor/${APP}*.
-If you add deploy.sh as well to the repository, other user can import APP very easily.</p>
+<h3 id="sample-code">sample code</h3>
+<p>This is sample code of prototype. please check it.
+<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">proto type</a> </p>
+<h3 id="make-template">make template</h3>
+<p>You can publish your APP template with copying bin/${APP} and cgi-bin/${APP} descriptor/${APP}*. If you add deploy.sh as well to the repository, other user can import APP very easily.</p>
 <pre><code>cd $HOME
 git clone https://github.com/21it-org/21it/templates
 cd cookbook
 sudo ./deploy.sh
 </code></pre>
-<p>This is sample code of
+<p>This is sample code of 
 <a href="https://github.com/21it-org/21it/blob/main/templates/cookbook/deploy.sh">deploy.sh</a></p>
-<h4 id="published-sample-code">Published sample code</h4>
-<p>please check it !
-<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">cookbook on github</a></p>
-<h3 id="cook-job">Cook Job</h3>
+<h3 id="cook-job-for-the-app">Cook Job for the APP</h3>
 <p>Let's create job for updating available status. this job can prevent miss to update available status even if admin return book to shelve and update book resource status.</p>
 <h4 id="create-batch-script">Create batch script</h4>
 <p>You can use small-shell basic parameters and sys user key if you add script to util/scripts dir.</p>
@@ -523,6 +587,7 @@ LATEST STATUS OF JOB
 2022-03-20 02:45:41 book_master_status_update successfully completed
 2022-03-20 02:46:01 del_session successfully completed
 </code></pre>
+<p>Once job is implemented, your prototype APP deployment is completed. please use it and have a fun!</p>
 <h2 id="set-notification-mail-to-form">Set notification mail to Form</h2>
 <p>In this coook, we would like to add notification mail to inquiry form of <a href="../app_shell_scratch/#team-app">Team APP</a>
 . you can add same code to any Form APP.</p>
@@ -550,7 +615,7 @@ fi
 </code></pre>
 <h2 id="portal-design-recipe">Portal design recipe</h2>
 <p>In this section, you can learn how you can change design of main page of your APP. let's create main page with no authentication and no databox for making the easiest example. of course any type of authentication can be selected and any databox can be attached.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: static_site
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
@@ -701,9 +766,15 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <p class="admonition-title">Note</p>
 <p>A record of the domain must be set on DNS server beforehand. and it must has global IP to be IP reachable from Let's encrypt server </p>
 </div>
+<h4 id="add-sudoer">Add Sudoer</h4>
+<p>You must add following setting on sudoers to execute SSL refresh job regularly.</p>
+<pre><code>$ sudo visudo
+# add following to bottom of the file, if there is no small-shell entry
+small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
+</code></pre>
 <h5 id="launch-base-app-with-fqdn-for-certification">Launch Base APP with FQDN for certification</h5>
 <p>To be verified your domain by Let's Encrypt server, please launch WEB server with FQDN name that you want to deploy ssl certificate and the FQDN name must be same as A record of DNS.so far http should be fine because certificate is not issued yet. deploy job will upgrade it to https later.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
 Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
 protocol (http | https): http
@@ -717,12 +788,12 @@ cd ./small-shell-apps/ssl_auto
 chmod 755 deploy.sh
 sudo ./deploy.sh
 </code></pre>
-<h4 id="enable-auto-refresh">Enable auto refresh</h4>
-<p>You must add following setting on sudoers.</p>
-<pre><code>sudo visudo
-# add following to bottom of the file, if there is no small-shell entry
-small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
+<h4 id="check-job">Check job</h4>
+<p>Once deploy is completed, ssl job that will refresh ssl cert will be on e-cron.</p>
+<pre><code>$ /usr/local/small-shell/bin# sudo -u small-shell ./e-cron ls | grep ssl
+ssl_auto.enabled
 </code></pre>
+<p>If it's enabled SSL implementation is completed.</p>
 <h2 id="backup-restore-example">Backup &amp; Restore example</h2>
 <p>In this cook, 1 production node will send backup to backuo node through e-cron HUB API</p>
 <pre><code>| prod node | -- | backup node #e-cron HUB|
@@ -739,12 +810,12 @@ cat /usr/local/small-shell/web/base | grep api_authkey
 </code></pre>
 <h4 id="operation-at-production-node">Operation at production node</h4>
 <p>Once e-cron HUB is ready, let's define backup &amp; sync job on pdocution node. bkup command will backup every data of small-shell including user info, databox{data,log}, APP, Job... and sudo privilede is required for executing bkup command. please add sudoers beforehand. </p>
-<pre><code>sudo visudo
+<pre><code>$ sudo visudo
 # add folowing line, if there is no small-shell entry
 small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
 
 # define backup job@production node
-sudo /usr/local/small-shell/adm/gen -job
+$ sudo /usr/local/small-shell/adm/gen -job
 job name: backup
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
@@ -756,7 +827,7 @@ Week  [ any | mon - sun ]: any
 Exec command or batch script: sudo /usr/local/small-shell/adm/bkup /var/tmp
 
 # define push job@production to backup node, please confirm URL and authkey at backup node beforehand
-sudo /usr/local/small-shell/adm/gen -job
+$ sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 2
 --Define schedule--
 Month [ any | 1-12 ]: any
