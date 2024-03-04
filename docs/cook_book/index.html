@@ -255,7 +255,7 @@ primary databox: book.res
 <a href="./#portal-design-recipe">Cook main page</a> section. you can also update menu of book_search on the Base APP.</p>
 <p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
 <h4 id="insert-code-to-description">Insert code to description</h4>
-<p>In this prototype APP, very simple description is written on the portal as below. it's using both HTML tag and markdown in the description.</p>
+<p>In this prototype APP, very simple description is written on the portal as below. it's using both HTML tag and markdown.</p>
 <pre><code>&lt;h1&gt;This is book search APP. you can search and request book for lending on this APP.&lt;/h1&gt;
 
     STEP1: Search book from table
@@ -275,10 +275,6 @@ Updated portal is here.
 <li>Restrict key</li>
 <li>Add link from resource data to master data</li>
 </ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you insert sed or awk in codes, it's recommended to used $SED and $AWK value. the parameter is defined at /usr/local/small-shlel/global.conf</p>
-</div>
 <h5 id="add-link-from-master-data-to-resource-table">Add link from master data to resource table</h5>
 <p>let's get meta link that will be used in Action link.</p>
 <pre><code># generate link of location_search(subapp)
@@ -298,6 +294,10 @@ DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&am
 --------
 </code></pre>
 <p>To insert %%book_name in above action link, let's add these logics to get action.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you insert sed or awk in codes, it's recommended to used $SED and $AWK value. the parameter is defined at /usr/local/small-shlel/global.conf</p>
+</div>
 <pre><code>$ sudo vi /var/www/bin/book_search_get.sh
 # block1 { get ID book_namd }, adding to next line of DATA_SHELL setting
 --block1 code--
@@ -347,7 +347,6 @@ sudo chown small-shell:small-shell /var/www/bin/book_search_table.sh
 # insert new line
 line_num=`$DATA_SHELL databox:$databox command:show_all[match=available{yes}][sort=${sort_option},${sort_col}] format:none | wc -l | tr -d &quot; &quot;`
 </code></pre>
-<p>By the way if you want to filter using meta charactor such like underbar. you must use {%%%%%%%} instead.I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve. for more detail, please check <a href="../data_shell_tour/#meta-charactors">meta charactor</a></p>
 <h5 id="restrict-key">Restrict key</h5>
 <p>To restrict accessable key, please change "all" to specific keys.</p>
 <pre><code>$ sudo vi /var/www/bin/location_search_get.sh
@@ -546,7 +545,8 @@ cat ../tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot;
 by the way sys user is default user that will be created automatically when execute gen command.</p>
 <pre><code>sudo vi /usr/local/small-shell/util/scripts/status_update.sh
 </code></pre>
-<p>copy and paste these codes. this script will work as e-cron job.</p>
+<p>copy and paste these codes. this script will work as e-cron job.
+By the way underba is meta charactor of small-shell. you need to use {%%%%%%%} instead. I mean on{%%%%%%%}the{%%%%%%%}shelve} will be translated to on_the_shelve. for more detail, please check <a href="../data_shell_tour/#meta-charactors">meta charactor</a></p>
 <pre><code>#!/bin/bash
 #-------------------------------------------------------------
 # This is the script for update status of book.master
