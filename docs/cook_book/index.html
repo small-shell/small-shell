@@ -199,36 +199,42 @@
 </tr>
 </tbody>
 </table>
-<p>This is sample code of this prototype APP. it will be explained step by step as below. 
-<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">proto type</a> </p>
-<h5 id="databox">Databox</h5>
-<p>Databoxes are created as following. book.master will be master data of book information, book.res is resource information including location information each resource, and request.db is databox for request from end user.</p>
-<pre><code>book.master &lt;-reference- book.res &lt;--relation-- request.db
-</code></pre>
-<p>Let's start to generate databox</p>
-<h3 id="create-databox">Create databox</h3>
-<pre><code>$ sudo -u small-shell /usr/local/small-shell/gen -databox
+<p>Here is <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">sample code</a> of above APPs. it will be explained step by step in this section.</p>
+<h3 id="databox">Databox</h3>
+<p>In this scenario, we will use 3 databoxes. book.master will be master data of book information, book.res is resource information including location information each resource, and request.db is databox for request from end user.</p>
+<pre><code> # relation 
+ book.master &lt;-reference- book.res &lt;--relation-- request.db
 
-1. book.master { name: text, isbn: num, author: text, category: select, desciption: textarea, available: checkbox}
-2. book.res  { hashid, name: pdls(book.master), location: select, status: select}
-3. request.db  { hashid, requester: text, email: email, book_name: text, status: select, book_resource: pdls(book.res), message: textarea }
+ # structure
+ 1. book.master { name: text, isbn: num, author: text, category: select, desciption: textarea, available: checkbox}
+ 2. book.res  { hashid, name: pdls(book.master), location: select, status: select}
+ 3. request.db  { hashid, requester: text, email: email, book_name: text, status: select, book_resource: pdls(book.res), message: textarea }
+
 </code></pre>
-<p>Please check the sample definition <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook/def">db.def</a></p>
+<h4 id="import-databox">Import databox</h4>
+<p>Let's import databox, using db.def</p>
+<pre><code>cd $HOME
+git clone https://github.com/21it-org/21it.git
+cd 21it/templates/cookbook/def
+sudo /usr/local/small-shell/util/scripts/bat_gen.sh ./book_master.def
+sudo /usr/local/small-shell/util/scripts/bat_gen.sh ./book_res.def
+sudo /usr/local/small-shell/util/scripts/bat_gen.sh ./request.db.def
+</code></pre>
 <h3 id="launch-base-app">Launch Base APP</h3>
-<p>Let's launch Base APP by refering to <a href="../quick_start_linux/">Quick start</a></p>
+<p>For the next STEP, let's launch Base APP by refering to <a href="../quick_start_linux/">Quick start</a></p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
 #-&gt; Dialog will be started, for making Base APP
 </code></pre>
 <h4 id="add-data-by-using-base-app">Add data by using Base APP</h4>
-<p>For managing datas, let's use Base APP.</p>
+<p>For managing datas, Base APP will be used by admin.</p>
 <pre><code>STEP1 Add master data to book.master
 STEP2 Add resource data to bookk.res that will be linked to master data
 </code></pre>
 <h3 id="create-scratch-app">Create scratch APP</h3>
-<p>Once databoxes and Base APP is created, let's create APPs</p>
+<p>Once databoxes and Base APP is created, let's create APPs. </p>
 <h4 id="create-main-app">Create Main APP</h4>
-<p>Let's execute gen -app to create book_search APP, then access URL will be shown.</p>
+<p>Let's execute gen -app to create book_search APP, then access URL will be shown in the dialog but it will be http://$FQDN/book_search</p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app 
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 app_name: book_search
@@ -243,12 +249,13 @@ app_name: location_search@book_search
 primary databox: book.res
 </code></pre>
 <h3 id="cook-app">Cook APP</h3>
+<p>Once APPs are generated, let"s modify them 1 by 1. you can check <a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">sample code</a> as reference</p>
 <h4 id="update-portal">update portal</h4>
 <p>Portal page of book_search can be editted by both markdown grammer and legacy HTML tag, lets write down description of this application. detail is in 
 <a href="./#portal-design-recipe">Cook main page</a> section. you can also update menu of book_search on the Base APP.</p>
 <p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
 <h4 id="insert-code-to-description">Insert code to description</h4>
-<p>In this prototype APP, we insert this code to description section. it's using both HTML tag and markdown in the description.</p>
+<p>In this prototype APP, very simple description is written on the portal as below. it's using both HTML tag and markdown in the description.</p>
 <pre><code>&lt;h1&gt;This is book search APP. you can search and request book for lending on this APP.&lt;/h1&gt;
 
     STEP1: Search book from table
