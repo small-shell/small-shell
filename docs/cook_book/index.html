@@ -199,6 +199,8 @@
 </tr>
 </tbody>
 </table>
+<p>This is sample code of this prototype APP. it will be explained step by step as below. 
+<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">proto type</a> </p>
 <h5 id="databox">Databox</h5>
 <p>Databoxes are created as following. book.master will be master data of book information, book.res is resource information including location information each resource, and request.db is databox for request from end user.</p>
 <pre><code>book.master &lt;-reference- book.res &lt;--relation-- request.db
@@ -343,11 +345,11 @@ line_num=`$DATA_SHELL databox:$databox command:show_all[match=available{yes}][so
 <p>To restrict accessable key, please change "all" to specific keys.</p>
 <pre><code>$ sudo vi /var/www/bin/location_search_get.sh
 # -&gt; change keys from &quot;all&quot; to specific keys.
-keys=hashid,name,location
+keys=&quot;hashid,name,location&quot;
 </code></pre>
 <pre><code>$ sudo vi /var/www/bin/location_search_table.sh
 # -&gt; change keys from &quot;all&quot; to specific keys.
-keys=hashid,name,location
+keys=&quot;hashid,name,location&quot;
 </code></pre>
 <h5 id="add-link-from-resource-data-to-master-data">Add link from resource data to master data</h5>
 <p>Let's generate meta link to connecting to book_search</p>
@@ -530,22 +532,14 @@ cat ../tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot;
 </code></pre>
 <h5 id="updated-image">updated image</h5>
 <p><img alt="Screenshot" src="../img/new_requested_form.png" /></p>
-<h4 id="sample-code">sample code</h4>
-<p>This is sample code of prototype. please check it.
-<a href="https://github.com/21it-org/21it/tree/main/templates/cookbook">proto type</a> </p>
-<h4 id="import-proto-type">import proto type</h4>
-<p>You can import this proto type APP from github repository.</p>
-<pre><code>cd $HOME
-git clone https://github.com/21it-org/21it/templates
-cd cookbook
-sudo ./deploy.sh
-</code></pre>
 <h3 id="cook-job-for-the-app">Cook Job for the APP</h3>
-<p>Let's create job for updating available status. this job can prevent miss to update available status even if admin return book to shelve and update book resource status.</p>
+<p>Let's create job for updating available status. this job will be effective in the case that book was returned to shelve but admin missed to set available on book.master even if admin updated book.res status to on the shelve. job will check inconsistency between book.master and correct it accordingly.  </p>
 <h4 id="create-batch-script">Create batch script</h4>
-<p>You can use small-shell basic parameters and sys user key if you add script to util/scripts dir.</p>
+<p>You can use small-shell basic parameters and sys user's key if you put script to util/scripts dir.
+by the way sys user is default user that will be created automatically when execute gen command.</p>
 <pre><code>sudo vi /usr/local/small-shell/util/scripts/status_update.sh
 </code></pre>
+<p>copy and paste these codes. this script will work as e-cron job.</p>
 <pre><code>#!/bin/bash
 #-------------------------------------------------------------
 # This is the script for update status of book.master
@@ -594,12 +588,16 @@ done &lt; ${SCRIPT_DIR}/tmp/book_master_dump.tmp
 
 exit 0
 </code></pre>
+<h4 id="change-permission-and-ower-of-the-script">Change permission and ower of the script</h4>
+<pre><code>sudo cdmod 755 /usr/local/small-shell/util/scripts/status_update.sh
+sudo chown small-shell:small-shell /usr/local/small-shell/util/scripts/status_update.sh
+</code></pre>
 <h4 id="change-system-user-permission-from-read-only-to-readwrite">Change system user permission from read only to read/write</h4>
 <p>Before executing the job, please change sys user permission from ro to rw.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops set.attr:sys{rw}
 </code></pre>
 <h4 id="push-job-to-small-shell">Push job to small-shell</h4>
-<p>You can put job to small-shell automation framework very easily. please check detail at <a href="../automation_tour/">e-cron</a> tour.</p>
+<p>Once script are created, let's make e-cron job as following. as for detail e-cron, please check <a href="../automation_tour/">here</a> tour.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>Dialog will be started.</p>
@@ -608,7 +606,7 @@ Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
 Month [ any | 1-12 ]: any
 Date  [ any | 1-31 ]: any
-Hour  [ any | 0-23 ]: any
+Hour  [ any | 0-23 ]: 1
 Min   [ any | 0-59 ]: 0
 Week  [ any | mon - sun ]: any
 Exec command or batch script: status_update.sh
@@ -618,7 +616,7 @@ Exec command or batch script: status_update.sh
 </code></pre>
 <h4 id="job-check">Job check</h4>
 <pre><code># check list
-sudo -u small-shell ./e-cron ls
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron ls
 --------------------------------------------------------------
 job definition: /usr/local/small-shell/util/e-cron/def
 --------------------------------------------------------------
@@ -627,11 +625,11 @@ del_session.enabled
 del_util_log.enabled
 
 # exec manually
-sudo -u small-shell ./e-cron exec.book_master_status_update
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.book_master_status_update
 book_master_status_update successfully completed
 
 # check status
-sudo -u small-shell ./e-cron stat
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron stat
 --------------------------------------------------------
 LATEST STATUS OF JOB
 --------------------------------------------------------
