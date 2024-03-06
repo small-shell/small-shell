@@ -2630,12 +2630,17 @@ if [ "$param" = "-app" ];then
         echo "SCRATCH APP is successfully generated"
 
         if [ "$srvtype" = "default" ];then
-          echo "URL: ${index_url}${app}"
+          if [ ! "$auth_method" = "other" ];then
+            echo "Access URL: ${index_url}${app}"
+          else
+            # for adaption of Oauth
+            echo "Access URL: ${base_url}auth.${app}"
+          fi
         else
           if [ "$auth_method" = "none" ];then
-            echo "URL: ${base_url}${app}"
+            echo "Access URL: ${base_url}${app}"
           else
-            echo "URL: ${base_url}auth.${app}"
+            echo "Access URL: ${base_url}auth.${app}"
           fi
         fi
         echo "------------------------------------------------------------"
