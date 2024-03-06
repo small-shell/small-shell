@@ -344,7 +344,7 @@ sudo vi /var/www/descriptor/test_get.html.def
 </code></pre>
 <h3 id="no-auth-app">No auth APP</h3>
 <p>"No auth" app will take care of end users as guest. anyone can access to the table and datas by read only permission as guest. If you want to change to read write, please change user name from guest to other proper name in controller.</p>
-<pre><code>sudo vi /usr/lib/$app
+<pre><code>sudo vi /var/www/cgi-bin/$app
 --code--
 #user_name="guest"
 user_name="external_user"
@@ -463,7 +463,7 @@ app_name: $subapp@team
 primary databox: $databox
 </code></pre>
 <p>then please check routing to team APP</p>
-<pre><code>sudo cat /usr/lib/cgi-bin/team
+<pre><code>sudo cat /var/www/cgi-bin/team
 </code></pre>
 <p>also menu can be updated, please insert meta link to the menu</p>
 <pre><code>sudo cat /var/www/descriptor/common_parts/team_common_menu
@@ -537,10 +537,13 @@ vi ./descriptor/${provider}_oauth_form.html.def
 #------------------------------------------------ 
 
 # DEPLOY
-authkey=`grep authkey= /usr/lib/cgi-bin/auth.$app | $SED &quot;s/authkey=\&quot;//g&quot; | $SED &quot;s/\&quot;//g&quot;`
+authkey=`grep authkey= /var/www/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;`
 echo $authkey
-cat ./cgi-bin/${provider}_auth | $SED &quot;s/%%authkey/$authkey/g&quot; &gt; /usr/lib/cgi-bin/auth.$app
-cat ./descriptor/${provider}_oauth_form.html.def &gt; /var/www/descriptor/${app}_auth_form.html.def
+cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/$authkey/g&quot; &gt; .auth.$app
+sudo cp .auth.$app /var/www/cgi-bin/auth.$app
+cat ./descriptor/${provider}_oauth_form.html.def &gt; .${app}_auth_form.html.def
+sudo cp .${app}_auth_form.html.def /var/www/descriptor/${app}_auth_form.html.def
+sudo chmod 755 /var/www/cgi-bin/auth.$app
 </code></pre>
 <p>Then you can try to connect APP through Oauth. <br />
 https://$fqdn/cgi-bin/auth.oauth_test</p>
@@ -601,7 +604,7 @@ cat ../descriptor/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 </code></pre>
 <h4 id="4-disable-portal">4. Disable portal</h4>
 <p>If your APP will not use portal, please change main request to table by adding these codes.</p>
-<pre><code>sudo vi /usr/lib/cgi-bin/$app
+<pre><code>sudo vi /var/www/cgi-bin/$app
 --code--
 if [ &quot;$req&quot; = &quot;main&quot; ];then
   req=table
