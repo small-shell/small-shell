@@ -469,13 +469,13 @@ primary databox: $databox
 <pre><code>sudo cat /var/www/descriptor/common_parts/team_common_menu
 </code></pre>
 <h2 id="insert-member-list-to-the-app">Insert member list to the APP</h2>
-<p>Please select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP.</p>
+<p>If you want to add user list to your APP. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP. following is just example.</p>
 <pre><code>key(col2) name: assignee
 key(col2) label: Assignee
 data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): mls
 </code></pre>
 <h2 id="oauth-integration">Oauth integration</h2>
-<p>Generate APP with other option</p>
+<p>If you want to use Oauth, it's recommended to select other type APP.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3  
 app_name: oauth_test
