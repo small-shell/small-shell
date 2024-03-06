@@ -2159,7 +2159,12 @@ if [ "$param" = "-app" ];then
     if [ ! "$parent_app" ];then
 
       if [ "$srvtype" = "default" ];then
-        echo "Access URL: ${index_url}${app}"
+        if [ ! "$auth_method" = "other" ];then
+          echo "Access URL: ${index_url}${app}"
+        else
+          # for adaption of Oauth
+          echo "Access URL: ${base_url}auth.${app}"
+        fi
       else
         if [ "$auth_method" = "key" -o "$auth_method" = "other" ];then
           echo "Access URL: ${base_url}auth.${app}"
@@ -2494,14 +2499,6 @@ if [ "$param" = "-app" ];then
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
-
-          if [ "$srvtype" = "default" ];then
-             if [ ! -d $www/html/$app ];then
-               mkdir $www/html/$app
-             fi
-             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > $www/html/$app/index.html
-             chmod 755 $www/html/$app/index.html
-          fi
 
         fi
 
