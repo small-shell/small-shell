@@ -824,12 +824,6 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <p class="admonition-title">Note</p>
 <p>A record of the domain must be set on DNS server beforehand. and it must be global IP that can be reachable from Let's encrypt server </p>
 </div>
-<h4 id="add-sudoer">Add Sudoer</h4>
-<p>You must add following setting on sudoers to execute SSL refresh job regularly.</p>
-<pre><code>$ sudo visudo
-# add following to bottom of the file, if there is no small-shell entry
-small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
-</code></pre>
 <h5 id="launch-base-app-with-fqdn-for-certification">Launch Base APP with FQDN for certification</h5>
 <p>To be verified your domain by Let's Encrypt server, please launch WEB server with FQDN name that you want to deploy ssl certificate and the FQDN name must be same as A record of DNS.so far http should be fine because certificate is not issued yet. deploy job will upgrade it to https later.</p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
@@ -872,6 +866,12 @@ Account registered.
 Requesting a certificate for ***.com
 </code></pre>
 <p>If everything is no problem, https will be enabled automatically by deploy.sh if you are using small-shell default WEB serfver.</p>
+<h4 id="add-sudoer">Add Sudoer</h4>
+<p>You must add following setting on sudoers to execute SSL refresh job regularly.</p>
+<pre><code>$ sudo visudo
+# add following to bottom of the file, if there is no small-shell entry
+small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
+</code></pre>
 <h4 id="check-job">Check job</h4>
 <p>Once deploy is completed, ssl job that will refresh ssl cert will be on e-cron.</p>
 <pre><code>$ sudo -u small-shell /usr/local/small-shell/bin/e-cron ls | grep ss
