@@ -874,7 +874,7 @@ small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/loca
 </code></pre>
 <h4 id="check-job">Check job</h4>
 <p>Once deploy is completed, ssl job that will refresh ssl cert will be on e-cron.</p>
-<pre><code>$ sudo -u small-shell /usr/local/small-shell/bin/e-cron ls | grep ss
+<pre><code>$ sudo -u small-shell /usr/local/small-shell/bin/e-cron ls | grep ssl
 ssl_auto.enabled
 </code></pre>
 <p>If it's enabled SSL implementation is completed.</p>
