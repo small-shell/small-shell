@@ -1817,9 +1817,18 @@ if [ "$param" = "-app" ];then
     apptype="2.FORM"
     echo -n "form_name: "
     read form_name
+
+    while [ "$form_name" = "base" -o "$form_name" = "api" -o "$form_name" = "e-cron" -o "$form_name" = "css" ]
+    do
+      echo "error: the name $form_name is conflicted with Base APP, please try again"
+      echo -n "form_name: "
+      read form_name
+    done
+
     ascii_chk_result=`ascii_check $form_name`
     meta_chk_result=$(echo $form_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
     do
@@ -1843,7 +1852,8 @@ if [ "$param" = "-app" ];then
 
     primary_key=`cat $ROOT/databox/$databox/def/col1 | grep name= | $SED "s/name=//g"  | $SED "s/\"//g"`
     if [ ! "$primary_key" = "hashid" ];then
-      echo "error: primary key must be hashid if you want to use the databox for Form"
+      echo "error: $databox is not suitable, primary key must be hashid if you want to use the databox for Form"
+      echo "please try again from beginning"
       exit 1
     fi
 
@@ -2054,6 +2064,13 @@ if [ "$param" = "-app" ];then
     apptype="3.SCRATCH"
     echo -n "app_name: "
     read app
+
+    while [ "$app" = "base" -o "$app" = "api" -o "$app" = "e-cron" -o "$app" = "css" ]
+    do
+      echo "error: the name $app is conflicted with Base APP, please try again"
+      echo -n "app_name: "
+      read app
+    done
 
     parent_app=`echo $app | $AWK -F "@" '{print $2}'`
     if [ "$parent_app" ];then
