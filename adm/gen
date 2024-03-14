@@ -1524,6 +1524,7 @@ if [ "$param" = "-app" ];then
           if [ ! -d ${www}/html ];then
             mkdir ${www}/html
           fi
+          chown $cgiusr:$cgiusr ${www}/cgi-bin
           chown $cgiusr:$cgiusr ${www}/log
           chown $cgiusr:$cgiusr ${www}/app
           chown $cgiusr:$cgiusr ${www}/html
@@ -1628,6 +1629,8 @@ if [ "$param" = "-app" ];then
         fi
       fi
       chown $cgiusr:$cgiusr $descrdir
+      chown $cgiusr:$cgiusr $descrdir/common_parts
+
       if [ ! $? -eq 0 ];then
         echo "error: failed to create directory for small-shell APP html descriptor"
       fi
