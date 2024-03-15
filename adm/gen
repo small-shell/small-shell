@@ -2665,7 +2665,7 @@ if [ "$param" = "-app" ];then
         fi
         echo "------------------------------------------------------------"
         echo "Please update following codes freely"
-        echo "by the way, you can also update portal page on ${app}.UI.md.def on Base APP using markdown"
+        echo "You can also update portal page on Base APP #${app}.UI.md.def using markdown"
 
         if [ ! "$auth_method" = "none" ];then
           ls  $cgidir/auth.${app}
