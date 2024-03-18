@@ -155,6 +155,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#delete-scratech-app" class="nav-link">Delete Scratech APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#technical-tips" class="nav-link">Technical Tips</a>
               <ul class="nav flex-column">
               </ul>
@@ -547,6 +551,10 @@ sudo chmod 755 /var/www/cgi-bin/auth.$app
 </code></pre>
 <p>Then you can try to connect APP through Oauth. <br />
 https://$fqdn/cgi-bin/auth.oauth_test</p>
+<h2 id="delete-scratech-app">Delete Scratech APP</h2>
+<p>You can delete your scratch APP by using util script as following.</p>
+<pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_app.sh $app
+</code></pre>
 <h2 id="technical-tips">Technical Tips</h2>
 <p>This is a random technical Tips. It could be hint for making your own scratch APP.</p>
 <h4 id="1-get-id-keys-value">1. Get ID &amp; key's value</h4>
