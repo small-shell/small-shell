@@ -197,7 +197,7 @@ DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
 <p>You can exit dialog anytime with ctrl + C</p>
 </div>
 <h5 id="dialog">Dialog</h5>
-<p>In this dialog, primary_key will be item_name. If so, dedicated item name can be used only 1 time. for example, if you use apple as item name, apple must be used only 1 dataset(record). other dataset could not use name "apple" as item name. through this restriction, databox could be normalized. If you want to disable this restriction, please use <b>hashid</b> as primary_key in the dialog. detail are in <a href="../app_shell_tour/">APP shell tour</a> </p>
+<p>In this dialog, primary_key will be "item_name". If so, dedicated name like "apple" can be used only for 1 dataset. I mean other dataset can not use name "apple". through this restriction, databox could be normalized. If you want to disable this restriction, please use <b>hashid</b> as "primary_key" in the dialog. details are in <a href="../app_shell_tour/">APP shell tour</a> </p>
 <pre><code>databox_name: item.db
 primary_key(col1): item_name
 primary_key label: Item Name
@@ -256,14 +256,14 @@ https://$server/cgi-bin/shell.auth?initialize=*****fce76b37e4e93b7605022da52e6cc
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
 <h2 id="connect-to-the-base-app">Connect to the Base APP</h2>
-<p>User can access to the Base APP once once click "OPEN DATABOX" button on above STEP, key will be inserted automatically.</p>
+<p>User can access to the Base APP once once click "OPEN DATABOX" button on above STEP, user dedicated key will be inserted automatically.</p>
 <p><img alt="Screenshot" src="../img/key_auth.png" /></p>
 <p>Then you could use following APP features as default. ofcourse you can make your own APP,  <br />
 please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <h4 id="base-app-shell-table-features">Base APP &gt; Shell Table FEATURES</h4>
 <ul>
 <li>Push or Get datas thorough simplest UI</li>
-<li>Can use "And search" using space [e.g. word1 word2]</li>
+<li>Can use "And" search using space [e.g. word1 word2]</li>
 <li>Multi type of sort using sort command</li>
 <li>Serch using specific key of column, [e.g key{wordA}]</li>
 <li>Download search result by CSV format</li>
@@ -283,7 +283,7 @@ please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <pre><code> sudo /usr/local/small-shell/adm/ops initialize.usr:test
 </code></pre>
 <h2 id="re-start-small-shell-web">Re-start small-shell web</h2>
-<p>If you want to restart small-shell web server please use systemctl command, and please check log.</p>
+<p>If you want to restart web server please use systemctl command, and please check log.</p>
 <pre><code>sudo systemctl restart small-shell
 
 # check process
