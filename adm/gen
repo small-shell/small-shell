@@ -1725,21 +1725,24 @@ if [ "$param" = "-app" ];then
         # enable standard jobs
         if [ ! -f $ROOT/util/e-cron/def/del_session.def ];then
           sudo -u small-shell echo "SCHEDULE:* * * * *" > $ROOT/util/e-cron/def/del_session.def
-         sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_session.sh\"" >> $ROOT/util/e-cron/def/del_session.def
+          sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_session.sh\"" >> $ROOT/util/e-cron/def/del_session.def
+          chown small-shell:small-shell $ROOT/util/e-cron/def/del_session.def
         fi
 
         if [ ! -f $ROOT/util/e-cron/def/del_util_log.def ];then
           sudo -u small-shell echo "SCHEDULE:5 0 * * *" > $ROOT/util/e-cron/def/del_util_log.def
           sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_log.sh\"" >> $ROOT/util/e-cron/def/del_util_log.def
+          chown small-shell:small-shell $ROOT/util/e-cron/def/del_util_log.def
         fi
  
         sudo -u small-shell $ROOT/bin/e-cron enable.del_session
         sudo -u small-shell $ROOT/bin/e-cron enable.del_util_log
 
         if [ "$srvtype" = "default" ];then
-          if [ ! -f $ROOT/util/e-cron/def/restart_srv.def ];then
+          if [ ! -f $ROOT/util/e-cron/def/rotate_srv_log.def ];then
             sudo -u small-shell echo "SCHEDULE:0 0 * * *" > $ROOT/util/e-cron/def/rotate_srv_log.def
             sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/rotate_srvlog.sh\"" >> $ROOT/util/e-cron/def/rotate_srv_log.def
+            chown small-shell:small-shell $ROOT/util/e-cron/def/rotate_srv_log.def
           fi
           sudo -u small-shell $ROOT/bin/e-cron enable.rotate_srv_log
         fi
