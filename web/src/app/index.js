@@ -1,6 +1,6 @@
-const cluster = require('node:cluster');
+const cluster = require('cluster');
 const numProcess = 8;
-const process = require('node:process');
+const process = require('process');
   
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
