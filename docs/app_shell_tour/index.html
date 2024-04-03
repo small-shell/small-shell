@@ -175,6 +175,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#upgrade-ssl-cert-and-key" class="nav-link">Upgrade SSL cert and key</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#verified-environment" class="nav-link">Verified environment</a>
               <ul class="nav flex-column">
               </ul>
@@ -767,6 +771,14 @@ curl.exe -X GET "${commandapi}?command=grep_test&amp;databox=$databox" -H "X-sma
 (e.g.) get DATA
 $id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please input id that you want to get
 curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
+</code></pre>
+<h2 id="upgrade-ssl-cert-and-key">Upgrade SSL cert and key</h2>
+<p>When you upgrade SSL cert and key for small-shell default WEB server, you need to re-generate Base APP by gen command. all service will be down during this upgrade.</p>
+<pre><code>/usr/local/small-shell/gen -app
+-----------------------------------------------
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+------------------------------------------------
+-&gt; dialog will be started
 </code></pre>
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Ubuntu 2X (recommnded), Debian 1X, macOS Monterey, CentOS 7, RHEL 8

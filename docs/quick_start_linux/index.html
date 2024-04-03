@@ -292,15 +292,22 @@ ps -ef | grep app.sh
 ls -ltr /var/www/log
 </code></pre>
 <h2 id="upgrade-small-shell">Upgrade small-shell</h2>
-<p>You can upgrade small-shell very easily. this is exmaples of upgrade command.</p>
+<p>You can upgrade small-shell very easily. this is exmaples of upgrade command. <br />
+Once you clone the latest code, it's recommended to re-generate Base APP. <br />
+Even if Base APP has been upgraded, you can keep to use user key, ssl cert &amp; key, API key.   </p>
 <pre><code>cd /var/tmp
 sudo git clone https://github.com/small-shell/small-shell.git
 sudo \cp -Rf small-shell/* /usr/local/small-shell/
 sudo rm -rf small-shell
-sudo /usr/local/small-shell/adm/gen #renew global.conf
+
+# re-generate Base APP
+sudo /usr/local/small-shell/adm/gen -app
+-----------------------------------------------
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+------------------------------------------------
+-&gt; dialog will be started
 </code></pre>
-<p>Then please re-generate web app using gen command if needed.
-that's it.</p></div>
+<p>that's it.</p></div>
             </div>
         </div>
 
