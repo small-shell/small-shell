@@ -1351,43 +1351,67 @@ if [ "$param" = "-app" ];then
 
     if [ "$protocol" = "https" -a "$srvtype" = "default" ];then
 
-      echo -n "ssl cert path : "
-      read ssl_cert
-
-      while [ ! -f $ssl_cert ]
-      do
-        echo -n "$cert is not existing, please try to input cert path again : "
-        read ssl_cert
-      done
-
-      echo -n "ssl privare key path : "
-      read private_key
-
-      while [ ! -f $private_key ]
-      do
-        echo -n "$private_key is not existing, please try to input cert path again : "
-        read private_key
-      done
-
-      echo -n "Do you need to use chain certificate ? (yes | no): "
-      read chain_answer
-      while [ ! "$chain_answer" = "yes" -a ! "$chain_answer" = "no" ]
-      do
-        echo "please input yes or no"
-        echo -n "Do you need chain certificate ? (yes | no): "
-        read chain_answer
-      done
-
-      if [ "$chain_answer" = "yes" ];then
-        echo -n "chain cert path : "
-        read chain_cert
-
-        while [ ! -f $chain_cert ]
+      if [ -f $www/app/cert.pem -a -f $www/app/privatekey.pem ];then
+        echo -n "Do you want to use existing cert and key ? (yes | no): "
+        read use_existing_cert 
+        while [ ! "$use_existing_cert" = "yes" -a ! "$use_existing_cert" = "no" ]
         do
-          echo -n "$chain_cert is not existing, please try to input cert path again : "
-          read chain_cert
+          echo "please input yes or no"
+          echo -n "Do you want to use existing cert and key ? (yes | no): "
+          read use_existing_cert
         done
       fi
+      
+      if [ "$use_existing_cert" = "yes" ];then
+        echo "Base APP will be upgraded and restarted using exising cert & key, please be aware."
+        server=`cat $ROOT/web/base | grep server= | $SED "s/server=//g" | $SED "s/\"//g"`  
+        sleep 2
+      fi
+
+      if [ "$use_existing_cert" = "no" -o ! "$use_existing_cert" ];then
+        if [ "$use_existing_cert" = "no" ];then
+          echo "ok, let's update cert and key. Base APP will be upgraded and restarted, please be aware."
+        fi
+        echo -n "ssl cert path : "
+        read ssl_cert
+
+        while [ ! -f $ssl_cert ]
+        do
+          echo -n "$cert is not existing, please try to input cert path again : "
+          read ssl_cert
+        done
+
+        echo -n "ssl privare key path : "
+        read private_key
+
+        while [ ! -f $private_key ]
+        do
+          echo -n "$private_key is not existing, please try to input cert path again : "
+          read private_key
+        done
+
+        echo -n "Do you need to use chain certificate ? (yes | no): "
+        read chain_answer
+        while [ ! "$chain_answer" = "yes" -a ! "$chain_answer" = "no" ]
+        do
+          echo "please input yes or no"
+          echo -n "Do you need chain certificate ? (yes | no): "
+          read chain_answer
+        done
+
+        if [ "$chain_answer" = "yes" ];then
+          echo -n "chain cert path : "
+          read chain_cert
+
+          while [ ! -f $chain_cert ]
+          do
+            echo -n "$chain_cert is not existing, please try to input cert path again : "
+            read chain_cert
+          done
+        fi
+
+      fi
+
     fi
 
     # command check for cgi
@@ -1398,31 +1422,34 @@ if [ "$param" = "-app" ];then
       exit 1
     fi
 
-    echo -n "WEB Server FQDN or IP addr (e.g. 192.168.10.1): "
-    read server
-
-    ascii_chk_result=`ascii_check $server`
-    meta_chk_result=$(echo $server | grep -e " " -e ","  -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
-    -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
-
-    while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$server" ]
-    do
-      if [ ! "$server" ];then
-        echo "error: please input FQDN or IP addr of web server"
-      else
-        echo "error: server must be ascii text and you can't use meta charactor including space, please try again"
-      fi
-      echo -n "WEB server: "
+    if [ "$protocol" = "http" -o "$use_existing_cert" = "no" -o ! "$server" ];then
+      echo -n "WEB Server FQDN or IP addr (e.g. 192.168.10.1): "
       read server
-      ascii_chk_result=`ascii_check $server`
-      meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
-      -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
-    done
 
-    if [[ $server == *:* ]];then
-      server="[${server}]"
-    fi
+      ascii_chk_result=`ascii_check $server`
+      meta_chk_result=$(echo $server | grep -e " " -e ","  -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
+      -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+
+      while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$server" ]
+      do
+        if [ ! "$server" ];then
+          echo "error: please input FQDN or IP addr of web server"
+        else
+          echo "error: server must be ascii text and you can't use meta charactor including space, please try again"
+        fi
+        echo -n "WEB server: "
+        read server
+        ascii_chk_result=`ascii_check $server`
+        meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
+        -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+      done
+
+      if [[ $server == *:* ]];then
+        server="[${server}]"
+      fi
   
+    fi
+
     base_url="${protocol}://${server}/cgi-bin/"
     index_url="${protocol}://${server}/"
 
@@ -1495,6 +1522,11 @@ if [ "$param" = "-app" ];then
 
     if [ "$fin_answer" = "yes" ];then
        
+      if [ -f $ROOT/web/base ];then
+        upgrade=yes
+        api_authkey=`cat $ROOT/web/base | grep api_authkey | $SED "s/api_authkey=//g" | $SED "s/\"//g"` 
+      fi
+
       # gen base info
       echo "protocol=\"$protocol\"" > $ROOT/web/base
       echo "server=\"$server\"" >> $ROOT/web/base
@@ -1531,11 +1563,16 @@ if [ "$param" = "-app" ];then
         fi
 
         if [ "$protocol" = "https" ];then
-          cp $ssl_cert ${www}/app/cert.pem
-          cp $private_key ${www}/app/privatekey.pem
-          chmod 600 ${www}/app/privatekey.pem
-          if [ "$chain_cert" ];then
-            cp $chain_cert ${www}/app/chain.pem
+          if [ "$use_existing_cert" = "no" -o ! "$use_existing_cert" ];then
+            cp $ssl_cert ${www}/app/cert.pem
+            cp $private_key ${www}/app/privatekey.pem
+            chown small-shell:small-shell ${www}/app/privatekey.pem
+            chown small-shell:small-shell ${www}/app/cert.pem
+            chmod 600 ${www}/app/privatekey.pem
+            if [ "$chain_cert" ];then
+              cp $chain_cert ${www}/app/chain.pem
+              chown small-shell:small-shell ${www}/app/chain.pem
+            fi
           fi
         fi
 
@@ -1549,10 +1586,12 @@ if [ "$param" = "-app" ];then
         if [ "$protocol" = "https" ];then
           if [ ! "$chain_cert" ];then
             cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" > ${www}/app/index.js
+            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
+            | $SED "s#option end \*/##g" > ${www}/app/index.js
           else
             cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" > ${www}/app/index.js
+            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
+            | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  > ${www}/app/index.js
           fi
         else
           cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
@@ -1650,26 +1689,28 @@ if [ "$param" = "-app" ];then
       user_name=api
       user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
 
-      if [ ! -d $ROOT/users/$user_id ];then
-        mkdir $ROOT/users/$user_id
-      fi
-      echo "$user_name" > $ROOT/users/$user_id/user_name
-      echo "permission=ro" > $ROOT/users/$user_id/.attr.tmp
-      cat $ROOT/users/$user_id/.attr.tmp > $ROOT/users/$user_id/attr
-      chown small-shell:small-shell $ROOT/users/$user_id/attr
-
-      which openssl  >/dev/null 2>&1
-      if [ $? -eq 0 ];then
-        hash_gen_key=`openssl rand -hex 20`
+      if [ -d $ROOT/users/$user_id ];then
+        echo "api_authkey=\"$api_authkey\"" >> $ROOT/web/base
       else
-        hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+        mkdir $ROOT/users/$user_id
+        echo "$user_name" > $ROOT/users/$user_id/user_name
+        echo "permission=ro" > $ROOT/users/$user_id/.attr.tmp
+        cat $ROOT/users/$user_id/.attr.tmp > $ROOT/users/$user_id/attr
+        chown small-shell:small-shell $ROOT/users/$user_id/attr
+
+        which openssl  >/dev/null 2>&1
+        if [ $? -eq 0 ];then
+          hash_gen_key=`openssl rand -hex 20`
+        else
+          hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
+        fi
+        hash=`echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
+        echo "$hash" > $ROOT/users/${user_id}/hash
+        chown -R small-shell:small-shell $ROOT/users/$user_id
+        chmod 700 $ROOT/users/${user_id}/hash
+        user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
+        echo "api_authkey=\"$user_key\"" >> $ROOT/web/base
       fi
-      hash=`echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-      echo "$hash" > $ROOT/users/${user_id}/hash
-      chown -R small-shell:small-shell $ROOT/users/$user_id
-      chmod 700 $ROOT/users/${user_id}/hash
-      user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
-      echo "api_authkey=\"$user_key\"" >> $ROOT/web/base
 
       for src in `ls $ROOT/web/src/cgi-bin | grep -v controller | grep -v tmplt | grep -v auth | xargs basename -a`
       do
@@ -1783,13 +1824,17 @@ if [ "$param" = "-app" ];then
 
       if [ "$get_test" ];then
         clear
-        echo ""
-        echo "-----------------------------------------------------------------"
-        echo "NOTE"
-        echo "-----------------------------------------------------------------"
-        echo "APP deployment has been succesfully done, please add user using ops command,"
-        echo "and then access key to Base APP will be generated"
-        echo "# sudo $ROOT/adm/ops add.usr:\$user"
+        if [ ! "$upgrade" = "yes" ];then
+          echo ""
+          echo "-----------------------------------------------------------------"
+          echo "NOTE"
+          echo "-----------------------------------------------------------------"
+          echo "APP deployment has been succesfully done, please add user using ops command,"
+          echo "and then access key to Base APP will be generated"
+          echo "# sudo $ROOT/adm/ops add.usr:\$user"
+        else
+          echo "Base APP has been upgraded. please access to the APP using existing key"
+        fi
       else
         if [ "$srvtype" = "default" ];then
           echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
