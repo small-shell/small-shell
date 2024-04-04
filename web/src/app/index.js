@@ -2,7 +2,7 @@ const cluster = require('cluster');
 const numProcess = 8;
 const process = require('process');
   
-if (cluster.isPrimary) {
+if (%%cluster) {
   console.log(`Primary ${process.pid} is running`);
   // Fork workers.
   for (let i = 0; i < numProcess; i++) {
@@ -224,7 +224,7 @@ if (cluster.isPrimary) {
   server.listen(port, function(){
     process.setuid('small-shell'); 
     var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-    console.log( time_stamp + "small-shell web srv started");
+    console.log( time_stamp + "PID " + process.pid + " small-shell web srv is started ");
   });
   
   /* forward option start

@@ -1583,20 +1583,43 @@ if [ "$param" = "-app" ];then
         fi
         (cd ${www}/app;npm init -y;npm install express) 
 
-        if [ "$protocol" = "https" ];then
-          if [ ! "$chain_cert" ];then
-            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
-            | $SED "s#option end \*/##g" > ${www}/app/index.js
+        node_version=`node --version | $SED "s/v//g" | $AWK -F "." '{print $1}'`
+        # generate index.js for upper version of v16        
+        if [ "$node_version" -ge 16 ];then
+          if [ "$protocol" = "https" ];then
+            if [ ! "$chain_cert" ];then
+              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
+              | $SED "s#option end \*/##g" | $SED "s/%%cluster/cluster.isPrimary/g" > ${www}/app/index.js
+            else
+              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
+              | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
+              | $SED "s/%%cluster/cluster.isPrimary/g" > ${www}/app/index.js
+            fi
           else
             cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
-            | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  > ${www}/app/index.js
+            | $SED "s#%%sed#$SED#g" | $SED "s/%%cluster/cluster.isPrimary/g" > ${www}/app/index.js
           fi
         else
-          cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-          | $SED "s#%%sed#$SED#g" > ${www}/app/index.js
+        # generate index.js for lower version of v16        
+          if [ "$protocol" = "https" ];then
+            if [ ! "$chain_cert" ];then
+              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
+              | $SED "s#option end \*/##g" | $SED "s/%%cluster/cluster.isMaster/g" > ${www}/app/index.js
+            else
+              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
+              | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
+              | $SED "s/%%cluster/cluster.isMaster/g" > ${www}/app/index.js
+            fi
+          else
+            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+            | $SED "s#%%sed#$SED#g" | $SED "s/%%cluster/cluster.isMaster/g" > ${www}/app/index.js
+          fi
         fi
+
         NODE=`which node`
         cat $ROOT/web/src/app/app.sh | $SED "s#%%node#$NODE#g" \
         | $SED "s#%%sed#$SED#g" > ${www}/app/app.sh
