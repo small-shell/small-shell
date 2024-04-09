@@ -80,7 +80,7 @@ else
   error_check=`cat %%www/tmp/$session/result | grep error`
   if [ ! "$error_check" ];then
     echo "<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=log_viewer&data_import_session=$data_import_session', 'log_viewer', 'width=920,height=280')\">view</a>" >> %%www/tmp/$session/result
-    message="## STARTED ##"
+    message="## SUCCESS ##"
   else
     message="please check your import file again"
   fi
