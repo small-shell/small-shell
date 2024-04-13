@@ -1959,7 +1959,7 @@ if [ "$param" = "-app" ];then
       key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
     done
     keys=$key
-    datas=`echo $datas | $SED "s/ | $key / /g" | $SED "s/$key | //g" | $SED "s/ | $key//g" | $SED "s/^$key$//g"`
+    datas=`echo $datas | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g"`
 
 
     if [ "$datas" ];then
@@ -1989,8 +1989,7 @@ if [ "$param" = "-app" ];then
         key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
       done
       keys="$keys,$key"
-
-      datas=`echo $datas | $SED "s/ | $key / /g" | $SED "s/$key | //g" | $SED "s/ | $key//g" | $SED "s/^$key$//g"`
+      datas=`echo $datas | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g"`
   
       if [ "$datas" ];then
         echo -n "Do you want to add more data to the Form ? (yes | no): "
