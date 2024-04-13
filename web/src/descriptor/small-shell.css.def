@@ -799,7 +799,7 @@ a {
 .form-box li textarea {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
@@ -808,35 +808,44 @@ a {
 .form-box li select {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
   background-color: #FDFEFE;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; 
+  cursor: pointer;
 }
 
 .form-box input[type="date"],
 .form-box input[type="datetime-local"] {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
 }
 
-.form-box input[type="radio"],
 .form-box input[type="checkbox"]{
   margin-top: 6px;
 }
+
+.form-box input[type="radio"]{
+  margin-top: 4px;
+}
+
 
 .form-box li p {
   text-align: left;
   background: #e6e6fa;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   flex: auto;
 }
@@ -846,8 +855,9 @@ a {
   background: #f5f5f5;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   overflow:auto;
   flex: auto;
@@ -861,12 +871,12 @@ a {
     font-weight: 300;
     margin-right: 2px;
     letter-spacing: .09em;
-    padding: 6px 6px;
+    padding: 8px 8px;
     font-weight: bold;
 }
 
 .form-box .file_form {
-  padding-top: 12px;
+  padding-top: 6px;
 }
 
 .form-box .file_form #file_input_label {
@@ -1037,94 +1047,10 @@ a {
 .md-form-box li textarea {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
-}
-
-.md-form-box li select {
-  letter-spacing: .09em;
-  font-size: 12px;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  border-radius: 4px;
-  flex: auto;
-  background-color: #FDFEFE;
-}
-
-.md-form-box input[type="date"],
-.md-form-box input[type="datetime-local"] {
-  letter-spacing: .09em;
-  font-size: 12px;
-  padding: 4px 6px;
-  border: 1px solid #d3d3d3;
-  border-radius: 4px;
-  flex: auto;
-}
-
-.md-form-box input[type="radio"],
-.md-form-box input[type="checkbox"]{
-  margin-top: 6px;
-}
-
-.md-form-box li p {
-  text-align: left;
-  background: #e6e6fa;
-  font-size: 12px;
-  margin:0;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  letter-spacing: .09em;
-  flex: auto;
-}
-
-.md-form-box li pre {
-  text-align: left;
-  background: #f5f5f5;
-  font-size: 12px;
-  margin:0;
-  padding: 6px 6px;
-  border: 1px solid #d3d3d3;
-  letter-spacing: .09em;
-  overflow:auto;
-  flex: auto;
-}
-
-.md-form-box #gray_label {
-    font-size: 70%;
-    text-align: left;
-    color: #c0c0c0;
-    min-width:100%;
-    font-weight: 300;
-    margin-right: 2px;
-    letter-spacing: .09em;
-    padding: 6px 6px;
-    font-weight: bold;
-}
-
-.md-form-box .file_form {
-  padding-top: 12px;
-}
-
-.md-form-box .file_form #file_input_label {
-  color: #333;
-  font-size: 140%;
-  font-weight: bold;
-  cursor: hand;
-  padding-left: 6px;
-  padding-right: 6px;
-  vertical-align: middle;
-}
-
-.md-form-box .file_form #file_name {
-  color: #333;
-  margin-left: -2px;
-  vertical-align: middle;
-}
-
-.md-form-box .file_form a {
-  color: #6495ED;
 }
 
 .md-form-box button {
@@ -1167,6 +1093,43 @@ a {
   color: #BCBBBE;
   font-weight: bold;
 }
+
+.md-form-box #gray_label {
+    font-size: 70%;
+    text-align: left;
+    color: #c0c0c0;
+    min-width:100%;
+    font-weight: 300;
+    margin-right: 2px;
+    letter-spacing: .09em;
+    padding: 6px 6px;
+    font-weight: bold;
+}
+
+.md-form-box .file_form {
+  padding-top: 12px;
+}
+
+.md-form-box .file_form #file_input_label {
+  color: #333;
+  font-size: 140%;
+  font-weight: bold;
+  cursor: hand;
+  padding-left: 6px;
+  padding-right: 6px;
+  vertical-align: middle;
+}
+
+.md-form-box .file_form #file_name {
+  color: #333;
+  margin-left: -2px;
+  vertical-align: middle;
+}
+
+.md-form-box .file_form a {
+  color: #6495ED;
+}
+
 
 .result-box {
   padding-top: 60px;
@@ -1316,14 +1279,16 @@ a {
 .checkbox-label {
   text-align: left;
   font-size: 80%;
-  margin-top: 6px;
+  margin-top: 2px;
+  margin-left: 2px;
   letter-spacing: .09em;
   padding-right: 2px;
 }
 
 .radio-label {
   text-align: left;
-  margin-top: 6px;
+  margin-top: 2px;
+  margin-left: 2px;
   font-size: 80%;
 }
 

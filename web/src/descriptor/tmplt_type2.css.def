@@ -514,57 +514,42 @@ a {
 .form-box li textarea {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
-  flex: auto;
   border-radius: 4px;
+  flex: auto;
 }
 
-@media screen and (min-width: 640px){
-  .form-box li select {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-    background-color: #FDFEFE;
-  }
-
-  .form-box input[type="date"], 
-  .form-box input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
+.form-box li select {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 8px 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  flex: auto;
+  background-color: #FDFEFE;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; 
+  cursor: pointer;
 }
 
-@media screen and (max-width: 640px){
-  .form-box li select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-    background-color: #FDFEFE;
-  }
+.form-box input[type="date"],
+.form-box input[type="datetime-local"] {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  flex: auto;
+}
 
-  .form-box input[type="date"],
-  .form-box input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
+.form-box input[type="checkbox"]{
+  margin-top: 6px;
+}
+
+.form-box input[type="radio"]{
+  margin-top: 4px;
 }
 
 .form-box .init {
@@ -587,18 +572,14 @@ a {
   overflow:auto;
 }
 
-.form-box input[type="radio"],
-.form-box input[type="checkbox"]{
-  margin-top: 6px;
-}
-
 .form-box li p {
   text-align: left;
   background: #e6e6fa;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   flex: auto;
 }
@@ -608,15 +589,12 @@ a {
   background: #f5f5f5;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   overflow:auto;
   flex: auto;
-}
-
-.form-box .file_form {
-  padding-top: 12px;
 }
 
 .form-box #gray_label {
@@ -627,8 +605,12 @@ a {
     font-weight: 300;
     margin-right: 2px;
     letter-spacing: .09em;
-    padding: 6px 6px;
+    padding: 8px 8px;
     font-weight: bold;
+}
+
+.form-box .file_form {
+  padding-top: 6px;
 }
 
 .form-box .file_form #file_input_label {
@@ -638,11 +620,13 @@ a {
   cursor: hand;
   padding-left: 6px;
   padding-right: 6px;
+  vertical-align: middle;
 }
 
 .form-box .file_form #file_name {
   color: #333;
   margin-left: -2px;
+  vertical-align: middle;
 }
 
 .form-box .file_form a {
@@ -684,6 +668,11 @@ a {
   color: #808080;
 }
 
+.form-box input:focus, .form-box select:focus, .form-box textarea:focus {
+  outline-color: #40B9F8;
+  outline-width: 2px;
+}
+
 .result-box {
   padding-top: 60px;
   padding-bottom: 40px;
@@ -721,14 +710,16 @@ a {
 .checkbox-label {
   text-align: left;
   font-size: 80%;
-  margin-top: 6px;
+  margin-top: 2px;
+  margin-left: 2px;
   letter-spacing: .09em;
   padding-right: 2px;
 }
 
 .radio-label {
   text-align: left;
-  margin-top: 6px;
+  margin-top: 2px;
+  margin-left: 2px;
   font-size: 80%;
 }
 

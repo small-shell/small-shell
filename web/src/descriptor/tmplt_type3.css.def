@@ -730,57 +730,34 @@ a {
 .form-box li textarea {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
-  flex: auto;
   border-radius: 4px;
+  flex: auto;
 }
 
-@media screen and (min-width: 641px){
-  .form-box li select {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-    background-color: #FDFEFE;
-  }
-
-  .form-box input[type="date"],
-  .form-box input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
+.form-box li select {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 8px 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  flex: auto;
+  background-color: #FDFEFE;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; 
+  cursor: pointer;
 }
 
-@media screen and (max-width: 640px){
-  .form-box li select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-    background-color: #FDFEFE;
-  }
-
-  .form-box input[type="date"],
-  .form-box input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
+.form-box input[type="date"],
+.form-box input[type="datetime-local"] {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  flex: auto;
 }
 
 .form-box .init {
@@ -803,9 +780,12 @@ a {
   overflow:auto;
 }
 
-.form-box input[type="radio"],
 .form-box input[type="checkbox"]{
   margin-top: 6px;
+}
+
+.form-box input[type="radio"]{
+  margin-top: 4px;
 }
 
 .form-box li p {
@@ -813,8 +793,9 @@ a {
   background: #e6e6fa;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   flex: auto;
 }
@@ -824,8 +805,9 @@ a {
   background: #f5f5f5;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   overflow:auto;
   flex: auto;
@@ -843,8 +825,12 @@ a {
     font-weight: 300;
     margin-right: 2px;
     letter-spacing: .09em;
-    padding: 6px 6px;
+    padding: 8px 8px;
     font-weight: bold;
+}
+
+.form-box .file_form {
+  padding-top: 6px;
 }
 
 .form-box .file_form #file_input_label {
@@ -944,14 +930,16 @@ a {
 .checkbox-label {
   text-align: left;
   font-size: 80%;
-  margin-top: 6px;
+  margin-top: 2px;
+  margin-left: 2px;
   letter-spacing: .09em;
   padding-right: 2px;
 }
 
 .radio-label {
   text-align: left;
-  margin-top: 6px;
+  margin-top: 2px;
+  margin-left: 2px;
   font-size: 80%;
 }
 
@@ -1057,62 +1045,42 @@ media screen and (min-width: 641px){
 .app-form li textarea {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
-  flex: auto;
   border-radius: 4px;
+  flex: auto;
 }
 
-@media screen and (min-width: 641px){
-  .app-form li select {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-    background-color: #FDFEFE;
-  }
-
-  .app-form input[type="date"],
-  .app-form input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
+.app-form li select {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 8px 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  flex: auto;
+  background-color: #FDFEFE;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; 
+  cursor: pointer;
 }
 
-@media screen and (max-width: 640px){
-  .app-form li select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-    background-color: #FDFEFE;
-  }
-
-  .app-form input[type="date"],
-  .app-form input[type="datetime-local"] {
-    letter-spacing: .09em;
-    font-size: 12px;
-    padding: 6px 6px;
-    border: 1px solid #d3d3d3;
-    flex: auto;
-    border-radius: 4px;
-  }
+.app-form input[type="date"],
+.app-form input[type="datetime-local"] {
+  letter-spacing: .09em;
+  font-size: 12px;
+  padding: 6px 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  flex: auto;
 }
 
-.app-form input[type="radio"],
 .app-form input[type="checkbox"]{
   margin-top: 6px;
+}
+
+.app-form input[type="radio"]{
+  margin-top: 4px;
 }
 
 .app-form li p {
@@ -1120,8 +1088,9 @@ media screen and (min-width: 641px){
   background: #e6e6fa;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 4px 4px;
   border: 1px solid #d3d3d3;
+  border-radius: 4px;
   letter-spacing: .09em;
   flex: auto;
 }
@@ -1131,7 +1100,7 @@ media screen and (min-width: 641px){
   background: #f5f5f5;
   font-size: 12px;
   margin:0;
-  padding: 6px 6px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
   letter-spacing: .09em;
   overflow:auto;
@@ -1139,7 +1108,7 @@ media screen and (min-width: 641px){
 }
 
 .app-form .file_form {
-  padding-top: 12px;
+  padding-top: 6px;
 }
 
 .app-form #gray_label {
@@ -1150,7 +1119,7 @@ media screen and (min-width: 641px){
     font-weight: 300;
     margin-right: 2px;
     letter-spacing: .09em;
-    padding: 6px 6px;
+    padding: 8px 8px;
     font-weight: bold;
 }
 
