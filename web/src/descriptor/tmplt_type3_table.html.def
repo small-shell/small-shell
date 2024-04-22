@@ -26,7 +26,7 @@
        </div>
        <form method="post" action="./%%app?%%params&req=table">
        <div class="wrapper">
-        <input type="search" name="table_command" placeholder="Hi %%user, please input filter words or input unix sort command with key name of column e.g.[sort -V %%key]">
+        <input type="search" name="table_command" placeholder="Hi %%user, type any filter words freely [wordA wordB ..] or your can sort table with column e.g.[sort -V %%key]">
        </div>
        </form>
        <div class="tags">

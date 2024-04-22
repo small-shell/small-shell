@@ -27,7 +27,7 @@
          <form method="post" action="./shell.app?%%params&req=console&post=yes">
          <ul>
            <li>
-            <input type="text" name="command" placeholder="please input filter words or command [%%commands..] which can be piplined to the data box"">
+            <input type="text" name="command" placeholder="Input filter words or command [%%commands..] which can be piplined to the data box"">
            </li>
          </ul>
          </form>
@@ -36,8 +36,6 @@
          </div>
        <pre>
 <b># SMALL SHELL STATISTICS %%filters</b>
-please click text, then you can show detail
-
 # search examples
 #----------------------------------------------------------------#
 # snapshot [_s_ #stats]
