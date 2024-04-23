@@ -12,7 +12,7 @@
       <form method="post" action="./shell.auth">
       <h1>key.auth</h1>
       <div class="wrapper">
-        <input type="text" name="small_shell_authkey_%%rand" placeholder="select your key" list="keylist" autocomplete="on">
+        <input type="text" name="small_shell_authkey_%%rand" placeholder="Your key" list="keylist" autocomplete="on">
         <datalist id="keylist">
         <option value="%%key_placeholder"></option>
         </datalist>
