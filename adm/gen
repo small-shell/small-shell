@@ -11,6 +11,7 @@
 # generate automate shell (gen -job)
 #----------------------------------------------------------
 
+param=$1
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
@@ -175,7 +176,6 @@ if [ ! "$shell_owner" = "small-shell" ];then
 fi
 
 # gen tmpdir
-param=$1
 random=$RANDOM
 while [ -d $ROOT/tmp/gen/$random ]
 do
@@ -189,8 +189,6 @@ do
 done
 mkdir $ROOT/tmp/gen/$random
 tmp_dir="$ROOT/tmp/gen/$random"
-
-# FUNCTIONS
 
 # handle kill signal
 trap 'clear_dialog' SIGINT
@@ -233,7 +231,7 @@ function charset_check(){
 }
 
 
-# CREATE AUTHKEY FOR SYS
+# create AUTHKEY for SYS
 user_name=sys
 user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
 
@@ -2295,7 +2293,7 @@ if [ "$param" = "-app" ];then
         if [ "$auth_method" = "shared_pass" ];then
 
           input_type="password"
-          placeholder="please input pass code"
+          placeholder="pass code"
 
           # careate app authkey
           app_user_name=${app}.app
@@ -2326,7 +2324,7 @@ if [ "$param" = "-app" ];then
           # store pass code of shared pass APP
           echo "$shared_pass" > $ROOT/web/${app}.code
 
-          # deploy psscode and other APP
+          # deploy psscode APP
           cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
@@ -2370,7 +2368,7 @@ if [ "$param" = "-app" ];then
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" \
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%user/there/g" \
               | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
               chmod 755 ${www}/descriptor/${app}_${html_def}
             else
@@ -2491,9 +2489,7 @@ if [ "$param" = "-app" ];then
           # careate app authkey
           app_user_name=${app}.app
           app_user_id=`echo "$app_user_name" | $SHASUM | $AWK '{print $1}'`
-
           input_type="text"
-          placeholder="please input your name"
 
           if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
             mkdir $ROOT/users/${app}.${app_user_id}
@@ -2516,7 +2512,7 @@ if [ "$param" = "-app" ];then
           chmod 700 $ROOT/users/${app}.${app_user_id}/hash
           authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
-          # deploy psscode and other APP
+          # deploy other APP
           cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" \
           | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
@@ -2561,7 +2557,7 @@ if [ "$param" = "-app" ];then
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" \
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%user/there/g" \
               | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
               chmod 755 ${www}/descriptor/${app}_${html_def}
             else
@@ -2584,8 +2580,7 @@ if [ "$param" = "-app" ];then
             echo "rand=$rand" > $ROOT/web/.rand
           fi
 
-          cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
-          | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
+          cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
@@ -2662,7 +2657,7 @@ if [ "$param" = "-app" ];then
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             if [ ! "$src" = "tmplt_type3.css.def" ];then
-              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" \
+              cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%user/there/g" \
               | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
               chmod 755 ${www}/descriptor/${app}_${html_def}
             else
