@@ -27,7 +27,7 @@
          <form method="post" action="./shell.app?%%params&req=console&post=yes">
          <ul>
            <li>
-            <input type="text" name="command" placeholder="type filter words or command [%%commands..] which can be piplined to the data box"">
+            <input type="text" name="command" placeholder="Type any filter words or command [%%commands..] which can be piplined to the data box">
            </li>
          </ul>
          </form>
