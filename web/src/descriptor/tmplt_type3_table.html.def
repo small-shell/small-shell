@@ -26,7 +26,7 @@
        </div>
        <form method="post" action="./%%app?%%params&req=table">
        <div class="wrapper">
-        <input type="search" name="table_command" placeholder="Hi %%user, type any filter words or you can sort table with column by sort command e.g.[sort -V %%key]">
+        <input type="search" name="table_command" placeholder="Hi %%user, type any filter words or you can sort table with column by sort command e.g.[sort -V %%key]" autocomplete="off">
        </div>
        </form>
        <div class="tags">
