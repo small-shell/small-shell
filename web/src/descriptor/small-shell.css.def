@@ -497,7 +497,7 @@ a {
   font-weight: 300;
   letter-spacing: .09em;
   padding: 12px 16px;
-  border: 2px solid #E6E6FA;
+  border: 2px solid #333;
   border-radius: 3px;
   font-size: 80%;
 }
@@ -512,6 +512,11 @@ a {
   border-radius: 2px;
   cursor: pointer;
   cursor: hand;
+}
+
+.console-box input:focus {
+  outline-color: #C0C0C0;
+  outline-width: 2px;
 }
 
 .console-box pre {
@@ -577,6 +582,11 @@ a {
   background: white;
   border-radius: 3px;
   font-size: 80%;
+}
+
+.table-box input:focus {
+  outline-color: #40B9F8;
+  outline-width: 2px;
 }
 
 .table-box .tags {
