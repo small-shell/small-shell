@@ -225,7 +225,7 @@ if [ "$logo" -eq 1 ];then
     # dump
     ${small_shell_path}/bin/dl databox:${databox} id:$id session:$session pin:$pin app:$app > %%www/html/${filename}
     cat ${tmp}/leftnav.tmp | grep -v "<p>HOME</p>" > ${tmp}/leftnav.tmp.1
-    echo "<a href=\"#HOME\"><img src=\"../${filename}\" width=\"75%\"></a>" > ${tmp}/logo.tmp
+    echo "<a href=\"#HOME\"><img src=\"../${filename}\"></a>" > ${tmp}/logo.tmp
 
     if [ ! -s ${tmp}/leftnav.tmp.1 ];then
       cat ${tmp}/logo.tmp > ${tmp}/leftnav.tmp.2

@@ -291,7 +291,7 @@ a {
 
   .main .description {
     flex: none;
-    max-width: 68%;
+    width: 68%;
     text-align: left;
     padding: 24px 42px;
   }
@@ -431,24 +431,24 @@ a {
   
 @media screen and (min-width: 641px) {
   .left-nav {
-   top: 20px;
    padding-top: 12px;
-   padding-right: 32px;
    position: sticky;
   }
 
-  .left-nav .logo {
-   width: 75%;
-   margin-top: -18px;
+  .left-nav p {
+   padding-left: 24px;
+   font-size: 100%;
+   padding-right: 64px;
   }
+
   .left-nav a {
    text-decoration: none;
    font-weight: bold;
    color: #5A595E;
   }
 
-  .left-nav p {
-    padding-left: 28px;
+  .left-nav img {
+    width: 42%;
   }
 
 }
@@ -495,11 +495,6 @@ a {
   background: white;
   border-radius: 3px;
   font-size: 80%;
-}
-
-.table-box input:focus {
-  outline-color: #40B9F8;
-  outline-width: 2px;
 }
 
 .table-box .tags {
