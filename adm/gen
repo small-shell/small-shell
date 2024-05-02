@@ -1762,7 +1762,7 @@ if [ "$param" = "-app" ];then
       done
 
 
-      for src in `ls $ROOT/web/src/descriptor/common_parts | xargs basename -a`
+      for src in `ls $ROOT/web/src/descriptor/common_parts | grep -v tmplt | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/common_parts/$src  > $descrdir/common_parts/$src
         chown $cgiusr:$cgiusr $descrdir/common_parts/$src
@@ -2377,12 +2377,16 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
-          > ${www}/descriptor/common_parts/${app}_common_menu
-          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          do
+            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
+            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            > ${www}/descriptor/common_parts/${app}_${menu}
+            chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
+          done
 
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
-          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
           if [ -f $ROOT/web/.rand ];then
             . $ROOT/web/.rand
@@ -2467,12 +2471,16 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g"\
-          > ${www}/descriptor/common_parts/${app}_common_menu
-          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          do
+            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
+            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            > ${www}/descriptor/common_parts/${app}_${menu}
+            chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
+          done
 
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
-          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
           if [ "$srvtype" = "default" ];then
              if [ ! -d $www/html/$app ];then
@@ -2566,12 +2574,16 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
-          > ${www}/descriptor/common_parts/${app}_common_menu
-          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          do
+            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
+            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            > ${www}/descriptor/common_parts/${app}_${menu}
+            chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
+          done
 
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
-          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
           if [ -f $ROOT/web/.rand ];then
             . $ROOT/web/.rand
@@ -2666,12 +2678,16 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu | $SED "s/%%app/$app/g"  | $SED "s/%%databox/$databox/g" \
-          | grep -v logout > ${www}/descriptor/common_parts/${app}_common_menu
-          chmod 755 ${www}/descriptor/common_parts/${app}_common_menu
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          do
+            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
+            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            > ${www}/descriptor/common_parts/${app}_${menu}
+            chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
+          done
 
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
-          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}_common_menu 
+          chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
           if [ "$srvtype" = "default" ];then
              if [ ! -d $www/html/$app ];then

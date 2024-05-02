@@ -235,11 +235,10 @@ fi
 cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
 | $SED "/%%common_menu/d"\
-| $SED "/%%table_menu/r %%www/descriptor/common_parts/table_menu_${permission}" \
+| $SED "/%%table_menu/r %%www/descriptor/common_parts/%%app_table_menu_${permission}" \
 | $SED "/%%table_menu/d"\
 | $SED "/%%table/r %%www/tmp/$session/table" \
 | $SED "s/%%table//g"\
-| $SED "s/%%databox/$databox/g"\
 | $SED "/%%page_link/r %%www/tmp/$session/page_link" \
 | $SED "s/%%page_link//g"\
 | $SED "/%%tag/r %%www/tmp/$session/tag" \

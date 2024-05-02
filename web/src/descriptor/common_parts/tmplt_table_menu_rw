@@ -1,0 +1,2 @@
+<a href="./%%app?%%params&req=get&id=new"><p>+ADD</p></a>
+<a href="./%%app?%%params&req=table"><p>-CLR</p></a>
