@@ -2801,8 +2801,17 @@ if [ "$param" = "-app" ];then
           fi
         done
 
+        for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+        do  
+          menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
+          cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" \
+          > ${www}/descriptor/common_parts/${app}_${menu}
+          chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
+        done
+
         chmod 755 ${www}/descriptor/${app}*
         chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
+        chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
         echo "  \"${app}.table\") ${www}/bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;" > $tmp_dir/subapp_routing
         echo "  \"${app}.get\") ${www}/bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;" >> $tmp_dir/subapp_routing
