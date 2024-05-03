@@ -75,8 +75,8 @@ if [ ! "$duplicate" = "yes" ];then
 
     # gen read only datas
     $DATA_SHELL databox:$databox action:get id:$id keys:all format:none | grep -v hashid > %%www/tmp/$session/dataset.0.1
-    cat %%www/tmp/$session/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/g" | $SED "s/$/<\/pre><\/li>/g" \
-    | $SED "s/<p><\/p>/<p>-<\/p>/g" | $SED "s/_%%enter_/\n/g" >> %%www/tmp/$session/dataset
+    cat %%www/tmp/$session/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/1" | $SED "s/$/<\/pre><\/li>/g" \
+    | $SED "s/<pre><\/pre>/<pre>-<\/pre>/g" | $SED "s/_%%enter_/\n/g" >> %%www/tmp/$session/dataset
 
   fi
 
