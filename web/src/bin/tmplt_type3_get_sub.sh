@@ -48,7 +48,7 @@ DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%p
 
 # load permission
 if [ ! "$user_name" = "guest" ];then
-  permission=`$META get.attr:%%app/$user_name{permission}`
+  permission=`$META get.attr:%%parent_app/$user_name{permission}`
 else
   permission="ro"
 fi
