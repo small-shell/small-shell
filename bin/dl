@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 # download file from databox
-# usage: dl databox:$databox id:$id session:$session pin:$pin
-#------------------------------------------------------------
+# usage: dl databox:$databox remote_addr:$remote_addr id:$id session:$session pin:$pin
+#--------------------------------------------------------------------------------------
 
 ## global conf load
 SCRIPT_DIR=`dirname $0`
@@ -62,6 +62,10 @@ do
     app=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  if [[ $param == remote_addr:* ]];then
+    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
 done
 
 
@@ -99,23 +103,23 @@ else
 
 fi
 
-if [ ! "$remote_addr" ];then
-  remote_addr=localhost
-fi
-
 if [ ! -f $ROOT/databox/$databox/file/$id ];then
    echo "error: $id does not have file"
    rm -rf $tmp_dir
    exit 1
 fi
 
-# get primary key
-primary_key=`grep "^name=" $ROOT/databox/${databox}/def/col1 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | $SED "s/ //g"`
-primary_key_value=`cat $ROOT/databox/${databox}/data/${id}/${primary_key}`
-
+# get filename
+key=`grep -B 4  type=\"file\" $ROOT/databox/$databox/def/col* | grep name=\" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g"`
+file_name=`cat $ROOT/databox/$databox/data/$id/$key`
+   
 # output binary data
 dd if=$ROOT/databox/$databox/file/$id 2>/dev/null
-echo "`date +%Y-%m-%d` `date +%T` user_name:$user $remote_addr download file from databox:$databox primary_key:$primary_key_value" >> $access_log
+if [ "$remote_addr" ];then
+  echo "`date +%Y-%m-%d` `date +%T` user_name:$user $remote_addr download databox:$databox id:$id file:$file_name" >> $access_log
+else
+  echo "`date +%Y-%m-%d` `date +%T` user_name:$user download databox:$databox id:$id file:$file_name" >> $access_log
+fi
 
 if [ -d $tmp_dir ];then
   rm -rf $tmp_dir
