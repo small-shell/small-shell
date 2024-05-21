@@ -2783,7 +2783,7 @@ if [ "$param" = "-app" ];then
         | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
 
         cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$parent_app/g" \
-        | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+        > ${www}/bin/${app}_page_links.sh
 
         cat $ROOT/web/src/bin/tmplt_dl_sub.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
         | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
