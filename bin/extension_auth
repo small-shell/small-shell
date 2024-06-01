@@ -150,6 +150,8 @@ if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
       exit 1
     fi
   else
+    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} failed to initialize user_key" \
+    >> $access_log
     echo "error: your initialize key is wrong"
     exit 1
   fi
@@ -186,6 +188,10 @@ if [ "$key_auth" ];then
      >> $access_log
      exit 1
     fi
+  else
+    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} sent wrong key"\
+    >> $access_log
+    exit 1
   fi
 
 fi
