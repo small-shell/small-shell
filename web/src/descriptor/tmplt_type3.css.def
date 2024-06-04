@@ -431,7 +431,7 @@ a {
   
 @media screen and (min-width: 641px) {
   .left-nav {
-   padding-top: 12px;
+   top: 20px;
    position: sticky;
   }
 
