@@ -88,7 +88,7 @@ else
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
       if [ ! "$file_chk" ];then
-        echo "$data"  >> /var/www/tmp/$session/dataset
+        echo "$data"  >> %%www/tmp/$session/dataset
       else
         $DATA_SHELL databox:$databox \
         action:get id:new key:$key format:html_tag  >> %%www/tmp/$session/dataset
