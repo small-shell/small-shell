@@ -69,25 +69,26 @@ if [ ! "$duplicate" = "yes" ];then
   fi
 
 else
+
   # else means copying data
   if [ "$keys" = "all" ];then
     keys=`$META get.key:$databox{all}`
-    primary_key=`$META get.key:$databox{primary}`
   fi
+  primary_key=`$META get.key:$databox{primary}`
+
+  $DATA_SHELL databox:$databox \
+  action:get id:new key:$primary_key format:html_tag > %%www/tmp/$session/dataset
+
   for key in $keys
   do
     # gen %%data by conpying
-
-    if [ "$primary_key" = "$key" ];then
-      $DATA_SHELL databox:$databox \
-      action:get id:new key:$key format:html_tag > %%www/tmp/$session/dataset
-    else
+    if [ ! "$primary_key" = "$key" ];then
       data=`$DATA_SHELL databox:$databox \
-      action:get id:$id key:$key format:html_tag ` 
+      action:get id:$id key:$key format:html_tag`
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
 
       if [ ! "$file_chk" ];then
-        echo "$data" >> %%www/tmp/$session/dataset
+        echo "$data"  >> /var/www/tmp/$session/dataset
       else
         $DATA_SHELL databox:$databox \
         action:get id:new key:$key format:html_tag  >> %%www/tmp/$session/dataset
@@ -95,6 +96,7 @@ else
     fi
   done
   id=new
+
 fi
 
 
