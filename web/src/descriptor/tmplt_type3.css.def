@@ -297,7 +297,7 @@ a {
   }
 
   .main h1 {
-    font-size: 180%;
+    font-size: 240%;
   }
 
   .main p {
