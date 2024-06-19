@@ -273,7 +273,7 @@ if [ "$action" = "get.label" ];then
 
   if [ "$label" = "all" ];then
     labels=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
-            | $SED "s/ //g" | $SED -z "s/\n/ /g" `
+            | $SED -z "s/\n/,/g" `
     echo $labels
     exit 0
   fi
