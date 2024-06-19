@@ -264,7 +264,12 @@ if [ "$command" ];then
        fi
 
        sort_col=`grep -l "^name=\"$sort_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | $SED "s/col//g"`
-       (( sort_col += 1 ))
+       if [ "$sort_col" ];then
+         (( sort_col += 1 ))
+       else
+         echo "error: sort key must be wrong" 
+         exit 1
+       fi
 
        if [ "$sort_col" ];then
          cat $target_file | $SED "s/^:::::://g" | $SED "s/::::::/,/g" > ${sort_tmp}.1
