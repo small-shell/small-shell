@@ -251,7 +251,18 @@ if [ "$command" ];then
     ## Handle sort option
     sort_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.sort
 
-    if [ "${sort_key}" -a "${sort_option}" ];then
+    if [ "${sort_key}" -o "${sort_option}" ];then
+          
+       if [ ! "${sort_key}" ];then
+         echo "error: please set sort key" 
+         exit 1
+       fi
+
+       if [ ! "${sort_option}" ];then
+         echo "error: please set sort option" 
+         exit 1
+       fi
+
        sort_col=`grep -l "^name=\"$sort_key\"" $ROOT/databox/$databox/def/col* | xargs basename -a  2>/dev/null | $SED "s/col//g"`
        (( sort_col += 1 ))
 
