@@ -268,7 +268,7 @@ if [ "$command" ];then
 
        if [ "$sort_col" ];then
          cat $target_file | $SED "s/^:::::://g" | $SED "s/::::::/,/g" > ${sort_tmp}.1
-         cat ${sort_tmp}.1 | sort -t, $sort_option -k $sort_col > ${sort_tmp}.2
+         cat ${sort_tmp}.1 | sort -t, $sort_option -k $sort_col > ${sort_tmp}.2 2>/dev/null 
          cat ${sort_tmp}.2  | $SED "s/,/::::::/1" | $SED "s/^/::::::/g" > ${sort_tmp}.3
        fi
        target_file=${sort_tmp}.3
