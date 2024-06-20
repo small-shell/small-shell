@@ -1,15 +1,17 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>%%id</title>
+    <title>DATA: %%id</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="stylesheet" href="./%%app_css">
+    <link rel="stylesheet" href="./css">
   </head>
   <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
-          <h3><a href="./%%app?%%params&req=main">%%app</a></h3>
+          <select class="dataselect" onChange="location.href=value;">
+            %%databox_list
+          </select>
         </div>
         <div class="right-header">
           <button class="even-btn-menu">=</button>
@@ -21,17 +23,22 @@
         </div>
       </div>
 
-      <div class="form-box">
+      <div class="%%form-class">
         <div class="description">
-          <h1>404 not found</h1>
+          <h1>#values</h1>
+          <p><b>#ID </b>%%id</p>
         </div>
-        <pre>
+        <ul>
         %%dataset
-        </pre>
+        </ul>
+        <p><b>Master server failed. can not update any data<b></p>
+        </form>
         <div class="action_links">
+          <span><p style="cursor: pointer" onclick="window.open('./base?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
         </div>
       </div>
     </div>
+
     <script>
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
@@ -50,13 +57,8 @@
         }
       })
 
-      function del_confirmation(){
-        ret = confirm("Are you OK to delete this data ?");
-        if (ret == true){
-           location.href = "./%%app?%%params&req=del&id=%%id";
-        }
-      }
-
+      document.getElementById("txtara").rows="%%text_area_row"
     </script>
+
   </body>
 </html>

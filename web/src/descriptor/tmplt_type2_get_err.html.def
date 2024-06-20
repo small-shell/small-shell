@@ -1,19 +1,18 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>%%id</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./%%app_css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>%%id</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./%%app_css">
+  </head>
+  <body>
     <div class="container">
-
-     <div class="form-box">
-      <div class="description">
-       <h1>404 not found</h1>
-       <p>id:%%id</p>
+      <div class="form-box">
+        <div class="description">
+          <h1>404 not found</h1>
+          <p>id:%%id</p>
+        </div>
       </div>
-     </div>
     </div>
-    </body>
+  </body>
 </html>

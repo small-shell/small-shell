@@ -22,7 +22,7 @@ SCRIPT_DIR=`dirname $0`
 if [ -f $ROOT/tmp/que/$session ];then
   user=`cat $ROOT/tmp/que/$session | $AWK -F ":" '{print $1}'`
 
-  if [ "$app" = "shell.app" ];then
+  if [ "$app" = "base" ];then
     # check token
     tokencheck=`echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
   else
@@ -61,7 +61,7 @@ do
  ((count += 1))
  if [ "$count" -gt 200000 ];then
    # logging error log
-   echo "`date +%Y-%m-%d` `date +%T` error failed to update index by que.sh" >> $ROOT/databox/$databox/error.log
+   echo "`date +%Y-%m-%d` `date +%T` error failed to update index by sbin/que" >> $ROOT/databox/$databox/error.log
    exit 1
  fi
 done
@@ -152,7 +152,7 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          if [ "$value" ];then
            file_name=`echo "$value" | $SED -r "s/ #size(.*)//g"`
-           value=`echo "$value" | $SED "s/^/a%% href=\".\/shell.app?%%params\&req=file\&id=$id\" download=\"$file_name\">/g" \
+           value=`echo "$value" | $SED "s/^/a%% href=\".\/base?%%params\&req=file\&id=$id\" download=\"$file_name\">/g" \
            | $SED "s/$/%%a/g"`
          fi
        elif [ $type = "checkbox" ];then

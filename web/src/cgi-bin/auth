@@ -1,5 +1,9 @@
 #!/bin/bash
 
+###############################
+# auth for Base APP
+###############################
+
 # set persistence option
 IP_persistence="yes"
 User_agent_persistence="yes"
@@ -45,7 +49,6 @@ fi
 param=`date +%s`
 param="$param:$RANDOM"
 count=1
-
 while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
@@ -83,7 +86,7 @@ count=0
 for res in $res_list
 do
   if [ ! "$databox" = "$res" -o $count -eq 0 ];then
-    echo "<option value=\"./shell.auth?databox=$res\">DataBox:$res</option>"\
+    echo "<option value=\"./auth.base?databox=$res\">DataBox:$res</option>"\
     >> %%www/tmp/$timestamp/databox_list
   fi
   ((count +=1 ))
@@ -91,7 +94,7 @@ done
 
 res_chk=`echo $res_list | $SED "s/ //g"`
 if [ ! "$res_chk" ];then
-  echo "<option value=\"./shell.auth?databox=null\">DataBox:null</option>" >> %%www/tmp/$timestamp/databox_list
+  echo "<option value=\"./auth.base?databox=null\">DataBox:null</option>" >> %%www/tmp/$timestamp/databox_list
   databox=null
 fi
 
@@ -104,7 +107,13 @@ fi
 if [ "$initialize" ];then
   user_id=`echo $initialize | $AWK -F "," '{print $1}'`
   initialize_hash_key=`echo $initialize |  $AWK -F "," '{print $2}'`
-  key_gen=`${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
+
+  if [ "$master" ];then
+    key_gen=`ssh ${master} ${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
+  else
+    key_gen=`${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
+  fi
+
   user_name=`echo $key_gen | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
   user_key=`echo $key_gen | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   server=`${small_shell_path}/bin/meta get.server`
@@ -199,11 +208,11 @@ if [ "$small_shell_authkey" ];then
 
     # redirect to controller if key auth is OK
     if [ "$req" = "get" -o "$req" = "log_viewer" ];then
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&req=$req&pin=$pin&id=$id\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?databox=$databox&session=$session&req=$req&pin=$pin&id=$id\">"
     elif [ "$req" = "table" ];then
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&pin=$pin&req=$req\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?databox=$databox&session=$session&pin=$pin&req=$req\">"
     else
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.app?databox=$databox&session=$session&pin=$pin&req=$req\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?databox=$databox&session=$session&pin=$pin&req=$req\">"
     fi
     rm -rf %%www/tmp/$timestamp
     exit 0

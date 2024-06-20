@@ -4,35 +4,35 @@
 # PARAM FOR META
 # action(L1).action(L2):target{param}
 #----------------------------------------------------------
-# meta get.chain:$databox
-# meta get.progress:$import_session
-# meta get.num:$databox
-# meta get.databox
-# meta get.server
-# meta get.attr:$user{$attribute_key}
-# meta get.attr:$app/$user{$attribute_key}
-# meta get.key:$databox{primary}
-# meta get.key:$databox{all}
-# meta get.key:$databox{$label}
-# meta get.pdls:$databox{filter_word}
-# meta get.label:$databox{primary}
-# meta get.label:$databox{all}
-# meta get.header:$databox{csv}
-# meta get.header:$databox{json}
-# meta get.tag:$databox
-# meta get.tag:$app{$databox}
-# meta get.command
-# meta get.IP #show whitelisted IPs
-# meta get.statistics:ls{html_tag}
-# meta get.statistics:ls.$filter_word,$filter_word2{html_tag}
-# meta get.statistics:$statistics{graph}
-# meta get.statistics:$statistics{raw_data}
-# meta get.shared_pass:$app
-# meta get.users
-# meta get.users:$app
-# meta get.link:$app
-# meta chk.form:$databox
-# meta chk.null:$databox{id}
+# get.chain:$databox
+# get.progress:$import_session
+# get.num:$databox
+# get.databox
+# get.server
+# get.attr:$user{$attribute_key}
+# get.attr:$app/$user{$attribute_key}
+# get.key:$databox{primary}
+# get.key:$databox{all}
+# get.key:$databox{$label}
+# get.pdls:$databox{filter_word}
+# get.label:$databox{primary}
+# get.label:$databox{all}
+# get.header:$databox{csv}
+# get.header:$databox{json}
+# get.tag:$databox
+# get.tag:$app{$databox}
+# get.command
+# get.IP #show whitelisted IPs
+# get.statistics:ls{html_tag}
+# get.statistics:ls.$filter_word,$filter_word2{html_tag}
+# get.statistics:$statistics{graph}
+# get.statistics:$statistics{raw_data}
+# get.shared_pass:$app
+# get.users
+# get.users:$app
+# get.link:$app
+# chk.form:$databox
+# chk.null:$databox{id}
 #----------------------------------------------------------
 
 # global conf load
@@ -371,13 +371,13 @@ if [ "$action" = "get.statistics" ];then
         fi
 
         if [ "$format" = "html_tag" ];then
-          html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%rawdata&type=rawdata',"
+          html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%rawdata&type=rawdata',"
           html_tag="$html_tag 'statistics_viewer', 'width=820,height=280')\">%%rawdata :rawdata</a>"
           echo "$html_tag" | $SED "s/%%rawdata/$rawdata/g" | $SED "s/.csv//g"
 
           graph=`echo $rawdata | $SED "s/.csv/.png/g"`
           if [ -f $ROOT/util/statistics/graph/${graph} ];then
-            html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%graph&type=graph',"
+            html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%graph&type=graph',"
             html_tag="$html_tag 'statistics_viewer', 'width=1200,height=820')\">%%graph :graph</a>"
             echo "$html_tag" | $SED "s/%%graph/$graph/g" | $SED "s/.png//g"
           fi
@@ -410,13 +410,13 @@ if [ "$action" = "get.statistics" ];then
         fi
 
         if [ "$format" = "html_tag" ];then
-          html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%rawdata&type=rawdata',"
+          html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%rawdata&type=rawdata',"
           html_tag="$html_tag 'statistics_viewer', 'width=820,height=280')\">%%rawdata :rawdata</a>"
           echo "$html_tag" | $SED "s/%%rawdata/$rawdata/g" | $SED "s/.csv//g"
 
           graph=`echo $rawdata | $SED "s/.csv/.png/g"`
           if [ -f $ROOT/util/statistics/graph/${graph} ];then
-            html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=stats&target=%%graph&type=graph',"
+            html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%graph&type=graph',"
             html_tag="$html_tag 'statistics_viewer', 'width=1200,height=820')\">%%graph :graph</a>"
             echo "$html_tag" | $SED "s/%%graph/$graph/g" | $SED "s/.png//g"
           fi
@@ -563,34 +563,34 @@ echo "#------------------------------------------------------
 # PARAM FOR META
 # action(L1).action(L2):target{param}
 #----------------------------------------------------------
-# meta get.chain:\$databox
-# meta get.progress:\$import_session
-# meta get.num:\$databox
-# meta get.databox
-# meta get.server
-# meta get.attr:\$user{\$attribute_key}
-# meta get.attr:\$app/\$user{\$attribute_key}
-# meta get.key:\$databox{primary}
-# meta get.key:\$databox{all}
-# meta get.key:\$databox{\$label}
-# meta get.pdls:\$databox{filter_word}
-# meta get.label:\$databox{all}
-# meta get.header:\$databox{csv}
-# meta get.header:\$databox{json}
-# meta get.tag:\$databox
-# meta get.tag:\$app{\$databox}
-# meta get.command
-# meta get.IP #show whitelisted IPs
-# meta get.statistics:ls{html_tag}
-# meta get.statistics:ls.\$filter_word,$filter_word2{html_tag}
-# meta get.statistics:\$statistics{graph}
-# meta get.statistics:\$statistics{raw_data}
-# meta get.shared_pass:\$app
-# meta get.users
-# meta get.users:\$app
-# meta get.link:\$app
-# meta chk.form:\$databox
-# meta chk.null:\$databox{id}
+# get.chain:\$databox
+# get.progress:\$import_session
+# get.num:\$databox
+# get.databox
+# get.server
+# get.attr:\$user{\$attribute_key}
+# get.attr:\$app/\$user{\$attribute_key}
+# get.key:\$databox{primary}
+# get.key:\$databox{all}
+# get.key:\$databox{\$label}
+# get.pdls:\$databox{filter_word}
+# get.label:\$databox{all}
+# get.header:\$databox{csv}
+# get.header:\$databox{json}
+# get.tag:\$databox
+# get.tag:\$app{\$databox}
+# get.command
+# get.IP #show whitelisted IPs
+# get.statistics:ls{html_tag}
+# get.statistics:ls.\$filter_word,$filter_word2{html_tag}
+# get.statistics:\$statistics{graph}
+# get.statistics:\$statistics{raw_data}
+# get.shared_pass:\$app
+# get.users
+# get.users:\$app
+# get.link:\$app
+# chk.form:\$databox
+# chk.null:\$databox{id}
 #----------------------------------------------------------"
 fi
 

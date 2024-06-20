@@ -69,7 +69,6 @@ if [ ! "$duplicate" = "yes" ];then
   fi
 
 else
-
   # else means copying data
   if [ "$keys" = "all" ];then
     keys=`$META get.key:$databox{all}`

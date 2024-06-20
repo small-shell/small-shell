@@ -1,61 +1,64 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>auth</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>auth</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+
+  <body>
     <div class="container">
       <div class="auth-container">
-      <div class="auth-form">
-      <form method="post" action="./shell.auth?%%params">
-      %%message
-      <h1>key.auth</h1>
-      <div class="wrapper">
-        <input type="text" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand" placeholder="Your key" list="keylist" autocomplete="on">
-        <datalist id="keylist">
-        </datalist>
-        <button class="button" type="submit" onclick="setkey()">SUBMIT</button>
+        <div class="auth-form">
+          <form method="post" action="./auth.base?%%params">
+          %%message
+          <h1>key.auth</h1>
+          <div class="wrapper">
+            <input type="text" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand" placeholder="Your key" list="keylist" autocomplete="on">
+            <datalist id="keylist">
+            </datalist>
+            <button class="button" type="submit" onclick="setkey()">SUBMIT</button>
+          </div>
+          </form>
+        </div>
       </div>
-      </form>
-     </div>
-     </div>
-     <div class="footer">
-     %%footer
-     </div>
-   </div>
-   <script>
+      <div class="footer">
+        %%footer
+      </div>
+    </div>
 
-   // menu
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+    <script>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+      // menu
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-  // key management that is stored on localstorage
-  var keylist = document.getElementById("keylist");
-  key=document.createElement("option");
-  key.text=localStorage.getItem("small_shell_authkey_%%rand");
-  keylist.appendChild(key);
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
 
-  function setkey() {
-     var newkey = document.getElementById("small_shell_authkey_%%rand").value;
-     localStorage.setItem("small_shell_authkey_%%rand", newkey);
-  }
+      // key management that is stored on localstorage
+      var keylist = document.getElementById("keylist");
+      key=document.createElement("option");
+      key.text=localStorage.getItem("small_shell_authkey_%%rand");
+      keylist.appendChild(key);
 
-  </script>
+      function setkey() {
+         var newkey = document.getElementById("small_shell_authkey_%%rand").value;
+         localStorage.setItem("small_shell_authkey_%%rand", newkey);
+      }
+
+    </script>
+
   </body>
 </html>

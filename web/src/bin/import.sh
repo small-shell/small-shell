@@ -47,7 +47,7 @@ count=0
 for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
-    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=import\">DataBox:$db</option>"\
+    echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=import\">DataBox:$db</option>"\
     >> %%www/tmp/$session/databox_list
   fi
   ((count +=1 ))
@@ -79,7 +79,7 @@ else
 
   error_check=`cat %%www/tmp/$session/result | grep error`
   if [ ! "$error_check" ];then
-    echo "<a style=\"cursor: pointer\" onclick=\"window.open('./shell.app?%%params&req=log_viewer&data_import_session=$data_import_session', 'log_viewer', 'width=920,height=280')\">view</a>" >> %%www/tmp/$session/result
+    echo "<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=log_viewer&data_import_session=$data_import_session', 'log_viewer', 'width=920,height=280')\">view</a>" >> %%www/tmp/$session/result
     message="## SUCCESS ##"
   else
     message="please check your import file again"

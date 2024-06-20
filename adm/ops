@@ -82,11 +82,6 @@ do
 
   fi
 
-  if [[ $param == get.attr* ]]; then
-    action=`echo $param | $AWK -F":" '{print $1}'`
-    user_name=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
-  fi
-
   if [[ $param == initialize.usr:* ]]; then
     action=`echo $param | $AWK -F":" '{print $1}'`
     user_name=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
@@ -120,7 +115,7 @@ function initialize_url(){
   t_app=$3
  
   if [ ! "$t_app" ];then
-    auth=shell.auth
+    auth=auth.base
   else
     auth=auth.${t_app}
   fi
@@ -342,21 +337,6 @@ if [[ $action == set.attr* ]];then
     echo "error: failed to set attribute"
   fi
 
-fi
-
-if [[ $action == get.attr* ]];then
-  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
-  if [ "$app" ];then
-    user_dir="$ROOT/users/${app}.${user_id}"
-  else
-    user_dir="$ROOT/users/${user_id}"
-  fi
-
-  if [ ! -d $user_dir ];then
-    echo "error: there is no user ($user_name)"
-    exit 1
-  fi
-  cat $user_dir/attr
 fi
 
 # Handle table tagging request

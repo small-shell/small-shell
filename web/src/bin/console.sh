@@ -92,7 +92,7 @@ count=0
 for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
-    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=console\">DataBox:$db</option>"\
+    echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=console\">DataBox:$db</option>"\
     >> %%www/tmp/$session/databox_list
   fi
   ((count +=1 ))

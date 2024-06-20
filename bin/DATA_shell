@@ -171,7 +171,7 @@ if [ -f $ROOT/tmp/session/$session ];then
   if [ ! "$app" ];then
     # check token
     tokencheck=`echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
-    app=shell.app
+    app=base
   else
     # check app token
     tokencheck=`echo "${app}:${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
@@ -252,7 +252,7 @@ if [ "$command" ];then
     sort_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.sort
 
     if [ "${sort_key}" -o "${sort_option}" ];then
-          
+
        if [ ! "${sort_key}" ];then
          echo "error: please set sort key" 
          exit 1
@@ -273,7 +273,7 @@ if [ "$command" ];then
 
        if [ "$sort_col" ];then
          cat $target_file | $SED "s/^:::::://g" | $SED "s/::::::/,/g" > ${sort_tmp}.1
-         cat ${sort_tmp}.1 | sort -t, ${sort_option} -k ${sort_col},${sort_col} > ${sort_tmp}.2 2>/dev/null
+         cat ${sort_tmp}.1 | sort -t, ${sort_option} -k ${sort_col},${sort_col} > ${sort_tmp}.2 2>/dev/null 
          cat ${sort_tmp}.2  | $SED "s/,/::::::/1" | $SED "s/^/::::::/g" > ${sort_tmp}.3
        fi
        target_file=${sort_tmp}.3
@@ -1053,7 +1053,7 @@ function get_data(){
         primary_key_values=`cat $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}'`
         if [ "$value" ];then
           pdid=`grep "::::::${value}," $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $2}'`
-          if [ "$app" = "shell.app" ];then
+          if [ "$app" = "base" ];then
             if [ "$pdid" ];then
               echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}.ln</a></label>"
             else
@@ -1125,7 +1125,7 @@ function get_data(){
 
     if [ "$type" = "mls" ];then
 
-      if [ "$app" = "shell.app" ];then
+      if [ "$app" = "base" ];then
         users=`$ROOT/bin/meta get.users` 
       else
         users=`$ROOT/bin/meta get.users:$app` 
@@ -1688,7 +1688,7 @@ if [ "$action" ];then
 
   if [[ $action == set* ]]; then
 
-    if [ "$app" = "shell.app" ];then
+    if [ "$app" = "base" ];then
       permission=`$ROOT/bin/meta get.attr:$user{permission}`
     else
       permission=`$ROOT/bin/meta get.attr:$app/$user{permission}`
@@ -1779,9 +1779,9 @@ if [ "$action" ];then
         cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
 
         if [ ! "$bat" = "yes" ];then
-          $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin set $app &
+          $ROOT/sbin/que $databox $id $updated_keys $session $pin set $app &
         else
-          $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin set $app
+          $ROOT/sbin/que $databox $id $updated_keys $session $pin set $app
         fi
       fi
 
@@ -1811,9 +1811,9 @@ if [ "$action" ];then
       if [ $? -eq 0 ];then
         cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
         if [ ! "$bat" = "yes" ];then
-          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app &
+          $ROOT/sbin/que $databox $id $key $session $pin set $app &
         else
-          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app
+          $ROOT/sbin/que $databox $id $key $session $pin set $app
         fi
       fi
 
@@ -1843,9 +1843,9 @@ if [ "$action" ];then
       done
       cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
       if [ ! "$bat" = "yes" ];then
-        $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin del $app &
+        $ROOT/sbin/que $databox $id $updated_keys $session $pin del $app &
       else
-        $ROOT/sbin/que.sh $databox $id $updated_keys $session $pin del $app
+        $ROOT/sbin/que $databox $id $updated_keys $session $pin del $app
       fi
     fi
     echo "$result"
@@ -1944,9 +1944,9 @@ if [ "$action" ];then
       if [ $? -eq 0 ];then
         cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
         if [ ! "$bat" = "yes" ];then
-          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app &
+          $ROOT/sbin/que $databox $id $key $session $pin set $app &
         else
-          $ROOT/sbin/que.sh $databox $id $key $session $pin set $app
+          $ROOT/sbin/que $databox $id $key $session $pin set $app
         fi
       fi
       echo "$result"

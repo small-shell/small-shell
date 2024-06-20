@@ -1,11 +1,11 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>console box</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>console box</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
     <div class="console-container">
       <div class="flex-header">
         <div class="left-header">
@@ -14,28 +14,30 @@
           </select>
         </div>
         <div class="right-header">
-        <button class="even-btn-menu">=</button>
-        <nav>
-        <ul>
-        %%common_menu
-        </ul>
-        </nav>
+          <button class="even-btn-menu">=</button>
+          <nav>
+          <ul>
+          %%common_menu
+          </ul>
+          </nav>
         </div>
-       </div>
+      </div>
 
-       <div class="console-box">
-         <form method="post" action="./shell.app?%%params&req=console&post=yes">
-         <ul>
-           <li>
-            <input type="text" name="command" placeholder="Type any filter words or command [%%commands..] which can be piplined to the data box" autocomplete="off">
-           </li>
-         </ul>
-         </form>
-         <div class="description">
-           <h5>+CONSOLE BOX for %%user{IP:%%remote_addr}</h5>
-         </div>
-       <pre>
+      <div class="console-box">
+        <form method="post" action="./base?%%params&req=console&post=yes">
+        <ul>
+        <li>
+          <input type="text" name="command" placeholder="Type any filter words or command [%%commands..] which can be piplined to the databox" autocomplete="off">
+        </li>
+        </ul>
+        </form>
+        <div class="description">
+          <h5>+CONSOLE BOX for %%user{IP:%%remote_addr}</h5>
+        </div>
+        <pre>
 <b># SMALL SHELL STATISTICS %%filters</b>
+please click text, then you can show detail
+
 # search examples
 #----------------------------------------------------------------#
 # snapshot [_s_ #stats]
@@ -50,30 +52,31 @@
 #----------------------------------------------------------------#
 
 ..done
-      </pre>
-     </div>
-   <div class="footer">
-   %%footer
-   </div>
-   </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+        </pre>
+      </div>
+      <div class="footer">
+       %%footer
+      </div>
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   </script>
-   </body>
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
+
+    </script>
+  </body>
 </html>

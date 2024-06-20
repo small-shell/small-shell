@@ -1,5 +1,10 @@
 #!/bin/bash
 
+###############################
+# key auth for Scratch APP
+###############################
+IP_whitelisting=%%IP_whitelisting
+
 # set persistence option
 IP_persistence="yes"
 User_agent_persistence="yes"
@@ -17,9 +22,6 @@ fi
 if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 fi
-
-# required
-IP_whitelisting=%%IP_whitelisting
 
 # IP restriction check
 if [ "$IP_whitelisting" = "yes" ];then
@@ -45,7 +47,6 @@ fi
 param=`date +%s`
 param="$param:$RANDOM"
 count=1
-
 while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
@@ -91,8 +92,15 @@ rm -rf %%www/tmp/${param}*
 if [ "$initialize" ];then
     user_id=`echo $initialize | $AWK -F "," '{print $1}'`
     initialize_hash_key=`echo $initialize |  $AWK -F "," '{print $2}'`
-    key_gen=`${small_shell_path}/bin/extension_auth app:%%app initialize:${user_id}{${initialize_hash_key}} \
-             remote_addr:${remote_addr}`
+
+    if [ "$master" ];then
+      key_gen=`ssh ${master} ${small_shell_path}/bin/extension_auth app:%%app initialize:${user_id}{${initialize_hash_key}} \
+      remote_addr:${remote_addr}`
+    else
+      key_gen=`${small_shell_path}/bin/extension_auth app:%%app initialize:${user_id}{${initialize_hash_key}} \
+      remote_addr:${remote_addr}`
+    fi
+
     user_name=`echo $key_gen | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
     user_key=`echo $key_gen | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
     server=`${small_shell_path}/bin/meta get.server`

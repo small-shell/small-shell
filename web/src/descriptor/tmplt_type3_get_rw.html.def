@@ -1,69 +1,69 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>%%id</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./%%app_css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>%%id</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./%%app_css">
+  </head>
+  <body>
     <div class="container">
       <div class="flex-header">
-       <div class="left-header">
-         <h3><a href="./%%app?%%params&req=main">%%app</a></h3>
-       </div>
-       <div class="right-header">
-        <button class="even-btn-menu">=</button>
-        <nav>
-        <ul>
-          %%common_menu
-        </ul>
-        </nav>
+        <div class="left-header">
+          <h3><a href="./%%app?%%params&req=main">%%app</a></h3>
+        </div>
+        <div class="right-header">
+          <button class="even-btn-menu">=</button>
+          <nav>
+          <ul>
+            %%common_menu
+          </ul>
+          </nav>
         </div>
       </div>
 
       <div class="form-box">
-       <div class="description">
-        <h1>#%%databox.data</h1>
-        <p>id:%%id</p>
-       </div>
-       <form method="post" action="./%%app?%%params&req=set&id=%%id" onclick="document.charset='utf-8';">
-       <ul>
-        %%dataset
-       </ul>
-       <button class="button" type="submit">SET</button>
-       </form>
-       <div class="action_links">
-        <span><p style="cursor: pointer" onclick="window.open('./%%app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
-        <span><a href="./%%app?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
-        <span><p style="cursor: pointer" onclick="del_confirmation()">Delete</p></span>
-       </div>
+        <div class="description">
+          <h1>#%%databox.data</h1>
+          <p>id:%%id</p>
+        </div>
+        <form method="post" action="./%%app?%%params&req=set&id=%%id" onclick="document.charset='utf-8';">
+        <ul>
+         %%dataset
+        </ul>
+        <button class="button" type="submit">SET</button>
+        </form>
+        <div class="action_links">
+          <span><p style="cursor: pointer" onclick="window.open('./%%app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
+          <span><a href="./%%app?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
+          <span><p style="cursor: pointer" onclick="del_confirmation()">Delete</p></span>
+        </div>
       </div>
-   </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   function del_confirmation(){
-     ret = confirm("Are you OK to delete this data ?");
-     if (ret == true){
-       location.href = "./%%app?%%params&req=del&id=%%id";
-     }
-   }
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
 
-   </script>
-   </body>
+      function del_confirmation(){
+        ret = confirm("Are you OK to delete this data ?");
+         if (ret == true){
+           location.href = "./%%app?%%params&req=del&id=%%id";
+         }
+      }
+    </script>
+  </body>
 </html>

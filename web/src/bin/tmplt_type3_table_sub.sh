@@ -236,7 +236,7 @@ cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/d"\
 | $SED "/%%table_menu/r %%www/descriptor/common_parts/%%app_table_menu_${permission}" \
 | $SED "/%%table_menu/d"\
-| $SED "/%%table/r %%www/tmp/$session/table" \
+| $SED "/%%table/r $table" \
 | $SED "s/%%table//g"\
 | $SED "/%%page_link/r %%www/tmp/$session/page_link" \
 | $SED "s/%%page_link//g"\
@@ -263,7 +263,7 @@ cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
 | $SED "s/{%%%%}/\&/g"\
 | $SED "s/{%%%}/:/g"\
 | $SED "s/{%%space}/ /g"\
-| $SED "s/.\/shell.app?/.\/%%parent_app?/g"\
+| $SED "s/.\/base?/.\/%%parent_app?/g"\
 | $SED "s/%%session/session=$session\&pin=$pin/g" \
 | $SED "s/%%params/subapp=%%app\&session=$session\&pin=$pin\&databox=$databox/g"
 

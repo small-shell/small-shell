@@ -1,11 +1,11 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>DATA: %%id</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DATA: %%id</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
@@ -14,56 +14,58 @@
           </select>
         </div>
         <div class="right-header">
-         <button class="even-btn-menu">=</button>
-         <nav>
-         <ul>
+          <button class="even-btn-menu">=</button>
+          <nav>
+          <ul>
            %%common_menu
-         </ul>
-         </nav>
+          </ul>
+          </nav>
         </div>
       </div>
 
       <div class="%%form-class">
-      <div class="description">
-        <h1>#new</h1>
+        <div class="description">
+         <h1>#new</h1>
+        </div>
+        <form method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
+        <ul>
+        %%dataset
+        </ul>
+        <button class="button" type="submit">SET</button>
+        </form>
       </div>
-      <form method="post" action="./shell.app?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
-      <ul>
-      %%dataset
-      </ul>
-      <button class="button" type="submit">SET</button>
-      </form>
-     </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   const formInputs = document.getElementsByClassName("file");
-   const length = formInputs.length;
-   for (let i = 0; i < length; i++) {
-     formInputs[i].onchange = function () {
-       const file = this.files[0].name;
-       const label = this.nextElementSibling;
-       label.nextElementSibling.innerHTML = file;
-     };
-   }
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
 
-   document.getElementById("txtara").rows="%%text_area_row"
+      const formInputs = document.getElementsByClassName("file");
+      const length = formInputs.length;
+      for (let i = 0; i < length; i++) {
+        formInputs[i].onchange = function () {
+          const file = this.files[0].name;
+          const label = this.nextElementSibling;
+          label.nextElementSibling.innerHTML = file;
+        };
+      }
 
-   </script>
-   </body>
+      document.getElementById("txtara").rows="%%text_area_row"
+
+    </script>
+  </body>
 </html>

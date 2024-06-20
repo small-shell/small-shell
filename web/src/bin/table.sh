@@ -175,7 +175,7 @@ fi
 $META get.tag:$databox > %%www/tmp/$session/tags
 for tag in `cat %%www/tmp/$session/tags`
 do
- echo "<p><a href=\"./shell.app?%%params&req=table&table_command=$tag\">#$tag&nbsp;</a></p>" >> %%www/tmp/$session/tag &
+ echo "<p><a href=\"./base?%%params&req=table&table_command=$tag\">#$tag&nbsp;</a></p>" >> %%www/tmp/$session/tag &
 done 
 
 
@@ -188,7 +188,7 @@ count=0
 for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
-    echo "<option value=\"./shell.app?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
+    echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
     >> %%www/tmp/$session/databox_list
   fi
   ((count +=1 ))
@@ -215,7 +215,7 @@ fi
 if [ "$line_num" = 0 ];then
   if [ "$err_chk" = "" -a "$filter_table" = "-" -a ! "$sort_col" ];then
     if [ ! "$permission" = "ro" ];then
-      echo "<h4><a href=\"./shell.app?%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> %%www/tmp/$session/table
+      echo "<h4><a href=\"./base?%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> %%www/tmp/$session/table
     else
       echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
     fi
@@ -237,7 +237,7 @@ cat %%www/descriptor/table.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%footer/d"\
 | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \
 | $SED "s/%%databox_list//g"\
-| $SED "/%%table/r %%www/tmp/$session/table" \
+| $SED "/%%table/r $table" \
 | $SED "s/%%table//g"\
 | $SED "s/%%databox/$databox/g"\
 | $SED "/%%page_link/r %%www/tmp/$session/page_link" \

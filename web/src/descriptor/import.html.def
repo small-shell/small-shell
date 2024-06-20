@@ -1,52 +1,53 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>import</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>import</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
-          <select class="dataselect" onChange="location.href=value;">
-          %%databox_list
-          </select>
+           <select class="dataselect" onChange="location.href=value;">
+            %%databox_list
+           </select>
         </div>
         <div class="right-header">
         <button class="even-btn-menu">=</button>
-        <nav>
-        <ul>
-        %%common_menu
-       </ul>
-       </nav>
+          <nav>
+          <ul>
+          %%common_menu
+         </ul>
+         </nav>
         </div>
       </div>
 
       <div class="import-info">
-      <h2>Import info</h2>
-      <pre>
+        <h2>Import info</h2>
+        <pre>
 %%result
-      </pre>
-     </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+        </pre>
+      </div>
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-  </script>
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
+    </script>
   </body>
 </html>

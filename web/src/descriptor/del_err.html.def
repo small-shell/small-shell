@@ -1,51 +1,51 @@
 <html>
-   <head>
-       <meta charset="UTF-8" />
-       <title>Del.error</title>
-       <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-       <link rel="stylesheet" href="./css">
-   </head>
-   <body>
-   <div class="container">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Del.error</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
+    <div class="container">
       <div class="flex-header">
-       <div class="left-header">
-       </div>
-       <div class="right-header">
-        <button class="even-btn-menu">=</button>
-        <nav>
-        <ul>
-          %%common_menu
-        </ul>
-        </nav>
-       </div>
-       </div>
-      <div class="result-box">
-       <div align=center>
-       <h2>Oops somthing is wrong</h2>
-       <pre>
-%%message
-       </pre>
-       </div>
+        <div class="left-header">
+        </div>
+        <div class="right-header">
+          <button class="even-btn-menu">=</button>
+          <nav>
+          <ul>
+            %%common_menu
+          </ul>
+          </nav>
+        </div>
       </div>
-   </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+      <div class="result-box">
+        <div align=center>
+          <h2>Oops somthing is wrong</h2>
+          <pre>
+%%message
+          </pre>
+        </div>
+      </div>
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   </script>
-   </body>
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
+    </script>
+  </body>
 </html>

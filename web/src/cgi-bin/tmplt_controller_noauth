@@ -1,5 +1,9 @@
 #!/bin/bash
 
+##########################################
+# controller for Scratch APP #none auth
+##########################################
+
 authkey="%%authkey"
 IP_whitelisting=%%IP_whitelisting
 IP_persistence="yes"
@@ -15,12 +19,6 @@ fi
 if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 fi
-
-# auth for small-shell databox
-auth_req=`${small_shell_path}/bin/extension_auth key_auth:${authkey} remote_addr:${remote_addr} app:%%app user_agent:${user_agent}`
-user_name="guest"
-session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
-pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
 
 # load remote addr
 remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
@@ -83,6 +81,19 @@ if [[ ! "$req" == *stats && ! "$req" == *file ]];then
   echo ""
 fi
 
+# auth for small-shell databox
+auth_req=`${small_shell_path}/bin/extension_auth key_auth:${authkey} remote_addr:${remote_addr} app:%%app user_agent:${user_agent}`
+user_name="guest"
+session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
+pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
+
+if [ ! "$session" -o ! "$pin" ];then
+  echo "Content-Type: text/html"
+  echo ""
+  echo "error: internal key authentication failure"
+  exit 1
+fi
+
 # dump POST data
 if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
 
@@ -102,6 +113,7 @@ if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
   %%www/bin/parse.sh $session $method
 
 fi
+
 
 #----------------------------
 # routing to action scripts
@@ -128,11 +140,7 @@ case "$req" in
   "file")
     %%www/bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
-
-   #--------------------------------
-   # sub app routing section
-   #--------------------------------
-
+  # sub app routing section
 
   *)
     echo "error: wrong request";;

@@ -83,7 +83,7 @@ if [ -f $ROOT/tmp/session/$session ];then
   if [ ! "$app" ];then
     # check token
     tokencheck=`echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
-    app=shell.app
+    app=base
   else
     # check app token
     tokencheck=`echo "${app}:${user}:${pin}" | $SHASUM | $AWK '{print $1}'`

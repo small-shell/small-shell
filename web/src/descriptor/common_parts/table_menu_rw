@@ -1,4 +1,4 @@
-<a href="./shell.app?%%params&req=get&id=new"><p>+ADD</p></a>
-<a href="./shell.app?%%params&req=table"><p>-CLR</p></a>
-<a href="./shell.app?%%params&req=csv&filter=%%filter" download="%%databox.csv"><p>#CSV</p></a>
-<a href="./shell.app?%%params&req=hash" download="%%databox_hash_chain.txt"><p>#Hashchain</p></a>
+<a href="./base?%%params&req=get&id=new"><p>+ADD</p></a>
+<a href="./base?%%params&req=table"><p>-CLR</p></a>
+<a href="./base?%%params&req=csv&filter=%%filter" download="%%databox.csv"><p>#CSV</p></a>
+<a href="./base?%%params&req=hash" download="%%databox_hash_chain.txt"><p>#Hashchain</p></a>

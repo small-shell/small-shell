@@ -1,48 +1,47 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>auth</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./%%app_css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>auth</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./%%app_css">
+  </head>
+  <body>
     <div class="container">
       <div class="auth-container">
-      <div class="auth-form">
-      <form method="post" action="./auth.%%app?%%params">
-      %%message
-      <h1>%%app</h1>
-      <div class="wrapper">
-        <input type="%%input_type" id="%%app_pass_%%rand" name="%%app_pass_%%rand" placeholder="%%placeholder">
-        <button class="button" type="submit">submit</button>
+        <div class="auth-form">
+          <form method="post" action="./auth.%%app?%%params">
+          %%message
+          <h1>%%app</h1>
+          <div class="wrapper">
+            <input type="%%input_type" id="%%app_pass_%%rand" name="%%app_pass_%%rand" placeholder="%%placeholder">
+            <button class="button" type="submit">submit</button>
+          </div>
+          </form>
+        </div>
       </div>
-      </form>
-     </div>
-     </div>
-     <div class="footer">
-     %%footer
-     </div>
-   </div>
-   <script>
+      <div class="footer">
+       %%footer
+      </div>
+    </div>
 
-   // menu
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+    <script>
+      // menu
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
-
-  </script>
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
+    </script>
   </body>
 </html>

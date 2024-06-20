@@ -1,5 +1,10 @@
 #!/bin/bash
 
+###############################
+# controller for Scratch APP
+###############################
+IP_whitelisting=%%IP_whitelisting
+
 # preprocedure
 session_update="required"
 IP_persistence="yes"
@@ -8,8 +13,6 @@ auth="%%auth"
 
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
-
-IP_whitelisting=%%IP_whitelisting
 
 # load header
 if [ "$IP_persistence" = "yes" ];then
@@ -155,20 +158,20 @@ fi
 case "$req" in
   
   "main")
-    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
+    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr} ;;
 
   "get")
-    %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate;;
+    %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate ;;
 
   "set")
-    %%www/bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
+    %%www/bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
   "del")
     %%www/bin/%%app_del.sh databox:$databox session:$session pin:$pin id:$id ;;
 
   "table")
     table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
-    %%www/bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line;;
+    %%www/bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line ;;
 
   "log_viewer")
     %%www/bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id ;;
@@ -176,11 +179,7 @@ case "$req" in
   "file")
     %%www/bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
-
-   #--------------------------------
-   # sub app routing section
-   #--------------------------------
-
+  # sub app routing section
 
   *)
     echo "error: wrong request";;

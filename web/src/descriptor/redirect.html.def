@@ -1,7 +1,7 @@
 <html>
-<head>
-<script>
-setTimeout("location.href='%%APPURL'",0);
-</script>
-</head>
+  <head>
+    <script>
+      setTimeout("location.href='%%APPURL'",0);
+    </script>
+  </head>
 </html>

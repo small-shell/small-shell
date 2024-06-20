@@ -1738,9 +1738,10 @@ if [ "$param" = "-app" ];then
         cat $ROOT/web/src/cgi-bin/$src | $SED "s#\%%www#${www}#g" > $cgidir/$src
         chmod 755 $cgidir/$src
       done
-      cat $ROOT/web/src/cgi-bin/controller | $SED "s#\%%www#${www}#g" > $cgidir/shell.app
-      cat $ROOT/web/src/cgi-bin/auth | $SED "s#\%%www#${www}#g" > $cgidir/shell.auth
-      chmod 755 $cgidir/shell*
+      cat $ROOT/web/src/cgi-bin/controller | $SED "s#\%%www#${www}#g" > $cgidir/base
+      cat $ROOT/web/src/cgi-bin/auth | $SED "s#\%%www#${www}#g" > $cgidir/auth.base
+      chmod 755 $cgidir/base
+      chmod 755 $cgidir/auth.base
 
       for src in `ls $ROOT/web/src/bin | grep -v tmplt | xargs basename -a`
       do
@@ -1774,7 +1775,7 @@ if [ "$param" = "-app" ];then
         if [ ! -d $www/html/base ];then
           mkdir $www/html/base
         fi
-        cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}shell.auth#g" > $www/html/base/index.html
+        cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.base#g" > $www/html/base/index.html
         chmod 755 $www/html/base/index.html
       else
         echo "small_shell_path=\"sudo -u small-shell $ROOT\"" > $descrdir/.small_shell_conf
@@ -1850,8 +1851,8 @@ if [ "$param" = "-app" ];then
           echo "-----------------------------------------------------------------"
           echo "NOTE"
           echo "-----------------------------------------------------------------"
-          echo "APP deployment has been succesfully done, please add user using ops command,"
-          echo "and then access key to Base APP will be generated"
+          echo "APP deployment has been succesfully done, please add user using ops command."
+          echo "and then dedicated access key to Base APP for each user will be generated."
           echo "# sudo $ROOT/adm/ops add.usr:\$user"
         else
           echo "Base APP has been upgraded. please access to the APP using existing key"
@@ -2059,7 +2060,7 @@ if [ "$param" = "-app" ];then
       authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
       # deploy form APP
-      cat $ROOT/web/src/cgi-bin/controller.form | $SED "s#\%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
+      cat $ROOT/web/src/cgi-bin/tmplt_controller_form | $SED "s#\%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
       | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" | $SED "s/%%app/$form_name/g" > $cgidir/$form_name
       cat $ROOT/web/src/cgi-bin/tmplt_css | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$form_name/g" > $cgidir/${form_name}_css
 
@@ -2195,7 +2196,7 @@ if [ "$param" = "-app" ];then
 
     if [ "$auth_method" = 1 ];then
       auth_method=shared_pass
-      echo -n "shared pass code: "
+      echo -n "shared passcode: "
       read shared_pass
       num_value_chk=`echo $shared_pass | $SED "s/[0-9]//g" | $SED "s/-//g"`
       value_chk=`echo $shared_pass | $SED -z "s/\n//g"`
@@ -2262,7 +2263,7 @@ if [ "$param" = "-app" ];then
       fi
 
       if [ "$auth_method" = "shared_pass" ];then
-          echo "shared pass code: $shared_pass"
+          echo "shared passcode: $shared_pass"
       fi
 
       echo "Primary databox: $databox"
@@ -2293,7 +2294,7 @@ if [ "$param" = "-app" ];then
         if [ "$auth_method" = "shared_pass" ];then
 
           input_type="password"
-          placeholder="pass code"
+          placeholder="Passcode"
 
           # careate app authkey
           app_user_name=${app}.app
@@ -2321,11 +2322,11 @@ if [ "$param" = "-app" ];then
           authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
 
-          # store pass code of shared pass APP
+          # store passcode of shared pass APP
           echo "$shared_pass" > $ROOT/web/${app}.code
 
           # deploy psscode APP
-          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" \
+          cat $ROOT/web/src/cgi-bin/tmplt_controller | $SED "s#\%%www#${www}#g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
@@ -2414,7 +2415,7 @@ if [ "$param" = "-app" ];then
         if [ "$auth_method" = "key" ];then
 
           # deploy key auth APP
-          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" \
+          cat $ROOT/web/src/cgi-bin/tmplt_controller | $SED "s#\%%www#${www}#g" \
           | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
@@ -2521,7 +2522,7 @@ if [ "$param" = "-app" ];then
           authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
           # deploy other APP
-          cat $ROOT/web/src/cgi-bin/controller.app | $SED "s#\%%www#${www}#g" \
+          cat $ROOT/web/src/cgi-bin/tmplt_controller | $SED "s#\%%www#${www}#g" \
           | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
@@ -2630,7 +2631,7 @@ if [ "$param" = "-app" ];then
           authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
 
           # deploy none auth APP
-          cat $ROOT/web/src/cgi-bin/controller.app.4 | $SED "s#\%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
+          cat $ROOT/web/src/cgi-bin/tmplt_controller_noauth | $SED "s#\%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
           | $SED "s/%%app/$app/g" | $SED "s/%%auth//g" > $cgidir/$app
           chown $cgiusr:$cgiusr $cgidir/$app
           chmod 700 $cgidir/$app
@@ -2717,10 +2718,10 @@ if [ "$param" = "-app" ];then
         . $ROOT/util/scripts/.authkey
         permission=`$ROOT/bin/meta get.attr:sys`
         if [ "$permission" = "ro" ];then
-          $ROOT/adm/ops set.attr:sys{rw}
+          $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
           sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
           action:set id:new keys:description,righth,lefth,footer input_dir:$tmp_dir/data
-          $ROOT/adm/ops set.attr:sys{ro}
+          $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
         else
           sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
           action:set id:new keys:description,righth,lefth,footer input_dir:$tmp_dir/data
@@ -2802,7 +2803,7 @@ if [ "$param" = "-app" ];then
         done
 
         for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
-        do  
+        do
           menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
           cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" \
           > ${www}/descriptor/common_parts/${app}_${menu}
@@ -2828,6 +2829,7 @@ if [ "$param" = "-app" ];then
         cat $cgidir/${parent_app} | $SED "/# sub app routing section/r ${tmp_dir}/subapp_routing"  > $tmp_dir/new_parent
         cat $tmp_dir/new_parent > $cgidir/${parent_app}
 
+
         # add menu to common menu
         if [ -f ${cgidir}/auth.${parent_app} ];then
           echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> $tmp_dir/subAPP_link
@@ -2848,7 +2850,7 @@ if [ "$param" = "-app" ];then
           mkdir $tmp_dir/data
 
           if [ "$permission" = "ro" ];then
-            $ROOT/adm/ops set.attr:sys{rw}
+            $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
             tmp_permission_flg=yes
           fi
 
@@ -2864,7 +2866,7 @@ if [ "$param" = "-app" ];then
           fi
 
           if [ "$tmp_permission_flg" = "yes" ];then
-              $ROOT/adm/ops set.attr:sys{ro}
+              $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
           fi
 
 	fi

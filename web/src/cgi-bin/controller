@@ -1,4 +1,7 @@
 #!/bin/bash
+###############################
+# controller for Base APP
+###############################
 
 # preproceduure
 session_update="required"
@@ -83,11 +86,11 @@ if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "sta
     fi
 
     if [ "$req" = "log_viewer" ];then
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&id=$id&message=!%20Session%20Expired\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?databox=$databox&req=$req&id=$id&message=!%20Session%20Expired\">"
       exit 1
     else
       req=main
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?databox=$databox&req=$req&message=!%20Session%20Expired\">"
       exit 1
     fi
   fi
@@ -95,7 +98,7 @@ fi
 
 if [ "$req" = "logout" ]; then
   ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logout:${session}
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?req=main\">"
+  echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?req=main\">"
   exit 0
 fi
 
@@ -109,20 +112,20 @@ if [ "$session_update" = "required" ];then
   if [ ! "$user_name" -o ! "$session" -o ! "${pin}" ];then
 
     if [ "$req" = "console" ];then
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?databox=$databox&req=$req&message=!%20Session%20Expired\">"
       exit 1
 
     elif [ "$req" = "table" ];then
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?databox=$databox&req=$req&message=!%20Session%20Expired\">"
       exit 1
 
     elif [ "$req" = "get" ];then
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&id=$id&message=!%20Session%20Expired\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?databox=$databox&req=$req&id=$id&message=!%20Session%20Expired\">"
       exit 1
 
     else
       req=main
-      echo "<meta http-equiv=\"refresh\" content=\"0; url=./shell.auth?databox=$databox&req=$req&message=!%20Session%20Expired\">"
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?databox=$databox&req=$req&message=!%20Session%20Expired\">"
       exit 1
 
     fi
@@ -170,7 +173,7 @@ case "$req" in
     %%www/bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command line:$line;;
 
   "get")
-    %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate;;
+    %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate ;;
 
   "set")
     %%www/bin/set.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id ;;

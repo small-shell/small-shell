@@ -1,16 +1,16 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>import</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>import</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
           <select class="dataselect" onChange="location.href=value;">
-          %%databox_list
+           %%databox_list
           </select>
         </div>
         <div class="right-header">
@@ -26,8 +26,8 @@
       <div class="import-container">
         <div class="import-form">
           <h2>IMPORT CSV DATA</h2>
-          <a href="./shell.app?%%params&req=csv&filter=%%header" download="%%databox_format.csv"><p>Download csv format</p></a>
-          <form method="post" action="./shell.app?%%params&req=import" enctype="multipart/form-data">
+          <a href="./base?%%params&req=csv&filter=%%header" download="%%databox_format.csv"><p>Download csv format</p></a>
+          <form method="post" action="./base?%%params&req=import" enctype="multipart/form-data">
           <ul>
           <li>
           <input class="file" type="file" name="import" id="file_input" />
@@ -44,34 +44,35 @@
        %%footer
       </div>
 
-   </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   const formInputs = document.getElementsByClassName("file");
-   const length = formInputs.length;
-   for (let i = 0; i < length; i++) {
-     formInputs[i].onchange = function () {
-       const file = this.files[0].name;
-       const label = this.nextElementSibling;
-       label.nextElementSibling.innerHTML = file;
-     };
-   }
-  </script>
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
+
+      const formInputs = document.getElementsByClassName("file");
+      const length = formInputs.length;
+      for (let i = 0; i < length; i++) {
+        formInputs[i].onchange = function () {
+          const file = this.files[0].name;
+          const label = this.nextElementSibling;
+          label.nextElementSibling.innerHTML = file;
+        };
+      }
+    </script>
   </body>
 </html>

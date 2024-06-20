@@ -1,82 +1,83 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>DATA: %%id</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DATA: %%id</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
           <select class="dataselect" onChange="location.href=value;">
-          %%databox_list
+            %%databox_list
           </select>
         </div>
         <div class="right-header">
-         <button class="even-btn-menu">=</button>
-         <nav>
-         <ul>
-          %%common_menu
-         </ul>
-         </nav>
-       </div>
+          <button class="even-btn-menu">=</button>
+          <nav>
+          <ul>
+           %%common_menu
+          </ul>
+          </nav>
+        </div>
       </div>
 
       <div class="%%form-class">
-      <div class="description">
-        <h1>#values</h1>
-        <p><b>#ID </b>%%id</p>
+        <div class="description">
+          <h1>#values</h1>
+          <p><b>#ID </b>%%id</p>
+        </div>
+        <form method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
+        <ul>
+        %%dataset
+        </ul>
+        <button class="button" type="submit">SET</button>
+        </form>
+        <div class="action_links">
+          <span><p style="cursor: pointer" onclick="window.open('./base?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
+          <span><a href="./base?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
+          <span><p style="cursor: pointer" onclick="del_confirmation()">Delete</p></span>
+        </div>
       </div>
-      <form method="post" action="./shell.app?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
-      <ul>
-      %%dataset
-      </ul>
-      <button class="button" type="submit">SET</button>
-      </form>
-      <div class="action_links">
-      <span><p style="cursor: pointer" onclick="window.open('./shell.app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
-      <span><a href="./shell.app?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
-      <span><p style="cursor: pointer" onclick="del_confirmation()">Delete</p></span>
-      </div>
-     </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
+    </div>
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   function del_confirmation(){
-     ret = confirm("Are you OK to delete this data ?");
-     if (ret == true){
-       location.href = "./shell.app?%%params&req=del&id=%%id";
-     }
-   }
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
 
-   const formInputs = document.getElementsByClassName("file");
-   const length = formInputs.length;
-   for (let i = 0; i < length; i++) {
-     formInputs[i].onchange = function () {
-       const file = this.files[0].name;
-       const label = this.nextElementSibling;
-       label.nextElementSibling.innerHTML = file;
-     };
-   }
+      function del_confirmation(){
+        ret = confirm("Are you OK to delete this data ?");
+        if (ret == true){
+          location.href = "./base?%%params&req=del&id=%%id";
+        }
+      }
 
-   document.getElementById("txtara").rows="%%text_area_row"
+      const formInputs = document.getElementsByClassName("file");
+      const length = formInputs.length;
+      for (let i = 0; i < length; i++) {
+        formInputs[i].onchange = function () {
+          const file = this.files[0].name;
+          const label = this.nextElementSibling;
+          label.nextElementSibling.innerHTML = file;
+        };
+      }
 
-   </script>
-   </body>
+      document.getElementById("txtara").rows="%%text_area_row"
+    </script>
+  </body>
 </html>

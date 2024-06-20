@@ -1,16 +1,16 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>table view</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <link rel="stylesheet" href="./css">
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>table view</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="./css">
+  </head>
+  <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
           <select class="dataselect" onChange="location.href=value;">
-          %%databox_list
+           %%databox_list
           </select>
         </div>
         <div class="right-header">
@@ -23,43 +23,44 @@
         </div>
       </div>
       <div class="table-box">
-       <div class="description">
-       <h1>Base.APP</h1>
-       </div>
-        <form method="post" action="./shell.app?%%params&req=table">
+        <div class="description">
+         <h1>Base.APP</h1>
+        </div>
+        <form method="post" action="./base?%%params&req=table">
         <div class="wrapper">
           <input type="search" name="table_command" placeholder="Hi %%user, type any filter words or you can sort table with column by sort command e.g.[sort -V %%key]" autocomplete="off">
         </div>
         </form>
-      <div class="tags">
-      <p>FILTER:%%filter&nbsp;&nbsp;[%%sort] data.num:%%num</p>
-      %%table_menu
-      %%tag
+        <div class="tags">
+          <p>FILTER:%%filter&nbsp;&nbsp;[%%sort] data.num:%%num</p>
+          %%table_menu
+          %%tag
+        </div>
+        %%table
+        <div class="pagelink">
+          %%page_link
+        </div>
       </div>
-      %%table
-     <div class="pagelink">
-      %%page_link
-     </div>
     </div>
-   </div>
-   <script>
-   const btn = document.querySelector('.even-btn-menu');
-   const nav = document.querySelector('nav');
 
-   document.addEventListener('click', (e) => {
-     if(e.target.closest('.even-btn-menu')) {
-       nav.classList.toggle('open-menu')
-       if (btn.innerHTML === '=') {
-         btn.innerHTML = '-';
-       } else {
-         btn.innerHTML = '=';
-       }
-     }else{
-       nav.classList.remove('open-menu')
-       btn.innerHTML = '=';
-     }
-   })
+    <script>
+      const btn = document.querySelector('.even-btn-menu');
+      const nav = document.querySelector('nav');
 
-   </script>
-   </body>
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn-menu')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      })
+
+    </script>
+  </body>
 </html>
