@@ -31,6 +31,12 @@ do
     duplicate=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  if [ "$master" ];then
+    if [[ $param == redirect* ]];then
+      redirect=`echo $param | $AWK -F":" '{print $2}'`
+    fi
+  fi
+
 done
 
 # SET BASE_COMMAND
@@ -85,10 +91,10 @@ else
   # else means copying data
   keys=`$META get.key:$databox{all}`
   primary_key=`$META get.key:$databox{primary}`
-
+    
   $DATA_SHELL databox:$databox \
   action:get id:new key:$primary_key format:html_tag > %%www/tmp/$session/dataset
-
+  
   for key in $keys
   do
     # gen %%data by conpying
@@ -96,7 +102,7 @@ else
       data=`$DATA_SHELL databox:$databox \
       action:get id:$id key:$key format:html_tag`
       file_chk=`echo $data | grep "<div class=\"file_form\">" `
-
+  
       if [ ! "$file_chk" ];then
         echo "$data"  >> /var/www/tmp/$session/dataset
       else
@@ -106,6 +112,7 @@ else
     fi
   done
   id=new
+
 
 fi
 
@@ -138,6 +145,17 @@ elif [ "$form_chk" = "multipart" ];then
     view="get_new_incf.html.def"
   else
     view="get_rw_incf.html.def"
+  fi
+fi
+
+# overwritten by clustering logic
+if [ "$master" -a "$permission" = "rw" ];then
+  if [ "$redirect" = "no" ];then
+    if [ "$id" = "new" ];then
+      view="get_new_master_failed.html.def"
+    else
+      view="get_rw_master_failed.html.def"
+    fi
   fi
 fi
 

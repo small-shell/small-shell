@@ -174,7 +174,6 @@ do
 done
 
 # load permission
-
 if [ ! "$user_name" = "guest" ];then
   permission=`$META get.attr:%%app/$user_name{permission}`
 else
@@ -230,6 +229,14 @@ if [ "$line_num" = 0 ];then
   fi
 else
   view=%%app_table.html.def
+fi
+
+# overwritten by clustering logic
+if [ "$replica" ];then
+  cat %%www/tmp/$session/table | $SED "s#./%%app#${cluster_base_url}%%app#g" > %%www/tmp/$session/table.base_url
+  table=%%www/tmp/$session/table.base_url
+else
+  table=%%www/tmp/$session/table
 fi
 
 cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \

@@ -6,32 +6,49 @@
 #----------------------------------------------------------
 
 #-----------------------------------
-# IAM
+# Show all user
 #-----------------------------------
-# ops ls.usr
-# ops add.usr:$user
-# ops initialize.usr:$user
-# ops del.usr:$user
-# ops set.attr:$user{ro}
-# ops set.attr:$user{rw}
-# ops set.attr:$user{$attribute_key=$param}
+# ls.usr
+
+#-----------------------------------
+# User management for Base APP
+#-----------------------------------
+# add.usr:$user
+# initialize.usr:$user
+# del.usr:$user
+
+#-----------------------------------
+# User management for Scratch APP
+#-----------------------------------
+# add.usr:$user app:$app
+# del.usr:$user app:$app
+# initialize.usr:$user app:$app
+
+#-----------------------------------
+# Set permission/attribute to Base APP user
+#-----------------------------------
+# set.attr:$user{ro} 
+# set.attr:$user{rw} 
+# set.attr:$user{$attribute_key=$param}
+
+#-----------------------------------
+# Set permission/attribute to Scratch APP user
+#-----------------------------------
+# set.attr:$user{ro} app:$app
+# set.attr:$user{rw} app:$app
+# set.attr:$user{$attribute_key=$param} app:$app
 
 #-----------------------------------
 # Add tag for Base APP table
 #-----------------------------------
-# ops add.tag:$databox{$filter}
-# ops del.tag:$databox{$filter}
+# add.tag:$databox{$filter}
+# del.tag:$databox{$filter}
 
 #-----------------------------------
-# for Scratch APP
+# Add tag for Scratch APP table
 #-----------------------------------
-# ops add.usr:$user app:$app
-# ops del.usr:$user app:$app
-# ops initialize.usr:$user app:$app
-# ops get.app_usr:$user{url} app:$app
 # ops add.tag:$databox{$filter} app:$app
 # ops del.tag:$databox{$filter} app:$app
-# ops set.attr:$user{$attribute_key=$param} app:$app
 
 #------------------
 # IP whitelisting
@@ -82,6 +99,11 @@ do
 
   fi
 
+  if [[ $param == get.attr* ]]; then
+    action=`echo $param | $AWK -F":" '{print $1}'`
+    user_name=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+  fi
+
   if [[ $param == initialize.usr:* ]]; then
     action=`echo $param | $AWK -F":" '{print $1}'`
     user_name=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
@@ -109,6 +131,20 @@ do
 
 done
 
+if [ ! -f $ROOT/web/base ];then
+  echo "error: please generate Base APP first #gen -app"
+  rm -rf $user_dir
+  exit 1
+fi
+
+# load web base info
+. $ROOT/web/base
+
+if [ "$cluster_base_url" -a "$master" ];then
+  echo "error: this is replication host, you must exec this operation on $master"
+  exit 1
+fi
+
 function initialize_url(){
   user_id=$1
   user_name=$2
@@ -127,15 +163,6 @@ function initialize_url(){
     user_dir="$ROOT/users/${t_app}.${user_id}"
   fi
 
-  if [ ! -f $ROOT/web/base ];then
-    echo "error: please generate Base APP first #gen -app"
-    rm -rf $user_dir
-    exit 1 
-  fi
-
-  # load web base info
-  . $ROOT/web/base
-
   if [ ! -f $cgidir/$auth ];then
     echo "error: please generate APP first #gen -app" 
     rm -rf $user_dir
@@ -148,11 +175,17 @@ function initialize_url(){
 
   if [ $? -eq 0 ];then
     initialize_hash_key=`cat $user_dir/initialize_key`
-    initialize_url="${base_url}${auth}?initialize=$user_id,$initialize_hash_key"
+
+    if [ "$cluster_base_url" ];then
+      initialize_url="${cluster_base_url}${auth}?initialize=$user_id,$initialize_hash_key"
+    else
+      initialize_url="${base_url}${auth}?initialize=$user_id,$initialize_hash_key"
+    fi
+
     clear
-    echo "-----------------------------------------------------------------"
-    echo "Initialize URL for $user_name on $t_app is created"
-    echo "-----------------------------------------------------------------"
+    echo "-------------------------------------------------------------------"
+    echo "Key initializing & generating URL for $user_name on $t_app is here"
+    echo "-------------------------------------------------------------------"
     echo "$initialize_url"
   else
     echo "error: failed to create initialize key"
@@ -236,7 +269,7 @@ if [ "$action" = "add.usr" ];then
   fi
 
   if [ -d $user_dir ];then 
-    echo "warn: $user_name is already existing. if you want to initialize the user,please execute following command"
+    echo "warn: $user_name is already existing. if you want to initialize key of the use, please execute following command"
     if [ "$app" ];then
       echo "sudo $ROOT/adm/ops initialize.usr:$user_name app:$app"
     else
@@ -339,6 +372,21 @@ if [[ $action == set.attr* ]];then
 
 fi
 
+if [[ $action == get.attr* ]];then
+  user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
+  if [ "$app" ];then
+    user_dir="$ROOT/users/${app}.${user_id}"
+  else
+    user_dir="$ROOT/users/${user_id}"
+  fi
+
+  if [ ! -d $user_dir ];then
+    echo "error: there is no user ($user_name)"
+    exit 1
+  fi
+  cat $user_dir/attr
+fi
+
 # Handle table tagging request
 if [[ $action == add.tag* ]];then
 
@@ -380,7 +428,6 @@ if [[ $action == add.tag* ]];then
   echo "$filter" > $ROOT/tmp/tag/$tdir/$tag
   chown small-shell:small-shell $ROOT/tmp/tag/$tdir/$tag
   echo "successfully created tag to $databox table"
-  echo "please get tag using meta get.tag:$meta_param"
 
 fi
 
@@ -428,28 +475,32 @@ if [ ! "$action" ];then
  echo "please set action properly, man is here"
  echo "--------------------------------------------------
 # BASIC OPERATION
- ops ls.usr
- ops add.usr:\$user
- ops initialize.usr:\$user
- ops del.usr:\$user
- ops set.attr:\$user{ro}
- ops set.attr:\$user{rw}
- ops set.attr:\$user{\$attribute_key=\$param}
+ ls.usr
+ add.usr:\$user
+ initialize.usr:\$user
+ del.usr:\$user
+ set.attr:\$user{ro}
+ set.attr:\$user{rw}
+ set.attr:\$user{\$attribute_key=\$param}
+ get.attr:\$user
 
 # Tagging for Base APP table
- ops add.tag:\$databox{\$filter}
- ops del.tag:\$databox{\$filter}
+ add.tag:\$databox{\$filter}
+ del.tag:\$databox{\$filter}
 
 # for Scratch APP
- ops add.usr:\$user app:\$app
- ops initialize.usr:\$user app:\$app
- ops del.usr:\$user app:\$app
- ops add.tag:\$databox{\$filter} app:\$app
- ops del.tag:\$databox{\$filter} app:\$app
- ops set.attr:\$user{\$attribute_key=\$param} app:\$app
+ add.usr:\$user app:\$app
+ initialize.usr:\$user app:\$app
+ del.usr:\$user app:\$app
+ add.tag:\$databox{\$filter} app:\$app
+ del.tag:\$databox{\$filter} app:\$app
+ set.attr:\$user{rw} app:\$app
+ set.attr:\$user{ro} app:\$app
+ set.attr:\$user{\$attribute_key=\$param} app:\$app
+ get.attr:\$user app:\$app
 
 # IP whitelisting
- ops set.IP #IP whitelisting
+ set.IP #IP whitelisting
  --------------------------------------------------"
 
 fi

@@ -3,12 +3,11 @@
 #----------------------------------------------------------
 # PARAM FOR GEN
 #----------------------------------------------------------
-# generate data box (gen -databox)
-# generate data box with db.def (../util/scripts/bat_gen.sh db.def)
-# add column to data box (gen -addcol)
-# delete column of data box (gen -delcol)
-# generate app (gen -app)
-# generate automate shell (gen -job)
+# -databox # generate data box
+# -addcol  # add column to data box 
+# -delcol  # delete column of data box 
+# -app     # generate app
+# -job     # generate automate shell
 #----------------------------------------------------------
 
 param=$1
@@ -679,7 +678,7 @@ if [ "$param" = "-databox" ];then
       exit 1
     fi
 
-    echo -n "Are you OK for generating Data box ? (yes | no): "
+    echo -n "Is it OK to generate Data box ? (yes | no): "
     read fin_answer
   done
 
@@ -991,7 +990,7 @@ if [ "$param" = "-addcol" ];then
   while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
   do
     echo "please input yes or no"
-    echo -n "Are you OK for adding column to the Data box ? (yes | no): "
+    echo -n "Is it OK to add column to the Data box ? (yes | no): "
     read fin_answer
   done
 
@@ -1152,7 +1151,7 @@ if [ "$param" = "-delcol" ];then
   while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
   do
     echo "please input yes or no"
-    echo -n "Are you OK for generating Data box ? (yes | no): "
+    echo -n "Is it OK to generate Data box ? (yes | no): "
     read fin_answer
   done
 
@@ -1316,9 +1315,11 @@ if [ "$param" = "-app" ];then
       echo -n "APP exec user (e.g. www-data or _www or apache): "
       read cgiusr
 
-      if [ ! "$cgiusr" ];then
-        cgiusr=www-data
-      fi
+      while [ ! "$cgiusr" ]
+      do
+        echo -n "please set APP exec user: "
+        read cgiusr
+      done
 
       usr_chk_result=$(grep $cgiusr /etc/passwd)
       sudo_chk_result=$(grep $cgiusr /etc/sudoers | grep small-shell | grep NOPASSWD)
@@ -1335,10 +1336,6 @@ if [ "$param" = "-app" ];then
 
     echo -n "protocol (http | https): "
     read protocol
-
-    if [ ! "$protocol" ];then
-      protocol=https
-    fi
 
     while [ ! "$protocol" = "http" -a ! "$protocol" = "https" ]
     do
@@ -1452,7 +1449,7 @@ if [ "$param" = "-app" ];then
     index_url="${protocol}://${server}/"
 
     if [ "$srvtype" = "other" ];then
-      echo -n "BASE URL for WEB APP is ${base_url} is it OK ? (yes | no): "
+      echo -n "BASE URL for WEB APP is ${base_url}, is it OK ? (yes | no): "
       read base_url_answer
 
       while [ ! "$base_url_answer" = "yes" -a ! "$base_url_answer" = "no" ]
@@ -1505,7 +1502,7 @@ if [ "$param" = "-app" ];then
     if [ "$srvtype" = "default" ];then
       echo "Access URL: ${index_url}base"
     else
-      echo "Access URL: ${base_url}shell.auth"
+      echo "Access URL: ${base_url}auth.base"
     fi
     echo "-----------------------------------------------------------------"
 
@@ -1514,7 +1511,7 @@ if [ "$param" = "-app" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Are you OK for generating APP ? (yes | no): "
+      echo -n "Is it OK to generate APP ? (yes | no): "
       read fin_answer
     done
 
@@ -1762,13 +1759,17 @@ if [ "$param" = "-app" ];then
         chmod 755 $descrdir/$src
       done
 
-
       for src in `ls $ROOT/web/src/descriptor/common_parts | grep -v tmplt | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/common_parts/$src  > $descrdir/common_parts/$src
         chown $cgiusr:$cgiusr $descrdir/common_parts/$src
         chmod 755 $descrdir/common_parts/$src
       done
+
+      # standadaize owner of Base APP
+      chown -R ${cgiusr}:${cgiusr} ${cgidir}/*
+      chown -R ${cgiusr}:${cgiusr} ${www}/descriptor/*
+      chown -R ${cgiusr}:${cgiusr} ${www}/bin/*
 
       if [ "$srvtype" = "default" ];then
         echo "small_shell_path=$ROOT" > $descrdir/.small_shell_conf
@@ -1829,7 +1830,7 @@ if [ "$param" = "-app" ];then
         while [ ! "$syml_answer" = "yes" -a ! "$syml_answer" = "no" ]
         do
           echo "please input yes or no"
-          echo -n "Are you OK for make symlink ? (yes | no): "
+          echo -n "Is it OK to make symlink ? (yes | no): "
           read syml_answer
         done
 
@@ -1841,19 +1842,22 @@ if [ "$param" = "-app" ];then
      
       fi
 
-      sleep 2
+      sleep 6
       get_test=`$CURL -k ${base_url}shelltest.cgi | grep OK`
 
       if [ "$get_test" ];then
         clear
         if [ ! "$upgrade" = "yes" ];then
-          echo ""
           echo "-----------------------------------------------------------------"
-          echo "NOTE"
+          echo "Base APP has been successfully generated"
+          if [ "$srvtype" = "default" ];then
+            echo "Access URL: ${index_url}base"
+          else  
+            echo "Access URL: ${base_url}auth.base"
+          fi  
           echo "-----------------------------------------------------------------"
-          echo "APP deployment has been succesfully done, please add user using ops command."
-          echo "and then dedicated access key to Base APP for each user will be generated."
-          echo "# sudo $ROOT/adm/ops add.usr:\$user"
+          echo "Please add user using ops command."
+          echo "-> sudo $ROOT/adm/ops add.usr:\$user"
         else
           echo "Base APP has been upgraded. please access to the APP using existing key"
         fi
@@ -2027,7 +2031,7 @@ if [ "$param" = "-app" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Are you OK for generating Data box ? (yes | no): "
+      echo -n "Is it OK to generate APP ? (yes | no): "
       read fin_answer
     done
 
@@ -2075,7 +2079,7 @@ if [ "$param" = "-app" ];then
       | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > ${www}/bin/${form_name}_set.sh
 
       chown $cgiusr:$cgiusr ${www}/bin/${form_name}*
-      chmod 700 ${www}/bin/${form_name}*
+      chmod 755 ${www}/bin/${form_name}*
 
       cat $ROOT/web/src/descriptor/tmplt_type2_get_new.html.def | $SED "s/%%databox/$databox/g" \
       | $SED "s/%%app/$form_name/g"  | $SED "s/%%description/$description/g" > ${www}/descriptor/${form_name}_get_new.html.def
@@ -2095,7 +2099,7 @@ if [ "$param" = "-app" ];then
       cat $ROOT/web/src/descriptor/tmplt_type2.css.def > ${www}/descriptor/${form_name}.css.def
 
       chown $cgiusr:$cgiusr ${www}/descriptor/${form_name}*
-      chmod 700 ${www}/descriptor/${form_name}*
+      chmod 755 ${www}/descriptor/${form_name}*
 
       if [ "$srvtype" = "default" ];then
         if [ ! -d $www/html/$form_name ];then
@@ -2106,7 +2110,6 @@ if [ "$param" = "-app" ];then
       fi
 
       echo "Form is successfully generated"
-      echo "Please update codes if needed"
       ls  $cgidir/${form_name}
       ls  $cgidir/${form_name}_css
       ls  ${www}/bin/${form_name}_*
@@ -2283,7 +2286,7 @@ if [ "$param" = "-app" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Are you OK for generating Data box ? (yes | no): "
+      echo -n "Is it OK to generate APP ? (yes | no): "
       read fin_answer
     done
   
@@ -2363,7 +2366,7 @@ if [ "$param" = "-app" ];then
           | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
 
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
-          chmod 700 ${www}/bin/${app}*
+          chmod 755 ${www}/bin/${app}*
 
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
           do
@@ -2450,7 +2453,7 @@ if [ "$param" = "-app" ];then
           cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#\%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
           | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
-          chmod 700 ${www}/bin/${app}*
+          chmod 755 ${www}/bin/${app}*
 
           if [ -f $ROOT/web/.rand ];then
             . $ROOT/web/.rand
@@ -2560,7 +2563,7 @@ if [ "$param" = "-app" ];then
           | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
 
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
-          chmod 700 ${www}/bin/${app}*
+          chmod 755 ${www}/bin/${app}*
 
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
           do
@@ -2664,7 +2667,7 @@ if [ "$param" = "-app" ];then
           | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
 
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
-          chmod 700 ${www}/bin/${app}*
+          chmod 755 ${www}/bin/${app}*
 
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
           do
@@ -2746,8 +2749,8 @@ if [ "$param" = "-app" ];then
           fi
         fi
         echo "------------------------------------------------------------"
-        echo "Please update following codes freely"
-        echo "You can also update portal page on Base APP #${app}.UI.md.def using markdown"
+        echo "Following is generated codes that you can update."
+        echo "You can also update portal page on Base APP #${app}.UI.md.def using markdown."
 
         if [ ! "$auth_method" = "none" ];then
           ls  $cgidir/auth.${app}
@@ -2790,7 +2793,7 @@ if [ "$param" = "-app" ];then
         | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
 
         chown $cgiusr:$cgiusr ${www}/bin/${app}*
-        chmod 700 ${www}/bin/${app}*
+        chmod 755 ${www}/bin/${app}*
 
 
         for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
@@ -2814,21 +2817,10 @@ if [ "$param" = "-app" ];then
         chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
         chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
-        echo "  \"${app}.table\") ${www}/bin/${app}_table.sh session:\$session pin:\$pin user_name:\$user_name page:\$page table_command:\$table_command line:\$line;;" > $tmp_dir/subapp_routing
-        echo "  \"${app}.get\") ${www}/bin/${app}_get.sh session:\$session pin:\$pin user_name:\$user_name id:\$id duplicate:\$duplicate;;" >> $tmp_dir/subapp_routing
-
-        echo "  \"${app}.set\") ${www}/bin/${app}_set.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;" >> $tmp_dir/subapp_routing
-
-        echo "  \"${app}.del\") ${www}/bin/${app}_del.sh session:\$session pin:\$pin user_name:\$user_name id:\$id;;" >> $tmp_dir/subapp_routing
-
-        echo "  \"${app}.log_viewer\") ${www}/bin/${app}_log_viewer.sh session:\$session pin:\$pin id:\$id;;" >> $tmp_dir/subapp_routing
-
-        echo "  \"${app}.file\") ${www}/bin/${app}_dl.sh session:\$session pin:\$pin id:\$id;;" >> $tmp_dir/subapp_routing
-
         # add routing to parent app
+        cat $ROOT/web/src/cgi-bin/tmplt_subapp_routing | $SED "s#%%www#${www}#g" | $SED "s#%%app#${app}#g" > $tmp_dir/subapp_routing
         cat $cgidir/${parent_app} | $SED "/# sub app routing section/r ${tmp_dir}/subapp_routing"  > $tmp_dir/new_parent
         cat $tmp_dir/new_parent > $cgidir/${parent_app}
-
 
         # add menu to common menu
         if [ -f ${cgidir}/auth.${parent_app} ];then
@@ -2872,7 +2864,7 @@ if [ "$param" = "-app" ];then
 	fi
 
         echo "subAPP is successfully generated, parent app is updated -> $cgidir/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"
-        echo "and please update subapp codes if needed"
+        echo "Following is generated codes that you can update."
         ls  ${www}/bin/${app}_*
         ls  ${www}/descriptor/${app}_*
 
@@ -3172,7 +3164,7 @@ if [ "$param" = "-job" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Are you OK for generating job ? (yes | no): "
+      echo -n "Is it OK to generate job ? (yes | no): "
       read fin_answer
     done
    
@@ -3381,7 +3373,7 @@ if [ "$param" = "-job" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Are you OK for generating job ? (yes | no): "
+      echo -n "Is it OK to generate job ? (yes | no): "
       read fin_answer
     done
 

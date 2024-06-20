@@ -1,15 +1,17 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>table view</title>
+    <title>DATA: %%id</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="stylesheet" href="./%%app_css">
+    <link rel="stylesheet" href="./css">
   </head>
   <body>
     <div class="container">
       <div class="flex-header">
         <div class="left-header">
-          <h3><a href="./%%app?%%params&req=main">%%app</a></h3>
+          <select class="dataselect" onChange="location.href=value;">
+           %%databox_list
+          </select>
         </div>
         <div class="right-header">
           <button class="even-btn-menu">=</button>
@@ -20,23 +22,11 @@
           </nav>
         </div>
       </div>
-      <div class="table-box">
+      <div class="%%form-class">
         <div class="description">
-          <h1>#%%databox</h1>
-        </div>
-        <form method="post" action="./%%app?%%params&req=table">
-        <div class="wrapper">
-          <input type="search" name="table_command" placeholder="Hi %%user, type any filter words or you can sort column with sort command e.g.[sort -V %%key]" autocomplete="off">
-        </div>
-        </form>
-        <div class="tags">
-          <p>FILTER:%%filter&nbsp;&nbsp;[%%sort] data.num:%%num</p>
-          %%table_menu
-          %%tag
-        </div>
-        %%table
-        <div class="pagelink">
-          %%page_link
+          <h1>Oops, master server seems failed. no data can be imported.</h1>
+          <br>
+          <a href="./base?%%params&req=table"><button class="button">Back</button></a>
         </div>
       </div>
     </div>
@@ -58,6 +48,6 @@
           btn.innerHTML = '=';
         }
       })
-     </script>
+    </script>
   </body>
 </html>

@@ -173,7 +173,19 @@ case "$req" in
     %%www/bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command line:$line;;
 
   "get")
-    %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate ;;
+    # master param must be loaded on ./descriptor/.small-shell.conf
+    if [ ! "$master" ];then
+      %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate
+    else
+      sync=`${small_shell_path}/bin/auth sync:${session}@${master}`
+      if [ "$sync" = "synced" ];then
+        redirect=yes
+      else
+        redirect=no
+      fi
+      %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate redirect:$redirect
+    fi
+    ;;
 
   "set")
     %%www/bin/set.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id ;;
@@ -185,7 +197,20 @@ case "$req" in
     %%www/bin/log_viewer.sh databox:$databox session:$session pin:$pin id:$id data_import_session:$data_import_session ;;
 
   "import")
-    %%www/bin/import.sh databox:$databox session:$session pin:$pin remote_addr:${remote_addr} user_agent:${user_agent} ;;
+    # master param must be loaded on ./descriptor/.small-shell.conf
+    if [ ! "$master" ];then
+      %%www/bin/import.sh databox:$databox session:$session pin:$pin remote_addr:${remote_addr} user_agent:${user_agent}
+    else
+      sync=`${small_shell_path}/bin/auth sync:${session}@${master}`
+      if [ "$sync" = "synced" ];then
+        redirect=yes
+      else
+        redirect=no
+      fi
+      %%www/bin/import.sh databox:$databox session:$session pin:$pin remote_addr:${remote_addr} user_agent:${user_agent} redirect:$redirect 
+    fi
+    ;;
+
 
   "hash")
     %%www/bin/hashchain.sh databox:$databox session:$session pin:$pin id:$id ;;

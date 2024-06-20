@@ -47,11 +47,13 @@
         }
       })
 
-      // key management that is stored on localstorage
+      // local storage key handling
       var keylist = document.getElementById("keylist");
       key=document.createElement("option");
       key.text=localStorage.getItem("small_shell_authkey_%%rand");
-      keylist.appendChild(key);
+      if (key.text !== "null") {
+        keylist.appendChild(key);
+      }
 
       function setkey() {
          var newkey = document.getElementById("small_shell_authkey_%%rand").value;

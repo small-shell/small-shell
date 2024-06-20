@@ -32,6 +32,12 @@ do
     duplicate=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  if [ "$master" ];then
+    if [[ $param == redirect* ]];then
+      redirect=`echo $param | $AWK -F":" '{print $2}'`
+    fi
+  fi
+
 done
 
 if [ ! "$id"  ];then
@@ -95,7 +101,6 @@ else
     fi
   done
   id=new
-
 fi
 
 
@@ -124,6 +129,17 @@ elif [ "$form_chk" = "multipart" ];then
     view="%%app_get_new_incf.html.def"
   else
     view="%%app_get_rw_incf.html.def"
+  fi
+fi
+
+# overwritten by clustering logic
+if [ "$master" -a "$permission" = "rw" ];then
+  if [ "$redirect" = "no" ];then
+    if [ "$id" = "new" ];then
+      view="%%app_get_new_master_failed.html.def"
+    else
+      view="%%app_get_rw_master_failed.html.def"
+    fi
   fi
 fi
 

@@ -20,6 +20,7 @@
 #  session_persist:$session_token -> get user_name and new session token, and make symlink from new session to last session.
 #  data_import_session:$session_token -> get user_name and new session token
 #  logout:$session_token
+#  sync:$session_token@remote_host
 
 
 ## global conf load
@@ -91,6 +92,12 @@ do
   if [[ $param == logout:* ]]; then
     action=logout
     session=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
+  if [[ $param == sync:* ]]; then
+    action=sync
+    session=`echo $param | $AWK -F":" '{print $2}' | $AWK -F"@" '{print $1}'`
+    remote_host=`echo $param | $AWK -F":" '{print $2}' | $AWK -F"@" '{print $2}'`
   fi
 
 done
@@ -174,7 +181,6 @@ fi
 
 
 # session handling
-
 if [ "$action" = "session_chk" ];then
   if [ -f  $ROOT/tmp/session/${session} ];then
     user_name=`cat $ROOT/tmp/session/${session} | $AWK -F ":" '{print $1}'`
@@ -189,7 +195,6 @@ if [ "$action" = "session_chk" ];then
     fi
   fi
 fi
-
 
 if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$action" = "session_persist" -o "$action" = "logout" ];then
   if [ -f  $ROOT/tmp/session/${session} ];then
@@ -258,4 +263,20 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
     >> $access_log
     exit 1
   fi
+fi
+
+# sync session to remote host
+if [ "$action" = "sync" ];then
+  if [ ! "$session" ];then
+    echo "error: please input session"
+    exit 1
+  fi
+  scp -o 'ConnectTimeout 1' -i /home/small-shell/.ssh/id_rsa $ROOT/tmp/session/$session small-shell@${remote_host}:$ROOT/tmp/session/
+  if [ $? -eq 0 ];then
+    echo "synced"
+    exit 0
+  else
+    echo "sync failed"
+    exit 1
+  fi 
 fi

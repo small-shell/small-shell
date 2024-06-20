@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <div class="%%form-class">
+      <div class="form-box">
         <div class="description">
           <h1>#values</h1>
           <p><b>#ID </b>%%id</p>

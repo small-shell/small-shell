@@ -20,7 +20,7 @@
           </nav>
         </div>
       </div>
-      <div class="%%form-class">
+      <div class="form-box">
         <div class="description">
           <h1>Oops, master server seems failed. no data can be added.</h1>
           <br>

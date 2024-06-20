@@ -30,7 +30,7 @@ fi
 # file check
 num_chk=`ls ${bkuped_dir}/*core*xz 2>/dev/null | wc -l`
 if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 core file in the directory"
+  echo "error: it seems there are more than 2 core.xz file in the directory"
   exit 1
 else
   rm -rf $ROOT/databox
@@ -42,7 +42,7 @@ fi
 
 num_chk=`ls ${bkuped_dir}/*www*xz 2>/dev/null | wc -l`
 if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 core file in the directory"
+  echo "error: it seems there are more than 2 www.xz file in the directory"
   exit 1
 else
   # load web/base
@@ -53,11 +53,25 @@ fi
 
 num_chk=`ls ${bkuped_dir}/*cgi*xz 2>/dev/null | wc -l`
 if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 core file in the directory"
+  echo "error: it seems there are more than 2 cgi.xz file in the directory"
   exit 1
 elif [ $num_chk -eq 1 ];then
   cp ${bkuped_dir}/*cgi*.xz ${cgidir}/../
   (cd ${cgidir}/../ && tar -xf *cgi*.xz)
+fi
+
+num_chk=`ls ${bkuped_dir}/*ssh*xz 2>/dev/null | wc -l`
+if [ $num_chk -gt 1 ];then
+  echo "error: it seems there are more than 2 ssh.xz file in the directory"
+  exit 1
+elif [ $num_chk -eq 1 ];then
+  if [ ! -d /home/small-shell ];then
+    mkdir /home/small-shell
+    chown small-shell:small-shell ${small_shell_home}
+  fi
+  usermod -s /bin/bash small-shell
+  cp ${bkuped_dir}/*ssh*.xz /home/small-shell/
+  (cd /home/small-shell && tar -xf *ssh*.xz)
 fi
 
 echo "-----------------------------------------------------------------------------------------------------"

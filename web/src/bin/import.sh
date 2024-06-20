@@ -31,6 +31,12 @@ do
     id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  if [ "$master" ];then
+    if [[ $param == redirect* ]];then
+      redirect=`echo $param | $AWK -F":" '{print $2}'`
+    fi
+  fi
+
 done
 
 # SET BASE_COMMAND
@@ -59,8 +65,16 @@ done
 
 if [ ! -d %%www/tmp/$session/binary_file  ];then
 
+  view="import_form.html.def"
+  # overwritten by clustering logic
+  if [ "$master" ];then
+    if [ "$redirect" = "no" ];then
+      view="import_master_failed.html.def"
+    fi
+  fi
+
   # render form HTML
-  cat %%www/descriptor/import_form.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
   | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \

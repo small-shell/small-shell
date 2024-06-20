@@ -142,7 +142,7 @@ if [ "$app_pass" ];then
   else
     # render standard login form with error message
     cat %%www/descriptor/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "s/%%message/<p><b>! Pass code is wrong, please try again<\/b><\/p>/g" \
+    | $SED "s/%%message/<p><b>! Pass code is wrong<\/b><\/p>/g" \
     | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/%%app_auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
     | $SED "/%%footer/r %%www/descriptor/common_parts/%%app_footer" \

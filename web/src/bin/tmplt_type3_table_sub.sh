@@ -231,6 +231,14 @@ else
   view=%%app_table.html.def
 fi
 
+# overwritten by clustering logic
+if [ "$replica" ];then
+  cat %%www/tmp/$session/table | $SED "s#./%%parent_app#${cluster_base_url}%%parent_app#g" > %%www/tmp/$session/table.base_url
+  table=%%www/tmp/$session/table.base_url
+else
+  table=%%www/tmp/$session/table
+fi
+
 cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%parent_app_common_menu" \
 | $SED "/%%common_menu/d"\

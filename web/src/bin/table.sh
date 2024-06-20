@@ -188,8 +188,13 @@ count=0
 for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
-    echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
-    >> %%www/tmp/$session/databox_list
+    if [ ! "$replica" ];then
+      echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
+      >> %%www/tmp/$session/databox_list
+    else
+      echo "<option value=\"${cluster_base_url}base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
+      >> %%www/tmp/$session/databox_list
+    fi
   fi
   ((count +=1 ))
 done
@@ -227,6 +232,15 @@ if [ "$line_num" = 0 ];then
     echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
   fi
 fi
+
+
+# overwritten by clustering logic
+if [ "$replica" ];then
+  cat %%www/tmp/$session/table | $SED "s#./base#${cluster_base_url}base#g" > %%www/tmp/$session/table.base_url
+  table=%%www/tmp/$session/table.base_url
+else
+  table=%%www/tmp/$session/table
+fi  
 
 cat %%www/descriptor/table.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu_${permission}" \

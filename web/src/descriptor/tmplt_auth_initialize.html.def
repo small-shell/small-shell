@@ -68,6 +68,14 @@
         font-weight: bold;
       }
 
+      .auth-message button:hover {
+         background: #000053;
+      }
+
+      .auth-message button:active {
+         background: #000053;
+      }
+
       </style>
 
       <title>key gen</title>

@@ -39,7 +39,7 @@ DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%a
 
 if [ $id = "new" ];then
 
-  # gen reqd/write form #new
+  # gen read/write form #new
   $DATA_SHELL databox:%%databox action:get id:$id keys:%%keys format:html_tag > %%www/tmp/$session/dataset
 
 else

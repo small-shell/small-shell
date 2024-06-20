@@ -43,6 +43,7 @@ if [ "$IP_whitelisting" = "yes" ];then
   fi
 fi
 
+# parse QUERY_STRING
 param=`date +%s`
 param="$param:$RANDOM"
 count=1
@@ -56,7 +57,6 @@ do
  fi
 done
 
-# parse QUERY_STRING
 echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
 cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > %%www/tmp/${param}.load
 chmod 755 %%www/tmp/${param}.load
@@ -158,10 +158,22 @@ fi
 case "$req" in
   
   "main")
-    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr} ;;
+    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
 
   "get")
-    %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate ;;
+    # master param must be loaded on ./descriptor/.small-shell.conf
+    if [ ! "$master" ];then
+      %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate
+    else
+      sync=`${small_shell_path}/bin/extension_auth app:%%app sync:${session}@${master}`
+      if [ "$sync" = "synced" ];then
+        redirect=yes
+      else
+        redirect=no
+      fi
+      %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate redirect:$redirect
+    fi
+    ;;
 
   "set")
     %%www/bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id ;;

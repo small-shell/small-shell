@@ -59,6 +59,11 @@ else
   (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.cgi.tar.xz $target_cgi)
 fi
 
+# backup key
+if [ -d "/home/small-shell/.ssh" ];then
+  (cd /home/small-shell && tar -Jcf $bkup_dir/${server}.ssh.tar.xz .ssh)
+fi
+
 echo "backup completed, please check $bkup_dir"
 
 exit 0
