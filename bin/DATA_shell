@@ -559,7 +559,9 @@ if [ "$command" ];then
 
       if [ "$type" = "log" ];then
         log_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.log
-        unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" `
+        unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" \
+        | $SED "s/{%%%%%%%%%%%%%%}/$/g" | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"`
+
         echo "cat $target_file |  $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
         chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
         # execute unix command for log
@@ -567,7 +569,8 @@ if [ "$command" ];then
       fi
 
       if [ "$type" = "data" ];then
-        unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" `
+        unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" \
+        | $SED "s/{%%%%%%%%%%%%%%}/$/g" | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"`
 
         # detouch hash id  to be accurate input for Unix command. because hash id has so many random characters, it must be detouched.
         echo "cat $target_file | $AWK -F "::::::" '{print \$3}' | $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
