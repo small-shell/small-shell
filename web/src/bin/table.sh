@@ -52,30 +52,43 @@ if [ "$page" = "" ];then
   page=1
 fi
 
+# set placeholder 
+placeholder="Hi %%user, type any filter words or you can sort column with sort command e.g.[sort -V %%key]"
+
 # load post param
 if [ -s %%www/tmp/$session/table_command ];then
   table_command=`cat %%www/tmp/$session/table_command`
 fi
 
-primary_key_label=`$META get.label:$databox{primary}`
+org_table_command=$table_command
+default_key_label=`$META get.label:$databox{all} | $SED "s/#ID,//g" | $AWK -F "," '{print $1}' | $SED "s/ /{%%space}/g"`
 sort_chk=`echo $table_command | grep -e "^sort " -e "^sort,"`
 num_of_line_chk=`echo $table_command | grep -ie "^#line:" -e " #line:"`
 
 if [ "$num_of_line_chk" ];then
   num_of_line_per_page=`echo $table_command | awk -F ":" '{print $2}'`
+  placeholder="Executed $table_command. if you want to clear the table, please click -CLR"
   table_command=`echo $table_command | $SED -r "s/ #(.*):(.*)//g" | $SED -r "s/^#(.*):(.*)//g"` 
 fi
 
 if [ "$sort_chk" ];then
   table_command=`echo $table_command | $SED "s/ /,/g"`
-  sort_option=`echo $table_command | $SED "s/sort,//g" | cut -f 1 -d ","`
-  sort_label=`echo $table_command  | $SED "s/sort,//g" | cut -f 2- -d "," | $SED "s/,/{%%space}/g"`
-  sort_col=`$META get.key:$databox{$sort_label}`
-
-  if [ ! "$sort_col" ];then
+  sort_option=`echo $table_command | cut -f 2 -d ","`
+  sort_label=`echo $table_command  | cut -f 3- -d "," | $SED "s/,/{%%space}/g"`
+    
+  if [ "$sort_label" ];then
+    sort_col=`$META get.key:$databox{$sort_label}`
+    if [ ! "$sort_col" ];then
+      sort_label="<font color=\"red\">Failed to search ${sort_label}<\/font>"
+      sort_col=`$META get.key:$databox{$default_key_label}`
+    fi
+  else
     sort_label=" - "
-    sort_col=`$META get.key:$databox{$primary_key_label}`
+    sort_col=`$META get.key:$databox{$default_key_label}`
   fi
+
+  placeholder="Executed ${org_table_command}, you can clear the table by clicking -CLR"
+
 else
   if [[ $table_command == *{*} ]]; then
     filter_key=`echo $table_command | $AWK -F "{" '{print $1}'`
@@ -97,7 +110,22 @@ else
     | $SED "s/:/{%%%}/g" \
     | $SED "s/　/ /g" | $SED "s/ /,/g" \
     | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
-    filter_table="$filter_key{$filter_word}"
+
+    key_chk=`$META get.key:$databox{all} | grep "$filter_key"`
+    if [ ! "$key_chk" ];then
+      org_filter_key=$filter_key
+      filter_label=`echo "$filter_key" | $SED "s/ /{%%space}/g" | $SED "s/{%%space}$//g"`
+      filter_key=`$META get.key:$databox{$filter_label}`
+    fi
+
+    if [ "$filter_key" ];then
+      filter_table="$filter_key{$filter_word}"
+      placeholder="Executed $table_command. if you want to clear the table, please click -CLR"
+    else
+      filter_table="$filter_word"
+      placeholder="There is no $org_filter_key key, filtered by $filter_word with all column"
+    fi
+
   else 
     filter_table=`echo $table_command  \
     | $SED "s/%/{%%%%%%%%%%%%%%%%}/g"\
@@ -116,6 +144,11 @@ else
     | $SED "s/:/{%%%}/g" \
     | $SED "s/　/ /g" | $SED "s/ /,/g" \
     | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));"`
+
+    if [ "$filter_table" ];then
+      placeholder="Filtered by $table_command. you can clear the table by clicking -CLR"
+    fi
+
   fi
 fi
 
@@ -225,14 +258,13 @@ if [ "$line_num" = 0 ];then
       echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
     fi
   elif [ "$sort_col" ];then
-    echo "<h4>sort key or option must be wrong</h4>" >> %%www/tmp/$session/table
+   echo "<h4>= SORT OPTION FAILURE</h4>"  >> %%www/tmp/$session/table
   elif [ "$err_chk" ];then
     echo "<h2>404 databox:$databox not found</h2>" > %%www/tmp/$session/table 
   else
     echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
   fi
 fi
-
 
 # overwritten by clustering logic
 if [ "$replica" ];then
@@ -258,11 +290,12 @@ cat %%www/descriptor/table.html.def | $SED -r "s/^( *)</</1" \
 | $SED "s/%%page_link//g"\
 | $SED "/%%tag/r %%www/tmp/$session/tag" \
 | $SED "s/%%tag//g"\
+| $SED "s/%%placeholder/$placeholder/g"\
 | $SED "s/%%user/$user_name/g"\
 | $SED "s/%%num/$line_num/g"\
 | $SED "s/%%filter/$filter_table/g"\
 | $SED "s/%%sort/$sort_command/g"\
-| $SED "s/%%key/$primary_key_label/g"\
+| $SED "s/%%key/$default_key_label/g"\
 | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
 | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
 | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
