@@ -139,6 +139,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#make-replica-for-load-balancing" class="nav-link">Make replica for load balancing</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#backup-restore-example" class="nav-link">Backup &amp; Restore example</a>
               <ul class="nav flex-column">
               </ul>
@@ -878,6 +882,82 @@ small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/loca
 ssl_auto.enabled
 </code></pre>
 <p>If it's enabled SSL implementation is completed.</p>
+<h2 id="make-replica-for-load-balancing">Make replica for load balancing</h2>
+<p>small-shell WEB APPs and databoxes can be synced to replica and it can be put under load balancer. 
+by the way, load balander must be setup beforehand on cloud env or physical env. Please be aware that load balancer must ensure session persistence.</p>
+<h4 id="image-of-load-balancing">Image of load balancing</h4>
+<pre><code> Read Req  &gt; Load Balancer # ensure session persistence
+             | - Master host #res
+             |-  Replica hosts #res 
+
+ Write Req &gt; Load Balancer # ensure session persistence
+             | - Master host #res
+             |-  Replica hosts &gt; it will be redirected to real IP of master host 
+</code></pre>
+<h4 id="setup-environment">Setup environment</h4>
+<p>Before build replica, you need to setup Base APP using default WEB srv on both master and replica server. when input server FQDN, please input real server FQDN or IP address (I mean not load balancing address).</p>
+<pre><code>@master
+sudo apt install lsyncd
+sudo mkdir /etc/lsyncd
+sudo /usr/local/small-shell/adm/gen -app #Base APP (required), Scratch APP (optional)
+
+@replica
+sudo /usr/local/small-shell/adm/gen -app #Base APP (required)
+</code></pre>
+<h4 id="get-key">Get key</h4>
+<p>Then let's get key to communicate between master and replica. "show.pub" option will show the key. please copy the key. it must be paste next STEP.
+When you execute mkrep.sh with the option first time, PATH of the key will be confirmed. it must be /home/small-shell/.ssh/id_rsa.</p>
+<pre><code>@master @replica 
+sudo /usr/local/small-shell/util/scripts/mkrep.sh show.pub
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/small-shell/.ssh/id_rsa): &lt;Enter&gt;
+</code></pre>
+<h4 id="build-replication">Build Replication</h4>
+<p>Once key is ready, replication can be built by "reg" option. you must answer the dialog and paste public key that you get beorehand.</p>
+<pre><code>@master 
+sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.replica
+&gt; dialog will be started
+
+@replica
+sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.master
+&gt; dialog will be started
+</code></pre>
+<h4 id="deploy-ssl-cert-for-load-balancing">Deploy SSL cert for load balancing</h4>
+<p>If you will use let's encrypt cert by executing small-shell-apps/ssl_auto script by following  <a href="./#deploy-auto-ssl-cetificate">Deploy auto SSL cetificate</a>, you need to update cert using domain option.because write request will be redirect to master host real host FQDN, cert must be issued as wild card cert such like "*.small-shell.org". and each server name must be belong to the domain.</p>
+<pre><code>@master 
+cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+cd ./small-shell-apps/ssl_auto
+sudo ./deploy.sh domain:*.$your_domain
+
+@replica
+cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+cd ./small-shell-apps/ssl_auto
+sudo ./deploy.sh domain:*.$your_domain
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the dialog of let's encrypt, you will be asked to add specific txt record to your DNS server. please add it acordingly.</p>
+</div>
+<h4 id="create-users-for-apps">Create users for APPs</h4>
+<p>Once replication and SSL is ready, it's timing to create users for APPs.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$user #Base APP 
+sudo /usr/local/small-shell/adm/ops add.usr:$user app:$app #Scratch APP
+</code></pre>
+<h4 id="add-new-app-or-rebuild-replication">Add new APP or rebuild replication.</h4>
+<p>If you will add new APP after starting replication or rebuild replication for adding new host, please remove all replication setting with purge option and then you can rebuild replication.</p>
+<pre><code>@master @replica_hosts
+sudo /usr/local/small-shell/util/scripts/mkrep.sh purge
+sudo /usr/local/small-shell/util/scripts/mkrep.sh show.pub
+
+@master 
+sudo /usr/local/small-shell/adm/gen -app #new APP
+sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.replica
+
+@replica_hosts
+sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.master
+</code></pre>
 <h2 id="backup-restore-example">Backup &amp; Restore example</h2>
 <p>In this cook, 1 production node will send backup to backuo node through e-cron HUB API</p>
 <pre><code>| prod node | -- | backup node #e-cron HUB|
@@ -930,8 +1010,8 @@ API authkey: $api_authkey
 <pre><code>ls /usr/local/small-shell/util/e-cron/que/file
 sudo /usr/local/small-shell/adm/rstr /usr/local/small-shell/util/e-cron/que/file
 </code></pre>
-<p>Once restore completed, plase regenerate BaseAPP and enable jobs</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
+<p>Once restore completed, plase re-generate Base APP and enable jobs</p>
+<pre><code>sudo -u small-shell /usr/local/small-shell/adm/gen -app  #Base APP
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.XXX
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>

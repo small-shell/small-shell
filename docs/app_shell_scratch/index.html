@@ -192,7 +192,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 <tbody>
 <tr>
 <td>Shared APP</td>
-<td>Shared Pass code</td>
+<td>Shared Pass Code</td>
 <td>Markdown portal,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
@@ -200,7 +200,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 </tr>
 <tr>
 <td>Key APP</td>
-<td>Base64 encrypted Key</td>
+<td>Base64 Encrypted Key</td>
 <td>Markdown portal,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
@@ -216,7 +216,7 @@ Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
 </tr>
 <tr>
 <td>None auth</td>
-<td>No authentication</td>
+<td>No Authentication</td>
 <td>Markdown portal,table,form</td>
 <td>specific databox</td>
 <td>editable</td>
@@ -261,11 +261,11 @@ primary databox: item.db
 <p>If you select Key APP, please add user for the APP. then you can get URL that can generate key for each end user.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops app:$app add.usr:$usr
 
-e.g.) add &quot;test&quot; user for key APP name &quot;test&quot;
-sudo /usr/local/small-shell/adm/ops app:test add.usr:test 
------------------------------------------------------------------
-Initialize URL for naruo on team APP is created
------------------------------------------------------------------
+e.g.) add &quot;test_user&quot; user for key APP name &quot;test&quot;
+sudo /usr/local/small-shell/adm/ops app:test add.usr:test_user 
+--------------------------------------------------------------------
+Key initializing &amp; generating URL for test_user on test APP is here
+--------------------------------------------------------------------
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
@@ -431,7 +431,7 @@ cat /var/www/desciption/common_parts/test_common_menu
 <tr>
 <td>Bookmarks</td>
 <td>sub-app</td>
-<td>Shared bookmarks</td>
+<td>Share bookmarks</td>
 </tr>
 <tr>
 <td>Inquiry_F</td>
