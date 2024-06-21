@@ -31,10 +31,12 @@ if [ ! "$id" -a ! "$databox" -a ! "$pin" -a "$session" ];then
 fi
 
 # SET BASE_COMMAND
+META="${small_shell_path}/bin/meta"
 DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:%%app"
 
 # load filename
-filename=`$DATA_SHELL databox:$databox action:get key:file id:$id format:none app:%%app | $SED "s/file://g" | $AWK -F " #" '{print $1}'`
+key=`$META get.key:${databox}{file}`
+filename=`$DATA_SHELL databox:$databox action:get key:$key id:$id format:none app:%%app | $SED "s/file://g" | $AWK -F " #" '{print $1}'`
 
 # -----------------
 # render contents
