@@ -362,6 +362,12 @@ sync{
     target="small-shell@${replica}:$ROOT/databox"
 }
 
+sync{ 
+    ssync,
+    source="/usr/local/small-shell/web",
+    target="small-shell@${replica}:$ROOT/web"
+}
+
 EOF
 
   fi
