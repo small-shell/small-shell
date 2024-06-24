@@ -66,14 +66,16 @@ if [ "$error_chk" ];then
   | $SED "/%%message/d"\
   | $SED "s/%%session/session=$session\&pin=$pin/g"
 else
-  # wait index update
-  numcol=`$META get.header:${databox}{csv} | $SED "s/,/\n/g" | wc -l | tr -d " "`
-  buffer=`expr $numcol / 8`
-  index_update_time="0.$buffer"
-  sleep $index_update_time
+  # wait index update, if its single server
+  if [ ! "$replica_hosts" ];then
+    numcol=`$META get.header:${databox}{csv} | $SED "s/,/\n/g" | wc -l | tr -d " "`
+    buffer=`expr $numcol / 8`
+    index_update_time="0.$buffer"
+    sleep $index_update_time
+  fi
 
   # redirect to the table
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%parent_app?subapp=%%app&session=$session&pin=$pin&req=table\">"
+  echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%parent_app?subapp=%%app&session=$session&pin=$pin&req=table&update=yes\">"
 fi
 
 if [ "$session" ];then

@@ -214,7 +214,7 @@ if [ "$param" = "reg.replica" ];then
       echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
       echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
       echo "cluster_base_url=\"$cluster_base_url\"" >> ${www}/descriptor/.small_shell_conf
-      echo "replica=\"registered\"" >> ${www}/descriptor/.small_shell_conf
+      echo "replica_hosts=\"$replica\"" >> ${www}/descriptor/.small_shell_conf
 
       # initialiize .rep.def
       cat <<EOF > $ROOT/util/scripts/.rep.def 
@@ -337,19 +337,21 @@ EOF
       chown -R small-shell:small-shell ${www}/html
 
     else
+      # update web/base
       new_replica_hosts=`echo "$replica_hosts" | $SED "s/\"//g" | $SED "s/$/ $replica/g"`
-      echo "replica_hosts=\"$new_replica_hosts\"" >> $ROOT/web/base
+      cat $ROOT/web/base | grep -v replica_hosts= > $ROOT/web/.base
+      echo "replica_hosts=\"$new_replica_hosts\"" >> $ROOT/web/.base
+      cat $ROOT/web/.base > $ROOT/web/base
+    
+      # update small_shell_conf
+      cat $www/descriptor/.small_shell_conf | grep -v replica_hosts= > $www/descriptor/.small_shell_conf.tmp
+      echo "replica_hosts=\"$new_replica_hosts\"" >> $www/descriptor/.small_shell_conf.tmp
+      cat $www/descriptor/.small_shell_conf.tmp > $www/descriptor/.small_shell_conf
 
     fi
 
   # update .rep.def
   cat <<EOF >> $ROOT/util/scripts/.rep.def 
-sync{
-    ssync,
-    source="$ROOT/tmp",
-    target="small-shell@${replica}:$ROOT/tmp"
-}
-
 sync{
     ssync,
     source="$ROOT/users",

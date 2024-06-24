@@ -221,7 +221,7 @@ count=0
 for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
-    if [ ! "$replica" ];then
+    if [ ! "$replica_hosts" ];then
       echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
       >> %%www/tmp/$session/databox_list
     else
@@ -267,7 +267,7 @@ if [ "$line_num" = 0 ];then
 fi
 
 # overwritten by clustering logic
-if [ "$replica" ];then
+if [ "$replica_hosts" ];then
   cat %%www/tmp/$session/table | $SED "s#./base#${cluster_base_url}base#g" > %%www/tmp/$session/table.base_url
   table=%%www/tmp/$session/table.base_url
 else
