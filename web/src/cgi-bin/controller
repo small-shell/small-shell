@@ -131,6 +131,13 @@ if [ "$session_update" = "required" ];then
     fi
   fi
 
+  if [ "$replica_hosts" -a "$update" = "yes" ];then
+    for replica in $replica_hosts
+    do
+      ${small_shell_path}/bin/auth sync:${session}@${replica} > /dev/null 2>&1 &
+    done
+  fi
+
 fi
 
 # null handling
