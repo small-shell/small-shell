@@ -10,7 +10,7 @@ app=$7
 
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "small-shell" ];then
-  echo "error: user must be shell master"
+  echo "error: user must be small-shell"
   exit 1
 fi
 
