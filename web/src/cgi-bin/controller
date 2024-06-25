@@ -131,7 +131,7 @@ if [ "$session_update" = "required" ];then
     fi
   fi
 
-  if [ "$replica_hosts" -a "$update" = "yes" ];then
+  if [ "$replica_hosts" ];then
     for replica in $replica_hosts
     do
       ${small_shell_path}/bin/auth sync:${session}@${replica} > /dev/null 2>&1 &
@@ -180,7 +180,7 @@ case "$req" in
     %%www/bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command line:$line;;
 
   "get")
-    # master param must be loaded on ./descriptor/.small-shell.conf
+    # if its replica host, master definition will be in ./descriptor/.small-shell.conf
     if [ ! "$master" ];then
       %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate
     else

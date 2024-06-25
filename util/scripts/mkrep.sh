@@ -210,29 +210,6 @@ if [ "$param" = "reg.replica" ];then
 
     # update env files
     if [ "$cluster_flag" = "new" ];then
-      echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
-      echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
-      echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
-      echo "cluster_base_url=\"$cluster_base_url\"" >> ${www}/descriptor/.small_shell_conf
-      echo "replica_hosts=\"$replica\"" >> ${www}/descriptor/.small_shell_conf
-
-      # initialiize .rep.def
-      cat <<EOF > $ROOT/util/scripts/.rep.def 
-ssync = {
-        default.rsync,
-        delete=yes,
-        delay= 1,
-        rsync = {
-          owner = true,
-          group = true,
-          rsh = "/usr/bin/ssh -i /home/small-shell/.ssh/id_rsa -o UserKnownHostsFile=/home/small-shell/.ssh/known_hosts",
-          _extra = {
-           "--exclude=*base"
-           }
-        }
-}
-
-EOF
 
       # update menu for Base APP
       for target in `ls ${www}/descriptor/common_parts/common* | grep -v .org$ | xargs basename -a`
@@ -242,14 +219,6 @@ EOF
         cat ${tmp_dir}/${target} > $www/descriptor/common_parts/${target}
         echo "updated $target"
       done
-
-      # update table of Base APP
-      target=table.html.def
-      app=base
-      cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
-      cat ${www}/descriptor/${target} | $SED "s#./${app}?#${cluster_base_url}${app}?#g" > ${tmp_dir}/${target}
-      cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
-      echo "updated $target"
 
       # update menu for Scratch APP
       . $ROOT/util/scripts/.authkey
@@ -284,41 +253,23 @@ EOF
         cat ${tmp_dir}/${target} > ${www}/descriptor/common_parts/${target}
         echo "updated $target"
 
+        # update left menu
+        for descriptor in `grep -l "./${app}?%%params&req=main" ${www}/descriptor/* 2>/dev/null | grep -v .org | sort | uniq | xargs basename -a`
+        do
+          if [ ! -f ${www}/descriptor/${descriptor}.org ];then
+            cp ${www}/descriptor/${descriptor} ${www}/descriptor/${descriptor}.org
+            cat ${www}/descriptor/${descriptor} \
+            | $SED "s#./${app}?%%params\&req=main#${cluster_base_url}${app}?%%params\&req=main#g" > ${tmp_dir}/${descriptor}
+            cat ${tmp_dir}/${descriptor} > ${www}/descriptor/${descriptor}
+            echo "updated $descriptor"
+          fi
+        done
+
       done
 
       if [ "$permission" = "ro" ];then
         $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
       fi
-
-      # update descriptor for Scratch APP
-      for app in `ls ${cgidir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
-      | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null`
-      do
-        type3_chk=`grep "# controller for Scratch APP" ${cgidir}/${app}`
-        if [ "$type3_chk" ];then 
-          subapps=`cat ${cgidir}/${app} | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g"`
-          for target in `ls ${www}/descriptor/${app}_table.html.def | xargs basename -a`
-          do
-            cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
-            cat ${www}/descriptor/${target} | $SED "s#./${app}?#${cluster_base_url}${app}?#g" > ${tmp_dir}/${target}
-            cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
-            echo "updated $target"
-          done
-
-          if [ "$subapps" ];then
-            for subapp in $subapps
-            do
-              for target in `ls ${www}/descriptor/${subapp}_table.html.def | xargs basename -a 2>/dev/null`
-              do
-                cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
-                cat ${www}/descriptor/${target} | $SED "s#./${app}?#${cluster_base_url}${app}?#g" > ${tmp_dir}/${target}
-                cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
-                echo "updated $target"
-              done
-            done
-          fi
-        fi 
-      done
 
       # update index
       for target in `ls ${www}/html | grep -v index | xargs basename -a`
@@ -336,7 +287,32 @@ EOF
       chown -R small-shell:small-shell ${www}/descriptor
       chown -R small-shell:small-shell ${www}/html
 
+      echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
+      echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
+      echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
+      echo "cluster_base_url=\"$cluster_base_url\"" >> ${www}/descriptor/.small_shell_conf
+      echo "replica_hosts=\"$replica\"" >> ${www}/descriptor/.small_shell_conf
+
+      # initialiize .rep.def
+      cat <<EOF > $ROOT/util/scripts/.rep.def 
+ssync = {
+        default.rsync,
+        delete=yes,
+        delay= 1,
+        rsync = {
+          owner = true,
+          group = true,
+          rsh = "/usr/bin/ssh -i /home/small-shell/.ssh/id_rsa -o UserKnownHostsFile=/home/small-shell/.ssh/known_hosts",
+          _extra = {
+           "--exclude=*base"
+           }
+        }
+}
+
+EOF
+
     else
+      # else means not new
       # update web/base
       new_replica_hosts=`echo "$replica_hosts" | $SED "s/\"//g" | $SED "s/$/ $replica/g"`
       cat $ROOT/web/base | grep -v replica_hosts= > $ROOT/web/.base
@@ -684,6 +660,7 @@ EOF
     do
        target=`echo $bkup | awk -F ".org" '{print $1}'`
        cat ${www}/descriptor/${bkup} > ${www}/descriptor/${target}
+       rm ${www}/descriptor/${bkup} 
     done
 
     # restore menu
@@ -750,6 +727,7 @@ EOF
     do
        target=`echo $bkup | awk -F ".org" '{print $1}'`
        cat ${www}/descriptor/${bkup} > ${www}/descriptor/${target}
+       rm ${www}/descriptor/${bkup}
     done
 
     . $ROOT/util/scripts/.authkey

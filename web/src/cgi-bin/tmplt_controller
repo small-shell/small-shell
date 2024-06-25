@@ -129,7 +129,7 @@ if [ "$auth" = "required" ];then
       fi
     fi
 
-    if [ "$replica_hosts" -a "$update" = "yes" ];then
+    if [ "$replica_hosts" ];then
       for replica in $replica_hosts
       do
         ${small_shell_path}/bin/extension_auth app:%%app sync:${session}@${replica} > /dev/null 2>&1 &
@@ -169,7 +169,7 @@ case "$req" in
     %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
 
   "get")
-    # master param must be loaded on ./descriptor/.small-shell.conf
+    # if its replica host, master definition will be in ./descriptor/.small-shell.conf
     if [ ! "$master" ];then
       %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate
     else

@@ -1773,6 +1773,7 @@ if [ "$param" = "-app" ];then
 
       if [ "$srvtype" = "default" ];then
         echo "small_shell_path=$ROOT" > $descrdir/.small_shell_conf
+        echo "server=\"default\"" >>  $descrdir/.small_shell_conf
         if [ ! -d $www/html/base ];then
           mkdir $www/html/base
         fi

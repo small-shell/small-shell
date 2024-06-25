@@ -3,7 +3,7 @@
   #-----------------------------------------------
 
   "%%app.get")
-    # master param must be loaded on ./descriptor/.small-shell.conf
+    # if its replica host, master definition will be in ./descriptor/.small-shell.conf
     if [ ! "$master" ];then
       %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate
     else

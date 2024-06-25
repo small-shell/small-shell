@@ -69,8 +69,8 @@ if [ "$error_chk" ];then
   | $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
 else
 
-  # wait index update if it's not replica host
-  if [ ! "$replica_hosts" ];then
+  # wait index update for other type of server
+  if [ ! "$server" = "default" ];then
     numcol=`${small_shell_path}/bin/meta get.header:${databox}{csv} | $SED "s/,/\n/g" | wc -l | tr -d " "`
     buffer=`expr $numcol / 8`
     index_update_time="0.$buffer"
@@ -78,7 +78,7 @@ else
   fi
 
   # redirect to the table
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?session=$session&pin=$pin&databox=$databox&req=table&update=yes\">"
+  echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?session=$session&pin=$pin&databox=$databox&req=table\">"
 fi
 
 if [ "$session" ];then
