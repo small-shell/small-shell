@@ -3,7 +3,6 @@
 ###############################
 # controller for Scratch APP
 ###############################
-IP_whitelisting=%%IP_whitelisting
 
 # preprocedure
 session_update="required"
