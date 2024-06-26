@@ -19,24 +19,6 @@ if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 fi
 
-# IP restriction check
-whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
-if [ "$whitelist_chk" ];then
-  for IP in $whitelist_chk
-  do
-    IP=`echo $IP | $SED "s/*//g"`
-    if [[ ${remote_addr} == ${IP}* ]];then
-      IP_chk=yes
-      break
-    fi
-  done
-
-  if [ ! "$IP_chk" = "yes" ];then
-    echo "error: your IP is not allowed to access"
-    exit 1
-  fi
-fi
-
 param=`date +%s`
 param="$param:$RANDOM"
 count=1
