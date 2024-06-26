@@ -2258,10 +2258,10 @@ if [ "$param" = "-app" ];then
     echo ""
     echo "APP type: $apptype"
     echo "APP name: $app"
-    echo "authentication: $auth_method"
    
     if [ ! "$parent_app" ];then
 
+      echo "authentication: $auth_method"
       echo "IP_whitelisting: $IP_whitelisting"
 
       if [ "$srvtype" = "default" ];then
