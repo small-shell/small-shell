@@ -173,11 +173,10 @@
 <h1 id="create-scratch-app">Create Scratch APP</h1>
 <p>In this tour, you can learn how to make scratch APP using small-shell framework and how to edit codes or portal page very quiickly.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3  
-app_name: scratch
-Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):
+Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 </code></pre>
-<h6 id="types-of-small-shell-scratch-app">Types of small-shell Scratch APP</h6>
+<h4 id="types-of-small-shell-scratch-app">Types of small-shell Scratch APP</h4>
+<p>There are 4 types of Scratch APP, please check the chart.</p>
 <table>
 <thead>
 <tr>
@@ -269,7 +268,8 @@ Key initializing &amp; generating URL for test_user on test APP is here
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
-<p>You can access to the APP with key, key will be inserted automatically using localstorage by javascript once initialized it on above url.</p>
+<p>End user key that's generated above command will be stored to end user browser automatically using localstorage by javascript once connected to above url.
+And if you set "yes" for IP whitelisting for this APP in the dialog, you can set restricted IPs by using ops command. IP whitelisting detail is on <a href="../app_shell_tour/#ip-whitelisting">APP shell tour</a></p>
 <h2 id="access-url-of-the-app">Access URL of the APP</h2>
 <p>If you are using default WEB server, your application URL must be $FQDN/$app except "other" type APP. URL will be shown in the dialog of gen command.</p>
 <pre><code>e.g.) APP:test, URL:https://$FQDN/test
