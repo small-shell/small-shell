@@ -123,11 +123,19 @@
             
             <li class="nav-item" data-level="1"><a href="#extended-cron" class="nav-link">Extended cron</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#job-automation-by-e-cron" class="nav-link">Job automation by e-cron</a>
+            <li class="nav-item" data-level="2"><a href="#features" class="nav-link">Features</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#define-job-relationship-between-hosts" class="nav-link">Define Job relationship between hosts</a>
+            <li class="nav-item" data-level="2"><a href="#add-job-through-e-cron" class="nav-link">Add Job through e-cron</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#job-relation-ship-in-same-host" class="nav-link">Job relation ship in same host</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#job-relationship-between-hosts" class="nav-link">Job relationship between hosts</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -160,8 +168,19 @@
 
 <h1 id="extended-cron">Extended cron</h1>
 <p>small-shell can provide Job automation &amp; data Exchagne framework by extending cron function (e-cron). you can define job relation ship between several hosts. you can also exchange DATA between several hosts.  </p>
-<h2 id="job-automation-by-e-cron">Job automation by e-cron</h2>
-<p>e-cron could provide following function on Linux platform.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -job
+--Define schedule--
+Month [ any | 1-12 ]: 
+Date  [ any | 1-31 ]: 
+Hour  [ any | 0-23 ]: 
+Min   [ any | 0-59 ]: 
+Week  [ any | mon - sun ]: 
+Exec command or batch script: XXXX
+</code></pre>
+<h4 id="required">Required</h4>
+<p>It's required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start_linux/">Quickstart</a>.</p>
+<h2 id="features">Features</h2>
+<p>e-cron has following features.</p>
 <ol>
 <li>Add job entry to cron through dialog</li>
 <li>Provide CLI status check tool</li>
@@ -172,25 +191,19 @@
 </ol>
 <h4 id="basic-concept">Basic concept</h4>
 <p>Basically e-cron extends cron function by providing utility scripts. and wrapper script will work as job management framework. following ideas are basic functions of e-cron.</p>
-<h6 id="dialog">DIALOG</h6>
+<h6 id="dialog">Dialog</h6>
 <pre><code>gen dialog -&gt; generate cron entry
 </code></pre>
-<h6 id="framework">FRAMEWORK</h6>
+<h6 id="diagram">Diagram</h6>
 <pre><code>cron  -&gt; wrapper.sh -&gt; script #exec
 CLI  &lt;-&gt; wrapper.sh &lt;- script #result
 </code></pre>
-<h6 id="util-command">UTIL COMMAND</h6>
-<pre><code>CLI $options -&gt; show results, status and more
-</code></pre>
-<h6 id="wrapper">WRAPPER</h6>
-<pre><code>Message/DataExchange, prevent_double_start, logging, dump_command_result
-</code></pre>
-<h4 id="required">Required</h4>
-<p>It's required to complete OS Env setup and installation of small-shell, see detail at <a href="../quick_start_linux/">Quickstart</a>.</p>
 <h5 id="dir">dir</h5>
 <p>Please upload script on following directory.</p>
 <pre><code>/usr/local/small-shell/util/scripts
 </code></pre>
+<h2 id="add-job-through-e-cron">Add Job through e-cron</h2>
+<p>This is an example of adding job through e-cron. also you can learn how to confirm reulst of the Job and dumped output of the Job or command.</p>
 <h5 id="sample-job">sample job</h5>
 <pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job1.sh
 --code--
@@ -265,6 +278,7 @@ LATEST STATUS OF JOB
 Mon Jan  3 04:10:23 UTC 2022 Hello
 </code></pre>
 <h5 id="confirm-job-log">confirm job log</h5>
+<p>There are 2 types of the log. job_log is execution history, job_command_dump record output from script or command.</p>
 <pre><code>ls /usr/local/small-shell/util/e-cron/log/joblog/*job1*
 /usr/local/small-shell/util/e-cron/log/joblog/job1_command_dump_20220103  
 /usr/local/small-shell/util/e-cron/log/joblog/job1_log_20220103
@@ -273,7 +287,7 @@ Mon Jan  3 04:10:23 UTC 2022 Hello
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 &gt; then input existing job name in the dialog
 </code></pre>
-<h5 id="define-job-relation-ship-in-same-host">Define Job relation ship in same host</h5>
+<h2 id="job-relation-ship-in-same-host">Job relation ship in same host</h2>
 <p>If you want to define job relationship in same same host, please modify job definition directly. 
 This is an exmaple of job relationship. messae wil be exchanged in the host.</p>
 <pre><code>job1.success@host1 --&gt; message (done.1) --&gt; job2@host1 #if message is raedy, kicked
@@ -363,7 +377,7 @@ Mon Jan  3 04:38:38 UTC 2022 Hello
 cat /usr/local/small-shell/util/scripts/log/world.log
 Mon Jan  3 04:38:47 UTC 2022 World
 </code></pre>
-<h2 id="define-job-relationship-between-hosts">Define Job relationship between hosts</h2>
+<h2 id="job-relationship-between-hosts">Job relationship between hosts</h2>
 <p>If you will define relation ship between serveral hosts, you need to generate Base APP first on HUB server. #see <a href="../app_shell_tour/">APP shell tour</a> for further details for Base APP.
 Once API HUB is ready, you can define job relationship using message.</p>
 <pre><code> -----------------------------------------------
