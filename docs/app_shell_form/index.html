@@ -166,6 +166,7 @@ Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 2
 <h4 id="required">Required</h4>
 <p>Please setup Base APP beorehand refering to <a href="../app_shell_tour/">Base APP</a></p>
 <h2 id="create-databox">Create DataBox</h2>
+<p>For the first step, need to create survey databox to push data through Form.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 databox_name: survey.box
 </code></pre>
@@ -218,13 +219,13 @@ target_databox: survey.box
 description: This is a internal survey of product A
 IP_whitelisting: no
 Included keys: generation,impression,comment
-Access URL: https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/survey
+Access URL: https://ec2-XX-XX-XX-XX.compute.XXXX.com/survey
 
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="access-to-the-form">Access to the Form</h2>
 <p>As you already checked, access URL is shown in the gen dialog. the URL must be $FQDN/$app</p>
-<pre><code> e.g.) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/survey
+<pre><code> e.g.) https://ec2-XX-XX-XX-XX.compute.XXXX.com/survey
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_form.png" /></p>
 <h4 id="check-databox-via-base-app">Check databox via Base APP</h4>
