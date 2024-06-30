@@ -287,6 +287,20 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/descriptor
       chown -R small-shell:small-shell ${www}/html
 
+
+      # update controller
+      for target in `ls ${www}/cgi-bin | xargs basename -a`
+      do
+        if [ -f ${www}/html/${target}/index.html ];then
+          app=$target
+          cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" > ${tmp_dir}/${app}.controller
+          cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
+          echo "updated controller of $app"
+        fi
+      done
+      chown -R small-shell:small-shell ${www}/cgi-bin
+
+
       echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
       echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
       echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
@@ -563,12 +577,7 @@ if [ "$param" = "reg.master" ];then
   do
     if [ -f ${www}/html/${target}/index.html ];then
       chk_form=`cat ${cgidir}/${target} | grep "controller for FORM"`
-      if [ ! "$chk_form" ];then
-        cp ${www}/html/${target}/index.html ${www}/html/${target}/index.html.org
-        cat ${www}/html/${target}/index.html | $SED "s#${base_url}#${cluster_base_url}#g" \
-        | $SED "s#${master_base_url}#${cluster_base_url}#g" > ${tmp_dir}/${target}.index.html
-        cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
-      else
+      if [ "$chk_form" ];then
         cp ${www}/html/${target}/index.html ${www}/html/${target}/index.html.org
         cat ${www}/html/${target}/index.html | $SED "s#./${server}#${master_base_url}#g" > ${tmp_dir}/${target}.index.html
         cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
@@ -590,7 +599,6 @@ if [ "$param" = "reg.master" ];then
   # update api authkey
   api_authkey=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep api_authkey \
   | $SED "s/api_authkey=//g" | $SED "s/\"//g"` 
-
   
   cat $ROOT/web/base | grep -v api_authkey > ${tmp_dir}/base 
   echo "api_authkey=\"$api_authkey\"" >> ${tmp_dir}/base
@@ -704,6 +712,18 @@ EOF
     chown -R small-shell:small-shell ${www}/descriptor
     chown -R small-shell:small-shell ${www}/html
 
+    # restore controller
+    for target in `ls ${www}/cgi-bin | xargs basename -a`
+    do
+      if [ -f ${www}/html/${target}/index.html ];then
+        app=$target
+        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" > ${tmp_dir}/${app}.controller
+        cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
+        echo "updated controller of $app"
+      fi
+    done
+    chown -R small-shell:small-shell ${www}/cgi-bin
+
     # purge authorized key
     rm -f /home/small-shell/.ssh/authorized_keys
 
@@ -778,6 +798,19 @@ EOF
 
     chown -R small-shell:small-shell ${www}/descriptor
     chown -R small-shell:small-shell ${www}/html
+
+    # restore controller
+    for target in `ls ${www}/cgi-bin | xargs basename -a`
+    do
+      if [ -f ${www}/html/${target}/index.html ];then
+        app=$target
+        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" > ${tmp_dir}/${app}.controller
+        cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
+        echo "updated controller of $app"
+      fi
+    done
+    chown -R small-shell:small-shell ${www}/cgi-bin
+
 
     # purge authorized key
     rm -f /home/small-shell/.ssh/authorized_keys
