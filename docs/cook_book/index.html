@@ -874,16 +874,20 @@ ssl_auto.enabled
 </code></pre>
 <p>If it's enabled SSL implementation is completed.</p>
 <h2 id="make-replica-for-load-balancing">Make replica for load balancing</h2>
-<p>Small-Shell WEB APPs and databoxes can be synced to replica and it can be put under load balancer. 
-by the way, load balander must be setup beforehand on cloud env or physical env. Please be aware that load balancer must ensure session persistence.</p>
-<h4 id="image-of-load-balancing">Image of load balancing</h4>
+<p>Small-Shell WEB APPs and databoxes can be synced to replica hosts and it can be put under load balancer. 
+load balander must be setup beforehand on cloud env or physical env.   </p>
+<h4 id="requirement-of-load-balancing">Requirement of load balancing</h4>
+<p>Please be aware that load balancer must ensure session persistence.
+And load balancing logic must be just TCP port proxy (not terminate SSL/TLS) because write request will go to real server FQDN of master server.</p>
 <pre><code> Read Req  &gt; Load Balancer # ensure session persistence
-             | - Master host #res
-             |-  Replica hosts #res 
+             TCP port forwarding
+             | - Master host #response on 80,443 port
+             |-  Replica hosts #response on 80,443 port
 
  Write Req &gt; Load Balancer # ensure session persistence
-             | - Master host #res
-             |-  Replica hosts &gt; it will be redirected to real IP of master host 
+             TCP port forwarding
+             | - Master host #response on 80,443 port
+             |-  Replica hosts &gt; it will be redirected to real server FQDN of master host
 </code></pre>
 <h4 id="setup-environment">Setup environment</h4>
 <p>Before build replica, you need to setup Base APP using default WEB srv on both master and replica server. when input server FQDN, please input real server FQDN or IP address (I mean not load balancing address).</p>
