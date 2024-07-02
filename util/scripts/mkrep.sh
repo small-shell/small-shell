@@ -287,7 +287,6 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/descriptor
       chown -R small-shell:small-shell ${www}/html
 
-
       # update controller and auth
       for target in `ls ${www}/cgi-bin | xargs basename -a`
       do
@@ -305,7 +304,57 @@ if [ "$param" = "reg.replica" ];then
       done
       chown -R small-shell:small-shell ${www}/cgi-bin
 
+      # update descriptor for scratch APP
+      for app in `ls ${cgidir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
+      | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null`
+      do
+        type3_chk=`grep "# controller for Scratch APP" ${cgidir}/${app}`
+        if [ "$type3_chk" ];then
+          subapps=`cat ${cgidir}/$app | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g"`
+    
+          for target in `ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a`
+          do
+            cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org  
+            cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
+            |$SED "s#./${app}?%%params\&req=del\&id=%%id#${base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
+            cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
+            echo "updated $target"
+          done
+       
+          if [ "$subapps" ];then
+            for subapp in $subapps
+            do
+              for target in `ls ${www}/descriptor/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null`
+              do
+                cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+                cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
+                |$SED "s#./${app}?%%params\&req=del\&id=%%id#${base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
+                cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
+                echo "updated $target"
+              done
+            done
+          fi
+        fi
+      done
+    
+      # update base APP
+      for target in `ls ${www}/descriptor/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null` 
+      do
+        cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+        cat ${www}/descriptor/${target} | $SED "s#./base?%%params&req=set\&id=%%id#${base_url}base?%%params\&req=set\&id=%%id#g" \
+        |$SED "s#./base?%%params\&req=get\&id=%%id#${base_url}base?%%params\&req=get\&id=%%id#g" \
+        |$SED "s#./base?%%params\&req=del\&id=%%id#${base_url}base?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
+        cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
+        echo "updated $target"
+      done
+    
+      cp ${www}/descriptor/import_form.html.def ${www}/descriptor/import_form.html.def.org
+      cat ${www}/descriptor/import_form.html.def | $SED "s#action=\"./base#action=\"${base_url}base#g" > ${tmp_dir}/import_form.html.def
+      cat ${tmp_dir}/import_form.html.def > ${www}/descriptor/import_form.html.def
+      echo "updated import_form.html.def"
 
+
+      # update web/base
       echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
       echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
       echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
@@ -526,58 +575,6 @@ if [ "$param" = "reg.master" ];then
   sudo -u small-shell scp -r small-shell@${master}:${cgidir}/* ${cgidir}
   sudo -u small-shell scp -r small-shell@${master}:${www}/bin ${www}
   
-  # update descriptor for scratch APP
-  master_base_url=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep -v cluster_base_url | grep base_url \
-  | $SED "s/base_url=//g" | $SED "s/\"//g"` 
-
-  for app in `ls ${cgidir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
-  | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null`
-  do
-    type3_chk=`grep "# controller for Scratch APP" ${cgidir}/${app}`
-    if [ "$type3_chk" ];then
-      subapps=`cat ${cgidir}/$app | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g"`
-
-      for target in `ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a`
-      do
-        cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org  
-        cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${master_base_url}${app}?%%params\&req=set\&id=%%id#g" \
-        |$SED "s#./${app}?%%params\&req=del\&id=%%id#${master_base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
-        cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
-        echo "updated $target"
-      done
-   
-      if [ "$subapps" ];then
-        for subapp in $subapps
-        do
-          for target in `ls ${www}/descriptor/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null`
-          do
-            cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
-            cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${master_base_url}${app}?%%params\&req=set\&id=%%id#g" \
-            |$SED "s#./${app}?%%params\&req=del\&id=%%id#${master_base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
-            cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
-            echo "updated $target"
-          done
-        done
-      fi
-    fi
-  done
-
-  # update base APP
-  for target in `ls ${www}/descriptor/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null` 
-  do
-    cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
-    cat ${www}/descriptor/${target} | $SED "s#./base?%%params&req=set\&id=%%id#${master_base_url}base?%%params\&req=set\&id=%%id#g" \
-    |$SED "s#./base?%%params\&req=get\&id=%%id#${master_base_url}base?%%params\&req=get\&id=%%id#g" \
-    |$SED "s#./base?%%params\&req=del\&id=%%id#${master_base_url}base?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
-    cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
-    echo "updated $target"
-  done
-
-  cp ${www}/descriptor/import_form.html.def ${www}/descriptor/import_form.html.def.org
-  cat ${www}/descriptor/import_form.html.def | $SED "s#action=\"./base#action=\"${master_base_url}base#g" > ${tmp_dir}/import_form.html.def
-  cat ${tmp_dir}/import_form.html.def > ${www}/descriptor/import_form.html.def
-  echo "updated import_form.html.def"
-
   # update index
   for target in `ls ${www}/html | grep -v index | xargs basename -a 2>/dev/null`
   do
