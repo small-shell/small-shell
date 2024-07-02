@@ -23,6 +23,8 @@ echo ""
 # load header
 if [ "$IP_persistence" = "yes" ];then
   remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+else
+  logging_IP=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 fi
 if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
@@ -34,14 +36,14 @@ if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
     IP=`echo $IP | $SED "s/*//g"`
-    if [[ ${remote_addr} == ${IP}* ]];then
+    if [[ ${remote_addr} == ${IP}* ]] || [[ ${logging_IP} == ${IP}* ]] ;then
       IP_chk=yes
       break
     fi
   done
 
   if [ ! "$IP_chk" = "yes" ];then
-    echo "error: your IP{$remote_addr} is not allowed to access"
+    echo "error: your IP is not allowed to access"
     exit 1
   fi
 fi
@@ -109,7 +111,7 @@ if [ "$initialize" ];then
   initialize_hash_key=`echo $initialize |  $AWK -F "," '{print $2}'`
 
   if [ "$master" ];then
-    key_gen=`ssh ${master} ${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
+    key_gen=`ssh ${master} ${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr} logging_IP:${logging_IP}`
     if [ $? -eq 255 ];then
       message="Master server failed. please contact to WEB admin"
       cat %%www/descriptor/key_initialize_err.html.def \
@@ -118,7 +120,7 @@ if [ "$initialize" ];then
     fi
 
   else
-    key_gen=`${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr}`
+    key_gen=`${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr} logging_IP:${logging_IP}`
   fi
 
   user_name=`echo $key_gen | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
@@ -127,6 +129,9 @@ if [ "$initialize" ];then
 
   # render success page
   if [ "$user_name" -a "$user_key" ];then
+    if [ ! "$remote_addr" ];then
+      remote_addr=$logging_IP
+    fi
     cat %%www/descriptor/auth_initialize.html.def | $SED -r "s/^( *)</</1" \
     | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
     | $SED "/%%footer/d"\
@@ -204,7 +209,7 @@ if [ "$small_shell_authkey" ];then
   else
     authkey="$small_shell_authkey"
   fi
-  auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent}`
+  auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP}`
   user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
   session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`

@@ -288,14 +288,19 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/html
 
 
-      # update controller
+      # update controller and auth
       for target in `ls ${www}/cgi-bin | xargs basename -a`
       do
         if [ -f ${www}/html/${target}/index.html ];then
           app=$target
-          cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" > ${tmp_dir}/${app}.controller
+          cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" \
+          | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/${app}.controller
           cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
           echo "updated controller of $app"
+
+          cat ${www}/cgi-bin/auth.${app} | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/auth.${app}
+          cat ${tmp_dir}/auth.${app} > ${www}/cgi-bin/auth.${app}
+          echo "updated auth.$app"
         fi
       done
       chown -R small-shell:small-shell ${www}/cgi-bin
@@ -318,7 +323,8 @@ ssync = {
           group = true,
           rsh = "/usr/bin/ssh -i /home/small-shell/.ssh/id_rsa -o UserKnownHostsFile=/home/small-shell/.ssh/known_hosts",
           _extra = {
-           "--exclude=*base"
+           "--exclude=*base",
+           "--exclude=*audit"
            }
         }
 }
@@ -717,9 +723,14 @@ EOF
     do
       if [ -f ${www}/html/${target}/index.html ];then
         app=$target
-        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" > ${tmp_dir}/${app}.controller
+        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
+        | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
         cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
         echo "updated controller of $app"
+
+        cat ${www}/cgi-bin/auth.${app} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/auth.${app}
+        cat ${tmp_dir}/auth.${app} > ${www}/cgi-bin/auth.${app}
+        echo "updated auth.$app"
       fi
     done
     chown -R small-shell:small-shell ${www}/cgi-bin
@@ -804,9 +815,14 @@ EOF
     do
       if [ -f ${www}/html/${target}/index.html ];then
         app=$target
-        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" > ${tmp_dir}/${app}.controller
+        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
+        | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
         cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
         echo "updated controller of $app"
+
+        cat ${www}/cgi-bin/auth.${app} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/auth.${app}
+        cat ${tmp_dir}/auth.${app} > ${www}/cgi-bin/auth.${app}
+        echo "updated auth.$app"
       fi
     done
     chown -R small-shell:small-shell ${www}/cgi-bin

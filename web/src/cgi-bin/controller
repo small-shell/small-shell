@@ -14,7 +14,10 @@ User_agent_persistence="yes"
 # load header
 if [ "$IP_persistence" = "yes" ];then
   remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+else
+  logging_IP=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 fi
+
 if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 fi
@@ -58,7 +61,7 @@ fi
   
 if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "stats" -o "$req" = "file" ];then
   # session check
-  session_chk=`${small_shell_path}/bin/auth session_chk:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`
+  session_chk=`${small_shell_path}/bin/auth session_chk:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP}`
 
   session_update=no
   if [ ! "$session_chk" ];then 
@@ -79,14 +82,14 @@ if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "sta
 fi
 
 if [ "$req" = "logout" ]; then
-  ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logout:${session}
+  ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logout:${session} logging_IP:${logging_IP}
   echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?req=main\">"
   exit 0
 fi
 
 if [ "$session_update" = "required" ];then
   get_session=`${small_shell_path}/bin/auth session_persist:${session} \
-  pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`
+  pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP}`
   user_name=`echo $get_session | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
   session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
   pin=`echo $get_session | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`

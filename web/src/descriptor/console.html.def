@@ -32,7 +32,7 @@
         </ul>
         </form>
         <div class="description">
-          <h5>+CONSOLE BOX for %%user{IP:%%remote_addr}</h5>
+          <h5>+CONSOLE BOX for %%user</h5>
         </div>
         %%result
       </div>

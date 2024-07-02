@@ -16,6 +16,8 @@ auth="%%auth"
 # load header
 if [ "$IP_persistence" = "yes" ];then
   remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+else
+  logging_IP=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 fi
 if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
@@ -66,7 +68,8 @@ if [ "$auth" = "required" ];then
     session_update=no
 
     # session check
-    session_chk=`${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`
+    session_chk=`${small_shell_path}/bin/extension_auth app:%%app session_chk:${session} pin:${pin} \
+    remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP}`
     if [ ! "$session_chk" ];then
       if [ "$req" = "log_viewer" ];then
         echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=$req&id=$id&message=!%20Session%20Expired\">"
@@ -79,7 +82,8 @@ if [ "$auth" = "required" ];then
   fi
 
   if [ "$req" = "logout" ]; then
-    ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session} user_agent:${user_agent}
+    ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session} \
+    user_agent:${user_agent} logging_IP:${logging_IP}
     echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=main\">"
     exit 0
   fi
@@ -87,7 +91,7 @@ if [ "$auth" = "required" ];then
   # session update
   if [ "$session_update" = "required" ];then
     get_session=`${small_shell_path}/bin/extension_auth session_persist:${session} \
-    pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} app:%%app`
+    pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} app:%%app logging_IP:${logging_IP}`
 
     user_name=`echo $get_session | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
     session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`

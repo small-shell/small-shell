@@ -5,6 +5,7 @@
 #-----------------------------------------------------------------------
 #  remote_addr:ip_addr -> IP addreess will be used for audit log and security check
 #  user_agent:HTTP_USER_AGENT ->  HTTP_USER_AGENT will be used for security check
+#  logging_IP:ip_addr -> If there is no logging IP, remote_addr will be used for logging
 
 #-----------------------------------------------------------------------
 #  AUTH REQUEST
@@ -100,6 +101,10 @@ do
     remote_host=`echo $param | $AWK -F":" '{print $2}' | $AWK -F"@" '{print $2}'`
   fi
 
+  if [[ $param == logging_IP:* ]]; then
+    logging_IP=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
 done
 
 if [ ! "$remote_addr" ];then
@@ -109,6 +114,11 @@ fi
 if [ ! "$user_agent" ];then
   user_agent="null"
 fi
+
+if [ ! "$logging_IP" ];then
+  logging_IP=$remote_addr
+fi
+
 
 # initialize
 if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
@@ -129,7 +139,7 @@ if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
 
     if [ $? -eq 0 ];then
       user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
-      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} generated user_key of user_name:${user_name}" \
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} generated user_key of user_name:${user_name}" \
       >> $access_log
       echo "user_name:${user_name},user_key:${user_key}"
       rm $ROOT/users/${user_id}/initialize_key
@@ -139,7 +149,7 @@ if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
       exit 1
     fi
   else
-    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} failed to initialize user_key" \
+    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} failed to initialize user_key" \
     >> $access_log
     echo "error: your initialize key is wrong"
     exit 1
@@ -161,18 +171,18 @@ if [ "$key_auth" ];then
       pin=$RANDOM
       session_token=`echo "${user_name}:${pin}" | $SHASUM | $AWK '{print $1}'`
       echo "user_name:$user_name,session_token:$session_token,pin:${pin}"
-      echo "`date +%Y-%m-%d` `date +%T` user_name:${user_name} remote_addr:${remote_addr} logged in successfully" \
+      echo "`date +%Y-%m-%d` `date +%T` user_name:${user_name} remote_addr:${logging_IP} logged in successfully" \
       >> $access_log
       echo "${user_name}:${remote_addr}:${user_agent}" > $ROOT/tmp/session/${session_token}
       chmod 700 $ROOT/tmp/session/${session_token}
       exit 0
     else
-     echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} failed to login to user_name:${user_name} with wrong key" \
+     echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} failed to login to user_name:${user_name} with wrong key" \
      >> $access_log
      exit 1
     fi
   else
-    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} sent wrong key"\
+    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} sent wrong key"\
     >> $access_log
     exit 1
   fi
@@ -216,7 +226,7 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
         fi
 
         if [ "$action" = "logout" ];then
-         echo "`date +%Y-%m-%d` `date +%T` user_name:${user_name} remote_addr:${remote_addr} logged out successfully" \
+         echo "`date +%Y-%m-%d` `date +%T` user_name:${user_name} remote_addr:${logging_IP} logged out successfully" \
           >> $access_log
           exit 0
         fi
@@ -239,7 +249,7 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
         exit 0
       else
         echo "error: session token or pin is wrong, need additional authentication" 
-        echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} failed to get new session (user_name:${user_name}) due to session check failure" \
+        echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} failed to get new session (user_name:${user_name}) due to session check failure" \
         >> $access_log
         exit 1
       fi
@@ -252,14 +262,14 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
 
     elif [ ! "$org_user_agent" = "$user_agent" ];then
       echo "warn: User agent was changed, need additional authentication" 
-      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} failed to get new session (user_name:${user_name}) due to User-agent change" \
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} failed to get new session (user_name:${user_name}) due to User-agent change" \
       >> $access_log
       exit 1
 
     fi
 
   else
-    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${remote_addr} tried to use gone session" \
+    echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} tried to use gone session" \
     >> $access_log
     exit 1
   fi
