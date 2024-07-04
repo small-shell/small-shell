@@ -963,17 +963,19 @@ sudo /usr/local/small-shell/adm/rstr $dir
 </code></pre>
 <h4 id="operation-at-backup-node">Operation at backup node</h4>
 <p>It's required to Launch Base APP and check e-cron URL and key</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app 
+<pre><code>@backup_node
+sudo /usr/local/small-shell/adm/gen -app 
 cat /usr/local/small-shell/web/base | grep hubapi
 cat /usr/local/small-shell/web/base | grep api_authkey
 </code></pre>
 <h4 id="operation-at-production-node">Operation at production node</h4>
-<p>Once e-cron HUB is ready, let's define backup &amp; sync job on pdocution node. bkup command will backup every data of small-shell including user info, databox{data,log}, APP, Job... and sudo privilede is required for executing bkup command. please add sudoers beforehand. </p>
-<pre><code>$ sudo visudo
+<p>Once e-cron HUB is ready,define backup &amp; sync job on pdocution node. bkup command will backup every data of small-shell including user info, databox{data,log}, APP, Job... and sudo privilede is required for executing bkup command. please add sudoers beforehand. </p>
+<pre><code>@production_node
+$ sudo visudo
 # add folowing line, if there is no small-shell entry
 small-shell   ALL=(ALL:ALL)    NOPASSWD: /usr/local/small-shell/adm/*, /usr/local/small-shell/util/scripts/*
 
-# define backup job@production node
+# define backup job
 $ sudo /usr/local/small-shell/adm/gen -job
 job name: backup
 Type of job (1.job automation | 2.file exchange) : 1
@@ -985,7 +987,7 @@ Min   [ any | 0-59 ]: 1
 Week  [ any | mon - sun ]: any
 Exec command or batch script: sudo /usr/local/small-shell/adm/bkup /var/tmp
 
-# define push job@production to backup node, please confirm URL and authkey at backup node beforehand
+# define push job, please confirm URL and authkey at backup node beforehand
 $ sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 2
 --Define schedule--
@@ -1000,14 +1002,16 @@ file_name: *tar.xz
 HUB API URL: $hubapi
 API authkey: $api_authkey
 </code></pre>
-<h4 id="restore">Restore</h4>
-<p>You can restore to backup node by rstr command. file will be uploaded to e-cron HUB que/file directory as default.  </p>
-<pre><code>ls /usr/local/small-shell/util/e-cron/que/file
-sudo /usr/local/small-shell/adm/rstr /usr/local/small-shell/util/e-cron/que/file
+<h4 id="backup-file">Backup file</h4>
+<p>If bkup/push job works fine, there is backup files on que/file directry on backup node</p>
+<pre><code>@backup_node
+ls /usr/local/small-shell/util/e-cron/que/file
+$server.core.tar.xz  $server.ssh.tar.xz  $server.www.tar.xz
 </code></pre>
-<p>Once restore completed, plase re-generate Base APP and enable jobs</p>
-<pre><code>sudo -u small-shell /usr/local/small-shell/adm/gen -app  #Base APP
-sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.XXX
+<h4 id="restore">Restore</h4>
+<p>For restoring backup file, please install small-shell from git and launch Base APP first. and rstr command option must be directory where backup files are copied from backup node.</p>
+<pre><code>@restore_node
+sudo /usr/local/small-shell/adm/rstr $dir
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>
 <p>You can import job for analyzing small-shell web log from github. please deploy it to the small-shell env which using default web server.</p>
