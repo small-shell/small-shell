@@ -78,7 +78,7 @@ function rebuild(){
     # send que
     echo "root:localhost" > $ROOT/tmp/que/${session}
     chown small-shell:small-shell $ROOT/tmp/que/${session}
-    sudo -u small-shell $ROOT/sbin/que.sh $databox $id $keys $session $pin $flag shell.app
+    sudo -u small-shell $ROOT/sbin/que $databox $id $keys $session $pin $flag base
 
     # logging
     echo "updated_data:$count"  > $ROOT/tmp/log/$session.log
