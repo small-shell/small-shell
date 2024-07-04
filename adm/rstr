@@ -4,6 +4,9 @@
 # usage: ./rstr $backuped_dir
 #----------------------------------------------------------
 
+# load param
+bkuped_dir=$1
+
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
@@ -14,8 +17,11 @@ fi
 SCRIPT_DIR=`dirname $0`
  . ${SCRIPT_DIR}/../global.conf
 
-# load param
-bkuped_dir=$1
+if [ ! -f $ROOT/web/base ];then
+  echo "please genterate Base APP before restore"
+else
+  . $ROOT/web/base
+fi
 
 if [ ! "$bkuped_dir" ];then
   echo "error: please input backuped directory name"
@@ -28,55 +34,76 @@ if [ ! -d ${bkuped_dir} ];then
 fi
 
 # file check
-num_chk=`ls ${bkuped_dir}/*core*xz 2>/dev/null | wc -l`
-if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 core.xz file in the directory"
+num_chk=`ls ${bkuped_dir}/*core*.xz 2>/dev/null | wc -l`
+if [ ! $num_chk -eq 1 ];then
+  echo "error: number of backup file seems wrong. please check $bkuped_dir"
   exit 1
 else
   rm -rf $ROOT/databox
   rm -rf $ROOT/users
-  cp ${bkuped_dir}/*core*.xz $ROOT/../
-  (cd $ROOT/../ && tar -xf *core*.xz)
+  (cd ${bkuped_dir} && tar -xf *core*.xz \
+  && \cp -Rf small-shell/databox $ROOT/databox && \cp -Rf small-shell/users $ROOT/users \
+  && cp small-shell/web/*.code $ROOT/web/ && \cp -Rf small-shell/util $ROOT/users/util )
   chown -R small-shell:small-shell $ROOT
 fi
 
 num_chk=`ls ${bkuped_dir}/*www*xz 2>/dev/null | wc -l`
-if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 www.xz file in the directory"
+if [ ! $num_chk -eq 1 ];then
+  echo "error: number of backup file seems wrong. please check $bkuped_dir"
   exit 1
 else
-  # load web/base
-  . $ROOT/web/base
-  cp ${bkuped_dir}/*www*.xz ${www}/../
-  (cd ${www}/../ && tar -xf *www*.xz)
+  cp ${www}/app/index.js ${www}/app/index.js.org
+  cp ${www}/app/app.sh ${www}/app/app.sh.org
+  cp ${www}/descriptor/.small_shell_conf ${www}/descriptor/.small_shell_conf.org
+  (cd ${bkuped_dir} && tar -xf *www*.xz && \cp -Rf www/* ${www}/ )
+  cp ${www}/app/index.js.org ${www}/app/index.js
+  cp ${www}/app/app.sh.org ${www}/app/app.sh
+  cp ${www}/descriptor/.small_shell_conf.org ${www}/descriptor/.small_shell_conf
+  chmod 755 ${www}/app/index.js
+  chmod 755 ${www}/app/app.sh
+  chown -R small-shell:small-shell $www
+
+  if [ -f ${www}/app/cert.pem ];then
+    ssl_flg=yes
+  fi
 fi
 
 num_chk=`ls ${bkuped_dir}/*cgi*xz 2>/dev/null | wc -l`
-if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 cgi.xz file in the directory"
-  exit 1
-elif [ $num_chk -eq 1 ];then
-  cp ${bkuped_dir}/*cgi*.xz ${cgidir}/../
-  (cd ${cgidir}/../ && tar -xf *cgi*.xz)
+if [ $num_chk -eq 1 ];then
+  (cd ${bkuped_dir} && tar -xf *cgi*.xz && \cp -Rf cgi-bin/* ${cgidir}/ )
+  chown -R small-shell:small-shell $cgidir
 fi
 
 num_chk=`ls ${bkuped_dir}/*ssh*xz 2>/dev/null | wc -l`
-if [ $num_chk -gt 1 ];then
-  echo "error: it seems there are more than 2 ssh.xz file in the directory"
-  exit 1
-elif [ $num_chk -eq 1 ];then
+if [ $num_chk -eq 1 ];then
   if [ ! -d /home/small-shell ];then
     mkdir /home/small-shell
-    chown small-shell:small-shell ${small_shell_home}
   fi
   usermod -s /bin/bash small-shell
   cp ${bkuped_dir}/*ssh*.xz /home/small-shell/
   (cd /home/small-shell && tar -xf *ssh*.xz)
+  chown -R small-shell:small-shell /home/small-shell
+  mkrep_flg=yes
 fi
+
+systemctl restart small-shell
 
 echo "-----------------------------------------------------------------------------------------------------"
 echo "backup files are restored, please exec gen just in case and restart Base APP and enable e-cron jobs"
 echo "-----------------------------------------------------------------------------------------------------"
 echo "sudo $ROOT/adm/gen -app #Base APP"
 echo "sudo -u small-shell $ROOT/bin/e-cron ls"
+
+if [ "$ssl_flg" = "yes" ];then
+  echo ""
+  echo "!! importtant !!"
+  echo "If you want to enable ssl, please regenerate Base APP. cert and key is ready in ${www}/app/"
+  echo "Even if you regenearete Base APP, no impact to other APP or Jobs"
+fi
+
+if [ "$mkrep_flg" = "yes" ];then
+  echo ""
+  echo "Additionally please execute $ROOT/util/scripts/mkrep.sh for building replication again"
+fi
+
 exit 0

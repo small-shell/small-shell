@@ -20,17 +20,6 @@ SCRIPT_DIR=`dirname $0`
 # load param
 bkup_dir=$1
 
-# disk util check
-disk_usage=`df -k $bkup_dir | grep -v Avail | awk '{print $4}'`
-small_shell_size=`du -sk $ROOT | awk '{print $1}'`
-
-
-if [ $small_shell_size -gt $disk_usage ];then
-  echo -n "error: disk of $bkup_dir is not enough"
-  exit 1
-fi
-
-
 if [ ! "$bkup_dir" ];then
    echo "error: please input backup direcotry \"./bkup \$backup_directory\""
    exit 1
@@ -39,6 +28,15 @@ fi
 if [ ! -d $bkup_dir ];then
    echo "error: backup_directory{$bkup_dir} seems wrong"
    exit 1
+fi
+
+# disk util check
+disk_usage=`df -k $bkup_dir | grep -v Avail | awk '{print $4}'`
+small_shell_size=`du -sk $ROOT | awk '{print $1}'`
+
+if [ $small_shell_size -gt $disk_usage ];then
+  echo -n "error: disk of $bkup_dir is not enough"
+  exit 1
 fi
 
 # backup small-shell core
