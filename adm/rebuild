@@ -57,7 +57,7 @@ chown small-shell:small-shell $access_log
 
 echo "Index rebuild has been successfully started"
 echo "rebild_session:$session"
-echo "progress can be cchecked here: $ROOT/tmp/log/$session.log"
+echo "progress can be checked here: $ROOT/tmp/log/$session.log"
 echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost index rebuild start #keys:$keys $flag" >> $ROOT/databox/$databox/log.dump
 
 function rebuild(){
