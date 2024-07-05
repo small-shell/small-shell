@@ -314,7 +314,9 @@ if [ "$param" = "reg.replica" ];then
     
           for target in `ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a`
           do
-            cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org  
+            if [ ! -f ${www}/descriptor/${target}.org ];then
+              cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org  
+            fi
             cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
             |$SED "s#./${app}?%%params\&req=del\&id=%%id#${base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
             cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
@@ -326,7 +328,9 @@ if [ "$param" = "reg.replica" ];then
             do
               for target in `ls ${www}/descriptor/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null`
               do
-                cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+                if [ ! -f ${www}/descriptor/${target}.org ];then
+                  cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+                fi
                 cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
                 |$SED "s#./${app}?%%params\&req=del\&id=%%id#${base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
                 cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
@@ -340,7 +344,9 @@ if [ "$param" = "reg.replica" ];then
       # update base APP
       for target in `ls ${www}/descriptor/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null` 
       do
-        cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+        if [ ! -f ${www}/descriptor/${target}.org ];then
+          cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+        fi
         cat ${www}/descriptor/${target} | $SED "s#./base?%%params&req=set\&id=%%id#${base_url}base?%%params\&req=set\&id=%%id#g" \
         |$SED "s#./base?%%params\&req=get\&id=%%id#${base_url}base?%%params\&req=get\&id=%%id#g" \
         |$SED "s#./base?%%params\&req=del\&id=%%id#${base_url}base?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
