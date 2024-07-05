@@ -1494,11 +1494,11 @@ if [ "$param" = "-app" ];then
     echo "-----------------------------------------------------------------"
     echo "APP type: $apptype"
     echo "Srv type: $srvtype"
-    echo "protocol: $protocol"
+    echo "Protocol: $protocol"
     echo "APP exec user: $cgiusr"
     echo "Root directory: $www"
     echo "CGI directory: $cgidir"
-    echo "server: $server"
+    echo "Server: $server"
     if [ "$srvtype" = "default" ];then
       echo "Access URL: ${index_url}base"
     else
@@ -2015,8 +2015,8 @@ if [ "$param" = "-app" ];then
     echo ""
     echo "APP type: $apptype"
     echo "Form name: $form_name"
-    echo "target_databox: $databox"
-    echo "description: $description"
+    echo "Target databox: $databox"
+    echo "Description: $description"
     echo "IP_whitelisting: $IP_whitelisting"
     echo "Included keys: $keys"
     if [ "$srvtype" = "default" ];then
@@ -2261,7 +2261,7 @@ if [ "$param" = "-app" ];then
    
     if [ ! "$parent_app" ];then
 
-      echo "authentication: $auth_method"
+      echo "Authentication: $auth_method"
       echo "IP_whitelisting: $IP_whitelisting"
 
       if [ "$srvtype" = "default" ];then
@@ -2280,7 +2280,7 @@ if [ "$param" = "-app" ];then
       fi
 
       if [ "$auth_method" = "shared_pass" ];then
-          echo "shared passcode: $shared_pass"
+          echo "Shared passcode: $shared_pass"
       fi
 
       echo "Primary databox: $databox"
@@ -2288,7 +2288,7 @@ if [ "$param" = "-app" ];then
     else
 
       echo "Parent APP: $parent_app"
-      echo "sub APP databox: $databox"
+      echo "Sub APP databox: $databox"
 
     fi
 
