@@ -79,6 +79,12 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi
 
+    which jq >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install jq command first"
+      exit 1
+    fi 
+
     echo "SHASUM=\"`which sha256sum`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BASE64_ENC=\"`which base64` -w 0\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BASE64_DEC=\"`which base64` -d\"" >> ${SCRIPT_DIR}/../global.conf
@@ -88,14 +94,7 @@ if [ $line_chk -eq 1 ];then
     echo "PHP=\"`which php`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "CURL=\"`which curl`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BC=\"`which bc`\"" >> ${SCRIPT_DIR}/../global.conf
-
-    which jq >/dev/null 2>&1
-    if [ ! $? -eq 0 ];then
-      echo "warn: please install jq command, if you want to use WEB API "
-    else
-      echo "JQ=\"`which jq`\"" >> ${SCRIPT_DIR}/../global.conf
-    fi
-
+    echo "JQ=\"`which jq`\"" >> ${SCRIPT_DIR}/../global.conf
 
   else
 
