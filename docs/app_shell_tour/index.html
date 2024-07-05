@@ -143,7 +143,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#insert-data-list-to-form" class="nav-link">Insert data list to form</a>
+            <li class="nav-item" data-level="2"><a href="#insert-data-list-to-form" class="nav-link">Insert data list to Form</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -191,7 +191,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="app-shell">APP Shell</h1>
-<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so we recommend to generate scratch APP for editting codes freely without any impact to base layer. as for portal page you can edit it very easily by using both markdown grammar or HTML/CSS framework, please check <a href="../cook_book/#portal-design-recipe">cookbook</a></p>
+<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so it's recommended to generate scratch APP for editting codes freely without any impact to base layer. as for portal page you can edit it very easily by using both markdown grammar or HTML/CSS framework, please check <a href="../cook_book/#portal-design-recipe">cookbook</a></p>
 <h6 id="types-of-small-shell-app">Types of small-shell APP</h6>
 <table>
 <thead>
@@ -269,7 +269,7 @@ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
 Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
 protocol (http | https): https
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
+WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.XXXX.com
 ssl cert path : /root/cert.pem
 ssl privare key path : /root/private.pem
 Do you need to use chain certificate ? (yes | no): no
@@ -314,12 +314,12 @@ data type (text | select | radio | checkbox | email | num | tel | date | date-ti
 -----------------------------------------------------------------
 Key initializing &amp; generating URL for test on Base APP is here
 -----------------------------------------------------------------
-https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
+https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
 <h2 id="access-url-of-base-app">Access URL of Base APP</h2>
 <p>As you already checked, access URL is shown in the result of ops add command. if you are using small-shell default WEB server, URL must be $FQDN/base.</p>
-<pre><code>e.g.) https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/base
+<pre><code>e.g.) https://ec2-XX-XX-XX-XX.XXXX.com/base
 </code></pre>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
 <p>If end user lost their key, you can generate URL for re-generating key.</p>
@@ -327,7 +327,7 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.base?initialize=
 -----------------------------------------------------------------
 Key initializing &amp; generating URL for test on Base APP is here
 -----------------------------------------------------------------
-https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
+https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
 <h2 id="change-tableform-column-and-parameters">Change Table/Form column and parameters</h2>
 <h5 id="add-del-column">Add | Del Column</h5>
@@ -360,8 +360,8 @@ params="book,furniture,electoric,gardening"
 option=""
 --------
 </code></pre>
-<h2 id="insert-data-list-to-form">Insert data list to form</h2>
-<p>You can import primary data list from other databox to the form using pdls type.
+<h2 id="insert-data-list-to-form">Insert data list to Form</h2>
+<p>You can import primary data list from other databox to the Form using "pdls".
 following is an example that can show how you can utilize pdls.</p>
 <h4 id="typepdls">type=pdls</h4>
 <p>Import target: item.db 
@@ -664,18 +664,18 @@ sudo tail -f /var/log/apache2/error_log
 </code></pre>
 <p>Then check /var/www/tmp, you can check posted params after post data on tmp dir</p>
 <pre><code>e.g.
-ec2-user@ip-*-* ~]$ ls /var/www/tmp
+$ ls /var/www/tmp
 b5ee3b232da9615cb7dda3838cc689aea77b323c3623c34c509d541eef9800eb
-ec2-user@ip-*-* ~]$ cd b5ee3b232da9615cb7dda3838cc689aea77b323c3623c34c509d541eef9800eb
-ec2-user@ip-*-* ~]$ ls 
+$ cd b5ee3b232da9615cb7dda3838cc689aea77b323c3623c34c509d541eef9800eb
+$ ls 
 category  databox_list  issue_link  result  status
 </code></pre>
 <h5 id="check-posted-param">check posted param</h5>
-<pre><code>ec2-user@ip-*-* ~]$ cat status
+<pre><code>$ cat status
 available
 </code></pre>
 <h5 id="check-result">check result</h5>
-<pre><code>ec2-user@ip-*-* ~]$ cat result
+<pre><code>$ cat result
 successfully set 181210f8f9c779c26da1d9b2075bde0127302ee0e3fca38c9a83f5b1dd8e5d3b category
 info: issue_link value{} is same as original value
 info: status value{available} is same as original value
