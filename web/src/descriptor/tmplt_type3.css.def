@@ -522,6 +522,10 @@ a {
   color: #6495ED;
 }
 
+.table-box h4 {
+  padding-left: 6px;
+}
+
 .table-box .pagelink {
   display: flex;
   padding-top:4px;
