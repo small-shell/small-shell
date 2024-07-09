@@ -47,6 +47,14 @@ rm $www/bin/${app}_*
 # rm descriptor and index
 rm $www/descriptor/${app}_*
 
+if [ -f ${www}/descriptor/common_parts/${app}_common_menu ];then
+  rm ${www}/descriptor/common_parts/${app}_common_menu
+fi
+
+if [ -f ${www}/html/${app}/index.html ];then
+  rm ${www}/html/${app}/index.html
+fi
+
 # update controller
 if [ "$parent_app" ];then
 
@@ -65,16 +73,16 @@ if [ "$parent_app" ];then
   fi
   
 else
-  # rm controller and index
-  rm $www/cgi-bin/${app}
-  rm $www/cgi-bin/${app}_css
-  rm $www/descriptor/${app}.css.def
-  rm $www/descriptor/common_parts/${app}_common_menu
-  rm -rf $ROOT/databox/${app}.UI.md.def
-
-  if [ -f $www/html/${app}/index.html ];then
-    rm $www/html/${app}/index.html
+  # rm auth and controller
+  if [ -f ${www}/cgi-bin/auth.${app} ];then
+    rm ${www}/cgi-bin/auth.${app}
   fi
+  rm ${www}/cgi-bin/${app}
+  rm ${www}/cgi-bin/${app}_css
+  rm ${www}/descriptor/${app}.css.def
+
+  # rm md.def
+  rm -rf $ROOT/databox/${app}.UI.md.def
 
   # show meesage
   echo "APP removal was done"
