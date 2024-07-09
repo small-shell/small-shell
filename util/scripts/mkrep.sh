@@ -290,7 +290,7 @@ if [ "$param" = "reg.replica" ];then
       # update controller and auth
       for target in `ls ${www}/cgi-bin | xargs basename -a`
       do
-        if [ -f ${www}/html/${target}/index.html ];then
+        if [ -f ${www}/cgi-bin/auth.${target} ];then
           app=$target
           cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" \
           | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/${app}.controller
