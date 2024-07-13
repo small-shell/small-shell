@@ -6,10 +6,6 @@ echo ""
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
-# load remote addr and user_agent
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
-
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
@@ -19,7 +15,7 @@ if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
     IP=`echo $IP | $SED "s/*//g"`
-    if [[ ${remote_addr} == ${IP}* ]];then
+    if [[ ${REMOTE_ADDR} == ${IP}* ]];then
       IP_chk=yes
       break
     fi
@@ -30,6 +26,10 @@ if [ "$whitelist_chk" ];then
     exit 1
   fi
 fi
+
+# load remote addr and user_agent
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 
 # preproceduure
 param=`date +%s`

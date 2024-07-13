@@ -3,16 +3,13 @@
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
-# load remote addr
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-
 # IP restriction check
 whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
 if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
     IP=`echo $IP | $SED "s/*//g"`
-    if [[ ${remote_addr} == ${IP}* ]];then
+    if [[ ${REMOTE_ADDR} == ${IP}* ]];then
       IP_chk=yes
       break
     fi
@@ -21,10 +18,13 @@ if [ "$whitelist_chk" ];then
   if [ ! "$IP_chk" = "yes" ];then
     echo "Content-Type: text/html"
     echo ""
-    echo "error: your IP $remote_addr is not allowed to access"
+    echo "error: your IP is not allowed to access"
     exit 1
   fi
 fi
+
+# load remote addr
+remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
 
 # preproceduure
 param=`date +%s`

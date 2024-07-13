@@ -18,25 +18,14 @@ echo ""
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
-# load header
-if [ "$IP_persistence" = "yes" ];then
-  remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-else
-  logging_IP=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-fi
-if [ "$User_agent_persistence" = "yes" ];then
-  user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
-fi
-
 # IP restriction check
 if [ "$IP_whitelisting" = "yes" ];then
-
   whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
   if [ "$whitelist_chk" ];then
     for IP in $whitelist_chk
     do
       IP=`echo $IP | $SED "s/*//g"`
-      if [[ ${remote_addr} == ${IP}* ]] || [[ ${logging_IP} == ${IP}* ]] ;then
+      if [[ ${REMOTE_ADDR} == ${IP}* ]] ;then
         IP_chk=yes
         break
       fi
@@ -47,6 +36,16 @@ if [ "$IP_whitelisting" = "yes" ];then
       exit 1
     fi
   fi
+fi
+
+# load header
+if [ "$IP_persistence" = "yes" ];then
+  remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+else
+  logging_IP=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+fi
+if [ "$User_agent_persistence" = "yes" ];then
+  user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 fi
 
 param=`date +%s`
