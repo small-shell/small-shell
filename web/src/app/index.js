@@ -44,26 +44,29 @@ if (%%cluster) {
     var remote_addr = req.ip.toString();
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var api_auth_key = req.headers['x-small-shell-authkey'];
-  
-    if (params) {
-      var command = params.split("?")[0];
-      var query_string = params.split("?")[1];
-    }
-  
+    var query_string = params.split("?")[1];
     var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-    console.log( time_stamp + remote_addr + ' requested ' + params );
-  
-    if ( query_string.indexOf('req=get&filename=') != -1) {
-      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,3d",{ maxBuffer: 1024000000 });
-      // file contents with Content-Disposition
-      res.set({'Content-Disposition': `attachment; filename=${req.query.filename}`})
-      res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
-      res.end(html);
+
+    if ( query_string == undefined ) {
+      res.end("Oops please set params for e-cron");
+      console.log( time_stamp + remote_addr + ' requested e-cron without any param' );
+
     } else {
-      // handle general request 
-      var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
-      res.writeHead(200, {'Content-Type' : 'text/html'});
-      res.end(html);
+
+      console.log( time_stamp + remote_addr + ' requested ' + params );
+      if ( query_string.indexOf('req=get&filename=') != -1) {
+        var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,3d",{ maxBuffer: 1024000000 });
+        // file contents with Content-Disposition
+        res.set({'Content-Disposition': `attachment; filename=${req.query.filename}`})
+        res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
+        res.end(html);
+      } else {
+        // handle general request 
+        var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
+        res.writeHead(200, {'Content-Type' : 'text/html'});
+        res.end(html);
+
+      }
     }
   })
   
