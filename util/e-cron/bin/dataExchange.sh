@@ -64,6 +64,7 @@ if [ "${get_file}" ];then
        mkdir ${file_que}/.${job}
     fi
     files=`$CURL -X GET "${hubapi}?req=ls&filename=${get_file}" -H "X-small-shell-authkey:$api_authkey"`
+
     if [ ! "$files" ];then
       ERROR_FLAG="file check failed"
       echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR target_file_was_not_exist" > ${status_que}
@@ -73,6 +74,16 @@ if [ "${get_file}" ];then
       fi
       exit 1
     fi   
+
+    if [ "$files" = "error: your IP is not allowed to access" ];then
+      ERROR_FLAG="Access denied"
+      echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR blocked by whitelist" > ${status_que}
+      echo "`date +%Y-%m-%d` `date +%T` ERROR bloked by whitelist" >> ${job_log}
+      if [ -f $tmp_que ];then
+        rm -rf $tmp_que
+      fi
+      exit 1
+    fi
 
     for file in $files
     do 
