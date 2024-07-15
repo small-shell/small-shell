@@ -169,9 +169,10 @@
 <h1 id="extended-cron">Extended cron</h1>
 <p>small-shell can provide Job automation &amp; data Exchagne framework by extending cron function (e-cron). you can define job relation ship between several hosts. you can also exchange DATA between several hosts.  </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
+Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
 Month [ any | 1-12 ]: 
-Date  [ any | 1-31 ]: 
+Date  [ any | 1-31 ]:
 Hour  [ any | 0-23 ]: 
 Min   [ any | 0-59 ]: 
 Week  [ any | mon - sun ]: 
@@ -478,13 +479,13 @@ filter: job2
 </code></pre>
 <h2 id="data-file-exchange">DATA (file) exchange</h2>
 <p>e-cron can be dataExchange platform between several hosets . dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
-<pre><code> -----------------------------------------------
- | API Server #DataExchange                    | -&gt; HUB dir: /usr/local/small-shell/util/e-cron/que/file
- -----------------------------------------------
-                   | GET/PUSH DATA #http/https protocol
- -----------------------------------------------
- | Edge servers {hostsA,B,C,D} #sync jobs      |  -&gt; can be synced to any local directory
- -----------------------------------------------
+<pre><code> ---------------------------------
+ |   API Server #DataExchange     |   HUB dir: /usr/local/small-shell/util/e-cron/que/file
+ ---------------------------------
+                |
+                | (http/https)
+                |
+  Edge servers {hostsA,B,C,D} # push or get files through HUB
 </code></pre>
 <h5 id="confirm-base-information-at-api-hub-server_1">confirm base information at API HUB server</h5>
 <h6 id="hub_1">@hub</h6>
@@ -575,6 +576,10 @@ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_get
 ls /tmp/dummy*
 dummy1 dummy2 dummy3 #data is synced to local dir
 </code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Once it's downloaded, file will be gone.</p>
+</div>
 <h2 id="general-queing">General queing</h2>
 <p>You can pass parameters using general que to the script that will be executed by e-cron. This function is useful for such like sending mails.</p>
 <h5 id="queing-dir">queing dir</h5>
