@@ -288,20 +288,23 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/html
 
       # update controller and auth
-      for target in `ls ${www}/cgi-bin | xargs basename -a`
+      for target in `ls ${www}/cgi-bin | grep -v "^auth\." | grep -v api | grep -v e-cron | xargs basename -a`
       do
-        if [ -f ${www}/cgi-bin/auth.${target} ];then
-          app=$target
-          cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" \
-          | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/${app}.controller
-          cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
-          echo "updated controller of $app"
-
-          cat ${www}/cgi-bin/auth.${app} | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/auth.${app}
-          cat ${tmp_dir}/auth.${app} > ${www}/cgi-bin/auth.${app}
-          echo "updated auth.$app"
-        fi
+        app=$target
+        cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" \
+        | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/${app}.controller
+        cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
+        echo "updated controller of $app"
       done
+
+      for target in `ls ${www}/cgi-bin | grep "^auth\." | xargs basename -a`
+      do
+        app_auth=$target
+        cat ${www}/cgi-bin/${app_auth} | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/${app_auth}
+        cat ${tmp_dir}/${app_auth} > ${www}/cgi-bin/${app_auth}
+        echo "updated $app_auth"
+      done
+
       chown -R small-shell:small-shell ${www}/cgi-bin
 
       # update descriptor for scratch APP
@@ -522,11 +525,6 @@ if [ "$param" = "reg.master" ];then
         fi
       done
     fi
-
-    # update env
-    cat $ROOT/web/base | grep -v "master=\"" > ${tmp_dir}/base 
-    echo "master=\"$new_master\"" >>  ${tmp_dir}/base 
-    cat ${tmp_dir}/base > $ROOT/web/base
     master=$new_master
   fi
 
@@ -559,10 +557,10 @@ if [ "$param" = "reg.master" ];then
   done
 
   # update env
-  cat $ROOT/web/base | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
+  cat $ROOT/web/base | grep -v "master=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
+  echo "master=\"$master\"" >>  ${tmp_dir}/base
   echo "cluster_base_url=\"$cluster_base_url\"" >>  ${tmp_dir}/base
   cat ${tmp_dir}/base > $ROOT/web/base
-
 
   # remove local APP 
   rm -rf ${www}/html/base
@@ -721,21 +719,24 @@ EOF
     chown -R small-shell:small-shell ${www}/descriptor
     chown -R small-shell:small-shell ${www}/html
 
-    # restore controller
-    for target in `ls ${www}/cgi-bin | xargs basename -a`
+    # restore controller and auth
+    for target in `ls ${www}/cgi-bin | grep -v api | grep -v e-cron | grep -v ^auth\. |  xargs basename -a`
     do
-      if [ -f ${www}/html/${target}/index.html ];then
-        app=$target
-        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
-        | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
-        cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
-        echo "updated controller of $app"
-
-        cat ${www}/cgi-bin/auth.${app} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/auth.${app}
-        cat ${tmp_dir}/auth.${app} > ${www}/cgi-bin/auth.${app}
-        echo "updated auth.$app"
-      fi
+      app=$target
+      cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
+      | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
+      cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
+      echo "updated controller of $app"
     done
+
+    for target in `ls ${www}/cgi-bin | grep ^auth\. |  xargs basename -a`
+    do
+      app_auth=$target
+      cat ${www}/cgi-bin/${app_auth} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app_auth}
+      cat ${tmp_dir}/${app_auth} > ${www}/cgi-bin/${app_auth}
+      echo "updated $app_auth"
+    done
+
     chown -R small-shell:small-shell ${www}/cgi-bin
 
     # purge authorized key
@@ -813,21 +814,24 @@ EOF
     chown -R small-shell:small-shell ${www}/descriptor
     chown -R small-shell:small-shell ${www}/html
 
-    # restore controller
-    for target in `ls ${www}/cgi-bin | xargs basename -a`
+    # restore controller and auth
+    for target in `ls ${www}/cgi-bin | grep -v api | grep -v e-cron | grep -v ^auth\. |  xargs basename -a`
     do
-      if [ -f ${www}/html/${target}/index.html ];then
-        app=$target
-        cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
-        | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
-        cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
-        echo "updated controller of $app"
-
-        cat ${www}/cgi-bin/auth.${app} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/auth.${app}
-        cat ${tmp_dir}/auth.${app} > ${www}/cgi-bin/auth.${app}
-        echo "updated auth.$app"
-      fi
+      app=$target
+      cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
+      | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
+      cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
+      echo "updated controller of $app"
     done
+
+    for target in `ls ${www}/cgi-bin | grep ^auth\. |  xargs basename -a`
+    do
+      app_auth=$target
+      cat ${www}/cgi-bin/${app_auth} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app_auth}
+      cat ${tmp_dir}/${app_auth} > ${www}/cgi-bin/${app_auth}
+      echo "updated $app_auth"
+    done
+
     chown -R small-shell:small-shell ${www}/cgi-bin
 
 
