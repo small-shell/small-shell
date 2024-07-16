@@ -240,9 +240,9 @@
 <p>Let's start to generate scratch APP named as just test with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just test but of course you can set any prefer name you want.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
-app_name: test                                                              
+APP Name: test                                                              
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):  2
-primary databox: item.db
+Primary databox: item.db
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -361,8 +361,8 @@ databox_name: inventory.db
 
 sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
-app_name: inventory@test
-primary databox: inventory.db
+APP Name: inventory@test
+Subapp databox: inventory.db
 </code></pre>
 <p>And then subAPP will be deployed, please check routing and menu that will be updaated automatically. and you can freely modify them.</p>
 <pre><code># routing

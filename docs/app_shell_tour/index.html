@@ -268,11 +268,11 @@ then start dialog by gen command.</p>
 sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
 Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
-protocol (http | https): https
+Protocol (http | https): https
 WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.XXXX.com
 ssl cert path : /root/cert.pem
 ssl privare key path : /root/private.pem
-Do you need to use chain certificate ? (yes | no): no
+Do you need to use chain certificate? (yes | no): no
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="small-shell-web-srv">small-shell WEB srv</h2>
@@ -300,7 +300,7 @@ You can define parameters in the dialog. and change them anytime later.</p>
 <h3 id="hash-id">Hash id</h3>
 <p>Basically primary_key value could not be duplicated for normalization of databox. but in many cases you must want to use duplicatable value. and If you want to disable the restriction, please use <b>hashid</b> as primary_key in the dialog.</p>
 <p>following is an example of using hashid</p>
-<pre><code>databox_name: item.db
+<pre><code>Databox Name: item.db
 primary_key(col1): hashid
 key(col2) name: item_name
 key(col2) label: item_name

@@ -223,7 +223,7 @@ sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
 </code></pre>
 <p>Following is an example of making job that will execuete script. it's just an examplem, you can execute any unix commands or any scripts.</p>
 <h6 id="dialog_1">Dialog</h6>
-<pre><code>job name: job1
+<pre><code>Job Name: job1
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
 Month [ any | 1-12 ]: any
@@ -514,7 +514,7 @@ e.g.) access.log*</p>
 <pre><code>@hostA
 # generate job
 sudo /usr/local/small-shell/adm/gen -job
-job name: data_push
+Job Name: data_push
 Type of job (1.job automation | 2.file exchange) : 2
 --Define schedule--
 Month [ any | 1-12 ]: any
@@ -534,7 +534,7 @@ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.data_push
 @hostB
 # generate job
 sudo /usr/local/small-shell/adm/gen -job
-job name: data_get
+Job Name: data_get
 Type of job (1.job automation | 2.file exchange) : 2
 --Define schedule--
 Month [ any | 1-12 ]: any
