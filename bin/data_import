@@ -1,15 +1,13 @@
 #!/bin/bash
 
 #------------------------------------------------------------------------------------
-# usage: ./data_import $import_file $databox $session $pin $remote_addr $user_agent
+# usage: ./data_import importfile:$import_file databox:$databox \
+  session:$session pin:$pin remote_addr:$remote_addr user_agent:$user_agent
 #------------------------------------------------------------------------------------
 
-import_file=$1
-databox=$2
-session=$3
-pin=$4
-remote_addr=$5
-user_agent=$6
+# global conf load
+SCRIPT_DIR=`dirname $0`
+ . ${SCRIPT_DIR}/../global.conf
 
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "small-shell" ];then
@@ -17,9 +15,33 @@ if [ ! "$WHOAMI" = "small-shell" ];then
   exit 1
 fi
 
-# global conf load
-SCRIPT_DIR=`dirname $0`
- . ${SCRIPT_DIR}/../global.conf
+for param in `echo $@`
+do
+  if [[ $param == import_file:* ]];then
+    import_file=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
+  if [[ $param == databox:* ]];then
+    databox=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
+  if [[ $param == session:* ]];then
+    session=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
+  if [[ $param == pin:* ]];then
+    pin=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
+  if [[ $param == remote_addr:* ]];then
+    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
+  if [[ $param == user_agent:* ]];then
+    user_agent=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+done
+
 
 # authorized session check
 get_session=`$ROOT/bin/auth data_import_session:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`

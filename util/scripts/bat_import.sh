@@ -40,7 +40,8 @@ if [ ! "$session" ];then
 fi
 
 # import 
-nice -n 19 ${ROOT}/bin/data_import $import_file $databox $session $pin localhost  bat_import &
+nice -n 19 ${ROOT}/bin/data_import import_file:${import_file} databox:${databox} session:${session} \
+pin:${pin} remote_addr:localhost user_agent:bat_import &
 sleep 1
 
 exit 0

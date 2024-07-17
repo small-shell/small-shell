@@ -86,10 +86,10 @@ if [ ! -d %%www/tmp/$session/binary_file  ];then
 
 else
 
-  # gen %%result contents
-  ${small_shell_path}/bin/data_import %%www/tmp/$session/binary_file/binary.data \
-  $databox $session $pin $remote_addr $user_agent > %%www/tmp/$session/result
-  data_import_session=`cat %%www/tmp/$session/result | grep Import_session: | $AWK -F "Import_session:" '{print $2}'`
+  # exec import
+  ${small_shell_path}/bin/data_import import_file:%%www/tmp/${session}/binary_file/binary.data \
+  databox:${databox} session:${session} pin:${pin} remote_addr:${remote_addr} \
+  user_agent:${user_agent} > %%www/tmp/$session/result
 
   error_check=`cat %%www/tmp/$session/result | grep error`
   if [ ! "$error_check" ];then
