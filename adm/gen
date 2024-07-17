@@ -1949,7 +1949,7 @@ if [ "$param" = "-app" ];then
     clear
     datas=`cat $ROOT/databox/$databox/def/col* | grep name=\" | grep -v $primary_key | $AWK -F "name=" '{print $2}' \
     | $SED "s/\"//g" | $SED -z "s/\n/ | /g" | $SED "s/ | $//g"`
-    echo -n "Select data that must be included in the Form ($datas) : "
+    echo -n "Select key that must be included in the Form ($datas) : "
     read key
     
     key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
@@ -1966,12 +1966,12 @@ if [ "$param" = "-app" ];then
 
 
     if [ "$datas" ];then
-      echo -n "Do you want to add more data to the Form (yes | no): "
+      echo -n "Do you want to add more key to the Form? (yes | no): "
       read add_form_answer
       while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
       do
         echo "please input yes or no"
-        echo -n "Do you want to add more data to the Form? (yes | no): "
+        echo -n "Do you want to add more key to the Form? (yes | no): "
         read add_form_answer
       done
     else
@@ -1980,7 +1980,7 @@ if [ "$param" = "-app" ];then
 
     while [ "$add_form_answer" = "yes" -a "$datas" ]
     do 
-      echo -n "Select additional data that must be included in the Form ($datas) : "
+      echo -n "Select additional key that must be included in the Form ($datas) : "
       read key
       key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
 
@@ -1995,12 +1995,12 @@ if [ "$param" = "-app" ];then
       datas=`echo $datas | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g"`
   
       if [ "$datas" ];then
-        echo -n "Do you want to add more data to the Form? (yes | no): "
+        echo -n "Do you want to add more key to the Form? (yes | no): "
         read add_form_answer
         while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
         do
           echo "please input yes or no"
-          echo -n "Do you want to add more data to the Form? (yes | no): "
+          echo -n "Do you want to add more key to the Form? (yes | no): "
           read add_form_answer
         done
       fi
