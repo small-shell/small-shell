@@ -276,10 +276,10 @@ Do you need to use chain certificate? (yes | no): no
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="small-shell-web-srv">small-shell WEB srv</h2>
-<p>small-shell contain default WEB server that is written by javascipt using Node.js. it will be start automatically by systemctl. ofcourse you can use your favorite WEB server as well, in that case please select "other WEB srv" and input detail to the dialog. we verified that small-shell can be worked without any problem on Apache and Nginx.</p>
+<p>small-shell contain default WEB server that is written by javascipt using Node.js. it can be managed by systemctl command. ofcourse you can use your favorite WEB server as well, in that case please select "other WEB srv" and input detail to the dialog. we verified that small-shell can be worked without any problem on Apache and Nginx.</p>
 <h3 id="define-dataset-of-web-app">Define dataset of WEB APP</h3>
-<p>For the first step, it's required to define dataset that will be refered from Base APP or any Scratch APP. "label" will be shown in the table and Form of APP. 
-you can also define parameters of select, radio or checkbox in the dialog.</p>
+<p>For the first step, it's required to define dataset that will be refered from APP. "label" will be shown in the table and Form of APP.
+you can also define parameters of select, radio or checkbox in the dialog. by the way, there is 2 type of primary key. please check detail on <a href="../data_shell_tour/#feature">databox feature</a></p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 </code></pre>
 <p>This is exmpale of dialog.</p>
@@ -301,7 +301,7 @@ Do you want to add more column to dataset? (yes | no) : no
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Type is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell WEB application framework.</p>
+<p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell WEB application framework.</p>
 <p><b>type: select , radio, checkbox</b>  <br />
 You can define parameters in the dialog. and change them anytime later.</p>
 <p><b>type: pdls</b><br />
