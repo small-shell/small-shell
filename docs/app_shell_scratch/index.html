@@ -139,6 +139,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#meta-link" class="nav-link">Meta link</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#import-app-from-template" class="nav-link">Import APP from template</a>
               <ul class="nav flex-column">
               </ul>
@@ -171,7 +175,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="create-scratch-app">Create Scratch APP</h1>
-<p>In this tour, you can learn how to make scratch APP using small-shell framework and how to edit codes or portal page very quiickly. there are 4 types of Scratch APP as following chart. </p>
+<p>In this tour, you can learn how to make scratch APP and how to edit codes or portal page very quiickly. there are 4 types of Scratch APP as following chart. </p>
 <table>
 <thead>
 <tr>
@@ -225,9 +229,9 @@
 <ol>
 <li>Generate DataBox for datastore #gen -databox</li>
 <li>Generate Scratch APP #gen -app</li>
-<li>Update portal by light weight Markdown#on BaseAPP</li>
+<li>Update portal with Markdown or HTML tag #on BaseAPP</li>
 <li>Add user #key APP, other</li>
-<li>Update scripts #optional</li>
+<li>Update action scripts #optional</li>
 <li>Add subAPP #connect additional databox if needed</li>
 </ol>
 <p>Let's create scratch APP by following above steps.</p>
@@ -275,7 +279,7 @@ And if you set "yes" for IP whitelisting for this APP in the dialog, you can set
 <pre><code>sudo /usr/local/small-shell/adm/ops initialize.usr:test app:test
 </code></pre>
 <h3 id="update-pass-code">Update Pass code</h3>
-<p>If it's shared Pass code APP, you can update pass code by updating file directly </p>
+<p>If it's Shared Pass code APP, you can update pass code by updating file directly </p>
 <pre><code>sudo vi /usr/local/small-shell/web/$app.code
 </code></pre>
 <h3 id="update-codes-optional">Update codes (optional)</h3>
@@ -306,8 +310,12 @@ keys=item_name,description
 sudo vi /var/www/descriptor/test_table.html.def
 </code></pre>
 <h3 id="tagging-on-scratch-app-table">Tagging on Scratch APP Table</h3>
-<p>You can add search tag in Base App table by ops command</p>
-<pre><code>sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} app:$app_name
+<p>You can add search tag to the table by ops command</p>
+<pre><code># For Base APP
+sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} 
+
+# For Scratch APP
+sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} app:$app_name
 
 e.g.)
 sudo /usr/local/small-shell/adm/ops add.tag:tasks{status{on-going}} app:tasks
@@ -350,21 +358,17 @@ user_name="external_user"
 --------
 </code></pre>
 <h2 id="sub-app">Sub APP</h2>
-<p>Basically scratch APP will connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to scratch APP that name is test. </p>
+<p>Basically scratch APP connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to scratch APP that name is test. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>subAPP must be belong to parent APP, please define subapp as $subAPP_name@$parentAPP_name    </p>
 </div>
-<pre><code>sudo /usr/local/small-shell/adm/gen -databox
-databox_name: inventory.db
-#-&gt; dialog will be started
-
-sudo /usr/local/small-shell/adm/gen -app
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 APP Name: inventory@test
 Subapp databox: inventory.db
 </code></pre>
-<p>And then subAPP will be deployed, please check routing and menu that will be updaated automatically. and you can freely modify them.</p>
+<p>Once subAPP deployed, please check routing and menu that will be updaated automatically. and you can freely modify them.</p>
 <pre><code># routing
 # sudo cat /var/www/cgi-bin/$parent_app
 sudo cat /var/www/cgi-bin/test
@@ -373,11 +377,7 @@ sudo cat /var/www/cgi-bin/test
 cat /var/www/desciption/common_parts/test_common_menu
 </code></pre>
 <p>Portal page link will be updated as well. please check on Base APP.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>If you want to detouch subAPP, plase update above routing and menu</p>
-</div>
-<h3 id="meta-link">meta link</h3>
+<h2 id="meta-link">Meta link</h2>
 <p>You can generate links that can be used in the APP. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html descriptor of your APP and it can connect table of primary databox of your APP or it can connect action links such like new or get data in the APP.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
 </code></pre>
@@ -440,7 +440,7 @@ cat /var/www/desciption/common_parts/test_common_menu
 git clone https://github.com/naruoken/small-shell-apps
 cd small-shell-apps/team_app
 
-#if you already careated events and tasks, please delete it.
+#if you already careated events and tasks databoxes, please delete it.
 #rm -rf /usr/local/small-shell/databox/events 
 #rm -rf /usr/local/small-shell/databox/tasks
 
