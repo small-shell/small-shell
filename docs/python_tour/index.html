@@ -121,7 +121,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#pyshell" class="nav-link">pyshell</a>
+            <li class="nav-item" data-level="1"><a href="#pyshell" class="nav-link">Pyshell</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-level="2"><a href="#setup-env-ubuntudebian" class="nav-link">Setup Env @ubuntu/debian</a>
               <ul class="nav flex-column">
@@ -170,17 +170,18 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="pyshell">pyshell</h1>
-<p>pyshell is dedicated shell for python integration. it can call python librarise {matplotlib, numpy, pandas} for analyzing data and generating png graph.</p>
+<h1 id="pyshell">Pyshell</h1>
+<p>Pyshell is dedicated shell for python integration. it can call python librarise {matplotlib, numpy, pandas} for analyzing data and generating png graph.</p>
 <h2 id="setup-env-ubuntudebian">Setup Env @ubuntu/debian</h2>
-<h4 id="install-library-for-compiling-python3">install library for compiling python3</h4>
+<h4 id="install-library-for-compiling-python3">Install library for compiling python3</h4>
 <pre><code>sudo apt update
 sudo apt install build-essential libbz2-dev libdb-dev \
 libreadline-dev libffi-dev libgdbm-dev liblzma-dev \
 libncursesw5-dev libsqlite3-dev libssl-dev \
 zlib1g-dev uuid-dev tk-dev
 </code></pre>
-<h4 id="install-python-39">install python 3.9</h4>
+<h4 id="install-python">Install python</h4>
+<p>This is an expamle of install python3.9</p>
 <pre><code># Download
 cd $HOME
 wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
@@ -196,7 +197,7 @@ sudo make install
 ls /usr/local/lib/python3.9
 ls /usr/local/bin/pip3.9
 </code></pre>
-<h4 id="install-python-libraries">install python libraries</h4>
+<h4 id="install-python-libraries">Install python libraries</h4>
 <pre><code># please ignore just WARNINGS
 sudo /usr/local/bin/pip3.9 install numpy
 sudo /usr/local/bin/pip3.9 install pandas

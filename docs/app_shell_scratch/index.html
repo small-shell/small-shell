@@ -135,6 +135,18 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#use-member-list" class="nav-link">Use member list</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#tagging-on-scratch-app" class="nav-link">Tagging on Scratch APP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#change-user-permission" class="nav-link">Change user permission</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#sub-app" class="nav-link">Sub APP</a>
               <ul class="nav flex-column">
               </ul>
@@ -148,10 +160,6 @@
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#team-app" class="nav-link">Team APP</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#insert-member-list-to-the-app" class="nav-link">Insert member list to the APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -218,7 +226,7 @@
 <td>Markdown portal,table,form</td>
 <td>specific databox</td>
 <td>editable</td>
-<td>Basically read only</td>
+<td>Read only</td>
 </tr>
 </tbody>
 </table>
@@ -309,19 +317,21 @@ keys=item_name,description
 <pre><code>sudo vi /var/www/descriptor/test_main.html.def
 sudo vi /var/www/descriptor/test_table.html.def
 </code></pre>
-<h3 id="tagging-on-scratch-app-table">Tagging on Scratch APP Table</h3>
+<h2 id="use-member-list">Use member list</h2>
+<p>If you want to import user list on your APP Form. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP. following is just example.</p>
+<pre><code>key(col2) name: assignee
+key(col2) label: Assignee
+data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): mls
+</code></pre>
+<h2 id="tagging-on-scratch-app">Tagging on Scratch APP</h2>
 <p>You can add search tag to the table by ops command</p>
-<pre><code># For Base APP
-sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} 
-
-# For Scratch APP
-sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} app:$app_name
+<pre><code>sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} app:$app_name
 
 e.g.)
 sudo /usr/local/small-shell/adm/ops add.tag:tasks{status{on-going}} app:tasks
 </code></pre>
 <p><img alt="Screenshot" src="../img/app_tag.png" /></p>
-<h3 id="change-user-permission">Change user permission</h3>
+<h2 id="change-user-permission">Change user permission</h2>
 <p>User permission could be changed ops command with app option. </p>
 <pre><code># change to read only 
 sudo /usr/local/small-shell/adm/ops set.attr:$user{ro} app:$app
@@ -348,14 +358,6 @@ sudo vi /var/www/descriptor/test_get.html.def
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;window.open('./test?%%params&amp;req=log_viewer&amp;id=%%id', 'log_viewer', 'width=820,height=280')&quot;&gt;Show data update history&lt;/p&gt;&lt;/span&gt;
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;del_confirmation()&quot;&gt;Delete&lt;/p&gt;&lt;/span&gt;
 ---------
-</code></pre>
-<h3 id="no-auth-app">No auth APP</h3>
-<p>"No auth" app will take care of end users as guest. anyone can access to the table and datas by read only permission as guest. If you want to change to read write, please change user name from guest to other proper name in controller.</p>
-<pre><code>sudo vi /var/www/cgi-bin/$app
---code--
-#user_name="guest"
-user_name="external_user"
---------
 </code></pre>
 <h2 id="sub-app">Sub APP</h2>
 <p>Basically scratch APP connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to scratch APP that name is test. </p>
@@ -466,12 +468,6 @@ primary databox: $databox
 </code></pre>
 <p>also menu can be updated, please insert meta link to the menu</p>
 <pre><code>sudo cat /var/www/descriptor/common_parts/team_common_menu
-</code></pre>
-<h2 id="insert-member-list-to-the-app">Insert member list to the APP</h2>
-<p>If you want to add user list to your APP. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP. following is just example.</p>
-<pre><code>key(col2) name: assignee
-key(col2) label: Assignee
-data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): mls
 </code></pre>
 <h2 id="oauth-integration">Oauth integration</h2>
 <p>If you want to use Oauth, it's recommended to select other type APP.</p>

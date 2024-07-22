@@ -182,7 +182,13 @@
 <p>"DATA shell" manage "databox" that is mainly designed to be used by WEB APP of APP shell. DATA shell is interface of manage databox and it can ensure data integrity utilizing hash chain.</p>
 <h2 id="key-value-store">Key value store</h2>
 <p>Data will be saved in databox as key value type of data sets. like this image.</p>
-<pre><code>databox [ { primary_key: valuex0, key1: valuex1, key2: valuex2 }, { primary_key: valuey0, key1: valuey1, key3: valuey2} ]
+<h4 id="image-of-inside-databox">Image of inside databox</h4>
+<pre><code>dataset1:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }, 
+dataset2:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }, 
+dataset3:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }, 
+dataset4:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }, 
+..  
+datasetX:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }
 </code></pre>
 <h2 id="feature">Feature</h2>
 <p>small-shell databox could have both feature of relational database and key value storage. if you want to use databox as master database, please set specific primary key as master name. if it's just used as flat data store, please set hashid. see detail as below. </p>
