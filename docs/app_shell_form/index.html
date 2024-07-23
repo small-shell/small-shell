@@ -175,27 +175,21 @@ Databox Name: survey.box
 <p>For using Form, primary key of the databox must be "hashid". please set in the dialog like this &gt;&gt; primary_key(col1): hashid</p>
 </div>
 <h6 id="result-of-dialog">Result of dialog</h6>
-<pre><code>#primary_key
+<pre><code>Databox Name:survey.box
+#primary_key
 name=&quot;hashid&quot;
-label=&quot;hashid&quot;
+label=&quot;#ID&quot;
 type=&quot;text&quot;
 option=&quot;required&quot;
 
 #column2
-name=&quot;generation&quot;
-label=&quot;Generation&quot;
-type=&quot;radio&quot;
-params=&quot;young middle senior&quot;
-option=&quot;&quot;
-
-#column3
 name=&quot;impression&quot;
 label=&quot;Impression of this product&quot;
 type=&quot;radio&quot;
-params=&quot;Good Average Bad&quot;
+params=&quot;Good,Average,Bad&quot;
 option=&quot;required&quot;
 
-#column4
+#column3
 name=&quot;comment&quot;
 label=&quot;Comment&quot;
 type=&quot;textarea&quot;
@@ -218,7 +212,7 @@ Form Name: survey
 Target Databox: survey.box
 Description: This is a internal survey of product A
 IP_whitelisting: no
-Included keys: generation,impression,comment
+Included keys: impression,comment
 Access URL: https://ec2-XX-XX-XX-XX.compute.XXXX.com/survey
 
 -----------------------------------------------------------------

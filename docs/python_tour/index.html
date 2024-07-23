@@ -184,24 +184,24 @@ zlib1g-dev uuid-dev tk-dev
 <p>This is an expamle of install python3.9</p>
 <pre><code># Download
 cd $HOME
-wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
-tar xJf Python-3.9.4.tar.xz
+wget https://www.python.org/ftp/python/3.12.4/Python-3.12.4.tar.xz
+tar xJf Python-3.12.4.tar.xz
 
 # Compiling
-cd Python-3.9.4
+cd Python-3.12.4
 ./configure
 make
 
 # install
 sudo make install
-ls /usr/local/lib/python3.9
-ls /usr/local/bin/pip3.9
+ls /usr/local/lib/python3.12
+ls /usr/local/bin/pip3.12
 </code></pre>
 <h4 id="install-python-libraries">Install python libraries</h4>
 <pre><code># please ignore just WARNINGS
-sudo /usr/local/bin/pip3.9 install numpy
-sudo /usr/local/bin/pip3.9 install pandas
-sudo /usr/local/bin/pip3.9 install matplotlib
+sudo /usr/local/bin/pip3.12 install numpy
+sudo /usr/local/bin/pip3.12 install pandas
+sudo /usr/local/bin/pip3.12 install matplotlib
 
 # mkdir for matplotlib
 sudo mkdir -p /home/small-shell/.config/matplotlib
@@ -216,10 +216,10 @@ xcode-select --install <br />
 sudo python3 -m pip install --upgrade pip <br />
 sudo pip3 install numpy; sudo pip3 install pandas; sudo pip3 install matplotlib  </p>
 </div>
-<h4 id="define-python-path-at-env">Define python path at env</h4>
+<h4 id="define-python-path">Define python path</h4>
 <pre><code>sudo vi /usr/local/small-shell/util/pyshell/env
 --code--
-PYTHON="/usr/local/bin/python3.9"
+PYTHON="/usr/local/bin/python3.12"
 --------
 </code></pre>
 <h2 id="make-statistics-job">Make statistics job</h2>
@@ -229,7 +229,7 @@ PYTHON="/usr/local/bin/python3.9"
 Following is an expamle that count up number of data of item.db</p>
 <h6 id="dialog-result">dialog result</h6>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
-job name: countup_item
+Job Name: countup_item
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
 Month [ any | 1-12 ]: any
@@ -485,7 +485,7 @@ font_family="AppleGothic" #modify
 <h2 id="pyshell-verificated-env">pyshell verificated env</h2>
 <pre><code>OS: Ubuntu 2X (recommnded), Debian 1X, macOS Monterey, CentOS 7, RHEL 8
 bash: 4.X
-python: 3.8, 3.9
+python: 3.X
 required: matplotlib(3.X), pandas(1.X), numpy(1.X)
 </code></pre></div>
             </div>
