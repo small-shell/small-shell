@@ -582,7 +582,7 @@ echo "#------------------------------------------------------
 # get.command
 # get.IP #show whitelisted IPs
 # get.statistics:ls{html_tag}
-# get.statistics:ls.\$filter_word,$filter_word2{html_tag}
+# get.statistics:ls.\$filter_word,\$filter_word2{html_tag}
 # get.statistics:\$statistics{graph}
 # get.statistics:\$statistics{raw_data}
 # get.shared_pass:\$app
