@@ -105,7 +105,9 @@ do
     fi
   fi
 
-  type_chk=`cat $db_def | grep -e "col${count}_type=\"checkbox\"" -e "col${count}_type=\"file\""` 
+  type_chk=`cat $db_def \
+  | grep -e "col${count}_type=\"checkbox\"" -e "col${count}_type=\"select\"" -e "col${count}_type=\"radio\"" -e "col${count}_type=\"file\""`  
+
   if [ ! "$type_chk" ];then
     cat $db_def | grep "^col${count}_" | cut -d '=' -f 2- | $SED "s/\"//g" | $SED "/^$/d" >> $ROOT/util/scripts/tmp/db.def.load
   else 
