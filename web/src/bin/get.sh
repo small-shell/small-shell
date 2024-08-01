@@ -173,6 +173,7 @@ cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
 | $SED "s/%%text_area_row/$text_area_row/g" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
 | $SED "/%%common_menu/d" \
+| $SED "s/%%user/$user_name/g"\
 | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \
 | $SED "s/%%databox_list//g"\
 | $SED "/%%dataset/r %%www/tmp/$session/dataset" \

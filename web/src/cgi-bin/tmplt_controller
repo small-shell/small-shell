@@ -169,17 +169,17 @@ case "$req" in
     %%www/bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id ;;
 
   "del")
-    %%www/bin/%%app_del.sh databox:$databox session:$session pin:$pin id:$id ;;
+    %%www/bin/%%app_del.sh databox:$databox session:$session pin:$pin user_name:$user_name id:$id ;;
 
   "table")
     table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
     %%www/bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line ;;
 
   "log_viewer")
-    %%www/bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id ;;
+    %%www/bin/%%app_log_viewer.sh session:$session pin:$pin id:$id ;;
 
   "file")
-    %%www/bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;
+    %%www/bin/%%app_dl.sh session:$session pin:$pin id:$id ;;
 
   # sub app routing section
 

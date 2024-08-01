@@ -64,6 +64,7 @@ if [ "$error_chk" ];then
   cat %%www/descriptor/set_err.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
   | $SED "s/%%common_menu//g"\
+  | $SED "s/%%user/$user_name/g"\
   | $SED "/%%message/r %%www/tmp/$session/result" \
   | $SED "/%%message/d"\
   | $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"

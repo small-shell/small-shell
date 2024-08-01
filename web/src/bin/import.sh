@@ -23,6 +23,10 @@ do
     remote_addr=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  if [[ $param == user_name:* ]]; then
+    user_name=`echo $param | $AWK -F":" '{print $2}'`
+  fi
+
   if [[ $param == user_agent:* ]]; then
     user_agent=`echo $param | $AWK -F":" '{print $2}'`
   fi
@@ -77,6 +81,7 @@ if [ ! -d %%www/tmp/$session/binary_file  ];then
   cat %%www/descriptor/$view | $SED -r "s/^( *)</</1" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
+  | $SED "s/%%user/$user_name/g"\
   | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \
@@ -103,6 +108,7 @@ else
   cat %%www/descriptor/import.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
+  | $SED "s/%%user/$user_name/g"\
   | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \

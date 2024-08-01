@@ -183,7 +183,7 @@ case "$req" in
     %%www/bin/set.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id ;;
 
   "del")
-    %%www/bin/del.sh databox:$databox session:$session pin:$pin id:$id ;;
+    %%www/bin/del.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id ;;
 
   "log_viewer")
     %%www/bin/log_viewer.sh databox:$databox session:$session pin:$pin id:$id data_import_session:$data_import_session ;;
@@ -191,7 +191,8 @@ case "$req" in
   "import")
     # master param must be loaded on ./descriptor/.small-shell.conf
     if [ ! "$master" ];then
-      %%www/bin/import.sh databox:$databox session:$session pin:$pin remote_addr:${remote_addr} user_agent:${user_agent}
+      %%www/bin/import.sh databox:$databox session:$session pin:$pin user_name:$user_name \
+      remote_addr:${remote_addr} user_agent:${user_agent}
     else
       sync=`${small_shell_path}/bin/auth sync:${session}@${master}`
       if [ "$sync" = "synced" ];then
@@ -199,7 +200,8 @@ case "$req" in
       else
         redirect=no
       fi
-      %%www/bin/import.sh databox:$databox session:$session pin:$pin remote_addr:${remote_addr} user_agent:${user_agent} redirect:$redirect 
+      %%www/bin/import.sh databox:$databox session:$session pin:$pin user_name:$user_name \
+      remote_addr:${remote_addr} user_agent:${user_agent} redirect:$redirect 
     fi
     ;;
 

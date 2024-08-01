@@ -32,9 +32,20 @@
         </div>
         </form>
         <div class="tags">
-          <p>FILTER:%%filter&nbsp;&nbsp;[%%sort] data.num:%%num</p>
+          <p>Data.Num:%%num</p>
           %%table_menu
           %%tag
+          <div class="tooltip">
+          <p>#Sort.Hint</p>
+          <span class="tooltip-text">
+          <p>------------------------------------------------------------------------</p>
+          <p>#Sort command usage: sort -option column_name</p>
+          <p>------------------------------------------------------------------------</p>
+          <p>sort -V %%key #nature sort</p>
+          <p>sort -n %%key #numetric sort</p>
+          <p>sort -r %%key #reverse sort</p>
+          </span>
+          </div>
         </div>
         %%table
         <div class="pagelink">

@@ -186,7 +186,7 @@ if [ $righth -eq 1 ];then
   echo "<nav>" >> ${tmp}/righth.tmp
   echo "<ul>" >> ${tmp}/righth.tmp
   $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \
-  | $SED "s/righth://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/righth_raw.data
+  | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" | $SED "s/Log Out:/Log Out #%%user:/g" > ${tmp}/righth_raw.data
 
   while read r_line
   do

@@ -61,7 +61,7 @@ fi
 cat %%www/descriptor/%%app_main.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
 | $SED "s/%%common_menu//g"\
-| $SED "s/%%user_name/$user_name/g" \
+| $SED "s/%%user/$user_name/g" \
 | $SED "s/%%session/session=$session\&pin=$pin/g" \
 | $SED "s/%%params/session=$session\&pin=$pin/g"
 

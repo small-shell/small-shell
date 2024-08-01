@@ -53,7 +53,7 @@ if [ "$page" = "" ];then
 fi
 
 # set placeholder 
-placeholder="Hi %%user, type any filter words or you can sort column with sort command e.g.[sort -V %%key]"
+placeholder="Type any filter words or you can sort column by sort command"
 
 # load post param
 if [ -s %%www/tmp/$session/table_command ];then
@@ -74,12 +74,15 @@ fi
 if [ "$sort_chk" ];then
   table_command=`echo $table_command | $SED "s/ /,/g"`
   sort_option=`echo $table_command | cut -f 2 -d ","`
-  sort_label=`echo $table_command  | cut -f 3- -d "," | $SED "s/,/{%%space}/g"`
+  sort_label=`echo $table_command  | cut -f 3- -d "," | $SED "s/,/{%%space}/g" \
+  | $SED "s/#nature{%%space}sort//g" | $SED "s/#numetric{%%space}sort//g" | $SED "s/#reverse{%%space}sort//g" \
+  | $SED "s/{%%space}$//g"`
+
     
   if [ "$sort_label" ];then
     sort_col=`$META get.key:$databox{$sort_label}`
     if [ ! "$sort_col" ];then
-      sort_label="<font color=\"red\">Failed to search ${sort_label}<\/font>"
+      sort_label="Failed to search ${sort_label}"
       sort_col=`$META get.key:$databox{$default_key_label}`
     fi
   else
@@ -245,7 +248,7 @@ if [ ! "$filter_table" ];then
 fi
 
 if [ ! "$sort_col" ];then
-  sort_command="ordered by latest update"
+  sort_command="-"
 else
   sort_command="sort option:$sort_option col:$sort_label"
 fi
