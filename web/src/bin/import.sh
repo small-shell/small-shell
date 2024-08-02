@@ -95,8 +95,9 @@ else
   ${small_shell_path}/bin/data_import import_file:%%www/tmp/${session}/binary_file/binary.data \
   databox:${databox} session:${session} pin:${pin} remote_addr:${remote_addr} \
   user_agent:${user_agent} > %%www/tmp/$session/result
-
+  data_import_session=`cat %%www/tmp/$session/result | grep Import_session: | $AWK -F "Import_session:" '{print $2}'`
   error_check=`cat %%www/tmp/$session/result | grep error`
+
   if [ ! "$error_check" ];then
     echo "<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=log_viewer&data_import_session=$data_import_session', 'log_viewer', 'width=920,height=280')\">view</a>" >> %%www/tmp/$session/result
     message="## SUCCESS ##"
