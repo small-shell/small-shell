@@ -111,10 +111,10 @@ if [ "$command" ];then
   | $SED "/%%result/d"\
   | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \
   | $SED "s/%%databox_list//g"\
-  | $SED "s/%%user/$user_name/g"\
   | $SED "s/%%commands/$commands/g" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu_${permission}" \
   | $SED "/%%common_menu/d"\
+  | $SED "s/%%user/$user_name/g"\
   | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
@@ -154,11 +154,11 @@ elif [ "$statistics" ];then
   | $SED "/%%statistics/d"\
   | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \
   | $SED "s/%%databox_list//g"\
-  | $SED "s/%%user/$user_name/g"\
   | $SED "s/%%commands/$commands/g" \
   | $SED "s/%%filters/$filters/g" \
   | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu_${permission}" \
   | $SED "/%%common_menu/d"\
+  | $SED "s/%%user/$user_name/g"\
   | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
