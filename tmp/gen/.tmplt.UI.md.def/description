@@ -12,9 +12,9 @@ Head line can be define by using hashtag. and headline1 and 2 will be insert to 
 ````
 ## Headline2
 ````
-### headline3
+### Headline3
 ````
-### headline3
+### Headline3
 ````
 
 ## Sample Table
@@ -50,26 +50,16 @@ Link to [Internal table](./%%app?req=table)
 ## List and Bold
 List and bold can be defined by using asterisk.
 ### List
-* list1
-* list2
-* list3
-* list1
-* list2
-* list3
-* list1
-* list2
-* list3
+* text1
+* text2
+* text3
+* text4
 
 ````
-* list1
-* list2
-* list3
-* list1
-* list2
-* list3
-* list1
-* list2
-* list3
+* text1
+* text2
+* text3
+* text4
 ````
 
 ### bold
@@ -79,7 +69,7 @@ List and bold can be defined by using asterisk.
 ````
 
 ## Code
-Please define code block using 4 sequential backquote first and end line.
+Code block can be defined by using 4 sequential backquote first and end line.
 ````
 \`\`\`\`
 Code
