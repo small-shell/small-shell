@@ -46,8 +46,6 @@ Link to [Internal table](./%%app?req=table)
 ````
 [Internal table](./%%app?req=table)
 ````
-by the way right header and left header link should be defined by yml format, and description example is in righth.yml and lefth.yml. please check them as well.
-
 
 ## List and Bold
 List and bold can be defined by using asterisk.
