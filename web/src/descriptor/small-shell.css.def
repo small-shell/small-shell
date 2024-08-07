@@ -46,6 +46,7 @@ a {
     margin-bottom: -4px;
     background: #434246;
     color: #dcdcdc;
+    height: 60px;
   }
 
   .container .left-header {
@@ -206,6 +207,7 @@ a {
     flex-wrap:wrap;
     margin-top: -10px;
     margin-bottom: -4px;
+    height: 60px;
   }
 
   body > .console-container {
