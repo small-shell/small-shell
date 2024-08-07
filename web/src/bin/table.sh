@@ -225,10 +225,10 @@ for db in $db_list
 do
   if [ ! "$databox" = "$db" -o $count -eq 0 ];then
     if [ ! "$replica_hosts" ];then
-      echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
+      echo "<option value=\"./base?session=$session&pin=$pin&databox=$db&req=table\">$db</option>"\
       >> %%www/tmp/$session/databox_list
     else
-      echo "<option value=\"${cluster_base_url}base?session=$session&pin=$pin&databox=$db&req=table\">DataBox:$db</option>"\
+      echo "<option value=\"${cluster_base_url}base?session=$session&pin=$pin&databox=$db&req=table\">$db</option>"\
       >> %%www/tmp/$session/databox_list
     fi
   fi

@@ -9,6 +9,7 @@
     <div class="console-container">
       <div class="flex-header">
         <div class="left-header">
+          <p>DataBox:</p>
           <select class="dataselect" onChange="location.href=value;">
           %%databox_list
           </select>

@@ -52,14 +52,13 @@ a {
     font-weight: 300;
     line-height: 0.8em;
     font-size: 80%;
+    display:flex;
     flex: auto;
     margin: auto;
   }
 
   .container .left-header .dataselect{
     font-weight: bold;
-    margin-left: -8px;
-    padding-left: 8px;
     background: #434246;
     color: #dcdcdc;
     cursor: hand;
@@ -68,6 +67,7 @@ a {
 
   .container .left-header p {
     font-weight: bold;
+    padding: .3rem;
   }
 
   .container .left-header a {
@@ -123,6 +123,7 @@ a {
     font-weight: 300;
     line-height: 0.8em;
     font-size: 80%;
+    display:flex;
     flex: auto;
     margin: auto;
   }
@@ -136,6 +137,7 @@ a {
 
   .container .left-header p {
     font-weight: bold;
+    padding: .3rem;
   }
 
   .container .left-header a {
@@ -236,6 +238,7 @@ a {
   line-height: 0.8em;
   font-size: 80%;
   flex: auto;
+  display:flex;
   margin: auto;
 }
 
@@ -249,6 +252,8 @@ a {
 
 .console-container .left-header p {
   font-weight: bold;
+  color: #E1E6E9;
+  padding: .3rem;
 }
 
 .console-container .left-header a {
@@ -304,7 +309,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem;
+    padding: .3rem;
     cursor: pointer;
     line-height: 1;
   }
@@ -319,7 +324,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem;
+    padding: .3rem;
     cursor: pointer;
     line-height: 1;
   }
@@ -336,7 +341,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem;
+    padding: .3rem;
     cursor: pointer;
     line-height: 1;
   }
@@ -351,7 +356,7 @@ a {
     cursor: pointer;
     letter-spacing: .01em;
     border-radius: 8px;
-    padding: .5rem;
+    padding: .3rem;
     cursor: pointer;
     line-height: 1;
  } 
