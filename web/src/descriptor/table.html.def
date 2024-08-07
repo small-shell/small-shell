@@ -24,7 +24,6 @@
       </div>
       <div class="table-box">
         <div class="description">
-         <h1>Base.APP</h1>
         </div>
         <form method="post" action="./base?%%params&req=table">
         <div class="wrapper">
