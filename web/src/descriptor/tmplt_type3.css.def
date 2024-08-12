@@ -1,5 +1,5 @@
 body {
-  font-family: 'Hiragino Kaku Gothic Pro',sans-serif;
+  font-family: sans-serif;
   color: #000333;
   letter-spacing: .04em;
   font-size: 94%;
@@ -78,6 +78,7 @@ a {
   display:flex;
   flex-wrap:wrap;
   margin: auto;
+  align-items: baseline;
   padding-top: 6px;
   padding-left: 4px;
 }
