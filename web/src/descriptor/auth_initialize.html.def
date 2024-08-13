@@ -95,7 +95,7 @@
 
           <form method="post" action="./auth.base">
           <input type="hidden" name="key_placeholder" value="%%user_key" >
-          <button class="button" type="submit">OPEN DATA BOX with KEY</button>
+          <button class="button" type="submit">Connect APP with KEY</button>
           </form>
         </div>
       </div>
