@@ -147,6 +147,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#dictionary-create-lang-pack" class="nav-link">Dictionary (create lang pack)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#log-analyzer" class="nav-link">Log analyzer</a>
               <ul class="nav flex-column">
               </ul>
@@ -1012,6 +1016,31 @@ $server.core.tar.xz  $server.ssh.tar.xz  $server.www.tar.xz
 <p>For restoring backup file, please install small-shell from git and launch Base APP first. and rstr command option must be directory where backup files are copied from backup node.</p>
 <pre><code>@restore_node
 sudo /usr/local/small-shell/adm/rstr $dir
+</code></pre>
+<h2 id="dictionary-create-lang-pack">Dictionary (create lang pack)</h2>
+<p>You can create language pack for WEB APP using following template.</p>
+<pre><code>cd $HOME
+git clone https://github.com/naruoken/small-shell-apps
+cd small-shell-apps/dictionary/template
+</code></pre>
+<h4 id="usage-of-keywords-file">Usage of keywords file</h4>
+<p>"keywords" file will be used for translating words to your language. please update them. by the way {%%%%%%} is a separator that is used instead of conma.</p>
+<pre><code># at small-shell-apps/dictionary/template
+vi keywords 
+-----
+##########################################################
+# usage: original_word{%%%%%%}translated_word
+##########################################################
+ScratchAPP:APP Portal{%%%%%%}
+ScratchAPP:Table{%%%%%%}
+ScratchAPP:Log Out{%%%%%%}
+Your Key is successfully generated.{%%%%%%}
+----
+</code></pre>
+<h4 id="deployment">Deployment</h4>
+<p>Once keywords file is updated, deploy it by using deploy.sh</p>
+<pre><code># at small-shell-apps/dictionary/template
+./deploy.sh
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>
 <p>You can import job for analyzing small-shell web log from github. please deploy it to the small-shell env which using default web server.</p>
