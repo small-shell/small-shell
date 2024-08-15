@@ -12,9 +12,9 @@
         <div class="auth-form">
           <form method="post" action="./auth.base?%%params">
           %%message
-          <h1>key.auth</h1>
+          <h1>Key.auth</h1>
           <div class="wrapper">
-            <input type="text" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand" placeholder="Your key" list="keylist" autocomplete="on">
+            <input type="text" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand" placeholder="Your Key" list="keylist" autocomplete="on">
             <datalist id="keylist">
             </datalist>
             <button class="button" type="submit" onclick="setkey()">SUBMIT</button>

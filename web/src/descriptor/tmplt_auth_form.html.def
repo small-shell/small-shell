@@ -13,7 +13,7 @@
           %%message
           <h1>%%app</h1>
           <div class="wrapper">
-            <input type="text" id="%%app_key_%%rand" name="%%app_key_%%rand" placeholder="Your key" list="keylist" autocomplete="on">
+            <input type="text" id="%%app_key_%%rand" name="%%app_key_%%rand" placeholder="Your Key" list="keylist" autocomplete="on">
             <datalist id="keylist">
             </datalist>
             <button class="button" type="submit" onclick="setkey()">SUBMIT</button>
