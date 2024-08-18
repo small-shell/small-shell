@@ -78,8 +78,13 @@ else
     sleep $index_update_time
   fi
 
-  # redirect to the table
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?session=$session&pin=$pin&databox=$databox&req=table\">"
+  # redirect to the table if it's not md.def
+  if [[ $databox == *.md.def ]];then
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?session=$session&pin=$pin&databox=$databox&req=get&id=$id\">"
+  else
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?session=$session&pin=$pin&databox=$databox&req=table\">"
+  fi
+
 fi
 
 if [ "$session" ];then
