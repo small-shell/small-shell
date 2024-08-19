@@ -82,7 +82,8 @@ if [ "$req" = "log_viewer" -o "$req" = "csv" -o "$req" = "hash" -o "$req" = "sta
 fi
 
 if [ "$req" = "logout" ]; then
-  ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logout:${session} logging_IP:${logging_IP}
+  ${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} \
+  logout:${session} logging_IP:${logging_IP} > /dev/null 2>&1
   echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.base?req=main\">"
   exit 0
 fi

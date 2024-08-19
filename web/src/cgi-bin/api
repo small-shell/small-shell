@@ -135,8 +135,8 @@ if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
   fi
 fi
 
-${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} logout:${session}
-
+${small_shell_path}/bin/auth pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent} \
+logout:${session} > /dev/null 2>&1
 
 
 if [ "$session" ];then

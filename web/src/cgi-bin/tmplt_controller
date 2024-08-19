@@ -83,7 +83,7 @@ if [ "$auth" = "required" ];then
 
   if [ "$req" = "logout" ]; then
     ${small_shell_path}/bin/extension_auth app:%%app pin:${pin} remote_addr:${remote_addr} logout:${session} \
-    user_agent:${user_agent} logging_IP:${logging_IP}
+    user_agent:${user_agent} logging_IP:${logging_IP} > /dev/null 2>&1
     echo "<meta http-equiv=\"refresh\" content=\"0; url=./auth.%%app?req=main\">"
     exit 0
   fi
