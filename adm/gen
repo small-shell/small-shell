@@ -1214,6 +1214,15 @@ if [ "$param" = "-app" ];then
     exit 1
   fi
 
+  if [ -f $ROOT/web/base ];then
+    replica_chk=`grep ^cluster_base_url= $ROOT/web/base`
+    if [ "$replica_chk" ];then
+      echo "warn: you must purge replication first. please execute \"$ROOT/util/scripts/mkrep.sh purge\""
+      rm -rf $tmp_dir
+      exit 1
+    fi
+  fi
+
   # start dialog
   echo -n "Type of APP (1.BASE | 2.FORM | 3.SCRATCH): "
   read apptype 
