@@ -1,4 +1,3 @@
-<li>USER:%%user</li>
 <li><a href="./base?%%params&req=table">Table View</a></li>
 <li><a href="./base?%%params&req=console">Console Box</a></li>
 <li><a href="./base?%%params&req=logout">Log Out #%%user</a></li>
