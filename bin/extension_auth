@@ -157,7 +157,7 @@ if [ "$initialize" = "yes" -a "$user_id" -a "$initialize_hash_key" ];then
 
     if [ $? -eq 0 ];then
       user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
-      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} generated user_key of user_name:${user_name}" \
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} generated user_key of user_name:${user_name} app:${app}" \
       >> $access_log
       echo "user_name:${user_name},user_key:${user_key}"
       rm $ROOT/users/${app}.${user_id}/initialize_key
@@ -289,7 +289,7 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
 
     elif [ ! "$org_user_agent" = "$user_agent" ];then
       echo "warn: User agent was changed, need additional authentication"  
-      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} failed to get new session (user_name:${user_name}) due to User-agent change" \
+      echo "`date +%Y-%m-%d` `date +%T` remote_addr:${logging_IP} app:${app} failed to get new session (user_name:${user_name}) due to User-agent change" \
       >> $access_log
       exit 1
 
