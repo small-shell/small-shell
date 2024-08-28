@@ -21,13 +21,13 @@ if (%%cluster) {
   var url = require('url');
   var fs = require('fs');
   var path = require('path');
-  var www = "/var/www"
+  var www = "/var/www";
   
   const server = require('%%protocol').createServer({
       // https key: fs.readFileSync( www + '/app/privatekey.pem'),
       // https cert: fs.readFileSync( www + '/app/cert.pem'),
       // https_chain ca: fs.readFileSync( www + '/app/chain.pem')
-  }, app)
+  }, app);
   
   const execSync = require('child_process').execSync;
   // gen session 
