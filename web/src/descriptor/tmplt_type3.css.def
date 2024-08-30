@@ -529,6 +529,10 @@ a {
   padding-left: 6px;
 }
 
+.table-box h4 a {
+  color: #333;
+}
+
 .table-box .pagelink {
   display: flex;
   padding-top:4px;
