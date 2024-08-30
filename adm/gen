@@ -1358,15 +1358,32 @@ if [ "$param" = "-app" ];then
 
     if [ "$protocol" = "https" -a "$srvtype" = "default" ];then
 
-      if [ -f $www/app/cert.pem -a -f $www/app/privatekey.pem ];then
-        echo -n "Do you want to use existing cert and key? (yes | no): "
-        read use_existing_cert 
-        while [ ! "$use_existing_cert" = "yes" -a ! "$use_existing_cert" = "no" ]
-        do
-          echo "please input yes or no"
+     if [ -f $ROOT/web/base ];then
+        reverse_proxy=`cat $ROOT/web/base | grep reverse_proxy= | $SED "s/reverse_proxy=//g" | $SED "s/\"//g"`  
+        if [ "$reverse_proxy" = "yes" ];then
+          echo -n "Continue to use automation setting of ssl cert deployement ? (yes | no): "
+          read use_existing_cert 
+          while [ ! "$use_existing_cert" = "yes" -a ! "$use_existing_cert" = "no" ]
+          do
+            echo "please input yes or no"
+            echo -n "Continue to use automation setting of ssl cert deployement ? (yes | no): "
+            read use_existing_cert
+          done
+        fi
+        retain_ssl_auto=$use_existing_cert
+      fi
+
+      if [ ! "$use_existing_cert" ];then
+        if [ -f $www/app/cert.pem -a -f $www/app/privatekey.pem ];then
           echo -n "Do you want to use existing cert and key? (yes | no): "
-          read use_existing_cert
-        done
+          read use_existing_cert 
+          while [ ! "$use_existing_cert" = "yes" -a ! "$use_existing_cert" = "no" ]
+          do
+            echo "please input yes or no"
+            echo -n "Do you want to use existing cert and key? (yes | no): "
+            read use_existing_cert
+          done
+        fi
       fi
       
       if [ "$use_existing_cert" = "yes" ];then
@@ -1590,8 +1607,32 @@ if [ "$param" = "-app" ];then
         fi
         (cd ${www}/app;npm init -y;npm install express) 
 
-        node_version=`node --version | $SED "s/v//g" | $AWK -F "." '{print $1}'`
+        # handle reverse proxy setting
+        if [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "yes" ];then
+          # overwrite params
+          port=8080
+          protocol=http
+        elif [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "no" ];then
+          systemctl stop nginx
+          systemctl disable nginx
+          reverse_proxy=""
+          sudo -u small-shell $ROOT/bin/e-cron disable.ssl_auto
+        else
+          nginx_chk=`ps -ef | grep nginx | grep -v grep`
+          if [ "$nginx_chk" ];then
+            if [ ! "$mac_chk" ];then
+              systemctl stop nginx
+              systemctl disable nginx
+              if [ ! $? -eq 0 ];then
+                echo "error: nginx can not be stopped"
+                exit 1 
+              fi
+            fi
+          fi
+        fi
+
         # generate index.js for upper version of v16        
+        node_version=`node --version | $SED "s/v//g" | $AWK -F "." '{print $1}'`
         if [ "$node_version" -ge 16 ];then
           if [ "$protocol" = "https" ];then
             if [ ! "$chain_cert" ];then

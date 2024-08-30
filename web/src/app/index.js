@@ -42,6 +42,10 @@ if (%%cluster) {
     var req_path = url.parse(req.url).path;
     var params = req_path.split("/")[2];
     var remote_addr = req.ip.toString();
+    var proxy_client_addr = req.headers['x-real-ip'];
+    if ( proxy_client_addr != undefined ) {
+      var remote_addr = proxy_client_addr;
+    }
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var api_auth_key = req.headers['x-small-shell-authkey'];
     var query_string = params.split("?")[1];
@@ -77,6 +81,10 @@ if (%%cluster) {
     var req_path = url.parse(req.url).path;
     var params = req_path.split("/")[2];
     var remote_addr = req.ip.toString();
+    var proxy_client_addr = req.headers['x-real-ip'];
+    if ( proxy_client_addr != undefined ) {
+      var remote_addr = proxy_client_addr;
+    }
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var user_agent =  req.headers['user-agent'];
     var api_auth_key = req.headers['x-small-shell-authkey'];
@@ -134,6 +142,10 @@ if (%%cluster) {
     var req_path = url.parse(req.url).path;
     var params = req_path.split("/")[2];
     var remote_addr = req.ip.toString();
+    var proxy_client_addr = req.headers['x-real-ip'];
+    if ( proxy_client_addr != undefined ) {
+      var remote_addr = proxy_client_addr;
+    }
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var user_agent =  req.headers['user-agent'];
     var content_type = req.headers['content-type'];
@@ -185,6 +197,10 @@ if (%%cluster) {
   // handle static page
   app.get("*", (req, res) => {
     var remote_addr = req.ip.toString();
+    var proxy_client_addr = req.headers['x-real-ip'];
+    if ( proxy_client_addr != undefined ) {
+      var remote_addr = proxy_client_addr;
+    }
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var uri = url.parse(req.url).pathname;
     var path = www + "/html" + uri;
