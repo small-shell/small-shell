@@ -229,7 +229,10 @@ if [ "$param" = "reg.replica" ];then
 
       for target in `ls ${www}/descriptor/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a`
       do
-        app=`head -1 ${www}/descriptor/common_parts/${target} | $AWK -F "./" '{print $2}' | $AWK -F "?" '{print $1}'`
+        app=`echo "${target}" | $AWK -F "_" '{print $1}'`
+        if [ "$app" = "common" ];then
+          app=base
+        fi
         chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app}`
 
         if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
@@ -364,6 +367,7 @@ if [ "$param" = "reg.replica" ];then
 
 
       # update web/base
+      echo "cluster_server=\"$cluster_IP\"" >> $ROOT/web/base
       echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
       echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
       echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
@@ -393,12 +397,12 @@ EOF
       # else means not new
       # update web/base
       new_replica_hosts=`echo "$replica_hosts" | $SED "s/\"//g" | $SED "s/$/ $replica/g"`
-      cat $ROOT/web/base | grep -v replica_hosts= > $ROOT/web/.base
+      cat $ROOT/web/base | grep -v replica_hosts=\" > $ROOT/web/.base
       echo "replica_hosts=\"$new_replica_hosts\"" >> $ROOT/web/.base
       cat $ROOT/web/.base > $ROOT/web/base
     
       # update small_shell_conf
-      cat $www/descriptor/.small_shell_conf | grep -v replica_hosts= > $www/descriptor/.small_shell_conf.tmp
+      cat $www/descriptor/.small_shell_conf | grep -v replica_hosts=\" > $www/descriptor/.small_shell_conf.tmp
       echo "replica_hosts=\"$new_replica_hosts\"" >> $www/descriptor/.small_shell_conf.tmp
       cat $www/descriptor/.small_shell_conf.tmp > $www/descriptor/.small_shell_conf
 
@@ -447,6 +451,7 @@ EOF
   echo "Please be aware that Access URL is changed,"
   echo "From ${index_url}\${app} To ${cluster_index_url}\${app}"
   echo ""
+
 fi
 
 if [ "$param" = "reg.master" ];then
@@ -538,6 +543,7 @@ if [ "$param" = "reg.master" ];then
   while [ ! "$cluster_base_url" ]
   do
     sleep 10
+
     cluster_base_url=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep cluster_base_url \
     | $SED "s/cluster_base_url=//g" | $SED "s/\"//g"` 
     ((count += 1))
@@ -557,8 +563,11 @@ if [ "$param" = "reg.master" ];then
   done
 
   # update env
-  cat $ROOT/web/base | grep -v "master=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
+  cluster_server=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep cluster_server \
+  | $SED "s/cluster_server=//g" | $SED "s/\"//g"` 
+  cat $ROOT/web/base | grep -v "master=\"" | grep -v "cluster_server=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
   echo "master=\"$master\"" >>  ${tmp_dir}/base
+  echo "cluster_server=\"$cluster_server\"" >>  ${tmp_dir}/base
   echo "cluster_base_url=\"$cluster_base_url\"" >>  ${tmp_dir}/base
   cat ${tmp_dir}/base > $ROOT/web/base
 
@@ -658,9 +667,10 @@ EOF
     mv /etc/lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua.org
 
     # update web/base desc/.small_shell_conf
-    cat $ROOT/web/base | grep -v cluster_index_url | grep -v cluster_base_url | grep -v replica_hosts=\" > ${tmp_dir}/base
+    cat $ROOT/web/base | grep -v cluster_server=\" | grep -v cluster_index_url=\" \
+    | grep -v cluster_base_url=\" | grep -v replica_hosts=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
-    cat ${www}/descriptor/.small_shell_conf | grep -v replica=\"registered\" | grep -v cluster_base_url > ${tmp_dir}/small_shell_conf
+    cat ${www}/descriptor/.small_shell_conf | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/small_shell_conf
     cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
 
 
@@ -682,7 +692,10 @@ EOF
     for bkup in `ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
     do
 
-      app=`head -1 ${www}/descriptor/common_parts/${bkup} | $AWK -F "./" '{print $2}' | $AWK -F "?" '{print $1}'`
+      app=`echo "${bkup}" | $AWK -F "_" '{print $1}'`
+      if [ "$app" = "common" ];then
+        app=base
+      fi
       chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app}`
 
       if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! ${app} = "base" -a ! "${chk_team}" ];then
@@ -699,7 +712,7 @@ EOF
         sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
       fi
 
-       target=`echo $bkup | awk -F ".org" '{print $1}'`
+       target=`echo $bkup | $AWK -F ".org" '{print $1}'`
        cat ${www}/descriptor/common_parts/${bkup} > ${www}/descriptor/common_parts/${target}
     done
 
@@ -752,9 +765,9 @@ EOF
   else
      
     # update web/base desc/.small_shell_conf
-    cat $ROOT/web/base | grep -v master=\" | grep -v cluster_base_url=\" > ${tmp_dir}/base
+    cat $ROOT/web/base | grep -v master=\" | grep -v cluster_server=\" | grep -v cluster_base_url=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
-    cat ${www}/descriptor/.small_shell_conf | grep -v master= > ${tmp_dir}/small_shell_conf
+    cat ${www}/descriptor/.small_shell_conf | grep -v master=\" > ${tmp_dir}/small_shell_conf
     cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
 
     # restore descriptor
@@ -774,8 +787,10 @@ EOF
     # restore menu
     for bkup in `ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
     do
-
-      app=`head -1 ${www}/descriptor/common_parts/${bkup} | $AWK -F "./" '{print $2}' | $AWK -F "?" '{print $1}'`
+      app=`echo "${bkup}" | $AWK -F "_" '{print $1}'`
+      if [ "$app" = "common" ];then
+        app=base
+      fi
       chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app}`
 
       if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! ${app} = "base" -a ! "${chk_team}" ];then
@@ -792,7 +807,7 @@ EOF
         sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
       fi
 
-       target=`echo $bkup | awk -F ".org" '{print $1}'`
+       target=`echo $bkup | $AWK -F ".org" '{print $1}'`
        cat ${www}/descriptor/common_parts/${target} | $SED "s#${cluster_base_url}${app}#./${app}#g" > ${tmp_dir}/${target}.menu
        cat ${tmp_dir}/${target}.menu > ${www}/descriptor/common_parts/${target}
     done
