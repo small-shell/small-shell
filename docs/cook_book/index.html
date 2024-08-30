@@ -823,8 +823,12 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <p class="admonition-title">Note</p>
 <p>A record of the domain must be set on DNS server beforehand. and it must be global IP that can be reachable from Let's encrypt server </p>
 </div>
-<h5 id="launch-base-app-with-fqdn-for-certification">Launch Base APP with FQDN for certification</h5>
-<p>To be verified your domain by Let's Encrypt server, please launch WEB server with FQDN name that you want to deploy ssl certificate and the FQDN name must be same as A record of DNS.so far http should be fine because certificate is not issued yet. deploy job will upgrade it to https later.</p>
+<h4 id="install-nginx-for-reverse-proxy">Install nginx for reverse proxy</h4>
+<p>It's required to install nginx package with no configuration to use as reverse proxy later.</p>
+<pre><code>sudo apt install nginx
+</code></pre>
+<h4 id="generate-base-app">Generate Base APP</h4>
+<p>Base APP that will use small-shell WEB srv should be launched as http server not https so far. FQDN must be same as A record that you set beforehand on your DNS server. </p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
 Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
@@ -832,11 +836,12 @@ protocol (http | https): http
 WEB Server FQDN or IP addr (e.g. 192.168.10.1): $FQDN
 </code></pre>
 <h4 id="import-job-and-deploy-ssl-certificate">Import job and deploy ssl certificate</h4>
-<p>Once you install certbot and launched Base APP using small-shell web, let's kick deploy.sh. then dialog will be started. please answer your mail address that is reqiured to publish certificate by Let's Encrypt</p>
+<p>Once you install certbot and launched Base APP, please kick configure.sh and deploy.sh. then dialog will be started. please answer your mail address that is reqiured to publish certificate by Let's Encrypt</p>
 <pre><code>cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd ./small-shell-apps/ssl_auto
-chmod 755 deploy.sh
+chmod 755 *.sh
+sudo ./configure.sh
 sudo ./deploy.sh
 </code></pre>
 <h4 id="dialog">dialog</h4>
@@ -864,7 +869,7 @@ EFF news, campaigns, and ways to support digital freedom.
 Account registered.
 Requesting a certificate for ***.com
 </code></pre>
-<p>If everything is no problem, https will be enabled automatically by deploy.sh if you are using small-shell default WEB serfver.</p>
+<p>If everything is no problem, https will be enabled automatically by deploy.sh. by the way configure.sh will set up reverse proxy using nginx package.</p>
 <h4 id="add-sudoer">Add Sudoer</h4>
 <p>You must add following setting on sudoers to execute SSL refresh job regularly.</p>
 <pre><code>$ sudo visudo
@@ -882,7 +887,7 @@ ssl_auto.enabled
 load balander must be setup beforehand on cloud env or physical env.   </p>
 <h4 id="requirement-of-load-balancing">Requirement of load balancing</h4>
 <p>Please be aware that load balancer must ensure session persistence.
-And load balancing logic must be just TCP port proxy (not terminate SSL/TLS) because write request will go to real server FQDN of master server.</p>
+And load balancing logic must be just TCP port proxy (not terminate SSL/TLS) because write request will go to real server FQDN of master server directly. it's recommended to use wild card certificate or automated certificate. implement procedure of automated certificate will be explained later step.</p>
 <pre><code> Read Req  &gt; Load Balancer # ensure session persistence
              TCP port forwarding
              | - Master host #response on 80,443 port
@@ -894,13 +899,15 @@ And load balancing logic must be just TCP port proxy (not terminate SSL/TLS) bec
              |-  Replica hosts &gt; it will be redirected to real server FQDN of master host
 </code></pre>
 <h4 id="setup-environment">Setup environment</h4>
-<p>Before build replica, you need to setup Base APP using default WEB srv on both master and replica server. when input server FQDN, please input real server FQDN or IP address (I mean not load balancing address).</p>
+<p>Before build replica, you need to setup Base APP using small-shell WEB srv on both master and replica server. when input server FQDN, please input real server FQDN (I mean not load balancing address) and protocol should be http so far not https.</p>
 <pre><code>@master
 sudo apt install lsyncd
 sudo mkdir /etc/lsyncd
+sudo apt install nginx
 sudo /usr/local/small-shell/adm/gen -app #Base APP (required), Scratch APP (optional)
 
 @replica
+sudo apt install nginx
 sudo /usr/local/small-shell/adm/gen -app #Base APP (required)
 </code></pre>
 <h4 id="get-key">Get key</h4>
@@ -921,37 +928,37 @@ sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.replica
 sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.master
 &gt; dialog will be started
 </code></pre>
-<h4 id="deploy-ssl-cert-for-load-balancing">Deploy SSL cert for load balancing</h4>
-<p>If you will use let's encrypt cert by executing small-shell-apps/ssl_auto script by following  <a href="./#deploy-auto-ssl-cetificate">Deploy auto SSL cetificate</a>, you need to update cert using domain option.because write request will be redirect to master host real host FQDN, cert must be issued as wild card cert such like "*.small-shell.org". and each server name must be belong to the domain.</p>
+<h4 id="automated-deployment-of-ssl-cert-for-load-balancing">Automated deployment of SSL cert for load balancing</h4>
+<p>To enable https, it's recommended to use ssl auto script as following step. please check details of automation setting on <a href="./#automate-ssl-cert-deployment">Deploy auto SSL cetificate</a>.</p>
 <pre><code>@master 
 cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd ./small-shell-apps/ssl_auto
-sudo ./deploy.sh domain:*.$your_domain
+chmod 755 *.sh
+sudo ./configure.sh
+sudo ./deploy.sh
 
 @replica
 cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd ./small-shell-apps/ssl_auto
-sudo ./deploy.sh domain:*.$your_domain
+chmod 755 *.sh
+sudo ./configure.sh
+sudo ./deploy.sh
 </code></pre>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the dialog of let's encrypt, you will be asked to add specific txt record to your DNS server. please add it acordingly.</p>
-</div>
 <h4 id="create-users-for-apps">Create users for APPs</h4>
-<p>Once replication and SSL is ready, it's timing to create users for APPs.</p>
+<p>Once replication and SSL is ready, please create users for APPs.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$user #Base APP 
 sudo /usr/local/small-shell/adm/ops add.usr:$user app:$app #Scratch APP
 </code></pre>
 <h4 id="add-new-app-or-rebuild-replication">Add new APP or rebuild replication.</h4>
-<p>If you will add new APP after starting replication or rebuild replication for adding new host, please remove all replication setting with purge option and then you can rebuild replication.</p>
+<p>If you will add new APP after starting replication or rebuild replication for adding new host, please remove all replication setting with purge option.</p>
 <pre><code>@master @replica_hosts
 sudo /usr/local/small-shell/util/scripts/mkrep.sh purge
 sudo /usr/local/small-shell/util/scripts/mkrep.sh show.pub
 
 @master 
-sudo /usr/local/small-shell/adm/gen -app #new APP
+sudo /usr/local/small-shell/adm/gen -app #create new APP
 sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.replica
 
 @replica_hosts
