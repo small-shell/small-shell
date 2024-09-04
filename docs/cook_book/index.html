@@ -1050,10 +1050,9 @@ Your Key is successfully generated.{%%%%%%}
 ./deploy.sh
 </code></pre>
 <h2 id="log-analyzer">Log analyzer</h2>
-<p>You can import job for analyzing small-shell web log from github. please deploy it to the small-shell env which using default web server.</p>
+<p>You can import job for analyzing small-shell web log from github.</p>
 <h6 id="link-to-code-is-here">Link to code is  <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
-<pre><code>sudo apt-get install whois
-cd $HOME
+<pre><code>cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd small-shell-apps/ssw_log_analyzer
 
@@ -1080,11 +1079,11 @@ output_message=&quot;analyzer.done&quot;
 hubapi=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
-<h6 id="page-view">page view</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.pv_statistics
+<h6 id="attack-statistics">attack statistics</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.attack_statistics
 </code></pre>
 <pre><code> &gt; JOB: pv_statistics
-def:/usr/local/small-shell/util/e-cron/def/pv_statistics.def
+def:/usr/local/small-shell/util/e-cron/def/attack_statistics.def
 -------------SCHEDULE----------------
 min: 0
 hour: 1
@@ -1092,9 +1091,9 @@ date: any
 month: any
 week: any
 -------------DEFINITION----------------
-exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:pv frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:web_analyzer&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:attack frequency:daily title:attack set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:web_analyzer&quot;
 input_message=&quot;analyzer.done&quot;
-output_message=&quot;pv.done&quot;
+output_message=&quot;attack.done&quot;
 hubapi=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
