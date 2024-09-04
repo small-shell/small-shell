@@ -138,10 +138,10 @@ if [ "$command" ];then
 elif [ "$statistics" ];then
 
   if [ "$filters" ];then
-    ${small_shell_path}/bin/meta get.statistics:ls.${filters},db_${databox}_{html_tag} > %%www/tmp/$session/statistics 
+    ${small_shell_path}/bin/meta get.statistics:ls.${filters},db_${databox}{html_tag} > %%www/tmp/$session/statistics 
     filters="filters:$filters"
   else 
-    ${small_shell_path}/bin/meta get.statistics:ls.db_${databox}_{html_tag} > %%www/tmp/$session/statistics
+    ${small_shell_path}/bin/meta get.statistics:ls.db_${databox}{html_tag} > %%www/tmp/$session/statistics
   fi
 
   if [ ! -s %%www/tmp/$session/statistics ];then
