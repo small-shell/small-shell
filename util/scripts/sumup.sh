@@ -430,3 +430,15 @@ if [ "$graph" = "yes" ];then
 
 fi
 
+# sync to replica hosts
+. $ROOT/web/base
+if [ "$cluster_server" ];then
+  if [ ! "$master" ];then
+    for replica in $replica_hosts
+    do
+      scp -i /home/small-shell/.ssh/id_rsa $ROOT/util/statistics/graph/* small-shell@${replica}:$ROOT/util/statistics/graph/
+      scp -i /home/small-shell/.ssh/id_rsa $ROOT/util/statistics/rawdata/* small-shell@${replica}:$ROOT/util/statistics/rawdata/
+    done
+  fi
+fi
+
