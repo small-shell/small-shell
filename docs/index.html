@@ -17,17 +17,16 @@
         <script src="js/jquery-1.10.2.min.js" defer></script>
         <script src="js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <script>hljs.initHighlightingOnLoad();</script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ECCJ0KEWFN"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ECCJ0KEWFN');
-</script>
+            ga('create', 'G-ECCJ0KEWFN', 'auto');
+            ga('send', 'pageview');
+        </script> 
     </head>
 
     <body class="homepage">
@@ -103,6 +102,11 @@
                         </ul>
 
                     <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
                             <li class="nav-item">
                                 <a rel="prev" class="nav-link disabled">
                                     <i class="fa fa-arrow-left"></i> Previous
@@ -147,19 +151,16 @@
                     <div class="col-md-9" role="main">
 
 <h1 translate="no">Small-Shell</h1>
-<p>"Small-Shell" is the WEB application generator that can generate open source WEB application and related functions such like DATA store, Job Automation instantly just using shell {bash}. you can customize your applications very easily once it's generated. because it's written in almost only shell including WEB application, it has very few dependencies and super lightweight. it's easy to learn &amp; easy to use. try it and have a fun !</p>
+<p>"Small-Shell" is the WEB application generator that can generate open source WEB application and related functions such like DATA store, Job Automation instantly just using shell {bash}. you can customize your applications very easily once it's generated. because it's written in almost only shell including WEB application, it has very few dependencies and super lightweight. it's easy to learn &amp; easy to use. try it and have a fun ! </p>
 <h3 id="generate-app">Generate APP</h3>
-<p>You can generate APPs that is written by small-shell framework just using gen command. please see detail of each functions on "Shell tour".</p>
-<h6 id="link-to-the-github">Link to the <a href="https://github.com/small-shell/small-shell">GitHub</a></h6>
-<pre><code>*comprehensive functions in single Edge instance
-                 +--------------------+
-                 |                    | &lt;-&gt;  WEB UI/API {APP shell} 
-  gen command -&gt; |      SHELL APP     | &lt;-&gt;  Batch CLI {e-cron} 
-  {CLI dialog}   |  {DATA/JOB store}  | &lt;-&gt;  NoSQL CLI {DATA shell} 
-                 |                    | &lt;-&gt;  Analytics {Pyshell}
-                 +--------------------+
+<p>You can generate APP and each function just using gen command. please see detail of each functions on "Shell tour".</p>
+<pre><code>                                    |  &lt;-&gt;  Batch CLI  {e-cron} 
+ gen command  -&gt;&gt;&gt;   SHELL APP      |  &lt;-&gt;  WEB UI/API {APP shell} 
+ {CLI dialog}     {DATA/JOB store}  |  &lt;-&gt;  NoSQL CLI  {DATA shell}
+                                    |  &lt;-&gt;  Analytics  {Pyshell}
 </code></pre>
 <p>Project is focusing to democratize IT technology, it's removing sophisticated programing method such like Object Oriented Methodology. basically "small-shell" works through dialog or just line up basic unix commands. it can destructure complex concepts and difficulty of understanding of programing.</p>
+<h5 id="link-to-the-code">Link to the <a href="https://github.com/small-shell/small-shell">CODE</a></h5>
 <h2 id="features">Features</h2>
 <p>Fundamental features are here, each of them are pursueing to be very simple and lightweight.</p>
 <pre><code>Common (destructured programing)
@@ -221,8 +222,29 @@ e-cron
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
         <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
 
-        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -268,5 +290,5 @@ e-cron
 
 <!--
 MkDocs version : 1.4.3
-Build Date UTC : 2024-09-06 12:03:37.992035+00:00
+Build Date UTC : 2024-09-09 09:33:13.109996+00:00
 -->
