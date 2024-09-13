@@ -190,7 +190,7 @@ if [ "$action" = "get.databox" ];then
 fi
 
 if [ "$action" = "get.server" ];then
-  server=`cat $ROOT/web/base | grep server | $AWK -F "=" '{print $2}' | $SED "s/\"//g"`
+  server=`cat $ROOT/web/base | grep ^server= | $AWK -F "=" '{print $2}' | $SED "s/\"//g"`
   if [ "$server" ];then
     echo "$server"
   else
