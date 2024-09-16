@@ -941,9 +941,9 @@ function get_data(){
            echo "<li>"
            value_chk=`echo "$value" | grep "$app?%%params"`
            if [ "$value_chk" ];then
-             echo "<label><a href=\"$value\">$label.ln</a></label>"
+             echo "<label><a href=\"$value\">$label</a></label>"
            else
-             echo "<label><a href=\"$value\" target=\"_blank\" rel=\"noopener noreferrer\">$label.ln</a></label>"
+             echo "<label><a href=\"$value\" target=\"_blank\" rel=\"noopener noreferrer\">$label</a></label>"
            fi
            echo "<input type=\"$type\" name=\"$name\" value=\"$value\" $option>"
            echo "</li>"
@@ -1055,7 +1055,7 @@ function get_data(){
           pdid=`grep "::::::${value}," $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $2}'`
           if [ "$app" = "base" ];then
             if [ "$pdid" ];then
-              echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}.ln</a></label>"
+              echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}</a></label>"
             else
               echo "<label>${label} # data is not found</label>"
             fi
@@ -1091,7 +1091,7 @@ function get_data(){
             chmod 755 $ROOT/tmp/exec/$exec_session.kvl
             value=`$ROOT/tmp/exec/$exec_session.kvl`
 
-            echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}.ln</a></label>"
+            echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}</a></label>"
           else
             echo "<label>${label} # data is not found</label>"
           fi
