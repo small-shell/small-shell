@@ -740,6 +740,7 @@ a {
 
 .form-box a {
   color: #07ADAF;
+  font-weight: 480;
 }
 
 .form-box .description {
@@ -988,6 +989,7 @@ a {
 
 .md-form-box a {
   color: #07ADAF;
+  font-weight: 480;
 }
 
 .md-form-box .description {

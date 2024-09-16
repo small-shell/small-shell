@@ -627,6 +627,7 @@ a {
 
 .form-box a {
   color: #07ADAF;
+  font-weight: 480;
 }
 
 .form-box .description {
