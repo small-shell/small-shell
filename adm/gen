@@ -1562,6 +1562,9 @@ if [ "$param" = "-app" ];then
       if [ "$srvtype" = "default" ];then
         echo "index_url=\"$index_url\"" >> $ROOT/web/base
       fi
+      if [ "$reverse_proxy" = "yes" ];then
+        echo "reverse_proxy=\"yes\"" >> $ROOT/web/base
+      fi
       chown small-shell:small-shell $ROOT/web/base
       chmod 700 $ROOT/web/base
 
@@ -1897,7 +1900,14 @@ if [ "$param" = "-app" ];then
       fi
 
       sleep 6
-      get_test=`$CURL -k ${base_url}shelltest.cgi | grep OK`
+
+      if [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "yes" ];then
+        test_url=`echo $base_url | $SED "s/https:/http:/g"`
+      else
+        test_url=$base_url
+      fi
+
+      get_test=`$CURL -k ${test_url}shelltest.cgi | grep OK`
 
       if [ "$get_test" ];then
         clear
