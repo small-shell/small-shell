@@ -554,7 +554,7 @@ a {
 .console-box .description {
   margin-top: -12px;
   font-size: 84%;
-  color: #008b8b;
+  color: #E6E6FA;
   font-style: oblique;
 }
 
