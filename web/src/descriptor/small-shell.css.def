@@ -600,7 +600,7 @@ a {
 
 .table-box .tags {
   display: flex;
-  color: #008b8b;
+  color: #333;
   font-weight: bold;
   font-size: 86%;
   flex-wrap: wrap;
@@ -740,7 +740,7 @@ a {
 
 .form-box a {
   color: #07ADAF;
-  font-weight: 480;
+  font-weight: 620;
 }
 
 .form-box .description {
@@ -989,7 +989,7 @@ a {
 
 .md-form-box a {
   color: #07ADAF;
-  font-weight: 480;
+  font-weight: 620;
 }
 
 .md-form-box .description {
