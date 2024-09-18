@@ -529,6 +529,10 @@ a {
   color: #6495ED;
 }
 
+.table-box .tags a:hover {
+  color: #7D73F4;
+}
+
 .table-box h4 {
   padding-left: 6px;
 }
@@ -907,6 +911,14 @@ a {
 
 .form-box .action_links a {
   color: #808080;
+}
+
+.form-box .action_links a:hover {
+  color: #5C5B71;
+}
+  
+.form-box .action_links p:hover {
+  color: #5C5B71;
 }
 
 .form-box input:focus, .form-box select:focus, .form-box textarea:focus {
