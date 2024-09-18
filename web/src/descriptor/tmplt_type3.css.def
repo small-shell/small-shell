@@ -296,7 +296,7 @@ a {
     flex: none;
     width: 68%;
     text-align: left;
-    padding: 24px 42px;
+    padding: 4px 42px;
   }
 
   .main h1 {
