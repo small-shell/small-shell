@@ -1266,14 +1266,31 @@ media screen and (min-width: 641px){
   visibility: visible;
 }
 
-.footer {
+@media screen and (max-width: 640px) {
+
+ .footer {
   color: #696969;
-  padding-top: 42px;
-  padding-bottom: 2px;
+  padding-top: 82px;
   font-weight: 300;
   font-size: 80%;
   text-align: center;
   bottom: 0;
   width: 100%;
+ }
+
 }
 
+@media screen and (min-width: 641px) {
+ .footer {
+  color: #696969;
+  padding-top: 140px;
+  padding-bottom: 12px;
+  padding-right: 142px;
+  font-weight: 300;
+  font-size: 80%;
+  text-align: right;
+  bottom: 0;
+  width: 100%;
+ }
+
+}
