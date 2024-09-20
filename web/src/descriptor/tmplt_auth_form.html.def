@@ -13,10 +13,8 @@
           %%message
           <h1>%%app</h1>
           <div class="wrapper">
-            <input type="text" id="%%app_key_%%rand" name="%%app_key_%%rand" placeholder="Your Key" list="keylist" autocomplete="on">
-            <datalist id="keylist">
-            </datalist>
-            <button class="button" type="submit" onclick="setkey()">SUBMIT</button>
+            <input type="text" id="%%app_key_%%rand" name="%%app_key_%%rand" placeholder="Click and Load Key" autocomplete="on" onclick="loadKey()">
+            <button class="button" type="submit" onclick="setKey()">CONNECT</button>
           </div>
           </form>
         </div>
@@ -45,18 +43,16 @@
         }
       })
 
-     // local storage key handling
-     var keylist = document.getElementById("keylist");
-     key=document.createElement("option");
-     key.text=localStorage.getItem("%%app_key_%%rand");
-     if (key.text !== "null") {
-        keylist.appendChild(key);
-     }
+      // local storage key handling
+      function loadKey() {
+       storedKey=localStorage.getItem("%%app_key_%%rand");
+       document.getElementById("%%app_key_%%rand").value = storedKey;
+      }
 
-     function setkey() {
-        var newkey = document.getElementById("%%app_key_%%rand").value;
-        localStorage.setItem("%%app_key_%%rand", newkey);
-     }
+      function setKey() {
+         var newkey = document.getElementById("%%app_key_%%rand").value;
+         localStorage.setItem("%%app_key_%%rand", newkey);
+      }
 
     </script>
   </body>

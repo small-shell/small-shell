@@ -153,53 +153,35 @@ fi
 # render auth form 
 if [ ! "$small_shell_authkey" ];then
 
-  if [ "$key_placeholder" ];then
-    # render first login form with initialized key
-    cat %%www/descriptor/auth_form_with_key.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
-    | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
-    | $SED "/%%footer/d"\
-    | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
-    | $SED "s/%%databox_list//g"\
-    | $SED "s/%%key_placeholder/$key_placeholder/g"
-    rm -rf %%www/tmp/$timestamp
-    exit 0
-
-  else
-
-    # regenerate query string
-    if [ "$databox" ];then
-      databox="databox=`echo $databox`"
-    fi
-
-    if [ "$req" ];then
-      req="\&req=`echo $req`"
-    fi
-
-    if [ "$id" ];then
-      id="\&id=`echo $id`"
-    fi
-
-    if [ "$message" ];then
-      message="<p><b>`echo $message`<\/b><\/p>"
-    fi
-
-    # render standard login form with queyr string and messge
-    cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
-    | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
-    | $SED "/%%footer/d"\
-    | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
-    | $SED "s/%%databox_list//g"\
-    | $SED "s/%%params/${databox}${req}${id}/g"\
-    | $SED "s/%%message/${message}/g" 
-    rm -rf %%www/tmp/$timestamp
-    exit 0
+  # regenerate query string
+  if [ "$databox" ];then
+    databox="databox=`echo $databox`"
   fi
 
+  if [ "$req" ];then
+    req="\&req=`echo $req`"
+  fi
 
+  if [ "$id" ];then
+    id="\&id=`echo $id`"
+  fi
+
+  if [ "$message" ];then
+    message="<p><b>`echo $message`<\/b><\/p>"
+  fi
+
+  # render standard login form with queyr string and messge
+  cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
+  | $SED "s/%%auth_form_menu//g"\
+  | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+  | $SED "/%%footer/d"\
+  | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
+  | $SED "s/%%databox_list//g"\
+  | $SED "s/%%params/${databox}${req}${id}/g"\
+  | $SED "s/%%message/${message}/g" 
+  rm -rf %%www/tmp/$timestamp
+  exit 0
 fi
 
 # Authentication 

@@ -401,7 +401,7 @@ a {
     font-size: 80%;
     line-height: 0.8em;
     letter-spacing: .09em;
-    max-width: 280px;
+    max-width: 240px;
     text-align: left;
 }
 }
@@ -456,7 +456,7 @@ a {
 
 .auth-form button {
   font-weight: bold;
-  padding: 14px 20px;
+  padding: 14px 12px;
   border-style: none;
   color: #f8f8f8;
   background: #07ADAF;
