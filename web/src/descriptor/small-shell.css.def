@@ -417,7 +417,7 @@ a {
   }
   .auth-form {
     flex: 1 1 auto;
-    font-size: 60%;
+    font-size: 80%;
     line-height: 0.8em;
     letter-spacing: .09em;
     max-width: 240px;
