@@ -14,7 +14,7 @@
           %%message
           <h1>key.auth</h1>
           <div class="wrapper">
-            <input type="text" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand" placeholder="Click and Load Key" autocomplete="on" onclick="loadKey()">
+            <input type="text" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand" placeholder="Click and Load Key" autocomplete="off" onclick="loadKey()">
             <button class="button" type="submit" onclick="setKey()">CONNECT</button>
           </div>
           </form>
