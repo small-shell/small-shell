@@ -51,7 +51,9 @@
 
       function setKey() {
          var newkey = document.getElementById("%%app_key_%%rand").value;
-         localStorage.setItem("%%app_key_%%rand", newkey);
+         if (newkey !== '') {
+           localStorage.setItem("%%app_key_%%rand", newkey);
+         }
       }
 
     </script>

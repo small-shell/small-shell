@@ -53,7 +53,9 @@
 
       function setKey() {
          var newkey = document.getElementById("small_shell_authkey_%%rand").value;
-         localStorage.setItem("small_shell_authkey_%%rand", newkey);
+         if (newkey !== '') {
+           localStorage.setItem("small_shell_authkey_%%rand", newkey);
+         }
       }
 
     </script>
