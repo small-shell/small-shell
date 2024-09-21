@@ -28,6 +28,7 @@
         <form method="post" action="./base?%%params&req=console&post=yes">
         <ul>
         <li>
+          <button class="button" type="submit">EXEC</button>
           <input type="text" name="command" placeholder="Type any filter words or command [%%commands..] which can be pipelined to the databox" autocomplete="off">
         </li>
         </ul>
