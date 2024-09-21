@@ -519,21 +519,23 @@ a {
   font-size: 80%;
 }
 
+.console-box input:focus {
+  outline-color: #333;
+  outline-width: 0px;
+}
+
 .console-box button {
-  padding: 8px 16px;
-  border-style: none;
-  background: #000033;
-  color: #f2f2f2;
+  font-weight: bold;
+  padding: 14px 12px;
+  border: 2px solid #333;
+  color: #f8f8f8;
+  background: #07ADAF;
   text-transform: uppercase;
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
   cursor: hand;
-}
-
-.console-box input:focus {
-  outline-color: #C0C0C0;
-  outline-width: 2px;
+  font-size: 80%;
 }
 
 .console-box pre {
@@ -654,20 +656,6 @@ a {
   font-size: 72%;
 }
 
-.table-box button {
-  padding: 4px 16px;
-  border-style: none;
-  font-size: 70%;
-  background: #2f3333;
-  color: #f2f2f2;
-  text-transform: uppercase;
-  letter-spacing: .09em;
-  cursor: pointer;
-  border-radius: 2px;
-  cursor: hand;
-}
-
-
 .table {
   line-height: .8em;
   margin: auto;
@@ -680,6 +668,25 @@ a {
     border-radius: 4px;
     border: 1px dotted #c0c0c0;
   }
+
+  .table-box button {
+    font-weight: bold;
+    padding: 10px 10px;
+    border: 1px dotted #9dc2fa;
+    color: #abbcd5;
+    background: #07;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    border-radius: 2px;
+    cursor: pointer;
+    cursor: hand;
+    font-size: 80%;
+  }
+
+  .table-box button:hover {
+    color: #8bb2cb;
+  }
+
 }
 
 @media screen and (max-width: 640px) {
@@ -691,6 +698,11 @@ a {
     color: white;
     background: #424242; 
   }
+
+  .table-box button {
+    display: none;
+  }
+
 }
 
 .table ul {

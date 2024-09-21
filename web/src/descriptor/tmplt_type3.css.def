@@ -527,6 +527,24 @@ a {
   outline-width: 2px; 
 } 
 
+.table-box button {
+  font-weight: bold;
+  padding: 10px 10px;
+  border: 1px dotted #9dc2fa;
+  color: #abbcd5;
+  background: #fcfdfe;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  border-radius: 2px;
+  cursor: pointer;
+  cursor: hand;
+  font-size: 80%;
+}  
+
+.table-box button:hover {
+  color: #8bb2cb;
+}
+
 .table-box .tags {
   display: flex;
   color: #333;

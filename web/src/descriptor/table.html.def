@@ -29,6 +29,7 @@
         <form method="post" action="./base?%%params&req=table">
         <div class="wrapper">
           <input type="search" name="table_command" placeholder="%%placeholder" autocomplete="off">
+          <button class="button" type="submit">EXEC</button>
         </div>
         </form>
         <div class="tags">
