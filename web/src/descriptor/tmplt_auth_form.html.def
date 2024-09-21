@@ -53,6 +53,8 @@
          var newkey = document.getElementById("%%app_key_%%rand").value;
          if (newkey !== '') {
            localStorage.setItem("%%app_key_%%rand", newkey);
+         }else{
+           alert("key is null. please click input field first. if you have your own key, it will be loaded.");
          }
       }
 

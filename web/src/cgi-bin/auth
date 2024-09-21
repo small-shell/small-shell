@@ -75,35 +75,11 @@ chmod 755 %%www/tmp/${param}.load
 .  %%www/tmp/${param}.load
 rm  %%www/tmp/${param}*
 
-# gen res list
-timestamp=`date +%s%3N`
-
-if [ ! -d  %%www/tmp/$timestamp ];then
-  mkdir %%www/tmp/$timestamp
-fi
-
-# gen databox list for left menu
-res_list="$databox `${small_shell_path}/bin/meta get.databox`"
-count=0
-for res in $res_list
-do
-  if [ ! "$databox" = "$res" -o $count -eq 0 ];then
-    echo "<option value=\"./auth.base?databox=$res\">DataBox:$res</option>"\
-    >> %%www/tmp/$timestamp/databox_list
-  fi
-  ((count +=1 ))
-done
-
-res_chk=`echo $res_list | $SED "s/ //g"`
-if [ ! "$res_chk" ];then
-  echo "<option value=\"./auth.base?databox=null\">DataBox:null</option>" >> %%www/tmp/$timestamp/databox_list
+# load databox
+databox=`${small_shell_path}/bin/meta get.databox | $SED "s/ /\n/g" | head -1`
+if [ ! "$databox" ];then
   databox=null
 fi
-
-if [ ! "$databox" ];then
-  databox=`echo $res_list | $SED "s/ /\n/g" | head -1`
-fi
-
 
 # For the access with initialize hashkey which contain in query string and create new user_key
 if [ "$initialize" ];then
@@ -139,13 +115,11 @@ if [ "$initialize" ];then
     | $SED "s/%%user_name/$user_name/g" \
     | $SED "s/%%user_key/$user_key/g" \
     | $SED "s/%%server/$server/g"
-    rm -rf %%www/tmp/$timestamp
     exit 0
   else
     message="error: Your initialize URL should be wrong or expired"
     cat %%www/descriptor/key_initialize_err.html.def \
     | $SED "s/%%message/$message/g"
-    rm -rf %%www/tmp/$timestamp
     exit 1 
   fi
 fi
@@ -176,11 +150,8 @@ if [ ! "$small_shell_authkey" ];then
   | $SED "s/%%auth_form_menu//g"\
   | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
   | $SED "/%%footer/d"\
-  | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
-  | $SED "s/%%databox_list//g"\
   | $SED "s/%%params/${databox}${req}${id}/g"\
   | $SED "s/%%message/${message}/g" 
-  rm -rf %%www/tmp/$timestamp
   exit 0
 fi
 
@@ -210,7 +181,6 @@ if [ "$small_shell_authkey" ];then
     else
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./base?databox=$databox&session=$session&pin=$pin&req=$req\">"
     fi
-    rm -rf %%www/tmp/$timestamp
     exit 0
   else
     # render standard login form with error message
@@ -220,10 +190,7 @@ if [ "$small_shell_authkey" ];then
     | $SED "s/%%auth_form_menu//g"\
     | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
     | $SED "/%%footer/d"\
-    | $SED "/%%databox_list/r %%www/tmp/$timestamp/databox_list" \
-    | $SED "s/%%databox_list//g"\
     | $SED "s/%%params//g"
-    rm -rf %%www/tmp/$timestamp
     exit 1
   fi
   
