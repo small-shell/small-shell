@@ -85,9 +85,13 @@ a {
   }
 
   .container .right-header a {
-    color: #ADFBEA;
+    color: #EEFAF6;
     text-decoration: none;
     white-space: nowrap;
+  }
+
+  .container .right-header a:hover {
+    color: #D0F1E6;
   }
 
   .container .right-header ul {
@@ -157,9 +161,13 @@ a {
   }
 
   .container .right-header a {
-    color: #ADFBEA;
+    color: #EEFAF6;
     text-decoration: none;
     white-space: nowrap;
+  }
+
+  .container .right-header a:hover {
+    color: #D0F1E6;
   }
 
   .container .right-header ul {

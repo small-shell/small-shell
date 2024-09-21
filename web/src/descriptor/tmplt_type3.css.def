@@ -135,7 +135,7 @@ a {
 }
 
 @media screen and (min-width: 641px) {
-.right-header .even-btn-menu {
+  .right-header .even-btn-menu {
     margin: auto;
     border-style: none;
     background: transparent;
@@ -148,7 +148,16 @@ a {
     padding: .3rem;
     cursor: pointer;
     line-height: 1;
-}
+  }
+
+  .right-header a {
+     color: #EEFAF6;
+  }
+
+  .right-header a:hover {
+     color: #D0F1E6;
+  }
+
 }
 
 @media screen and (max-width: 640px) {
@@ -165,7 +174,16 @@ a {
     padding: .3rem;
     cursor: pointer;
     line-height: 1;
-}
+  }
+
+  .right-header a {
+     color: #EEFAF6;
+  }
+
+  .right-header a:hover {
+     color: #D0F1E6;
+  }
+
 }
 
 @media screen and (min-width: 641px) {
