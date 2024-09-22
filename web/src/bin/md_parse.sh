@@ -186,7 +186,8 @@ if [ $righth -eq 1 ];then
   echo "<nav>" >> ${tmp}/righth.tmp
   echo "<ul>" >> ${tmp}/righth.tmp
   $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \
-  | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" | $SED "s/Log Out:/Log Out #%%user:/g" > ${tmp}/righth_raw.data
+  | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" | $SED "s/Log Out:/Log Out #%%user:/g" \
+  | $SED "s/ //g" > ${tmp}/righth_raw.data
 
   while read r_line
   do
@@ -206,7 +207,7 @@ fi
 lefth=`$META chk.null:${databox}{$id} | grep lefth | $AWK -F ":" '{print $2}'`
 if [ $lefth -eq 1 ];then
   $DATA_SHELL databox:${databox} action:get id:$id key:lefth format:none \
-  | $SED "s/lefth://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/lefth_raw.data
+  | $SED "s/lefth://g" | ${SED} "s/_%%enter_/\n/g" | $SED "s/ //g" > ${tmp}/lefth_raw.data
   while read l_line
   do
     tag=`echo "$l_line" |$AWK -F ":" '{print $1}'`
