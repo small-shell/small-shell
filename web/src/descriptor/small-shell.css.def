@@ -664,6 +664,8 @@ a {
 }
 
 .table-box h4 {
+  font-weight: bold;
+  font-size: 96%;
   padding-left: 6px;
 }
 

@@ -255,11 +255,7 @@ fi
 
 if [ "$line_num" = 0 ];then
   if [ "$err_chk" = "" -a "$filter_table" = "-" -a ! "$sort_col" ];then
-    if [ ! "$permission" = "ro" ];then
-      echo "<h4><a href=\"./base?%%params&req=get&id=new\">+ ADD DATA</a></h4>" >> %%www/tmp/$session/table
-    else
-      echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
-    fi
+    echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
   elif [ "$sort_col" ];then
    echo "<h4>= SORT OPTION FAILURE</h4>"  >> %%www/tmp/$session/table
   elif [ "$err_chk" ];then
