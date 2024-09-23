@@ -236,6 +236,7 @@ fi
 # -----------------
 # render HTML
 # -----------------
+view=%%app_table.html.def
 wait
 
 if [ ! "$filter_table" ];then
@@ -250,17 +251,12 @@ fi
 
 if [ "$line_num" = 0 ];then
   if [ "$err_chk" = "" -a "$filter_table" = "-" -a ! "$sort_col" ];then
-    view=%%app_table.html.def
     echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
   elif [ "$sort_col" ];then
     echo "<h4>= SORT OPTION FAILURE</h4>" >> %%www/tmp/$session/table
-    view=%%app_table.html.def
   else
     echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
-    view=%%app_table.html.def
   fi
-else
-  view=%%app_table.html.def
 fi
 
 # overwritten by clustering logic
