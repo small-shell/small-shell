@@ -155,6 +155,10 @@ if [[ $param == chk.null:* ]]; then
   id=`echo $param |  $AWK -F":" '{print $2}' | cut -f 2- -d "{" | $SED "s/}//g"`
 fi
 
+if [[ $param == get.rand ]]; then
+  action=`echo $param | $AWK -F":" '{print $1}'`
+fi
+
 # return meta data
 
 if [ "$action" = "get.chain" ];then
@@ -556,6 +560,10 @@ if [ "$action" = "chk.null" ];then
       fi
     fi
   done
+fi
+
+if [ "$action" = "get.rand" ];then
+  cat $ROOT/web/.rand | $SED "s/rand=//g"
 fi
 
 if [ ! "$action" ];then

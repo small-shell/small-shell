@@ -1,0 +1,16 @@
+<li><button class="inside-menu-button" onclick="duplicateKey()">Export access key</button></li>
+
+<script>
+  // local storage key handling
+  function duplicateKey() {
+    storedKey=localStorage.getItem("small_shell_authkey_%%rand");
+    const duplicatedKey = document.createElement('input');
+    duplicatedKey.value = storedKey;
+    document.body.appendChild(duplicatedKey);
+    duplicatedKey.select();
+    document.execCommand('copy');
+    document.body.removeChild(duplicatedKey);
+    alert('Your access key is duplicated and copied to your clipboard. its available on other your device.');
+   }
+</script>
+

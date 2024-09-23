@@ -178,7 +178,7 @@ do
    fi
 done  < $source
 
-# handle right header
+# handle right header of portal
 righth=`$META chk.null:${databox}{$id} | grep righth | $AWK -F ":" '{print $2}'`
 if [ $righth -eq 1 ];then
   echo "<div class=\"right-header\">" > ${tmp}/righth.tmp
@@ -193,17 +193,32 @@ if [ $righth -eq 1 ];then
   do
     tag=`echo "$r_line" |$AWK -F ":" '{print $1}'`
     url=`echo "$r_line" |cut -f 2- -d ":"`
-    echo "<li><a href=\"$url\">$tag</a></li>" >> ${tmp}/righth.tmp
+    if [ "$tag" = "ExportKey" -a "$url" = "yes" ];then
+      export_key=yes
+    else
+      echo "<li><a href=\"$url\">$tag</a></li>" >> ${tmp}/righth.tmp
+    fi
   done < ${tmp}/righth_raw.data
 
+  if [ "$export_key" = "yes" ];then
+    echo "<li><button class=\"inside-menu-button\" onclick=\"duplicateKey()\">Export access key</button></li>" \
+    >> ${tmp}/righth.tmp
+  fi
   echo "</nav>" >> ${tmp}/righth.tmp
   echo "</ul>" >> ${tmp}/righth.tmp
   echo "</div>" >> ${tmp}/righth.tmp
+
+  if [ "$export_key" = "yes" ];then
+    rand=`$META get.rand`
+    cat ${small_shell_path}/web/src/descriptor/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
+    | ${SED} "s/%%rand/$rand/g" | ${SED} "s/%%app/${app}/g" >> ${tmp}/righth.tmp
+
+  fi
 else
   echo "<!-- no right header-->" > ${tmp}/righth.tmp
 fi
 
-# handle left header
+# handle left header of portal page
 lefth=`$META chk.null:${databox}{$id} | grep lefth | $AWK -F ":" '{print $2}'`
 if [ $lefth -eq 1 ];then
   $DATA_SHELL databox:${databox} action:get id:$id key:lefth format:none \
@@ -262,5 +277,10 @@ cat %%www/descriptor/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
 cat ${tmp}/righth.tmp | grep \<li\> | $SED "s/?req=/?%%session\&req=/g" \
 > %%www/descriptor/common_parts/${app}_common_menu
 
+if [ "$export_key" = "yes" ];then
+  cat ${small_shell_path}/web/src/descriptor/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
+  | ${SED} "s/%%rand/$rand/g" | ${SED} "s/%%app/${app}/g" \
+  >> %%www/descriptor/common_parts/${app}_common_menu
+fi
 
 exit 0

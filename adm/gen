@@ -1807,6 +1807,8 @@ if [ "$param" = "-app" ];then
       else
         rand=$RANDOM
         echo "rand=$rand" > $ROOT/web/.rand
+        chmod 755 $ROOT/web/.rand
+        chown small-shell:small-shell $ROOT/web/.rand
       fi
 
       for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | grep -v redirect.html.def | xargs basename -a`
@@ -1815,12 +1817,21 @@ if [ "$param" = "-app" ];then
         chmod 755 $descrdir/$src
       done
 
-      for src in `ls $ROOT/web/src/descriptor/common_parts | grep -v tmplt | xargs basename -a`
+      for src in `ls $ROOT/web/src/descriptor/common_parts | grep -v tmplt | grep -v common_menu_button | xargs basename -a`
       do
         cat $ROOT/web/src/descriptor/common_parts/$src  > $descrdir/common_parts/$src
         chown $cgiusr:$cgiusr $descrdir/common_parts/$src
         chmod 755 $descrdir/common_parts/$src
       done
+      
+      cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
+      | $SED "s/%%rand/$rand/g"  >> $descrdir/common_parts/common_menu
+
+      cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
+      | $SED "s/%%rand/$rand/g"  >> $descrdir/common_parts/common_menu_ro 
+
+      cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
+      | $SED "s/%%rand/$rand/g"  >> $descrdir/common_parts/common_menu_rw
 
       # standadaize owner of Base APP
       chown -R ${cgiusr}:${cgiusr} ${cgidir}/*
@@ -2458,7 +2469,7 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
           do
             menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
@@ -2469,13 +2480,7 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
           chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
-          if [ -f $ROOT/web/.rand ];then
-            . $ROOT/web/.rand
-          else
-            rand=$RANDOM
-            echo "rand=$rand" > $ROOT/web/.rand
-          fi
-
+          . $ROOT/web/.rand
           cat $ROOT/web/src/descriptor/tmplt_pass_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
           | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
@@ -2533,13 +2538,7 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/bin/${app}*
           chmod 755 ${www}/bin/${app}*
 
-          if [ -f $ROOT/web/.rand ];then
-            . $ROOT/web/.rand
-          else
-            rand=$RANDOM
-            echo "rand=$rand" > $ROOT/web/.rand
-          fi
-
+          . $ROOT/web/.rand
           for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a`
           do
             html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
@@ -2553,13 +2552,16 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
           do
             menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
             > ${www}/descriptor/common_parts/${app}_${menu}
             chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
           done
+
+           cat $ROOT/web/src/descriptor/common_parts/${app}_common_button | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
+           >> ${www}/descriptor/common_parts/${app}_common_menu
 
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
           chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
@@ -2656,7 +2658,7 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
           do
             menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
@@ -2667,13 +2669,7 @@ if [ "$param" = "-app" ];then
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
           chown $cgiusr:$cgiusr ${www}/descriptor/common_parts/${app}*
 
-          if [ -f $ROOT/web/.rand ];then
-            . $ROOT/web/.rand
-          else
-            rand=$RANDOM
-            echo "rand=$rand" > $ROOT/web/.rand
-          fi
-
+          . $ROOT/web/.rand
           cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" | $SED "s/%%app/$app/g" \
           | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
@@ -2760,7 +2756,7 @@ if [ "$param" = "-app" ];then
             fi
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
           do
             menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
             cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
@@ -2791,6 +2787,11 @@ if [ "$param" = "-app" ];then
           cat $ROOT/tmp/gen/.tmplt.UI.md.def/$data | $SED "s/%%app/$app/g" > $tmp_dir/data/$data
         done
 
+        if [ "$auth_method" = "key" ];then
+          $SED -e "1i ExportKey: yes" $tmp_dir/data/righth > $tmp_dir/data/.righth
+          cat $tmp_dir/data/.righth > $tmp_dir/data/righth
+          rm $tmp_dir/data/.righth
+        fi
         if [ ! "$auth_method" = "none" ];then
           echo "Log Out: ./${app}?req=logout" >> $tmp_dir/data/righth
         fi
@@ -2883,7 +2884,7 @@ if [ "$param" = "-app" ];then
           fi
         done
 
-        for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | xargs basename -a`
+        for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
         do
           menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
           cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" \

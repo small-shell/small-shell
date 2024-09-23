@@ -118,6 +118,24 @@ a {
   }
 }
 
+.right-header .inside-menu-button {
+  font-weight: bold;
+  padding: 6px 6px;
+  border-style: none;
+  background: #303232;
+  color: #dde7e7;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  border-radius: 2px;
+  cursor: pointer;
+  cursor: hand; 
+  font-size: 80%;
+}   
+  
+.right-header .inside-menu-button:hover {
+  color: #a2c0df;
+}
+
 @media screen and (max-width: 640px) {
   .container .flex-header {
     display:flex;
@@ -402,7 +420,8 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 72px;
+    padding-bottom: 82px;
+    margin-top: -24px;
   }
   .auth-form {
     flex: 1 1 auto;
@@ -421,6 +440,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: -28px;
     padding-bottom: 64px;
   }
   .auth-form {
@@ -1240,6 +1260,7 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: -24px;
   padding-bottom: 80px;
 }
 

@@ -13,7 +13,8 @@
           %%message
           <h1>%%app</h1>
           <div class="wrapper">
-            <input type="text" id="%%app_key_%%rand" name="%%app_key_%%rand" placeholder="Click and Load Key" autocomplete="off" onclick="loadKey()">
+            <input type="text" id="dummy" name="dummy" placeholder="Your key" autocomplete="off" required>
+            <input type="hidden" id="%%app_key_%%rand" name="%%app_key_%%rand">
             <button class="button" type="submit" onclick="setKey()">CONNECT</button>
           </div>
           </form>
@@ -43,18 +44,31 @@
         }
       })
 
-      // local storage key handling
-      function loadKey() {
-       storedKey=localStorage.getItem("%%app_key_%%rand");
-       document.getElementById("%%app_key_%%rand").value = storedKey;
+      // handle key
+      var dummyValue = '***************************'
+      var storedKey = localStorage.getItem("%%app_key_%%rand");
+
+      window.onload = function() {
+        if (storedKey !== null) {
+          document.getElementById("dummy").value = dummyValue;
+          document.getElementById("%%app_key_%%rand").value = storedKey;
+        }
       }
 
       function setKey() {
-         var newkey = document.getElementById("%%app_key_%%rand").value;
-         if (newkey !== '') {
-           localStorage.setItem("%%app_key_%%rand", newkey);
-         }else{
-           alert("key is null. please click input field first. if you have your own key, it will be loaded.");
+         if (storedKey === null) {
+           var newKey = document.getElementById("dummy").value;
+           document.getElementById("%%app_key_%%rand").value = newKey;
+           if (newKey !== '') {
+             // sotre value to local storage if current value is null
+             localStorage.setItem("%%app_key_%%rand", newKey);
+           }
+         } else {
+           var dummyInputValue = document.getElementById("dummy").value;
+           if (dummyInputValue !== dummyValue && dummyInputValue !== storedKey) {
+             alert('key value is changed, please reload this page');
+             document.getElementById("dummy").value = '';
+           }
          }
       }
 

@@ -208,6 +208,24 @@ a {
   }
 }
 
+.right-header .inside-menu-button {
+  font-weight: bold;
+  padding: 6px 6px;
+  border-style: none;
+  background: #303232;
+  color: #dde7e7;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  border-radius: 2px;
+  cursor: pointer;
+  cursor: hand; 
+  font-size: 80%;
+}   
+  
+.right-header .inside-menu-button:hover {
+  color: #a2c0df;
+}
+
 @media screen and (min-width: 641px) {
   .auth-container {
     width: 100%;
