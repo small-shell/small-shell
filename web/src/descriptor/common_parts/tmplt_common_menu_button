@@ -10,7 +10,7 @@
     duplicatedKey.select();
     document.execCommand('copy');
     document.body.removeChild(duplicatedKey);
-    alert('Your access key is duplicated and copied to your clipboard. its available on other your device.');
+    alert('Your access key is duplicated and copied to your clipboard. key text is available on your other device.');
    }
 </script>
 
