@@ -43,7 +43,7 @@
       .auth-message {
         padding-top: 124px;
         padding-left: 40px;
-        padding-right: 10px;
+        padding-right: 40px;
         margin: auto;
         text-align:center;
       }
