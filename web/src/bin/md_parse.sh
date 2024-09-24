@@ -187,12 +187,12 @@ if [ $righth -eq 1 ];then
   echo "<ul>" >> ${tmp}/righth.tmp
   $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \
   | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" | $SED "s/Log Out:/Log Out #%%user:/g" \
-  | $SED "s/ //g" > ${tmp}/righth_raw.data
+  > ${tmp}/righth_raw.data
 
   while read r_line
   do
     tag=`echo "$r_line" |$AWK -F ":" '{print $1}'`
-    url=`echo "$r_line" |cut -f 2- -d ":"`
+    url=`echo "$r_line" |cut -f 2- -d ":" | $SED "s/ //g"`
     if [ "$tag" = "ExportKey" -a "$url" = "yes" ];then
       export_key=yes
     else
@@ -222,11 +222,11 @@ fi
 lefth=`$META chk.null:${databox}{$id} | grep lefth | $AWK -F ":" '{print $2}'`
 if [ $lefth -eq 1 ];then
   $DATA_SHELL databox:${databox} action:get id:$id key:lefth format:none \
-  | $SED "s/lefth://g" | ${SED} "s/_%%enter_/\n/g" | $SED "s/ //g" > ${tmp}/lefth_raw.data
+  | $SED "s/lefth://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/lefth_raw.data
   while read l_line
   do
     tag=`echo "$l_line" |$AWK -F ":" '{print $1}'`
-    url=`echo "$l_line" |cut -f 2- -d ":"`
+    url=`echo "$l_line" |cut -f 2- -d ":" | $SED "s/ //g"`
     echo "<h2><a href=\"$url\">$tag</a></h2>" >> ${tmp}/lefth.tmp
   done < ${tmp}/lefth_raw.data
 else
