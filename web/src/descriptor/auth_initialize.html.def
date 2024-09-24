@@ -95,7 +95,7 @@
           <p> <b>user_key:%%user_key</b></p>
           <div class="note">
             <p><b>| NOTE |</b></p>
-            <p>If your are not <b>%%user_name</b>, please escalate to webadmin. when you click the button, the key will be saved in your browser. but please copy and save the key text manually just in case.</p>
+            <p>If you are not <b>%%user_name</b>, please escalate to webadmin. when you click the button, the key will be saved in your browser. but please copy and save the key text manually just in case.</p>
           </div>
           <a href="./auth.base"><button class="button" type="submit" onclick="setKey()">Connect APP with KEY</button></a>
         </div>
