@@ -702,7 +702,7 @@ a {
 
 @media screen and (min-width: 641px){
   .form-box .description h1 {
-    font-size: 180%;
+    font-size: 168%;
     color: #434246;
     font-style : italic;
 }
@@ -710,7 +710,7 @@ a {
 
 @media screen and (max-width: 640px){
   .form-box .description h1 {
-    font-size: 180%;
+    font-size: 128%;
     color: #444444;
     font-style : italic;
 }
