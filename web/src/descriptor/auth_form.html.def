@@ -56,22 +56,33 @@
         }
       }
 
-      function setKey() {
-         if (storedKey === null) {
-           var newKey = document.getElementById("dummy").value;
-           document.getElementById("small_shell_authkey_%%rand").value = newKey;
-           if (newKey !== '') {
-             // sotre value to local storage if current value is null
-             localStorage.setItem("small_shell_authkey_%%rand", newKey);
-           }
-         } else {
-           var dummyInputValue = document.getElementById("dummy").value;
-           if (dummyInputValue !== dummyValue && dummyInputValue !== storedKey) {
-             alert('key value is changed, please reload this page');
-             document.getElementById("dummy").value = '';
-           }
-         }
+      function dummyFormatChk(str) {
+        return str.includes('*');
       }
+
+      function keyFormatChk(str) {
+        return /^[^:]+:[^:]+$/.test(str);
+      }
+
+      function setKey() {
+        const newKey = document.getElementById("dummy").value;
+        if (newKey !== dummyValue) {
+          const dummyChkresult = dummyFormatChk(newKey);
+          if (dummyChkresult === false){ 
+            // check newKey format
+            const decodedString = atob(newKey);
+            const keyChkresult = keyFormatChk(decodedString); 
+            if (keyChkresult === true){
+              localStorage.setItem("small_shell_authkey_%%rand", newKey);
+              document.getElementById("small_shell_authkey_%%rand").value = newKey;
+            }
+          } else {
+            alert('key value is changed, please reload this page');
+            document.getElementById("dummy").value = '';
+          }
+        }
+      }
+
 
     </script>
 
