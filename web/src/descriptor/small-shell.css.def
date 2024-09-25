@@ -838,7 +838,7 @@ a {
 
 @media screen and (max-width: 640px){
   .form-box li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
-    font-size: 70%;
+    font-size: 80%;
     text-align: left;
     color: #444444;
     min-width:100%;
@@ -857,7 +857,7 @@ a {
     color: #444444;
     min-width:100%;
     text-align: left;
-    padding: 6px 6px;
+    padding: 5px 6px;
     margin-right: 2px;
     letter-spacing: .09em;
 }
