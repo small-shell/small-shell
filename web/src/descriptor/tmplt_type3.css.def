@@ -801,7 +801,7 @@ a {
     color: #444444;
     min-width:100%;
     text-align: left;
-    padding: 5px 6px;
+    padding: 5px 4px;
     margin-right: 2px;
     letter-spacing: .09em;
 }
