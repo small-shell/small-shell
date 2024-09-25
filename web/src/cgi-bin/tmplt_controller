@@ -6,7 +6,7 @@
 
 # preprocedure
 session_update="required"
-IP_persistence="yes"
+IP_persistence="no"
 User_agent_persistence="yes"
 auth="%%auth"
 

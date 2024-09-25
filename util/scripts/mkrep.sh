@@ -737,19 +737,10 @@ EOF
     do
       app=$target
       cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
-      | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
+      > ${tmp_dir}/${app}.controller
       cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
       echo "updated controller of $app"
     done
-
-    for target in `ls ${www}/cgi-bin | grep ^auth\. |  xargs basename -a`
-    do
-      app_auth=$target
-      cat ${www}/cgi-bin/${app_auth} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app_auth}
-      cat ${tmp_dir}/${app_auth} > ${www}/cgi-bin/${app_auth}
-      echo "updated $app_auth"
-    done
-
     chown -R small-shell:small-shell ${www}/cgi-bin
 
     # purge authorized key
@@ -834,19 +825,10 @@ EOF
     do
       app=$target
       cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
-      | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app}.controller
+      > ${tmp_dir}/${app}.controller
       cat ${tmp_dir}/${app}.controller > ${www}/cgi-bin/${app}
       echo "updated controller of $app"
     done
-
-    for target in `ls ${www}/cgi-bin | grep ^auth\. |  xargs basename -a`
-    do
-      app_auth=$target
-      cat ${www}/cgi-bin/${app_auth} | $SED "s#IP_persistence=\"no\"#IP_persistence=\"yes\"#g" > ${tmp_dir}/${app_auth}
-      cat ${tmp_dir}/${app_auth} > ${www}/cgi-bin/${app_auth}
-      echo "updated $app_auth"
-    done
-
     chown -R small-shell:small-shell ${www}/cgi-bin
 
 

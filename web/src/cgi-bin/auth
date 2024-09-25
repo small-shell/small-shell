@@ -5,7 +5,7 @@
 ###############################
 
 # set persistence option
-IP_persistence="yes"
+IP_persistence="no"
 User_agent_persistence="yes"
 
 #read posted param 
