@@ -2784,7 +2784,7 @@ if [ "$param" = "-app" ];then
 
         for data in description righth lefth footer
         do
-          cat $ROOT/tmp/gen/.tmplt.UI.md.def/$data | $SED "s/%%app/$app/g" > $tmp_dir/data/$data
+          cat $ROOT/tmp/gen/.tmplt.UI.md.def/${data} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" > $tmp_dir/data/${data}
         done
 
         if [ "$auth_method" = "key" ];then
@@ -2903,11 +2903,13 @@ if [ "$param" = "-app" ];then
 
         # add menu to common menu
         if [ -f ${cgidir}/auth.${parent_app} ];then
-          echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> $tmp_dir/subAPP_link
+          echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\"><p style=\"text-transform: capitalize;\">${databox} Table</p></a></li>" \
+          >> $tmp_dir/subAPP_link
           cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Log Out/i `cat $tmp_dir/subAPP_link`" > $tmp_dir/new_menu
           cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
         else
-          echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\">Table@${app}</a></li>" >> ${www}/descriptor/common_parts/${parent_app}_common_menu
+          echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\"><p style=\"text-transform: capitalize;\">${databox} Table</p></a></li>" \
+           >> ${www}/descriptor/common_parts/${parent_app}_common_menu
         fi
 
         # add menu to UI.md.def
@@ -2926,12 +2928,12 @@ if [ "$param" = "-app" ];then
           fi
 
           if [ -f ${cgidir}/auth.${parent_app} ];then
-            cat $tmp_dir/UI_md_def_menu | $SED -e "/Log Out/i Table@${app}: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
+            cat $tmp_dir/UI_md_def_menu | $SED -e "/Log Out/i ${databox} Table: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
             sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
             action:set id:$id key:righth input_dir:$tmp_dir/data
           else
             cat $tmp_dir/UI_md_def_menu > $tmp_dir/data/righth
-            echo "Table@${app}: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
+            echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
             sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
             action:set id:$id key:righth input_dir:$tmp_dir/data
           fi

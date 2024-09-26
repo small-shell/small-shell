@@ -196,7 +196,11 @@ if [ $righth -eq 1 ];then
     if [ "$tag" = "ExportKey" -a "$url" = "yes" ];then
       export_key=yes
     else
-      echo "<li><a href=\"$url\">$tag</a></li>" >> ${tmp}/righth.tmp
+      if [[ "$tag" == *Table ]];then
+        echo "<li><a href=\"$url\"><p style=\"text-transform: capitalize;\">$tag</p></a></li>" >> ${tmp}/righth.tmp
+      else
+        echo "<li><a href=\"$url\">$tag</a></li>" >> ${tmp}/righth.tmp
+      fi
     fi
   done < ${tmp}/righth_raw.data
 

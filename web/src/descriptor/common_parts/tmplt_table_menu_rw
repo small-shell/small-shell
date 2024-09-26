@@ -1,2 +1,2 @@
-<a href="./%%app?%%params&req=get&id=new"><p>+ADD</p></a>
-<a href="./%%app?%%params&req=table"><p>-CLR</p></a>
+<a href="./%%app?%%params&req=get&id=new"><div class="custome-button"><p>+ADD</p></div></a>
+<a href="./%%app?%%params&req=table"><div class="custome-button"><p>-CLR&nbsp;</p></div></a>

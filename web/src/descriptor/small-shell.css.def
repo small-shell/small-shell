@@ -590,7 +590,7 @@ a {
 
 .table-box {
   line-height: .04em;
-  padding: 18px 2px;
+  padding: 12px 2px;
   margin: auto;
   color: #111111;
   margin-bottom: -24px;
@@ -609,6 +609,7 @@ a {
 
 .table-box .wrapper {
   display: flex;
+  padding-top: 24px;
 }
 
 .table-box .wrapper input[type="text"],
@@ -643,18 +644,43 @@ a {
 }
 
 .table-box button:hover {
+  border: 1px solid #9dc2fa;
   color: #8bb2cb;
 }
 
 .table-box .tags {
   display: flex;
+  align-items: center;
   color: #333;
   font-weight: bold;
   font-size: 86%;
   flex-wrap: wrap;
   white-space: nowrap;
   margin : 0px ;
+  padding-top: 8px;
   padding-left: 4px;
+}
+
+.table-box .custome-button {
+  border: 1px dotted #9dc2fa;
+  background: #fafcfe; 
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+  margin-right: 6px;
+  margin-bottom: 2px;
+}
+
+.table-box .custome-button:hover {
+  border: 1px solid #9dc2fa;
+}
+
+.table-box .custome-button p {
+  font-weight: bold;
+  padding: 0px 8px;
+  color: #0646a0;
+  text-transform: uppercase;
+  letter-spacing: .09em;
 }
 
 .table-box h2 {
@@ -968,6 +994,7 @@ a {
 }
 
 .form-box button {
+  font-weight: bold;
   padding: 8px 16px;
   border-style: none;
   background: #07ADAF;
@@ -1131,6 +1158,7 @@ a {
 }
 
 .md-form-box button {
+  font-weight: bold;
   padding: 8px 16px;
   border-style: none;
   background: #07ADAF;

@@ -24,12 +24,10 @@
         </div>
       </div>
       <div class="table-box">
-        <div class="description">
-        </div>
         <form method="post" action="./base?%%params&req=table">
         <div class="wrapper">
-          <button class="button" type="submit">EXEC</button>
           <input type="search" name="table_command" placeholder="%%placeholder" autocomplete="off">
+          <button class="button" type="submit">EXEC</button>
         </div>
         </form>
         <div class="tags">
