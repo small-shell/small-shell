@@ -186,6 +186,10 @@ a {
 
 }
 
+.container .right-header .even-btn-menu:hover {
+  color: #dfe6f9;
+}   
+
 @media screen and (min-width: 641px) {
   .right-header nav.open-menu {
     border-radius: 16px;

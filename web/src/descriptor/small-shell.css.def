@@ -344,6 +344,10 @@ a {
     line-height: 1;
   }
 
+  .container .right-header .even-btn-menu:hover {
+    color: #dfe6f9;
+  }
+
   .console-container .right-header .even-btn-menu {
     margin: auto;
     border-style: none;
@@ -358,6 +362,11 @@ a {
     cursor: pointer;
     line-height: 1;
   }
+
+  .console-container .right-header .even-btn-menu:hover {
+    color: #dfe6f9;
+  }
+
 }
 
 @media screen and (max-width: 640px) {
