@@ -767,7 +767,7 @@ a {
 }
 
 .table li p {
-  width: 120px;
+  width: 100%;
   padding-left: 8px;
   font-size: 70%;
   flex: auto;
