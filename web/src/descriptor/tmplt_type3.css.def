@@ -62,7 +62,7 @@ a {
     display:flex;
     flex-wrap:wrap;
     align-items: baseline;
-    margin-bottom: -16px;
+    margin-bottom: 2px;
   }
 }
 
@@ -150,6 +150,10 @@ a {
     line-height: 1;
   }
 
+  .right-header .even-btn-menu:hover {
+    color: #dfe6f9;
+  }   
+
   .right-header a {
      color: #EEFAF6;
   }
@@ -185,10 +189,6 @@ a {
   }
 
 }
-
-.container .right-header .even-btn-menu:hover {
-  color: #dfe6f9;
-}   
 
 @media screen and (min-width: 641px) {
   .right-header nav.open-menu {
