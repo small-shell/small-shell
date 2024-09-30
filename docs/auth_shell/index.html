@@ -377,22 +377,22 @@ https://$FAQDN/cgi-bin/auth?initialize=$hashtoken
 <pre><code>sudo vi /usr/local/small-shell/util/scripts/del_log.sh
 </code></pre>
 <h2 id="change-persistence-option">Change persistence option</h2>
-<p>If you want to change option of persistence. you need to update code directly. target parameter is as following. If IP address will be changed frequently, maybe it's better to change to no.</p>
+<p>If you want to change option of persistence. you need to update code directly. target parameter is as following. </p>
 <ul>
-<li>IP_persistence="yes"</li>
-<li>User_agent_persistence="yes"</li>
+<li>IP_persistence: If this parameter set as "yes" and client IP address is changed, session will be gone.</li>
+<li>User_agent_persistence: If this parameter set as "yes" and client browser is changed, session will be gone.</li>
 </ul>
 <h4 id="base-app">Base APP</h4>
 <p>Need to update base and auth.base</p>
 <pre><code>$ sudo vi /var/www/base
 --change option--
-IP_persistence=&quot;yes&quot;
+IP_persistence=&quot;no&quot;
 User_agent_persistence=&quot;yes&quot;
 ----------------
 
 $ sudo vi /var/www/cgi-bin/auth.base
 --change option--
-IP_persistence=&quot;yes&quot;
+IP_persistence=&quot;no&quot;
 User_agent_persistence=&quot;yes&quot;
 ----------------
 </code></pre>
@@ -400,13 +400,13 @@ User_agent_persistence=&quot;yes&quot;
 <p>Need to update $app and auth.$app</p>
 <pre><code>$ sudo vi /var/www/$app
 --change option--
-IP_persistence=&quot;yes&quot;
+IP_persistence=&quot;no&quot;
 User_agent_persistence=&quot;yes&quot;
 ----------------
 
 $ sudo vi /var/www/cgi-bin/auth.$app
 --change option--
-IP_persistence=&quot;yes&quot;
+IP_persistence=&quot;no&quot;
 User_agent_persistence=&quot;yes&quot;
 ----------------
 </code></pre></div>
