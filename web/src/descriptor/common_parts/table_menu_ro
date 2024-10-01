@@ -1,3 +1,3 @@
-<a href="./base?%%params&req=table"><div class="custome-button"><p>CLR</p></div></a>
+<a href="./base?%%params&req=table"><div class="custome-button"><p>-CLR</p></div></a>
 <a href="./base?%%params&req=csv&filter=%%filter" download="%%databox.csv"><p>#CSV</p></a>
 <a href="./base?%%params&req=hash" download="%%databox_hash_chain.txt"><p>#Hashchain</p></a>
