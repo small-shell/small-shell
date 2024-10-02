@@ -63,25 +63,30 @@
         return /^[^:]+:[^:]+$/.test(str);
       }
 
+      function keyAlert(str) {
+        alert('key value is changed, please reload this page');
+        document.getElementById("dummy").value = '';
+      }
+
       function setKey() {
-        const newKey = document.getElementById("dummy").value;
-        if (newKey !== dummyValue) {
-          const dummyChkresult = dummyFormatChk(newKey);
-          if (dummyChkresult === false){ 
-            // check newKey format
+        const newValue = document.getElementById("dummy").value; 
+        if (newValue !== dummyValue) {
+          const dummyChkresult = dummyFormatChk(newValue);
+          if (dummyChkresult === false){
+            let newKey = newValue.replace(/^[^:]+:/, '');
             const decodedString = atob(newKey);
             const keyChkresult = keyFormatChk(decodedString); 
             if (keyChkresult === true){
               localStorage.setItem("%%app_key_%%rand", newKey);
               document.getElementById("%%app_key_%%rand").value = newKey;
+            } else {
+               keyAlert();
             }
           } else {
-            alert('key value is changed, please reload this page');
-            document.getElementById("dummy").value = '';
+             keyAlert();
           }
-        }
+        } 
       }
-
 
     </script>
   </body>
