@@ -819,7 +819,8 @@ also you can update "menu" "logo" and "footer" on the same admin page.
 <h2 id="automate-ssl-cert-deployment">Automate SSL cert deployment</h2>
 <p>In this cook, you can learn how to automate cert deployment by using Let's Encrypt as ssl certificate provider. please install certbot first.</p>
 <h5 id="install-certbot">Install certbot</h5>
-<pre><code>sudo snap install core
+<pre><code>sudo apt install snapd
+sudo snap install core
 sudo snap refresh core
 sudo snap install --classic certbot 
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
@@ -912,6 +913,7 @@ sudo apt install nginx
 sudo /usr/local/small-shell/adm/gen -app #Base APP (required), Scratch APP (optional)
 
 @replica
+sudo apt install rsync
 sudo apt install nginx
 sudo /usr/local/small-shell/adm/gen -app #Base APP (required)
 </code></pre>
@@ -936,6 +938,14 @@ sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.master
 <h4 id="automated-deployment-of-ssl-cert-for-load-balancing">Automated deployment of SSL cert for load balancing</h4>
 <p>To enable https, it's recommended to use ssl auto script as following step. please check details of automation setting on <a href="./#automate-ssl-cert-deployment">Deploy auto SSL cetificate</a>.</p>
 <pre><code>@master 
+# install certbot
+sudo apt install snapd
+sudo snap install core
+sudo snap refresh core
+sudo snap install --classic certbot 
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+# deploy ssl atuo
 cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd ./small-shell-apps/ssl_auto
