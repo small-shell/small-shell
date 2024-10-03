@@ -85,6 +85,12 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi 
 
+    which crontab >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install cron first"
+      exit 1
+    fi
+
     echo "SHASUM=\"`which sha256sum`\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BASE64_ENC=\"`which base64` -w 0\"" >> ${SCRIPT_DIR}/../global.conf
     echo "BASE64_DEC=\"`which base64` -d\"" >> ${SCRIPT_DIR}/../global.conf
