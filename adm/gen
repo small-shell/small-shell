@@ -2884,7 +2884,7 @@ if [ "$param" = "-app" ];then
           fi
         done
 
-        for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
+        for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt_table | grep -v common_menu_button | xargs basename -a`
         do
           menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
           cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" \
