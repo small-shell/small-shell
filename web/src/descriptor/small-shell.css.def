@@ -670,7 +670,7 @@ a {
   padding-left: 4px;
 }
 
-.table-box .custome-button {
+.table-box .custome-button-add {
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
   border-radius: 4px;
@@ -680,11 +680,33 @@ a {
   margin-bottom: 2px;
 }
 
-.table-box .custome-button:hover {
+.table-box .custome-button-add:hover {
   border: 1px solid #9dc2fa;
 }
 
-.table-box .custome-button p {
+.table-box .custome-button-clr {
+  border: 1px dotted #9dc2fa;
+  background: #fafcfe; 
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+  margin-right: 8px;
+  margin-bottom: 2px;
+}
+
+.table-box .custome-button-clr:hover {
+  border: 1px solid #9dc2fa;
+}
+
+.table-box .custome-button-add p {
+  font-weight: bold;
+  padding: 0px 8px;
+  color: #0646a0;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+}
+
+.table-box .custome-button-clr p {
   font-weight: bold;
   padding: 0px 8px;
   color: #0646a0;
