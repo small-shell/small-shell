@@ -2566,7 +2566,7 @@ if [ "$param" = "-app" ];then
             chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
           done
 
-           cat $ROOT/web/src/descriptor/common_parts/${app}_common_button | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
+           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu_button | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
            >> ${www}/descriptor/common_parts/${app}_common_menu
 
           chown $cgiusr:$cgiusr ${www}/descriptor/${app}*
