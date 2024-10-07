@@ -432,6 +432,7 @@ a {
     padding-bottom: 82px;
     margin-top: -24px;
   }
+
   .auth-form {
     flex: 1 1 auto;
     font-size: 80%;
@@ -439,7 +440,13 @@ a {
     letter-spacing: .09em;
     max-width: 240px;
     text-align: left;
-}
+  }
+
+  .auth-form input:focus {
+    outline-color: #40B9F8;
+    outline-width: 2px; 
+  }
+
 }
 
 @media screen and (max-width: 640px) {
@@ -452,6 +459,7 @@ a {
     margin-top: -28px;
     padding-bottom: 64px;
   }
+
   .auth-form {
     flex: 1 1 auto;
     font-size: 80%;
@@ -459,7 +467,14 @@ a {
     letter-spacing: .09em;
     max-width: 240px;
     text-align: left;
-}
+  }
+
+  .auth-form input:focus {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
 }
 
 
@@ -633,9 +648,19 @@ a {
   font-size: 80%;
 }
 
-.table-box input:focus {
-  outline-color: #40B9F8;
-  outline-width: 2px;
+@media screen and (min-width: 641px) {
+  .table-box input:focus {
+    outline-color: #40B9F8;
+    outline-width: 2px; 
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .table-box input:focus {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
 }
 
 .table-box button {
