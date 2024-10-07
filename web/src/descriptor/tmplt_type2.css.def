@@ -15,7 +15,7 @@ body {
 }
 }
 
-@media screen and (max-width: 641px) {
+@media screen and (max-width: 640px) {
   .container {
     margin: 0 auto;
 }
@@ -45,7 +45,7 @@ a {
   }
 }
 
-@media screen and (max-width: 641px) {
+@media screen and (max-width: 640px) {
   .flex-header {
     display:flex;
     flex-wrap:wrap;
@@ -127,7 +127,7 @@ a {
 }
 }
 
-@media screen and (max-width: 641px) {
+@media screen and (max-width: 640px) {
   .right-header .even-btn-menu {
     border-color: #000033;
     border-style: none;
@@ -182,7 +182,7 @@ a {
 }
 }
 
-@media screen and (max-width: 641px) {
+@media screen and (max-width: 640px) {
   .auth-container {
     width: 100%;
     height: 80%;
@@ -325,7 +325,7 @@ a {
   }
 }
 
-@media screen and (max-width: 641px) {
+@media screen and (max-width: 640px) {
   .table-header{
     font-weight: 300;
     font-weight: bold;
@@ -373,7 +373,7 @@ a {
  color: blue;
 }
 
-@media screen and (min-width: 640px){ 
+@media screen and (min-width: 641px){ 
   .form-box {
     max-width: 72%;
     padding: 42px 2px;
@@ -403,7 +403,7 @@ a {
   margin-bottom: -10px;
 }
 
-@media screen and (min-width: 640px){ 
+@media screen and (min-width: 641px){ 
   .form-box .description h1 {
     font-size: 180%;
     color: #434246;
@@ -470,7 +470,7 @@ a {
 }
 }
 
-@media screen and (min-width: 640px){ 
+@media screen and (min-width: 641px){ 
   .form-box li {
     width: 48%;
     display: flex;
@@ -497,7 +497,7 @@ a {
 }
 }
 
-@media screen and (min-width: 640px){
+@media screen and (min-width: 641px){
   .form-box li label:not(.checkbox-label):not(.radio-label):not(#file_input_label):not(#gray_label) {
     font-size: 84%;
     font-weight:bold;
@@ -634,6 +634,7 @@ a {
 }
 
 .form-box button {
+  font-weight: bold;
   text-align: right;
   padding: 8px 16px;
   border-style: none;
@@ -727,7 +728,7 @@ input[type="file"] {
  display: none;
 }
 
-@media screen and (min-width: 640px){
+@media screen and (min-width: 641px){
 
   .main {
    padding-top: 24px;
