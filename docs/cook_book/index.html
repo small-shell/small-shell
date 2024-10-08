@@ -1103,38 +1103,20 @@ output_message=&quot;analyzer.done&quot;
 hubapi=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
-<h6 id="attack-statistics">attack statistics</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.attack_statistics
+<h6 id="statistics">statistics</h6>
+<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.ssw_statistics
 </code></pre>
-<pre><code> &gt; JOB: pv_statistics
-def:/usr/local/small-shell/util/e-cron/def/attack_statistics.def
--------------SCHEDULE----------------
-min: 0
-hour: 1
-date: any
-month: any
-week: any
--------------DEFINITION----------------
-exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:attack frequency:daily title:attack set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:web_analyzer&quot;
-input_message=&quot;analyzer.done&quot;
-output_message=&quot;attack.done&quot;
-hubapi=&quot;&quot;
-api_authkey=&quot;&quot;
-</code></pre>
-<h6 id="uniq-access">uniq access</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron cat.uniq_statistics
-</code></pre>
-<pre><code> &gt; JOB: uniq_statistics
-def:/usr/local/small-shell/util/e-cron/def/uniq_statistics.def
+<pre><code> &gt; JOB: ssw_statistics
+def:/usr/local/small-shell/util/e-cron/def/ssw_statistics.def
 -------------SCHEDULE----------------
 min: 10
-hour: 1
+hour: 0 
 date: any
 month: any
 week: any
 -------------DEFINITION----------------
-exec_command=&quot;/usr/local/small-shell/util/scripts/sumup.sh type:line sumup_key:uniq_access frequency:daily title:pv set_time:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; global_filter:\&quot;`date +%Y-%m-%d --date '1 day ago'`\&quot; databox:web_analyzer&quot;
-input_message=&quot;pv.done&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/ssw_statistics.sh&quot;
+input_message=&quot;analyzer.done&quot;
 output_message=&quot;&quot;
 hubapi=&quot;&quot;
 api_authkey=&quot;&quot;
