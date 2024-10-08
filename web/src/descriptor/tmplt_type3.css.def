@@ -684,14 +684,23 @@ a {
   color: #333;
 }
 
+
 .table-box .pagelink {
   display: flex;
   padding-top:4px;
   align-items: baseline;
   justify-content: flex-end;
   line-height: 1.2em;
-  font-weight: bold;
-  font-size: 72%;
+  font-size: 80%;
+}
+
+.table-box .pagelink a {
+  font-weight: 480;
+  color: #276dd1;
+}
+
+.table-box .pagelink a:hover {
+  color: #7D73F4;
 }
 
 .table {
@@ -750,10 +759,6 @@ a {
 
 .table a {
   color: blue;
-}
-
-.table-box .pagelink a {
- color: blue;
 }
 
 @media screen and (min-width: 641px){
