@@ -758,7 +758,11 @@ a {
 }
 
 .table a {
-  color: blue;
+  color: #0c4fae;
+}
+
+.table a:hover {
+  color: #3682ec;
 }
 
 @media screen and (min-width: 641px){
