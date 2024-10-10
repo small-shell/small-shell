@@ -875,8 +875,11 @@ a {
 }
 
 .form-box a {
-  color: #07ADAF;
-  font-weight: 620;
+  color: #3682ec;
+}
+
+.form-box a:hover {
+  color: #4782d3;
 }
 
 .form-box .description {
@@ -1060,7 +1063,11 @@ a {
 }
 
 .form-box .file_form a {
-  color: #6495ED;
+  color: #3682ec;
+}
+
+.form-box .file_form a:hover {
+  color: #4782d3;
 }
 
 .form-box button {
