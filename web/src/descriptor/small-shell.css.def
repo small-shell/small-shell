@@ -800,10 +800,9 @@ a {
 
 @media screen and (min-width: 641px) {
   .table-header{
-    font-weight: 300;
-    font-weight: bold;
+    font-weight: 420;
     border-radius: 4px;
-    color: #5b5e62;
+    color: #696969;
     border: 1px dotted #c0c0c0;
   }
 }
