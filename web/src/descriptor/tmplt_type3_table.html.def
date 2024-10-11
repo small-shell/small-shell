@@ -53,6 +53,7 @@
     <script>
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
+      const tooltipText = document.querySelector('.tooltip-text');
 
       document.addEventListener('click', (e) => {
         if(e.target.closest('.even-btn-menu')) {
@@ -62,11 +63,16 @@
           } else {
             btn.innerHTML = '=';
           }
+        }else if(e.target.closest('.tooltip')) {
+            tooltipText.classList.toggle('show');
         }else{
           nav.classList.remove('open-menu')
           btn.innerHTML = '=';
+          if(! e.target.closest('.wrapper')) {
+            tooltipText.classList.remove('show');
+          }
         }
       })
-     </script>
+    </script>
   </body>
 </html>

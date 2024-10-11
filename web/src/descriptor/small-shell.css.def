@@ -1486,16 +1486,18 @@ input[type="file"] {
   opacity: 0.9;
 }
 
+.tooltip:hover {
+  color: #7D73F4;
+}
+
 @media screen and (min-width: 641px) {
   .tooltip-text {
-    opacity: 0; 
-    visibility: hidden; 
+    display: none;
     position: absolute; 
     left: 340%; 
     padding-left: 12px;
     padding-right: 12px;
     transform: translateX(-50%);
-    display: inline-block;
     white-space: nowrap; 
     font-size: 1.0rem;
     line-height: 1.3;
@@ -1503,30 +1505,29 @@ input[type="file"] {
     color: #dcdcdc;
     border-radius: 8px;
     transition: 0.3s ease-in;
+    z-index: 3;
   }
 }
 
 @media screen and (max-width: 640px) {
   .tooltip-text {
-    opacity: 0; 
-    visibility: hidden; 
+    display: none;
     position: absolute; 
     padding-left: 12px;
     padding-right: 12px;
-    transform: translateX(-50%);
-    display: inline-block;
+    transform: translateX(-20%);
     white-space: nowrap; 
     line-height: 1.3;
     background: #333;
     color: #dcdcdc;
     border-radius: 8px;
     transition: 0.3s ease-in;
+    z-index: 3;
   }
 }
 
-.tooltip:hover .tooltip-text {
-  opacity: 1;
-  visibility: visible;
+.tooltip-text.show {
+  display: block;
 }
 
 .footer {
