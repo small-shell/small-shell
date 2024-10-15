@@ -12,7 +12,7 @@
         <div class="auth-form">
           <form method="post" action="./auth.base?%%params">
           %%message
-          <h1>key.auth</h1>
+          <h1>KEY AUTH</h1>
           <div class="wrapper">
             <input type="text" id="dummy" name="dummy" placeholder="Your Key" autocomplete="off" required>
             <input type="hidden" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand">
