@@ -613,6 +613,8 @@ a {
 } 
 
 .table-box .custome-button-add {
+  width: 48px;
+  text-align: center;
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
   border-radius: 4px;
@@ -627,6 +629,8 @@ a {
 }
 
 .table-box .custome-button-clr {
+  width: 48px;
+  text-align: center;
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
   border-radius: 4px;
