@@ -32,7 +32,7 @@ col2_required="no"
 # col3
 #-------------------------------------------
 col3_key_name="description"
-col3_key_label="description.md & html"
+col3_key_label="Description"
 col3_type="textarea"
 
 # only for select, checkbox
@@ -83,7 +83,7 @@ col5_required="no"
 # col6
 #-------------------------------------------
 col6_key_name="footer"
-col6_key_label="footer"
+col6_key_label="Footer"
 col6_type="text"
 
 # only for select, checkbox
