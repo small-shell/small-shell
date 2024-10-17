@@ -606,6 +606,10 @@ a {
   font-weight: bold;
 }
 
+.console-box a:hover {
+  color: #6b9dea;
+}
+
 .console-box .description {
   margin-top: -12px;
   font-size: 84%;
