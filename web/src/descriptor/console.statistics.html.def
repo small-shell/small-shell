@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>console box</title>
+    <title>command console</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="stylesheet" href="./css">
   </head>
@@ -34,7 +34,7 @@
         </ul>
         </form>
         <div class="description">
-          <h5>+CONSOLE BOX for %%user</h5>
+          <h5>COMMAND CONSOLE for %%user</h5>
         </div>
         <pre>
 <b># SMALL SHELL STATISTICS %%filters</b>
