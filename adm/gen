@@ -1698,6 +1698,10 @@ if [ "$param" = "-app" ];then
             sleep 2
           else
             systemctl restart small-shell
+            enable_chk=`systemctl is-enabled small-shell`
+            if [ "$enable_chk" != "enabled" ];then
+               systemctl enable small-shell.service
+            fi
             sleep 2
           fi
         else
