@@ -33,6 +33,8 @@ line_chk=`cat ${SCRIPT_DIR}/../global.conf | wc -l | tr -d " "`
 
 if [ $line_chk -eq 1 ];then
 
+  # set permissions
+  chmod 755 ${SCRIPT_DIR}/../global.conf
   . ${SCRIPT_DIR}/../global.conf
   sudo chown -R small-shell:small-shell $ROOT
   chmod 755 $ROOT/util/scripts/*
