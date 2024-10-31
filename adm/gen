@@ -33,13 +33,15 @@ line_chk=`cat ${SCRIPT_DIR}/../global.conf | wc -l | tr -d " "`
 
 if [ $line_chk -eq 1 ];then
 
-  chmod 755 ${SCRIPT_DIR}/../util/scripts/*
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/e-cron/bin/*
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/pyshell/pygraph.sh
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../util/pyshell/env
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../bin/*
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../adm/*
-  sudo -u small-shell chmod 755 ${SCRIPT_DIR}/../sbin/*
+  . ${SCRIPT_DIR}/../global.conf
+  sudo chown -R small-shell:small-shell $ROOT
+  chmod 755 $ROOT/util/scripts/*
+  chmod 755 $ROOT/util/scripts/e-cron/bin/*
+  chmod 755 $ROOT/util/scripts/util/pyshell/pygraph.sh
+  chmod 755 $ROOT/util/scripts/util/pyshell/env
+  chmod 755 $ROOT/bin/*
+  chmod 755 $ROOT/adm/*
+  chmod 755 $ROOT/sbin/*
 
   if [ ! "$mac_chk" ];then
 
