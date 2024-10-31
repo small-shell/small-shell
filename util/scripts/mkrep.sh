@@ -230,10 +230,7 @@ if [ "$param" = "reg.replica" ];then
       for target in `ls ${www}/descriptor/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a`
       do
         app=`echo "${target}" | $AWK -F "_common_menu" '{print $1}'`
-        if [ "$app" = "common" ];then
-          app=base
-        fi
-        chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app}`
+        chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app} 2>/dev/null`
 
         if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
           # update UI.md.def
@@ -693,12 +690,9 @@ EOF
     do
 
       app=`echo "${bkup}" | $AWK -F "_common_menu" '{print $1}'`
-      if [ "$app" = "common" ];then
-        app=base
-      fi
-      chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app}`
+      chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app} 2>/dev/null`
 
-      if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! ${app} = "base" -a ! "${chk_team}" ];then
+      if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
         mkdir ${tmp_dir}/${app}
         id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
@@ -779,12 +773,9 @@ EOF
     for bkup in `ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
     do
       app=`echo "${bkup}" | $AWK -F "_common_menu" '{print $1}'`
-      if [ "$app" = "common" ];then
-        app=base
-      fi
-      chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app}`
+      chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app} 2>/dev/null`
 
-      if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! ${app} = "base" -a ! "${chk_team}" ];then
+      if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
         mkdir ${tmp_dir}/${app}
         id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
