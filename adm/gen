@@ -36,9 +36,9 @@ if [ $line_chk -eq 1 ];then
   . ${SCRIPT_DIR}/../global.conf
   sudo chown -R small-shell:small-shell $ROOT
   chmod 755 $ROOT/util/scripts/*
-  chmod 755 $ROOT/util/scripts/e-cron/bin/*
-  chmod 755 $ROOT/util/scripts/util/pyshell/pygraph.sh
-  chmod 755 $ROOT/util/scripts/util/pyshell/env
+  chmod 755 $ROOT/util/e-cron/bin/*
+  chmod 755 $ROOT/util/pyshell/pygraph.sh
+  chmod 755 $ROOT/util/pyshell/env
   chmod 755 $ROOT/bin/*
   chmod 755 $ROOT/adm/*
   chmod 755 $ROOT/sbin/*
