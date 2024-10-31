@@ -14,7 +14,7 @@
           <h1>%%app</h1>
           <div class="wrapper">
             <input type="%%input_type" id="%%app_pass_%%rand" name="%%app_pass_%%rand" placeholder="%%placeholder">
-            <button class="button" type="submit">submit</button>
+            <button class="button" type="submit">CONNECT</button>
           </div>
           </form>
         </div>
