@@ -355,7 +355,11 @@ if [[ $action == set.attr* ]];then
   fi
 
   if [ ! -d $user_dir ];then
-    echo "error: there is no user ($user_name)"
+    if [ "$app" ];then
+      echo "error: there is no $user_name@${app}"
+    else
+      echo "error: there is no $user_name"
+    fi
     exit 1
   fi
 
