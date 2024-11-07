@@ -38,19 +38,18 @@
         </div>
         <pre>
 <b># SMALL SHELL STATISTICS %%filters</b>
-please click text, then you can show detail
 
-# search examples
+# STATISTICS LINKS
+#----------------------------------------------------------------#
+%%statistics
+#----------------------------------------------------------------#
+
+# SEARCH EXAMPLE
 #----------------------------------------------------------------#
 # snapshot [_s_ #stats]
 # hourly [_d_ #stats]
 # daily statistics [_m_ #stats]
 # monthly statistics [_y_ #stats]
-#----------------------------------------------------------------#
-
-# STATISTICS LINKS
-#----------------------------------------------------------------#
-%%statistics
 #----------------------------------------------------------------#
 
 ..done

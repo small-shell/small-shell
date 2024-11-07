@@ -145,7 +145,7 @@ elif [ "$statistics" ];then
   fi
 
   if [ ! -s %%www/tmp/$session/statistics ];then
-    echo "! statistics will be started once you make statistics job" > %%www/tmp/$session/statistics
+    echo "# No statistics data" > %%www/tmp/$session/statistics
   fi
 
   commands=`${small_shell_path}/bin/meta get.command | $SED "s/ /, /g"`
