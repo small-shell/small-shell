@@ -149,7 +149,7 @@ elif [ "$statistics" ];then
   fi
 
   commands=`${small_shell_path}/bin/meta get.command | $SED "s/ /, /g"`
-  cat %%www/descriptor/console.statistics.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/descriptor/console_statistics.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%statistics/r %%www/tmp/$session/statistics" \
   | $SED "/%%statistics/d"\
   | $SED "/%%databox_list/r %%www/tmp/$session/databox_list" \
