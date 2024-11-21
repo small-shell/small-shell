@@ -614,6 +614,7 @@ a {
 
 .table-box .custome-button-add {
   width: 48px;
+  font-size: 80%;
   text-align: center;
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
@@ -630,6 +631,7 @@ a {
 
 .table-box .custome-button-clr {
   width: 48px;
+  font-size: 80%;
   text-align: center;
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
@@ -716,6 +718,13 @@ a {
     color: #696969;
     border: 1px dotted #c0c0c0;
   }
+
+  .table { 
+    padding-right :4px;
+    padding-left :4px;
+    line-height: .8em;
+    margin: auto;
+  }
 }
 
 @media screen and (max-width: 640px) {
@@ -727,14 +736,11 @@ a {
     color: white;
     background: #424242;
   }
-}
 
-
-.table { 
-  padding-right: 4px;
-  padding-left: 4px;
-  line-height: .8em;
-  margin: auto;
+  .table { 
+    line-height: .8em;
+    margin: auto;
+  }
 }
 
 .table ul {
