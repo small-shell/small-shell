@@ -450,7 +450,7 @@ if [[ $action == del.tag* ]];then
     rm $ROOT/tmp/tag/$tdir/$tag
     echo "successfully deleted tag from $tdir"
   else
-    echo "There is no $tag on $tdir table"
+    echo "error: there is no tag:${filter} on $tdir table"
     exit 1
   fi
 fi
