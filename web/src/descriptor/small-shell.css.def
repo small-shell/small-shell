@@ -63,7 +63,7 @@ a {
     font-weight: bold;
     background: #434246;
     color: #dcdcdc;
-    cursor: hand;
+    cursor: pointer;
     border-style: none;
   }
 
@@ -128,7 +128,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand; 
   font-size: 80%;
 }   
   
@@ -156,7 +155,7 @@ a {
   .container .left-header .dataselect{
     font-weight: bold;
     color: #333333;
-    cursor: hand;
+    cursor: pointer;
     border-style: none;
   }
 
@@ -276,7 +275,7 @@ a {
   font-weight: bold;
   background: #333;
   color: #E1E6E9;
-  cursor: hand;
+  cursor: pointer;
   border-style: none;
 }
 
@@ -517,7 +516,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand;
   font-size: 80%;
 }
 
@@ -579,7 +577,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand;
   font-size: 80%;
 }
 
@@ -678,7 +675,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand;
   font-size: 80%;
 }
 
@@ -692,7 +688,6 @@ a {
   align-items: center;
   color: #333;
   font-weight: bold;
-  font-size: 86%;
   flex-wrap: wrap;
   white-space: nowrap;
   margin : 0px ;
@@ -702,13 +697,12 @@ a {
 
 .table-box .custome-button-add {
   width: 48px;
+  font-size: 90%;
   text-align: center;
-  font-size: 80%;
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
   border-radius: 4px;
   cursor: pointer;
-  cursor: hand;
   margin-right: 2px;
   margin-bottom: 2px;
 }
@@ -719,13 +713,12 @@ a {
 
 .table-box .custome-button-clr {
   width: 48px;
-  font-size: 80%;
+  font-size: 90%;
   text-align: center;
   border: 1px dotted #9dc2fa;
   background: #fafcfe; 
   border-radius: 4px;
   cursor: pointer;
-  cursor: hand;
   margin-right: 8px;
   margin-bottom: 2px;
 }
@@ -816,7 +809,7 @@ a {
     padding-right :4px;
     padding-left :4px;
     line-height: .8em;
-    margin: auto;
+    margin: auto; 
   }
 }
 
@@ -832,10 +825,9 @@ a {
 
   .table { 
     line-height: .8em;
-    margin: auto;
+    margin: auto; 
   }
 }
-
 
 .table ul {
   list-style: none;
@@ -1071,7 +1063,7 @@ a {
   color: #333;
   font-size: 140%;
   font-weight: bold;
-  cursor: hand;
+  cursor: pointer;
   padding-left: 6px;
   padding-right: 6px;
   vertical-align: middle;
@@ -1101,7 +1093,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand;
 }
 
 .form-box button:hover {
@@ -1265,7 +1256,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand;
 }
 
 .md-form-box button:hover {
@@ -1325,7 +1315,7 @@ a {
   color: #333;
   font-size: 140%;
   font-weight: bold;
-  cursor: hand;
+  cursor: pointer;
   padding-left: 6px;
   padding-right: 6px;
   vertical-align: middle;
@@ -1443,7 +1433,6 @@ a {
   letter-spacing: .09em;
   border-radius: 2px;
   cursor: pointer;
-  cursor: hand;
   font-weight: bold;
 }
 
@@ -1464,7 +1453,7 @@ a {
   color: #333;
   font-size: 140%;
   font-weight: bold;
-  cursor: hand;
+  cursor: pointer;
   padding-left: 6px;
   padding-right: 6px;
 }
