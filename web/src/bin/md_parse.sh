@@ -67,9 +67,9 @@ do
      if [ ! "$extension_code" ];then
        extension_code=yes
        if [[ "$line" == *Warning* ]];then 
-         echo "<pre class=\"warning\"><b>!Warning</b>" >> ${tmp}/description.tmp
+         echo "<pre class=\"warning\"><b>Warning</b>" >> ${tmp}/description.tmp
        else
-         echo "<pre class=\"note\"><b>!Note</b>" >> ${tmp}/description.tmp
+         echo "<pre class=\"note\"><b>Note</b>" >> ${tmp}/description.tmp
        fi
      else
       echo "</pre>" >> ${tmp}/description.tmp
