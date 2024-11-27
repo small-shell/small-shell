@@ -459,20 +459,13 @@ sudo ./deploy.sh
 <pre><code>sudo /usr/local/small-shell/adm/ops app:team add.usr:test
 </code></pre>
 <p><img alt="Screenshot" src="../img/team.png" /></p>
-<p>Ofcourse, you can update portal html by your self.</p>
-<pre><code>sudo vi /var/www/descriptor/team_main.html.def
-</code></pre>
-<p>If you want to add other databox to Team APP, please generate subAPP@team</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
-app_name: $subapp@team
-primary databox: $databox
-</code></pre>
-<p>then please check routing to team APP</p>
-<pre><code>sudo cat /var/www/cgi-bin/team
-</code></pre>
-<p>also menu can be updated, please insert meta link to the menu</p>
-<pre><code>sudo cat /var/www/descriptor/common_parts/team_common_menu
+<h5 id="access-ulr-of-team-app">Access ULR of Team APP</h5>
+<p>There is 2 URL for using Team APP, 1 is for APP user, 1 is external user for inquiry. please try to use.</p>
+<pre><code># Team APP 
+https://${FQND}/team
+
+# Inquiry Form
+https://${FQDN}/inquiry
 </code></pre>
 <h2 id="oauth-integration">Oauth integration</h2>
 <p>If you want to use Oauth, it's recommended to select other type APP.</p>
