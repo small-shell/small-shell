@@ -73,8 +73,10 @@ do
   fi
 
   if [ ! "$required" = "yes" -a  ! "$required" = "no" ];then
-    echo "error: col${count} please define required yes or no"
-    exit 1
+    if [ ! "$type" = "file" -a ! "$type" = "checkbox" -a ! "$type" = "radio" -a ! "$type" = "select" ];then
+      echo "error: col${count} please define required yes or no"
+      exit 1
+    fi
   fi
 
    param_chk=`cat $ROOT/util/scripts/tmp/.col${count} | grep -A 1 "type=\"$type\"" \
