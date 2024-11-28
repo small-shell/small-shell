@@ -547,7 +547,7 @@ if [ "$param" = "-databox" ];then
 
     done   
 
-    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+    if [ "$type" = "select" -o "$type" = "radio" ];then
       echo -n "please define parameters using comma as separator: "
       read params
       char_chk_result=`charset_check "$params"`
@@ -625,7 +625,7 @@ if [ "$param" = "-databox" ];then
     echo "label=\"$add_key_label\"" >> $tmp_dir/col${count}
     echo "type=\"$type\"" >> $tmp_dir/col${count}
 
-    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+    if [ "$type" = "select" -o "$type" = "radio" ];then
       echo "params=\"$params\"" >> $tmp_dir/col${count}
     fi
 
@@ -886,7 +886,7 @@ if [ "$param" = "-addcol" ];then
 
     done
     
-    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+    if [ "$type" = "select" -o "$type" = "radio" ];then
       echo -n "please define parameters using comma as separator: "
       read params
       char_chk_result=`charset_check "$params"`
@@ -957,7 +957,7 @@ if [ "$param" = "-addcol" ];then
     echo "label=\"$add_key_label\"" >> $tmp_dir/col${count}
     echo "type=\"$type\"" >> $tmp_dir/col${count}
 
-    if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
+    if [ "$type" = "select" -o "$type" = "radio" ];then
       echo "params=\"$params\"" >> $tmp_dir/col${count}
     fi
 

@@ -996,19 +996,13 @@ function get_data(){
 
     if [ "$type" = "checkbox" ];then
       echo "<li>"
-      echo "<label>$label</label>"
-      echo "<input type=\"hidden\" name=\"$name\" value=\"\">"
-      for param in `echo "$params" | $SED "s/ /%%space/g" | $SED "s/,/ /g"`
-      do
-        param=`echo "$param" | $SED "s/%%space/ /g"`
-        value_chk=`echo "$value" | grep "^$param$" `
-        if [ "$value_chk" ];then
-          echo "<input type=\"checkbox\" name=\"${name}\" value=\"$param\" checked=\"checked\">"
-        else
-          echo "<input type=\"checkbox\" name=\"${name}\" value=\"$param\">"
-        fi
-        echo "<label class=\"checkbox-label\">$param</label>"
-      done
+      echo "<input type=\"hidden\" name=\"$name\" value=\"null\">"
+      if [ "$value" = "yes" ];then
+        echo "<input type=\"checkbox\" name=\"${name}\" value=\"yes\" checked=\"checked\">"
+      else
+        echo "<input type=\"checkbox\" name=\"${name}\" value=\"yes\">"
+      fi
+        echo "<label class=\"checkbox-label\">${label}</label>"
       echo "</li>"
     fi
 
@@ -1314,11 +1308,18 @@ function set_data(){
     return 1
   fi
 
-  # update or insert value
+  # load value
   if [ "$input_dir" = "null" ];then
     value=`echo "$value" | $SED "s/{%%%}/:/g" | $SED "s/%%null//g"`
   else
-    value=`cat ${input_dir}/${key}`
+    if [ ! "$type" = "checkbox" ];then
+      value=`cat ${input_dir}/${key}`
+    else
+      value=`cat ${input_dir}/${key} | grep -v "^null"`
+      if [ "$value" = "" ];then
+        value="-"
+      fi
+    fi
   fi
 
   if [ ! "$set_option" = "force" ];then
@@ -1326,27 +1327,24 @@ function set_data(){
       org_value=`cat $ROOT/databox/$databox/data/${id}/${key} 2>/dev/null | $SHASUM | $AWK '{print $1}'`
     fi
 
-    if [ "$input_dir" = "null" ];then
-      new_value=`echo "$value" | $SHASUM | $AWK '{print $1}'`
-    else
-      new_value=`cat ${input_dir}/${key} | $SHASUM | $AWK '{print $1}'`
-    fi
-
+    new_value=`echo "$value" | $SHASUM | $AWK '{print $1}'`
     if [ "$org_value" = "$new_value" -a ! "$type" = "file" ];then
       echo "info: $key value{`echo $value | $SED -z \"s/\n//g\"`} is same as original value"
       return 1
     fi
   fi
 
-  # for select box or radio or checkbox 
-  if [ "$type" = "select" -o "$type" = "radio" -o "$type" = "checkbox" ];then
-    params=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep params | $AWK -F "params=" '{print $2}' | $SED "s/\"//g" | $SED '/^$/d'`
-
-    if [ "$type" = "checkbox" ];then
-      if [ "$value" = "-" ];then
-        value=""
-      fi
+  # value check for checkbox
+  if [ "$type" = "checkbox" ];then
+    if [ "$value" != "yes" -a "$value" != "-" ];then
+      echo "error: $key value{$value} is not allowed"
+      return 1
     fi
+  fi
+
+  # value check for select box or radio 
+  if [ "$type" = "select" -o "$type" = "radio" ];then
+    params=`grep -6 "name=\"$key\"" $ROOT/databox/${databox}/def/col* | grep params | $AWK -F "params=" '{print $2}' | $SED "s/\"//g" | $SED '/^$/d'`
 
     if [ "$params" ];then
       for param in `echo "$params" | $SED "s/ /%%space/g" | $SED "s/,/ /g"`
@@ -1437,7 +1435,6 @@ function set_data(){
     fi
   fi
 
-
   # SET DATA#
   if [ "$input_dir" = "null" ];then
     if [ "$type" = "file" ];then  
@@ -1453,7 +1450,11 @@ function set_data(){
       echo "$file_name #size:$size" > $ROOT/databox/$databox/data/${id}/${key}
       \cp -f ${input_dir}/binary_file/binary.data $ROOT/databox/$databox/file/${id}
     else
-      cat ${input_dir}/${key} > $ROOT/databox/$databox/data/${id}/${key}
+      if [ ! "$type" = "checkbox" ];then
+        cat ${input_dir}/${key} > $ROOT/databox/$databox/data/${id}/${key}
+      else
+        echo "$value" > $ROOT/databox/$databox/data/${id}/${key}
+      fi
     fi
   fi
 
@@ -1509,6 +1510,13 @@ function merge_data(){
     return 1
   fi
 
+  # load value
+  if [ "$input_dir" = "null" ];then
+    value=`echo "$value" | $SED "s/{%%%}/:/g" | $SED "s/%%null//g"`
+  else
+    value=`cat ${input_dir}/${key}`
+  fi
+
   if [ ! "$type" = "textarea" ];then
     echo "error: merge could be used only for textarea"
     return 1
@@ -1516,11 +1524,7 @@ function merge_data(){
 
   # MERGE DATA#
   echo "+MERGE `date +%Y-%m-%d` `date +%T` updated by $user" >> $ROOT/databox/$databox/data/${id}/${key}
-  if [ ! "$value" = "file_input" ];then
-    echo "$value" >> $ROOT/databox/$databox/data/${id}/${key}
-  else
-    cat ${input_dir}/${key} >> $ROOT/databox/$databox/data/${id}/${key}
-  fi
+  echo "$value" >> $ROOT/databox/${databox}/data/${id}/${key}
 
   if [ $? -eq 0 ];then
     echo "successfully set $key to id:$id"
@@ -1721,7 +1725,7 @@ if [ "$action" ];then
     fi
 
     if [ ! "$value" ];then
-      value=file_input
+      value=dummy
     fi
 
     if [ ! "$input_dir" ];then
@@ -1729,7 +1733,7 @@ if [ "$action" ];then
     fi
 
     if [ "$keys" ];then
-      if [ ! "$value" = "file_input" ];then
+      if [ "$input_dir" = "null" ];then
         echo "error: value can be insert to only 1 key"
         exit 1
       fi
@@ -1763,7 +1767,7 @@ if [ "$action" ];then
             flag="update"
           fi
 
-          result=`set_data $id $key file_input $input_dir $flag $set_option`
+          result=`set_data "$id" "$key" "$value" "$input_dir" "$flag" "$set_option"`
           if [ $? -eq 0 ];then
             updated_keys="$key,$updated_keys"
           fi
@@ -1786,7 +1790,7 @@ if [ "$action" ];then
       fi
 
     elif [ "$key" ];then
-      if [ "$value" = "file_input" ];then
+      if [ ! "$input_dir" = "null" ];then
         if [ ! -f $input_dir/$key ];then
           echo "error: there is no value for $key"
           exit 1
@@ -1807,7 +1811,7 @@ if [ "$action" ];then
       else
         flag="update"
       fi
-      result=`set_data $id $key $value $input_dir $flag $set_option`
+      result=`set_data "$id" "$key" "$value" "$input_dir" "$flag" "$set_option"`
       if [ $? -eq 0 ];then
         cp $ROOT/tmp/session/$session $ROOT/tmp/que/$session
         if [ ! "$bat" = "yes" ];then
@@ -1905,7 +1909,7 @@ if [ "$action" ];then
     fi
 
     if [ ! "$value" ];then
-      value=file_input
+      value=dummy
     fi
 
     if [ ! "$input_dir" ];then
@@ -1918,7 +1922,7 @@ if [ "$action" ];then
     fi
 
     if [ "$key" ];then
-      if [ "$value" = file_input ];then
+      if [ ! "$input_dir" = "null" ];then
         if [ ! -f $input_dir/$key ];then
           echo "error: there is no value for $key"
           exit 1

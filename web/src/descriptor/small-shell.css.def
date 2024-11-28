@@ -1009,9 +1009,19 @@ a {
   flex: auto;
 }
 
-.form-box input[type="checkbox"]{
-  margin-top: 6px;
+
+@media screen and (min-width: 641px) {
+  .form-box input[type="checkbox"]{
+    margin-top: 24px;
+  }
 }
+
+@media screen and (max-width: 640px) {
+  .form-box input[type="checkbox"]{
+    margin-top: 4px;
+  }
+}
+
 
 .form-box input[type="radio"]{
   margin-top: 4px;
@@ -1477,14 +1487,29 @@ a {
  font-weight: bold;
 }
 
-.checkbox-label {
-  text-align: left;
-  font-size: 80%;
-  margin-top: 2px;
-  margin-left: 2px;
-  letter-spacing: .09em;
-  padding-right: 2px;
-}
+@media screen and (min-width: 641px) {
+  .checkbox-label { 
+    padding-top: 20px;
+    font-size: 84%;
+    color: #616166;
+    font-weight: 300;
+    margin-right: 2px;
+    letter-spacing: .09em;
+    font-weight: bold;
+  } 
+}   
+    
+@media screen and (max-width: 640px) {
+  .checkbox-label { 
+    font-size: 84%;
+    color: #616166;
+    font-weight: 300;
+    margin-right: 2px;
+    letter-spacing: .09em;
+    font-weight: bold;
+  } 
+} 
+
 
 .radio-label {
   text-align: left;
