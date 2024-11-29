@@ -231,7 +231,7 @@ PYTHON="/usr/local/bin/python3.12"
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>It' required to complete OS setup and setup of small-shell Base APP, see detail at <a href="../quick_start_linux/">Quickstart</a>.
-Following is an expamle that count up number of data of item.db</p>
+Following is an expamle that count up number of data of inventory.db</p>
 <h6 id="dialog-result">dialog result</h6>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 Job Name: countup_item
@@ -242,7 +242,7 @@ Date  [ any | 1-31 ]: any
 Hour  [ any | 0-23 ]: 0
 Min   [ any | 0-59 ]: 1
 Week  [ any | mon - sun ]: any
-Exec command or batch script: countup.sh databox:item.db type:line frequency:daily
+Exec command or batch script: countup.sh databox:inventory.db type:line frequency:daily
 
 # enable job
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_item
@@ -405,7 +405,7 @@ type:bar frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph.png" /></p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box \
-key:impression filters:Good,Average,Bad type:pie title:2021-05-11_survey_result frequency:snapshot
+key:impression filters:Good,Average,Bad type:pie title:2024-11-28_survey_result frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
 <h5 id="sumup-scenario">Sumup Scenario</h5>

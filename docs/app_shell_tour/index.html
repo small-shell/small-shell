@@ -288,7 +288,7 @@ you can also define parameters of select, radio or checkbox in the dialog. by th
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 </code></pre>
 <p>This is exmpale of dialog.</p>
-<pre><code>Databox Name: item.db
+<pre><code>Databox Name: inventory.db
 primary_key(col1): item_name
 primary_key label: Item Name
 Do you want to add column to dataset? (yes | no): yes
@@ -300,7 +300,7 @@ Do you want to add more column to dataset? (yes | no) : yes
 key(col3) name: category
 key(col3) label: Category
 Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): select
-please define parameters using comma as separator: A,B,C
+please define parameters using comma as separator: PC,network_device,audio_visual,furniture,other
 Do you want to add more column to dataset? (yes | no) : no
 </code></pre>
 <div class="admonition note">
@@ -347,8 +347,8 @@ sudo /usr/local/small-shell/adm/gen -delcol
 </code></pre>
 <h5 id="change-label">Change label</h5>
 <p>Label definition can be modified directly</p>
-<pre><code>(e.g.) change item.db col2 label
-sudo vi /usr/local/small-shell/databox/item.db/def/col2
+<pre><code>(e.g.) change inventory.db col2 label
+sudo vi /usr/local/small-shell/databox/inventory.db/def/col2
 
 --code--
 name="description"
@@ -359,23 +359,23 @@ option=""
 </code></pre>
 <h5 id="change-params-of-select-type-or-radio">Change params of select type or radio</h5>
 <p>Params can be also modified directly</p>
-<pre><code>(e.g.) change item.db col3
-sudo vi /usr/local/small-shell/databox/item.db/def/col3
+<pre><code>(e.g.) change inventory.db col3
+sudo vi /usr/local/small-shell/databox/inventory.db/def/col3
 
 --code--
 name="item_type"
 label="item_type"
 type="select"
-params="book,furniture,electoric,gardening"
-option=""
+params="PC,network_device,audio_visual,furniture,other"
+option="required"
 --------
 </code></pre>
 <h2 id="insert-data-list-to-form">Insert data list to Form</h2>
 <p>You can import primary data list from other databox to the Form using "pdls".
 following is an example that can show how you can utilize pdls.</p>
 <h4 id="typepdls">type=pdls</h4>
-<p>Import target: item.db 
-New databox : order.db &lt;- import item list</p>
+<p>Import target: inventory.db 
+New databox : request.db &lt;- import item list</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 
 # result of dialog
@@ -391,7 +391,7 @@ option=&quot;required&quot;
 name=&quot;item&quot;
 label=&quot;item&quot;
 type=&quot;pdls&quot;
-pdlsbox=&quot;item.db&quot;
+pdlsbox=&quot;inventory.db&quot;
 option=&quot;required&quot;
 
 #column3
@@ -401,7 +401,8 @@ type=&quot;number&quot;
 option=&quot;required&quot;
 -----------------------------------------------------------------
 </code></pre>
-<p><img alt="Screenshot" src="../img/pdls.png" /></p>
+<p>Image of request Form using pdls is as following.
+<img alt="Screenshot" src="../img/pdls.png" /></p>
 <h4 id="addkvl">+addkvl</h4>
 <p>Besides importing primary key value, you can import 1 other column as well by adding addkvl param manually. following example is adding item_type to the importing value.</p>
 <pre><code># edit target coumn, in this example col3 is target.
@@ -411,9 +412,9 @@ sudo vi /usr/local/small-shell/databox/order.db/def/col2
 name=&quot;item&quot;
 label=&quot;item&quot;
 type=&quot;pdls&quot;
-pdlsbox=&quot;item.db&quot;
+pdlsbox=&quot;inventory.db&quot;
 option=&quot;required&quot; 
-addkvl=&quot;item_type&quot; #&lt;- add by manually
+addkvl=&quot;category&quot; #&lt;- add by manually
 --------
 </code></pre>
 <p><img alt="Screenshot" src="../img/addkvl.png" /></p>
@@ -469,11 +470,11 @@ $tmp (/var/www/tmp)
 <img alt="Screenshot" src="../img/standard_flow.png" /></p>
 <h5 id="url-design">URL design</h5>
 <p>Query string will be loaded same name of valiables in the APP</p>
-<pre><code>https://$[server]/cgi-bin/${app}?req=get&amp;databox=item.db&amp;id=1234 ..
+<pre><code>https://$[server]/cgi-bin/${app}?req=get&amp;databox=inventory.db&amp;id=1234 ..
 
 These query string will be loaded as following value in the APP
 -&gt; req=get
--&gt; databox=item.db
+-&gt; databox=inventory.db
 -&gt; id=1234
 </code></pre>
 <h5 id="routing-in-controller-base-app">Routing in controller # Base APP</h5>
@@ -532,15 +533,15 @@ done
 item_name=`cat ../tmp/$session/item_name`
 --------
 </code></pre>
-<h6 id="generate-data-by-calling-data_shell-with-html-format-eg-accesing-to-itemdb">Generate data by calling DATA_shell with html format (e.g. accesing to item.db)</h6>
+<h6 id="generate-data-by-calling-data_shell-with-html-format-eg-accesing-to-inventorydb">Generate data by calling DATA_shell with html format (e.g. accesing to inventory.db)</h6>
 <pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
-sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:item.db \
+sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:inventory.db \
 action:get id:$id keys:all format:html_tag &gt; ../tmp/$session/dataset
 --------
 </code></pre>
-<h6 id="render-html-with-inserting-dynamic-contents-to-tags-eg-datasethtml_tag-from-itemdb">Render HTML with inserting dynamic contents to %%tags (e.g. dataset{html_tag} from item.db)</h6>
+<h6 id="render-html-with-inserting-dynamic-contents-to-tags-eg-datasethtml_tag-from-inventorydb">Render HTML with inserting dynamic contents to %%tags (e.g. dataset{html_tag} from inventory.db)</h6>
 <pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
@@ -570,7 +571,7 @@ cat ../descriptor/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 <pre><code>&lt;h2&gt;Data.values&lt;/h2&gt;
 &lt;p&gt;&lt;b&gt;#ID &lt;/b&gt;81416a688e358d92b2a9f2ad412cb5fa60cae8e04f611335a14c6dafe2614f1e&lt;/p&gt;
 &lt;/div&gt;
-&lt;form method=&quot;post&quot; action=&quot;./base?session=54c59a2567b0ac722855c801c7008a071b386f7b63ce2d6c138f5e0d94350037&amp;pin=29449&amp;databox=item.db&amp;req=set&amp;id=81416a688e358d92b2a9f2ad412cb5fa60cae8e04f611335a14c6dafe2614f1e&amp;post=yes&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
+&lt;form method=&quot;post&quot; action=&quot;./base?session=54c59a2567b0ac722855c801c7008a071b386f7b63ce2d6c138f5e0d94350037&amp;pin=29449&amp;databox=inventory.db&amp;req=set&amp;id=81416a688e358d92b2a9f2ad412cb5fa60cae8e04f611335a14c6dafe2614f1e&amp;post=yes&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;label&gt;item_name (Fixed)&lt;/label&gt;
