@@ -47,7 +47,7 @@
 # SEARCH EXAMPLE
 #----------------------------------------------------------------#
 # snapshot [_s_ #stats]
-# hourly [_d_ #stats]
+# hourly statistics [_d_ #stats]
 # daily statistics [_m_ #stats]
 # monthly statistics [_y_ #stats]
 #----------------------------------------------------------------#
