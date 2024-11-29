@@ -231,10 +231,9 @@ PYTHON="/usr/local/bin/python3.12"
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>It' required to complete OS setup and setup of small-shell Base APP, see detail at <a href="../quick_start_linux/">Quickstart</a>.
-Following is an expamle that count up number of data of inventory.db</p>
-<h6 id="dialog-result">dialog result</h6>
-<pre><code>sudo /usr/local/small-shell/adm/gen -job
-Job Name: countup_item
+Following is an expamle that count up number of record of inventory.db</p>
+<pre><code>$ sudo /usr/local/small-shell/adm/gen -job
+Job Name: countup_num_of_record
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
 Month [ any | 1-12 ]: any
@@ -242,19 +241,18 @@ Date  [ any | 1-31 ]: any
 Hour  [ any | 0-23 ]: 0
 Min   [ any | 0-59 ]: 1
 Week  [ any | mon - sun ]: any
-Exec command or batch script: countup.sh databox:inventory.db type:line frequency:daily
+Exec command or batch script: countup.sh databox:inventory.db type:line frequency:daily   
 
 # enable job
-sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_item
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_item
 
 # execute manually, please execute several time because line graph needs at least 2 teims execution.
-sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
 countup_item successfully completed
 
 # re-execute manually. because line graph need to have at least 2 line.
-sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
 countup_item successfully completed
-
 </code></pre>
 <h2 id="view-statistics">View statistics</h2>
 <p>You can view statistics on console of Base APP. pyshell could make graph using pandas and matplotlib librarise. please exec #stats at console, then you can access to graph.</p>
@@ -411,10 +409,10 @@ key:impression filters:Good,Average,Bad type:pie title:2024-11-28_survey_result 
 <h5 id="sumup-scenario">Sumup Scenario</h5>
 <p>Create monthly graph of inventory.db by sumup each type of inventory </p>
 <h6 id="target-databox-for-analytics_1">Target Databox for analytics]</h6>
-<pre><code>inventory.db {item_name:text, type:select, num:num, note:text}
+<pre><code>inventory.db {item_name:text, category:select, num:num}
 </code></pre>
 <h6 id="sumup-with-filtering">Sumup with filtering</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/sumup.sh databox:inventory.db type:bar filter_key:type filter:PC,network_device,audio_visual,furniture,other sumup_key:num frequency:snapshot
+<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/sumup.sh databox:inventory.db type:bar filter_key:category filter:PC,network_device,audio_visual,furniture,other sumup_key:num frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/sumup_inventory_type.png" /></p>
 <h2 id="delete-rawdata-and-graph">Delete rawdata and graph</h2>
