@@ -162,7 +162,7 @@ if [ "$flag" = "set" -o "$flag" = "addcol" -o "$flag" = "delcol" ];then
          if [ ! "$addkvl_chk" ];then
            value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
          else
-           value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | $AWK -F "#" '{print $NF}'`
+           value=`cat ${ROOT}/databox/${databox}/data/${id}/${key} | $AWK -F " " '{print $1}'`
          fi
        else
          value=`cat ${ROOT}/databox/${databox}/data/${id}/${key}`
