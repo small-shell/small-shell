@@ -244,15 +244,15 @@ Week  [ any | mon - sun ]: any
 Exec command or batch script: countup.sh databox:inventory.db type:line frequency:daily   
 
 # enable job
-$ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_item
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_record
 
 # execute manually, please execute several time because line graph needs at least 2 teims execution.
-$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
-countup_item successfully completed
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_record
+countup_record successfully completed
 
 # re-execute manually. because line graph need to have at least 2 line.
-$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_item
-countup_item successfully completed
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_record
+countup_record successfully completed
 </code></pre>
 <h2 id="view-statistics">View statistics</h2>
 <p>You can view statistics on console of Base APP. pyshell could make graph using pandas and matplotlib librarise. please exec #stats at console, then you can access to graph.</p>
