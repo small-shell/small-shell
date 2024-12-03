@@ -1073,18 +1073,10 @@ function get_data(){
         primary_key_values=`$ROOT/tmp/exec/$exec_session.pdls.$key`
 
         if [ "$value" ];then
-          primary_value=`echo ${value} | $AWK -F "#" '{print $NF}'`
+          primary_value=`echo ${value} | $AWK -F " #" '{print $1}'`
           pdid=`grep "::::::${primary_value}," $ROOT/databox/${pdlsbox}/index | $AWK -F "::::::" '{print $2}'`
 
           if [ "$pdid" ];then
-
-            # generate tmp exe file to extract specific column by awk
-            echo "cat $ROOT/databox/${pdlsbox}/index | grep "::::::${primary_value}," | $AWK -F \"::::::\" '{print \$3}' \
-            | $AWK -F \",\" '{print \$$kvl_col\" #\"\$1}'"   > $ROOT/tmp/exec/$exec_session.kvl
-
-            chmod 755 $ROOT/tmp/exec/$exec_session.kvl
-            value=`$ROOT/tmp/exec/$exec_session.kvl`
-
             echo "<label><a href=\"./$app?%%pdls&databox=${pdlsbox}&id=${pdid}\">${label}</a></label>"
           else
             echo "<label>${label} # data is not found</label>"
