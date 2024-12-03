@@ -456,7 +456,7 @@ a {
   line-height: 1.2em;
   flex: auto;
   padding-left: 8px;
-  font-size: 70%;
+  font-size: 80%;
   white-space: wrap;
 }
 
