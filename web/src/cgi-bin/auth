@@ -48,6 +48,12 @@ if [ "$User_agent_persistence" = "yes" ];then
   user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
 fi
 
+# load databox
+databox=`${small_shell_path}/bin/meta get.databox | $SED "s/ /\n/g" | head -1`
+if [ ! "$databox" ];then
+  databox=null
+fi
+
 param=`date +%s`
 param="$param:$RANDOM"
 count=1
@@ -74,12 +80,6 @@ chmod 755 %%www/tmp/${param}.load
 # load query string and POSTED params
 .  %%www/tmp/${param}.load
 rm  %%www/tmp/${param}*
-
-# load databox
-databox=`${small_shell_path}/bin/meta get.databox | $SED "s/ /\n/g" | head -1`
-if [ ! "$databox" ];then
-  databox=null
-fi
 
 # For the access with initialize hashkey which contain in query string and create new user_key
 if [ "$initialize" ];then
