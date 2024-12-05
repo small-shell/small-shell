@@ -32,7 +32,7 @@ fi
 
 ls $www/bin/${app}_get.sh >/dev/null 2>&1
 if [ ! $? = 0 ];then
-  echo "error: there is no app $app"
+  echo "error: there is no app{$app}"
   exit 1
 fi
 
@@ -62,14 +62,14 @@ if [ "$parent_app" ];then
     # load routing
     routing=`cat $www/cgi-bin/$parent_app | grep ${app}_`
     # show meesage
-    echo "APP removal was done, please edit parebnt APP controller"
+    echo "APP{${app}} has been deleted, please edit parebnt APP controller"
     echo "target file: $www/cgi-bin/$parent_app"
     echo "---------------------------------------------------------------------"
     echo "$routing"
     echo "---------------------------------------------------------------------"
     echo "also it's recommended to update portal menu in ${parent_app}.UI.md.def on Base APP"
   else
-    echo "APP removal was done"
+    echo "APP{${app}} has been deleted"
   fi
   
 else
@@ -85,7 +85,7 @@ else
   rm -rf $ROOT/databox/${app}.UI.md.def
 
   # show meesage
-  echo "APP removal was done"
+  echo "APP{${app}} has been deleted"
 
 fi
 
