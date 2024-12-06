@@ -144,7 +144,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#meta-charactors" class="nav-link">Meta charactors</a>
+            <li class="nav-item" data-level="2"><a href="#meta-charactors-in-index" class="nav-link">Meta charactors in index</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -416,9 +416,9 @@ sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey datab
 echo "test2" &gt; /tmp/description
 sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey databox:$databox action:set key:description input_dir:/tmp id:$id
 </code></pre>
-<h2 id="meta-charactors">Meta charactors</h2>
-<h5 id="meta-in-index-file">Meta in index file</h5>
-<p>Some meta charactors are removed or changed to specific tags in the index to be searchable. index is just an index, data itself will not be impacted.</p>
+<h2 id="meta-charactors-in-index">Meta charactors in index</h2>
+<p>Some meta charactors are removed or changed to specific tags in the index to be searchable. index is just an index, data itself will not be impacted.
+It's required to use Meta charactors {%*%} when accessing index by executing DATA_shell with command: option.</p>
 <pre><code>` - delete
 :  - {%%%}
 &amp;  - {%%%%}
