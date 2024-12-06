@@ -580,11 +580,8 @@ tail -f /usr/local/small-shell/tmp/log/$session.log
 <p>You can export datas with csv format on Base APP table.
 <img alt="Screenshot" src="../img/export.png" /></p>
 <h2 id="delete-databox">Delete databox</h2>
-<p>Please delete databox with rm command. following is example of rm test.box</p>
-<pre><code>mkdir $HOME/backup
-databox=test.box
-cd /usr/local/small-shell/databox
-sudo rm -rf $databox
+<p>There is util script for deleting databox.</p>
+<pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_databox $databox
 </code></pre>
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Ubuntu 2X (recommnded), Debian 1X, macOS Monterey, CentOS 7, RHEL 8
