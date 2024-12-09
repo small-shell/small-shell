@@ -103,7 +103,7 @@ do
   fi 
 
   if [[ $param == value:* ]];then
-    value=`echo $param | $AWK -F":" '{print $2}'`
+    value=`echo $param | $SED "s/value://g"`
   fi 
 
   if [[ $param == app:* ]];then
