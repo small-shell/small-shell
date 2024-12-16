@@ -148,7 +148,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#hash-chain" class="nav-link">Hash chain</a>
+            <li class="nav-item" data-level="2"><a href="#hashchain" class="nav-link">Hashchain</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -437,10 +437,9 @@ $  - {%%%%%%%%%%%%%%}
 '  - {%%%%%%%%%%%%%%%%%}
 null - -
 </code></pre>
-<h2 id="hash-chain">Hash chain</h2>
-<p>Hash chain is created by que.sh which are used for making index and log and hash chain as well.
-see detail at que.sh codes. 
-Actually log.dump data will be hashed and it will be integrated to synthesis hash with previous updated keys.</p>
+<h2 id="hashchain">Hashchain</h2>
+<p>Hashchain is created by que.sh which make index and log and hashchain as well.
+log.dump data will be hashed and it will be integrated to synthesis hash with previous updated keys. following is code of que.sh</p>
 <pre><code>#view /usr/local/small-shell/sbin/que.sh
     log_dump=&quot;${timestamp} user:${user} primary_key:$primary_key_value updated_key:${updated_key} value:${value} #id:$id&quot;
 
@@ -454,8 +453,8 @@ Actually log.dump data will be hashed and it will be integrated to synthesis has
     echo &quot;`date +%Y-%m-%d` `date +%T` hash           :$hash&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
     echo &quot;`date +%Y-%m-%d` `date +%T` synthesis_hash :$synthesis_hash&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
 </code></pre>
-<h4 id="download-hash-chain">Download hash chain</h4>
-<p>Every user can download hash chain and verificate data integrity by themselves.
+<h4 id="download-hashchain">Download hashchain</h4>
+<p>Base APP user can download hash chain and verificate data integrity by themselves.
 <img alt="Screenshot" src="../img/hash_chain.png" /></p>
 <h2 id="meta-command">Meta command</h2>
 <p>"meta" command can be used for gathering meta data.</p>

@@ -148,7 +148,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#upgrade-small-shell" class="nav-link">Upgrade small-shell</a>
+            <li class="nav-item" data-level="2"><a href="#update-to-latest-version" class="nav-link">Update to latest version</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -318,16 +318,15 @@ SELINUX=permissive
 ##reoobt
 sudo reboot
 </code></pre>
-<h2 id="upgrade-small-shell">Upgrade small-shell</h2>
-<p>You can upgrade small-shell very easily. this is exmaples of upgrade command.</p>
+<h2 id="update-to-latest-version">Update to latest version</h2>
+<p>You can update small-shell very easily. this is exmaples of update procedure.</p>
 <pre><code>cd /var/tmp
 sudo git clone https://github.com/small-shell/small-shell.git
 sudo \cp -Rf small-shell/* /usr/local/small-shell/
 sudo rm -rf small-shell
 sudo /usr/local/small-shell/adm/gen #renew global.conf
 </code></pre>
-<p>Then please re-generate web app using gen command if needed.
-that's it.</p></div>
+<p>Then please re-generate web app using gen command if needed.</p></div>
             </div>
         </div>
 
