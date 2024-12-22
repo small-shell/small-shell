@@ -888,7 +888,7 @@ a {
 }
 
 .form-box a {
-  color: #3682ec;
+  color: #07ADAF;
 }
 
 .form-box a:hover {
