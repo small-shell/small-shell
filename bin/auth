@@ -38,7 +38,7 @@ if [ ! "$WHOAMI" = "small-shell" ];then
   exit 1
 fi
 
-# parsa input params
+# parse input params
 for param in `echo $@`
 do
 

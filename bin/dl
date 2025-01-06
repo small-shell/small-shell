@@ -34,7 +34,7 @@ done
 mkdir $ROOT/tmp/gen/$random
 tmp_dir="$ROOT/tmp/gen/$random"
 
-# parsa input params
+# parse input params
 for param in `echo $@`
 do
 

@@ -39,7 +39,7 @@ SCRIPT_DIR=`dirname $0`
 ALLOWED_COMMANDS="wc,grep,sort,uniq,tail,head,nl,awk,cut"
 
 
-# parsa input params
+# parse input params
 for param in `echo $@`
 do
 
