@@ -81,14 +81,14 @@ if [ "$sort_chk" ];then
 
 
   if [ "$sort_label" ];then
-    sort_col=`$META get.key:$databox{$sort_label}`
-    if [ ! "$sort_col" ];then
+    sort_key=`$META get.key:$databox{$sort_label}`
+    if [ ! "$sort_key" ];then
       sort_label="Failed to search ${sort_label}"
-      sort_col=`$META get.key:$databox{$default_key_label}`
+      sort_key=`$META get.key:$databox{$default_key_label}`
     fi
   else
     sort_label=" - "
-    sort_col=`$META get.key:$databox{$default_key_label}`
+    sort_key=`$META get.key:$databox{$default_key_label}`
   fi
 
   placeholder="Executed ${org_table_command}, you can clear the table by clicking -CLR"
@@ -170,8 +170,8 @@ fi
 if [ "$filter_table" ];then
   line_num=`$DATA_SHELL databox:$databox command:show_all[filter=${filter_table}][keys=$keys] format:none | wc -l | tr -d " "`
 
-elif [ "$sort_col" ];then
-  line_num=`$DATA_SHELL databox:$databox command:show_all[sort=${sort_option},${sort_col}] format:none | wc -l | tr -d " "`
+elif [ "$sort_key" ];then
+  line_num=`$DATA_SHELL databox:$databox command:show_all[sort=${sort_option},${sort_key}] format:none | wc -l | tr -d " "`
 
 else
   line_num=`$META get.num:$databox`
@@ -195,9 +195,9 @@ if [ "$filter_table" ];then
   $DATA_SHELL databox:$databox \
   command:show_all[line=$line_start-$line_end][keys=$keys][filter=${filter_table}] > %%www/tmp/$session/table &
 
-elif [ "$sort_col" ];then
+elif [ "$sort_key" ];then
   $DATA_SHELL databox:$databox \
-  command:show_all[line=$line_start-$line_end][keys=$keys][sort=${sort_option},${sort_col}] > %%www/tmp/$session/table &
+  command:show_all[line=$line_start-$line_end][keys=$keys][sort=${sort_option},${sort_key}] > %%www/tmp/$session/table &
 else
   $DATA_SHELL databox:$databox command:show_all[line=$line_start-$line_end][keys=$keys] > %%www/tmp/$session/table &
 fi
@@ -243,16 +243,16 @@ if [ ! "$filter_table" ];then
   filter_table="-"
 fi
 
-if [ ! "$sort_col" ];then
+if [ ! "$sort_key" ];then
   sort_command="-"
 else
   sort_command="sort option:$sort_option col:$sort_label"
 fi
 
 if [ "$line_num" = 0 ];then
-  if [ "$err_chk" = "" -a "$filter_table" = "-" -a ! "$sort_col" ];then
+  if [ "$err_chk" = "" -a "$filter_table" = "-" -a ! "$sort_key" ];then
     echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
-  elif [ "$sort_col" ];then
+  elif [ "$sort_key" ];then
     echo "<h4>= SORT OPTION FAILURE</h4>" >> %%www/tmp/$session/table
   else
     echo "<h4>= NO DATA</h4>" >> %%www/tmp/$session/table
