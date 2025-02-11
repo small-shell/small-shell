@@ -12,6 +12,7 @@ pin=$3
 tmp=%%www/tmp/${session}
 META="${small_shell_path}/bin/meta"
 DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:$app"
+DL="${small_shell_path}/bin/dl session:$session pin:$pin app:$app"
 
 # load mark down definition
 databox=${app}.UI.md.def
@@ -30,7 +31,21 @@ while read line
 do
    # html tag
    if [[ "$line" == *\<*\> ]];then
-     echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" >> ${tmp}/description.tmp
+
+     # dump image
+     if [[ "$line" == *"<img src=\"../images"* ]];then
+
+       img_id=`echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g"`
+       file_type=`$DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
+                 | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g"`
+       echo "$line" | $SED "s#../images/${img_id}#../images/${img_id}.${file_type}#g" >> ${tmp}/description.tmp
+       $DL databox:images.db id:${img_id} remote_addr:localhost > %%www/html/images/${img_id}.${file_type}
+
+     else
+       # handle as normal HTML tag
+       echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" >> ${tmp}/description.tmp
+
+     fi
 
    # code
    elif [[ "$line" == "%code_block%" ]];then 
@@ -238,24 +253,23 @@ else
 fi
 
 # handle logo
-logo=`$META chk.null:${databox}{$id} | grep logo | $AWK -F ":" '{print $2}'`
-if [ "$logo" -eq 1 ];then
-  filename=`$DATA_SHELL databox:${databox} action:get id:$id key:logo format:none | $SED "s/logo://g" | $AWK '{print $1}'`
-  if [ "$filename" ];then
-    # dump
-    ${small_shell_path}/bin/dl databox:${databox} id:$id session:$session pin:$pin app:$app > %%www/html/${filename}
-    cat ${tmp}/leftnav.tmp | grep -v "<p>HOME</p>" > ${tmp}/leftnav.tmp.1
-    echo "<a href=\"#HOME\"><img src=\"../${filename}\" width=\"75%\"></a>" > ${tmp}/logo.tmp
+logo_img=`$DATA_SHELL databox:${databox} action:get id:$id key:logo format:none | $SED "s/logo://g"`
+if [ "$logo_img" ];then
+  logo_id=`echo "$logo_img" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g"`
+  file_type=`$DATA_SHELL databox:images.db id:${logo_id} remote_addr:localhost key:image action:get format:none \
+             | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g"`
 
-    if [ ! -s ${tmp}/leftnav.tmp.1 ];then
-      cat ${tmp}/logo.tmp > ${tmp}/leftnav.tmp.2
-    else
-      $SED -e "1i `cat ${tmp}/logo.tmp`" ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp.2
-    fi
-    cat ${tmp}/leftnav.tmp.2 > ${tmp}/leftnav.tmp
+  $DL databox:images.db id:${logo_id} remote_addr:localhost > %%www/html/images/${logo_id}.${file_type}
+  cat ${tmp}/leftnav.tmp | grep -v "<p>HOME</p>" > ${tmp}/leftnav.tmp.1
+  echo "<a href=\"#HOME\"><img src=\"../images/${logo_id}.${file_type}\" width=\"75%\"></a>" > ${tmp}/logo.tmp
+
+  if [ ! -s ${tmp}/leftnav.tmp.1 ];then
+    cat ${tmp}/logo.tmp > ${tmp}/leftnav.tmp.2
+  else
+    $SED -e "1i `cat ${tmp}/logo.tmp`" ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp.2
   fi
-
-fi
+  cat ${tmp}/leftnav.tmp.2 > ${tmp}/leftnav.tmp
+fi 
 
 # handle footer
 footer=`$META chk.null:${databox}{$id} | grep footer | $AWK -F ":" '{print $2}'`

@@ -1,0 +1,46 @@
+#---------------------------------------------------------------
+# db definition
+#---------------------------------------------------------------
+
+# databox
+databox="images.db"
+
+# col1
+#-------------------------------------------
+primary_key="hashid"
+primary_key_label=""
+#-------------------------------------------
+
++addcol
+# col2
+#-------------------------------------------
+col2_key_name="image"
+col2_key_label="image"
+col2_type="file"
+
+# only for select, checkbox
+col2_key_params=""
+
+# only for pdls
+col2_primary_databox=""
+
+# required
+col2_required="no"
+#-------------------------------------------
+
++addcol
+# col3
+#-------------------------------------------
+col3_key_name="description"
+col3_key_label="Description"
+col3_type="text"
+
+# only for select, checkbox
+col3_key_params=""
+
+# only for pdls
+col3_primary_databox=""
+
+# required
+col3_required="no"
+#-------------------------------------------

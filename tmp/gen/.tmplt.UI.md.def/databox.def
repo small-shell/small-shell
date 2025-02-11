@@ -14,9 +14,9 @@ primary_key_label=""
 +addcol
 # col2
 #-------------------------------------------
-col2_key_name="logo"
-col2_key_label="logo"
-col2_type="file"
+col2_key_name="description"
+col2_key_label="Description"
+col2_type="textarea"
 
 # only for select, checkbox
 col2_key_params=""
@@ -24,15 +24,15 @@ col2_key_params=""
 # only for pdls
 col2_primary_databox=""
 
-# required
-col2_required="no"
+# required option
+col2_required="yes"
 #-------------------------------------------
 
 +addcol
 # col3
 #-------------------------------------------
-col3_key_name="description"
-col3_key_label="Description"
+col3_key_name="righth"
+col3_key_label="YAML for right menu of header"
 col3_type="textarea"
 
 # only for select, checkbox
@@ -42,14 +42,14 @@ col3_key_params=""
 col3_primary_databox=""
 
 # required option
-col3_required="yes"
+col3_required="no"
 #-------------------------------------------
 
 +addcol
 # col4
 #-------------------------------------------
-col4_key_name="righth"
-col4_key_label="YAML for right menu of header"
+col4_key_name="lefth"
+col4_key_label="YAML for left menu of header"
 col4_type="textarea"
 
 # only for select, checkbox
@@ -65,9 +65,9 @@ col4_required="no"
 +addcol
 # col5
 #-------------------------------------------
-col5_key_name="lefth"
-col5_key_label="YAML for left menu of header"
-col5_type="textarea"
+col5_key_name="logo"
+col5_key_label="Logo #copy &lt;img&gt; tag from image.db"
+col5_type="text"
 
 # only for select, checkbox
 col5_key_params=""

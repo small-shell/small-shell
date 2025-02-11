@@ -55,8 +55,9 @@ if [ "$subapp" ];then
   fi
 fi
 
-# define contents type except statistics file or graph
+# define contents type except file or graph
 if [[ ! "$req" == *stats && ! "$req" == *file ]];then
+
   echo "Content-Type: text/html"
   echo ""
 fi
@@ -65,6 +66,7 @@ fi
 if [ "$auth" = "required" ];then
   # session verification
   if [[ "$req" == *log_viewer || "$req" == *csv || "$req" == *hash || "$req" == *stats || "$req" == *file ]];then
+
     session_update=no
 
     # session check

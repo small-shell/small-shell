@@ -2791,7 +2791,15 @@ if [ "$param" = "-app" ];then
 
         fi
 
-        # create UI.md.def databox
+        # create databox for images and UI.md.def
+        if [ ! -d $ROOT/databox/images.db ];then
+          $ROOT/util/scripts/bat_gen.sh $ROOT/tmp/gen/.images.db/databox.def
+          if [ ! -d $www/html/images ];then
+            mkdir $www/html/images
+            chown $cgiusr:$cgiusr $www/html/images
+          fi 
+        fi
+
         cat $ROOT/tmp/gen/.tmplt.UI.md.def/databox.def | $SED "s/%%app/$app/g" > $tmp_dir/${app}.tmplt.UI.md.def
         $ROOT/util/scripts/bat_gen.sh $tmp_dir/${app}.tmplt.UI.md.def
         mkdir $tmp_dir/data

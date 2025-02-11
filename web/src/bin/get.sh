@@ -159,8 +159,18 @@ if [ "$master" -a "$permission" = "rw" ];then
   fi
 fi
 
+# overwritten by markdown logic
+if [[ $databox == images.db && ! "$id" == "new" ]];then
+  app=`echo $databox | $SED "s/.image//g"`
+  if [ "$permission" = "rw" ];then
+    view="get_rw_incf_image.html.def"
+  else
+    view="get_ro_incf_image.html.def"
+  fi
+fi
+
 # set class and text row for markdown 
-if [[ $databox == *UI.md.def ]]; then
+if [[ $databox == *UI.md.def ]];then
    form_class=md-form-box
    text_area_row=14
 else
@@ -180,6 +190,7 @@ cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
 | $SED "s/%%databox/$databox/g" \
 | $SED "s/%%dataset//g"\
 | $SED "s/%%id/$id/g"\
+| $SED "s/%%app/$app/g"\
 | $SED "s/%%session/$session/g"\
 | $SED "s/%%pin/$pin/g"\
 | $SED "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \

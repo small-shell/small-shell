@@ -1,6 +1,7 @@
 const cluster = require('cluster');
 const numProcess = 8;
 const process = require('process');
+const mime = require('mime-types');
   
 if (%%cluster) {
   console.log(`Primary ${process.pid} is running`);
@@ -58,17 +59,17 @@ if (%%cluster) {
     } else {
 
       console.log( time_stamp + remote_addr + ' requested ' + params );
-      if ( query_string.indexOf('req=get&filename=') != -1) {
-        var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,3d",{ maxBuffer: 1024000000 });
+      if ( query_string.indexOf('req=get&filename=') != -1 ) {
+        var content = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,3d",{ maxBuffer: 1024000000 });
         // file contents with Content-Disposition
         res.set({'Content-Disposition': `attachment; filename=${req.query.filename}`})
         res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
-        res.end(html);
+        res.end(content);
       } else {
         // handle general request 
-        var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
+        var content = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
         res.writeHead(200, {'Content-Type' : 'text/html'});
-        res.end(html);
+        res.end(content);
 
       }
     }
@@ -99,29 +100,30 @@ if (%%cluster) {
     }
   
     if( fs.existsSync( www + "/cgi-bin/" + command ) ){
-      if ( query_string.indexOf('req=file') != -1) {
-        var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,3d",{ maxBuffer: 1024000000 });
+      if ( query_string.indexOf('req=file') != -1 ) {
+        var content = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,3d",{ maxBuffer: 1024000000 });
         res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
-        res.end(html);
+        res.end(content);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
         console.log( time_stamp + remote_addr + ' requested ' + params );
-  
+
       } else if( query_string.indexOf('type=graph') != -1) {
         // handle graph contents
-        var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| /usr/bin/sed -e 1,2d" ,{ maxBuffer: 1024000000 });
+        var graph = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,2d" ,{ maxBuffer: 1024000000 });
         res.writeHead(200, {'Content-Type' : 'image/png'});
-        res.end(html);
+        res.end(graph);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
         console.log( time_stamp + remote_addr + ' requested ' + params );
   
       } else {
-        // normal contents
+        // handle general request
         var html = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/" + command + "| %%sed -e 1,2d",{ maxBuffer: 1024000000 }).toString();
         res.writeHead(200, {'Content-Type' : 'text/html'});
         res.end(html);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
         console.log( time_stamp + remote_addr + ' requested ' + params );
       }
+
     } else {
       res.end("Oops wrong request");
       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
@@ -213,8 +215,10 @@ if (%%cluster) {
     if( fs.existsSync( path ) ){
       fs.stat( path, function(er,stat)  {
         if ( stat.isFile() ) {
-          var html = execSync("cat " + path ,{ maxBuffer: 1024000000 });
-          res.end(html);
+          var content = execSync("dd if=" + path + " 2>/dev/null" ,{ maxBuffer: 1024000000 });
+          const mimeType = mime.lookup( path );
+          res.writeHead(200, {'Content-Type' : mimeType});
+          res.end(content);
           var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
           console.log( time_stamp + remote_addr + ' requested ' + uri );
         } else {
