@@ -35,6 +35,7 @@ do
      # dump image
      if [[ "$line" == *"<img src=\"../images"* ]];then
 
+       echo "aaa" > /var/tmp/md_parse
        img_id=`echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g"`
        file_type=`$DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
                  | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g"`
@@ -131,12 +132,22 @@ do
      echo "$line" | $SED "s/\[/<button>/1" | $SED "s/\]/<\/button>/1" >> ${tmp}/description.tmp
 
    # bold 
+   elif [[ "$line" == *\*\**\*\** ]];then
+     new_line=`echo "$line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1"`
+
+     while [[ "$new_line" == *\*\** ]]
+     do
+       new_line=`echo "$new_line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1"`
+     done
+     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/description.tmp
+
+   # italic
    elif [[ "$line" == *\**\** ]];then
-     new_line=`echo "$line" | $SED "s/\*/<b>/1" | $SED "s/\*/<\/b>/1"` 
+     new_line=`echo "$line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1"`
 
      while [[ "$new_line" == *\** ]]
      do
-       new_line=`echo "$new_line" | $SED "s/\*/<b>/1" | $SED "s/\*/<\/b>/1"` 
+       new_line=`echo "$new_line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1"` 
      done
      echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/description.tmp
 
