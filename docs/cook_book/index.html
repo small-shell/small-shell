@@ -838,10 +838,6 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <p class="admonition-title">Note</p>
 <p>A record of the domain must be set on DNS server beforehand. and it must be global IP that can be reachable from Let's encrypt server </p>
 </div>
-<h4 id="install-nginx-for-reverse-proxy">Install nginx for reverse proxy</h4>
-<p>It's required to install nginx package with no configuration to use as reverse proxy later.</p>
-<pre><code>sudo apt install nginx
-</code></pre>
 <h4 id="generate-base-app">Generate Base APP</h4>
 <p>Base APP that will use small-shell WEB srv should be launched as http server not https so far. FQDN must be same as A record that you set beforehand on your DNS server. </p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
@@ -884,7 +880,7 @@ EFF news, campaigns, and ways to support digital freedom.
 Account registered.
 Requesting a certificate for ***.com
 </code></pre>
-<p>If everything is no problem, https will be enabled automatically by deploy.sh. by the way configure.sh will set up reverse proxy using nginx package.</p>
+<p>If everything is no problem, https will be enabled automatically by deploy.sh. </p>
 <h4 id="add-sudoer">Add Sudoer</h4>
 <p>You must add following setting on sudoers to execute SSL refresh job regularly.</p>
 <pre><code>$ sudo visudo
@@ -914,11 +910,12 @@ And load balancing logic must be just TCP port proxy (not terminate SSL/TLS) bec
              |-  Replica hosts &gt; it will be redirected to real server FQDN of master host
 </code></pre>
 <h4 id="setup-environment">Setup environment</h4>
-<p>Before build replica, you need to setup Base APP using small-shell WEB srv on both master and replica server. when input server FQDN, please input real server FQDN (I mean not load balancing address) and protocol should be http so far not https.</p>
+<p>Before build replica, you need to setup Base APP using small-shell WEB srv on both master and replica server. when input server FQDN, please input real server FQDN (I mean not load balancing address) and protocol should be http so far not https if you will use ssl auto script later.</p>
 <pre><code>@master
 sudo apt install lsyncd
 sudo mkdir /etc/lsyncd
 sudo apt install nginx
+sudo /usr/local/small-shell/adm/gen -databox # need to create dsataStore first
 sudo /usr/local/small-shell/adm/gen -app #Base APP (required), Scratch APP (optional)
 
 @replica
@@ -974,6 +971,7 @@ chmod 755 *.sh
 sudo ./configure.sh
 sudo ./deploy.sh
 </code></pre>
+<p>If everything is no problem, https will be enabled automatically by deploy.sh. by the way configure.sh will set up reverse proxy using nginx package for flexible certification management in clustering environment. small-shell default web srv port will be changed to 8080 port.</p>
 <h4 id="create-users-for-apps">Create users for APPs</h4>
 <p>Once replication and SSL is ready, please create users for APPs.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$user #Base APP 
