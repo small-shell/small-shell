@@ -692,6 +692,9 @@ primary databox: none
 please check the markdown grammer <a href="https://21it.org/markdown.html">here</a> if needed. 
 also you can update "menu" "logo" and "footer" on the same admin page. 
 <img alt="Screenshot" src="../img/update_book_search_portal.png" /></p>
+<h4 id="use-imagesdb">Use images.db</h4>
+<p>You can upload logo or images to images.db. and then you can get link of img tag that can be utilized on description or logo field on $app.UI.md.def page.</p>
+<p><img alt="Screenshot" src="../img/scratch_app_logo.png" /></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
 <p>Another way of updating portal is just editting hml.def directly {$APP_main.html.def} </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
@@ -813,9 +816,9 @@ also you can update "menu" "logo" and "footer" on the same admin page.
 .main .flex-table-header
 #----------------------------------------#
 </code></pre>
-<h3 id="distribute-the-site-to-static-directory">Distribute the site to static directory</h3>
-<p>You can export main page as static stie. then please copy the html to /var/www/html or other static directory.</p>
-<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $APP $EXPORT_DIR
+<h3 id="distribute-app-as-static-site">Distribute APP as static site</h3>
+<p>You can export main page as static site. </p>
+<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $APP
 </code></pre>
 <h2 id="automate-ssl-cert-deployment">Automate SSL cert deployment</h2>
 <p>In this cook, you can learn how to automate cert deployment by using Let's Encrypt as ssl certificate provider. please install certbot first.</p>
