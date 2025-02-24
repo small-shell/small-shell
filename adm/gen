@@ -3178,69 +3178,51 @@ if [ "$param" = "-job" ];then
     echo -n "Exec command or batch script: "
     read exec_command
 
-    if [ "$exec_command" ];then
-      solo_command=`echo $exec_command | $AWK '{print $1}'`
-
-      if [ ! -f "$solo_command" -a -f ${ROOT}/util/scripts/${solo_command} ];then
-        solo_command="${ROOT}/util/scripts/${solo_command}"
-        command_path=`echo $ROOT/util/scripts/ | $SED "s/\//{%%%%%%%}/g"`
-        exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
-      fi
-
-      if [ ! -f "$solo_command" -a -f /usr/bin/${solo_command} ];then
-        solo_command="/usr/bin/${solo_command}"
-        command_path=`echo /usr/bin/ | $SED "s/\//{%%%%%%%}/g"`
-        exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
-      fi
-
-      if [ ! -f "$solo_command" -a -f /bin/${solo_command} ];then
-        solo_command="/bin/${solo_command}"
-        command_path=`echo /bin/ | $SED "s/\//{%%%%%%%}/g"`
-        exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
-      fi
-
-      exec_chk=`sudo -u small-shell file $solo_command | grep -i -e executable -e gnu`
-
-    fi
-
+    
     while [ ! "$exec_command" -o ! -x "$solo_command" -o ! "$exec_chk" ]
     do
-      if [ ! "$exec_command" ];then
-        echo -n "please input exec command or batch script: "
-      elif [  ! -x "$solo_command" ];then
-        echo "seems $solo_command is not executable, please input full path for the command"
-        echo -n "please input exec command or batch script: "
-      elif [ ! "$exec_chk" ];then
-        echo "seems $solo_command is not executable by small-shell"
-        echo -n "please input exec command or batch script: "
-      fi
+      solo_command=`echo $exec_command | $AWK '{print $1}'`
+      basename_chk=`echo $exec_command | $AWK '{print $1}' | xargs basename -a | grep $solo_command`
 
-      read exec_command
+      if [ "$basename_chk" ];then
 
-      if [ "$exec_command" ];then
-        solo_command=`echo $exec_command | $AWK '{print $1}'`
-        if [ ! -f "$solo_command" -a -f ${ROOT}/util/scripts/${solo_command} ];then
+        if [ -f ${ROOT}/util/scripts/${solo_command} ];then
           solo_command="${ROOT}/util/scripts/${solo_command}"
           command_path=`echo $ROOT/util/scripts/ | $SED "s/\//{%%%%%%%}/g"`
           exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
-        fi
 
-        if [ ! -f "$solo_command" -a -f /usr/bin/${solo_command} ];then
+        elif [ -f /usr/bin/${solo_command} ];then
           solo_command="/usr/bin/${solo_command}"
           command_path=`echo /usr/bin/ | $SED "s/\//{%%%%%%%}/g"`
           exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
-        fi
 
-        if [ ! -f "$solo_command" -a -f /bin/${solo_command} ];then
+        elif [ -f /bin/${solo_command} ];then
           solo_command="/bin/${solo_command}"
           command_path=`echo /bin/ | $SED "s/\//{%%%%%%%}/g"`
           exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
+
+        else
+          solo_command="`pwd`/${solo_command}"
+          exec_command="`pwd`/$exec_command"
         fi
 
         exec_chk=`sudo -u small-shell file $solo_command | grep -i -e executable -e gnu`
+      fi
 
+      if [ ! "$exec_command" ];then
+        echo -n "please input exec command or batch script: "
+        read exec_command
+      elif [  ! -x "$solo_command" ];then
+        echo "seems $solo_command is not executable, please input full path for the command"
+        echo -n "please input exec command or batch script: "
+        read exec_command
+      elif [ ! "$exec_chk" ];then
+        echo "seems $solo_command is not executable by small-shell"
+        echo -n "please input exec command or batch script: "
+        read exec_command
       fi
     done
+
     echo "exec_command=\"`echo $exec_command | $SED "s/'/{%%%%%%}/g"\
     | php -r "echo addslashes(file_get_contents('php://stdin'));"\
     | $SED "s/{%%%%%%}/'/g"`\"" >> $tmp_dir/${job}.def
