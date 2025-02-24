@@ -560,8 +560,7 @@ if [ "$param" = "reg.master" ];then
   done
 
   # update env
-  cluster_server=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep cluster_server \
-  | $SED "s/cluster_server=//g" | $SED "s/\"//g"` 
+  cluster_server=`echo $cluster_base_url | $SED -r "s#http(.*)://##g" | $AWK -F "/" '{print $1}' | $SED "s/\"//g"`
   cat $ROOT/web/base | grep -v "master=\"" | grep -v "cluster_server=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
   echo "master=\"$master\"" >>  ${tmp_dir}/base
   echo "cluster_server=\"$cluster_server\"" >>  ${tmp_dir}/base
