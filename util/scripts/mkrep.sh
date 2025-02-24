@@ -177,8 +177,8 @@ if [ "$param" = "reg.replica" ];then
     if [ ! "$ls_chk" = "$ROOT/global.conf" ];then
       echo "--------------------------------------------Action required---------------------------------------------------"
       echo "Master public key seems not copied to $replica yet."
-      echo "please put public key by executing \"sudo $ROOT/util/scripts/mkrep.sh reg.master\" on replica server for success of connection test."
-      echo "by the way, this script will retry to connect replica every 30 sec. for the interuption, just execute ctrl + c"
+      echo "Please put public key by executing \"sudo $ROOT/util/scripts/mkrep.sh reg.master\" on replica server for success of connection test."
+      echo "By the way, this script will retry to connect replica every 30 sec. for the interuption, just execute ctrl + c"
       echo "---------------------------------------------------------------------------------------------------------------"
       echo "Following is the public key to be copied to replica server."
       echo "---------------------------------------------------------------------------------------------------------------"
@@ -498,8 +498,8 @@ if [ "$param" = "reg.master" ];then
     if [ ! "$ls_chk" = "/usr/local/small-shell/global.conf" ];then
       echo "--------------------------------------------Action required---------------------------------------------------"
       echo "Replica server key seems not copied to $new_master yet." 
-      echo "please execute \"sudo $ROOT/util/scripts/mkrep.sh reg.replica\" on master server for success of connection test."
-      echo "by the way, this script will retry to connect master every 30 sec. for the interuption, just execute ctrl + c"
+      echo "Please execute \"sudo $ROOT/util/scripts/mkrep.sh reg.replica\" on master server for success of connection test."
+      echo "By the way, this script will retry to connect master every 30 sec. for the interuption, just execute ctrl + c"
       echo "---------------------------------------------------------------------------------------------------------------"
       echo "Following is the public key to be copied to master server."
       echo "---------------------------------------------------------------------------------------------------------------"
