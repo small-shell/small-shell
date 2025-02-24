@@ -180,7 +180,7 @@ if [ "$param" = "reg.replica" ];then
       echo "please put public key by executing \"sudo $ROOT/util/scripts/mkrep.sh reg.master\" on replica server for success of connection test."
       echo "by the way, this script will retry to connect replica every 30 sec. for the interuption, just execute ctrl + c"
       echo "---------------------------------------------------------------------------------------------------------------"
-      echo "this is public key to be copied"
+      echo "Following is public key to be copied to replica server."
       echo "---------------------------------------------------------------------------------------------------------------"
       cat /home/small-shell/.ssh/id_rsa.pub
       echo "---------------------------------------------------------------------------------------------------------------"
@@ -501,7 +501,7 @@ if [ "$param" = "reg.master" ];then
       echo "please execute \"sudo $ROOT/util/scripts/mkrep.sh reg.replica\" on master server for success of connection test."
       echo "by the way, this script will retry to connect master every 30 sec. for the interuption, just execute ctrl + c"
       echo "---------------------------------------------------------------------------------------------------------------"
-      echo "this is public key to be copied"
+      echo "Following is public key to be copied to master server."
       echo "---------------------------------------------------------------------------------------------------------------"
       cat /home/small-shell/.ssh/id_rsa.pub
       echo "---------------------------------------------------------------------------------------------------------------"
