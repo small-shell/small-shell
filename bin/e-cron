@@ -278,6 +278,12 @@ if [[ "$action" == disable* ]];then
     exit 1
   fi
 
+  if [ ! -f $ROOT/util/e-cron/def/${job}.def ];then
+    echo "error: there is no job{${job}}"
+    rm -rf $tmp_dir
+    exit 1
+  fi
+
   crontab -l > $tmp_dir/.crontab_tmp
   chmod 766 $tmp_dir/.crontab_tmp
   crontab_chk=`grep " ${job} " $tmp_dir/.crontab_tmp`
@@ -302,7 +308,7 @@ fi
 if [[ "$action" == exec* ]];then
 
   if [ ! -f $ROOT/util/e-cron/def/${job}.def ];then
-    echo "error: it seems there is no job ${job}"
+    echo "error: there is no job{${job}}"
     rm -rf $tmp_dir
     exit 1
   fi
