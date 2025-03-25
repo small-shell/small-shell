@@ -3,10 +3,10 @@
 #----------------------------------------------------------
 # PARAM FOR GEN
 #----------------------------------------------------------
-# -databox # generate data box
-# -addcol  # add column to data box 
-# -delcol  # delete column of data box 
-# -app     # generate app
+# -databox # generate new DataBox
+# -addcol  # add column to existing DataBox
+# -delcol  # delete column from existing DataBox
+# -app     # generate new app
 # -job     # generate automate shell
 #----------------------------------------------------------
 
@@ -403,7 +403,7 @@ if [ "$param" = "-databox" ];then
   echo "option=\"required\"" >> $tmp_dir/col1
 
   if [ ! "$primary_key" = "hashid" ];then
-    echo -n "Do you want to add column to dataset? (yes | no): "
+    echo -n "Add more column to the databox? (yes | no): "
     read add_col_answer 
   else
     add_col_answer=yes
@@ -419,7 +419,7 @@ if [ "$param" = "-databox" ];then
       exit 1
     fi
 
-    echo -n "Do you want to add column to dataset? (yes | no): "
+    echo -n "Add more column to the databox? (yes | no): "
 
     read add_col_answer 
   done
@@ -636,7 +636,7 @@ if [ "$param" = "-databox" ];then
     echo "option=\"$option\"" >> $tmp_dir/col${count}
     
 
-    echo -n "Do you want to add more column to dataset? (yes | no) : "
+    echo -n "Add more column to the databox? (yes | no) : "
     read add_col_answer 
     while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
     do
@@ -648,7 +648,7 @@ if [ "$param" = "-databox" ];then
         exit 1
       fi
 
-      echo -n "Do you want to add more column to dataset? (yes | no): "
+      echo -n "Add more column to the databox? (yes | no): "
       read add_col_answer 
     done
       
@@ -689,7 +689,7 @@ if [ "$param" = "-databox" ];then
       exit 1
     fi
 
-    echo -n "Is it OK to generate Databox? (yes | no): "
+    echo -n "Is it OK to generate databox? (yes | no): "
     read fin_answer
   done
 
@@ -967,12 +967,12 @@ if [ "$param" = "-addcol" ];then
 
     echo "option=\"$option\"" >> $tmp_dir/col${count}
 
-    echo -n "Do you want to add more column to dataset? (yes | no) : "
+    echo -n "Add more column to the databox? (yes | no) : "
     read add_col_answer
     while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Do you want to add more column to dataset? (yes | no): "
+      echo -n "Add more column to the databox? (yes | no): "
       read add_col_answer
     done
     ((count += 1))
@@ -1003,7 +1003,7 @@ if [ "$param" = "-addcol" ];then
   while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
   do
     echo "please input yes or no"
-    echo -n "Is it OK to add column to the Databox? (yes | no): "
+    echo -n "Is it OK to add column to the databox? (yes | no): "
     read fin_answer
   done
 
@@ -1132,12 +1132,12 @@ if [ "$param" = "-delcol" ];then
     # dump del_key
     touch $tmp_dir/$del_key
  
-    echo -n "Do you want to delete more column from dataset? (yes | no) : "
+    echo -n "Delete more column from the databox? (yes | no) : "
     read del_col_answer
     while [ ! "$del_col_answer" = "yes" -a ! "$del_col_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Do you want to delete more column from dataset? (yes | no): "
+      echo -n "Delete more column from the databox? (yes | no): "
       read del_col_answer
     done
 
