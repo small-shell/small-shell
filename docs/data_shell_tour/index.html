@@ -187,14 +187,16 @@
 <h1 id="data-shell">DATA Shell</h1>
 <p>"DATA shell" manage "databox" that is mainly designed to be used by WEB APP of APP shell. DATA shell is interface of manage databox and it can ensure data integrity utilizing hash chain.</p>
 <h2 id="key-value-store">Key value store</h2>
-<p>Data will be saved in databox as key value type of data sets. like this image.</p>
-<h4 id="image-of-inside-databox">Image of inside databox</h4>
-<pre><code>dataset1:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }
+<p>Data will be saved in databox as key value type of data sets like this. view of databox will be table type on WEB APP.</p>
+<pre><code># DataboxA
+---------------------------------------------------------------------------------------------
+dataset1:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }
 dataset2:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value } 
 dataset3:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value } 
 dataset4:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value } 
 ..  
 datasetX:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }
+----------------------------------------------------------------------------------------------
 </code></pre>
 <h2 id="feature">Feature</h2>
 <p>small-shell databox could have both feature of relational database and key value storage. if you want to use databox as master database, please set specific name to primary key. if it's just used as flat data store, please set hashid to primary key. see detail as below. </p>
@@ -204,7 +206,7 @@ datasetX:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(co
 Databox Name: item.db 
 primary_key(col1): item_name
 primary_key label: Item Name
-Do you want to add column to dataset? (yes | no): yes
+Add more column to the databox? (yes | no): yes
 key(col2) name: description
 key(col2) label: Description
 Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): text
