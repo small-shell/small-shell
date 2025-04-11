@@ -5,8 +5,8 @@ body {
   font-size: 94%;
   height: 100%;
   margin: 0;
-  background: #fffafa;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Base CSS */
@@ -123,6 +123,7 @@ a {
 
 .right-header nav {
   background: #000011;
+  min-width: 220px;
   opacity: 0.8;
   position: absolute;
   z-index: 2;
@@ -332,7 +333,7 @@ a {
   background: #07ADAE;
 }   
   
-@media screen and (min-width: 641px){
+@media screen and (min-width: 1025px){
 
   .main {
    padding-top: 24px;
@@ -361,7 +362,7 @@ a {
   }
 }
 
-@media screen and (max-width: 640px){
+@media screen and (max-width: 1024px){
 
  .main {
    padding: 12px 12px;
@@ -484,7 +485,7 @@ a {
   background: #07ADAE;
 }   
   
-@media screen and (min-width: 641px) {
+@media screen and (min-width: 1025px) {
   .left-nav {
    top: 20px;
    position: sticky;
@@ -512,7 +513,7 @@ a {
 
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 1024px) {
   .left-nav {
    display:none;
   }
@@ -880,7 +881,6 @@ a {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    min-width :220px;
     padding-top: 8px;
     padding-bottom: 8px;
 }
@@ -1456,7 +1456,6 @@ media screen and (min-width: 641px){
 }
 
 @media screen and (max-width: 640px) {
-
  .footer {
   color: #696969;
   padding-top: 82px;
@@ -1466,7 +1465,6 @@ media screen and (min-width: 641px){
   bottom: 0;
   width: 100%;
  }
-
 }
 
 @media screen and (min-width: 641px) {
@@ -1474,12 +1472,10 @@ media screen and (min-width: 641px){
   color: #696969;
   padding-top: 140px;
   padding-bottom: 12px;
-  padding-right: 182px;
   font-weight: 300;
   font-size: 80%;
   text-align: right;
   bottom: 0;
   width: 100%;
  }
-
 }
