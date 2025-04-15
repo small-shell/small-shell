@@ -428,6 +428,7 @@ if [ "$param" = "-databox" ];then
 
   while [ "$add_col_answer" = "yes" ]
   do
+  clear
   echo -n "key(col${count}) name: "
   read add_key 
   reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
@@ -764,6 +765,7 @@ if [ "$param" = "-addcol" ];then
 
   while [ "$add_col_answer" = "yes" ]
   do
+    clear
     echo -n "key(col${count}) name: "
     read add_key
     reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
@@ -1063,6 +1065,7 @@ if [ "$param" = "-delcol" ];then
 
   while [ "$del_col_answer" = "yes" ]
   do
+    clear
     echo -n "column's key name: "
     read del_key
 
