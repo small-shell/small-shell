@@ -148,6 +148,16 @@ elif [ "$form_chk" = "multipart" ];then
   fi
 fi
 
+# overwritten by markdown logic
+if [[ $databox == images.db && ! "$id" == "new" ]];then
+  app=`echo $databox | $SED "s/.image//g"`
+  if [ "$permission" = "rw" ];then
+    view="get_rw_incf_image.html.def"
+  else
+    view="get_ro_incf_image.html.def"
+  fi 
+fi  
+
 # overwritten by clustering logic
 if [ "$master" -a "$permission" = "rw" ];then
   if [ "$redirect" = "no" ];then
@@ -156,16 +166,6 @@ if [ "$master" -a "$permission" = "rw" ];then
     else
       view="get_rw_master_failed.html.def"
     fi
-  fi
-fi
-
-# overwritten by markdown logic
-if [[ $databox == images.db && ! "$id" == "new" ]];then
-  app=`echo $databox | $SED "s/.image//g"`
-  if [ "$permission" = "rw" ];then
-    view="get_rw_incf_image.html.def"
-  else
-    view="get_ro_incf_image.html.def"
   fi
 fi
 
