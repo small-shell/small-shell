@@ -82,7 +82,7 @@ do
    elif [[ "$line" == {%%%}{%%%}{%%%}* ]];then 
      if [ ! "$extension_code" ];then
        extension_code=yes
-       if [[ "$line" == *Warning* ]];then 
+       if [[ "$line" == *Warning*  || "$line" == *warning* ]];then
          echo "<pre class=\"warning\"><b>Warning</b>" >> ${tmp}/description.tmp
        else
          echo "<pre class=\"note\"><b>Note</b>" >> ${tmp}/description.tmp
