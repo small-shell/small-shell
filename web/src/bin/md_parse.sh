@@ -22,7 +22,7 @@ $DATA_SHELL databox:${databox} action:get id:$id key:description format:none \
 source=${tmp}/description.md
 
 # parse markdown
-cat $source | $SED "s/^:::/{%%%}{%%%}{%%%}/g" | $SED "s/\`\`\`\`/%code_block%/g" \
+cat $source | $SED "s/^:::/{%%%}{%%%}{%%%}/g" | $SED "s/\`\`\`\`/%code_block%/g" | $SED "s/\`\`\`/%code_block%/g" \
 | $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" > ${tmp}/.description.md
 echo "" >> ${tmp}/.description.md
 source=${tmp}/.description.md
