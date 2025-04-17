@@ -76,6 +76,7 @@ if [ "$sort_chk" ];then
   table_command=`echo $table_command | $SED "s/ /,/g"`
   sort_option=`echo $table_command | cut -f 2 -d ","`
   sort_label=`echo $table_command  | cut -f 3- -d "," | $SED "s/,/{%%space}/g" \
+  | $SED "s/#reverse{%%space}sort{%%space}with{%%space}numetric{%%space}sort//g" \
   | $SED "s/#nature{%%space}sort//g" | $SED "s/#numetric{%%space}sort//g" | $SED "s/#reverse{%%space}sort//g" \
   | $SED "s/{%%space}$//g"`
 
