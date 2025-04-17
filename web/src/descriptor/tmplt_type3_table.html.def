@@ -39,6 +39,7 @@
           <p>sort -V %%key #nature sort</p>
           <p>sort -n %%key #numetric sort</p>
           <p>sort -r %%key #reverse sort</p>
+          <p>sort -nr %%key #reverse sort with numetric sort</p>
           </span>
           </div>
           <p class="datanum">Data.Num:%%num</p>
