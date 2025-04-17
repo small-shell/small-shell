@@ -350,7 +350,7 @@ a {
     flex: none;
     width: 68%;
     text-align: left;
-    padding: 4px 42px;
+    padding: 4px 48px;
   }
 
   .main h1 {
@@ -489,6 +489,7 @@ a {
   .left-nav {
    top: 20px;
    position: sticky;
+   max-width: 240px;
   }
 
   .left-nav p {
@@ -508,7 +509,7 @@ a {
   }
 
   .left-nav img {
-    width: 42%;
+    width: 64%;
   }
 
 }
