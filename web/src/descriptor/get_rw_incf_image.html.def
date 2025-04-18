@@ -35,11 +35,11 @@
           </div>
           <img src="./base?%%params&req=file&id=%%id">
         </div>
-        <form method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
+        <form id="one-time-form" method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
         <ul>
         %%dataset
         </ul>
-        <button class="button" type="submit">SET</button>
+        <button class="button" id="one-time-button" type="submit">SET</button>
         </form>
         <div class="action_links">
           <span><p style="cursor: pointer" onclick="window.open('./base?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
@@ -83,6 +83,10 @@
           label.nextElementSibling.innerHTML = file;
         };
       }
+
+      document.getElementById('one-time-form').addEventListener('submit', function() {
+        document.getElementById('one-time-button').disabled = true;
+      });
 
       document.getElementById("txtara").rows="%%text_area_row"
     </script>
