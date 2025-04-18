@@ -22,7 +22,7 @@
     </div>
 
     <script>
-      // menu
+      // handle menu
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
 
@@ -38,7 +38,7 @@
           nav.classList.remove('open-menu')
           btn.innerHTML = '=';
         }
-      })
+      });
     </script>
   </body>
 </html>

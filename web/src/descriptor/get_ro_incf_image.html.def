@@ -47,6 +47,7 @@
     </div>
 
     <script>
+      // handle menu
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
 
@@ -62,26 +63,7 @@
           nav.classList.remove('open-menu')
           btn.innerHTML = '=';
         }
-      })
-
-      function del_confirmation(){
-        ret = confirm("Are you OK to delete this data ?");
-        if (ret == true){
-          location.href = "./base?%%params&req=del&id=%%id";
-        }
-      }
-
-      const formInputs = document.getElementsByClassName("file");
-      const length = formInputs.length;
-      for (let i = 0; i < length; i++) {
-        formInputs[i].onchange = function () {
-          const file = this.files[0].name;
-          const label = this.nextElementSibling;
-          label.nextElementSibling.innerHTML = file;
-        };
-      }
-
-      document.getElementById("txtara").rows="%%text_area_row"
+      });
     </script>
   </body>
 </html>

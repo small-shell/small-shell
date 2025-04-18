@@ -48,6 +48,7 @@
     </div>
 
     <script>
+     // handle menu
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
 
@@ -63,8 +64,9 @@
           nav.classList.remove('open-menu')
           btn.innerHTML = '=';
         }
-      })
+      });
 
+      // handle file upload label
       const formInputs = document.getElementsByClassName("file");
       const length = formInputs.length;
       for (let i = 0; i < length; i++) {

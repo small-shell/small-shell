@@ -55,6 +55,7 @@
     </div>
 
     <script>
+      // handle menu and tooltip
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
       const tooltipText = document.querySelector('.tooltip-text');
@@ -76,7 +77,7 @@
             tooltipText.classList.remove('show');
           }
         }
-      })
+      });
     </script>
   </body>
 </html>

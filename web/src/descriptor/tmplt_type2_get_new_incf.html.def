@@ -24,6 +24,7 @@
     </div>
 
     <script>
+      // handle file upload label
       const formInputs = document.getElementsByClassName("file");
       const length = formInputs.length;
       for (let i = 0; i < length; i++) {
@@ -39,7 +40,8 @@
           label.nextElementSibling.innerHTML = file;
         };
       }
-
+      
+      // handle one time button
       document.getElementById('one-time-form').addEventListener('submit', function() {
         document.getElementById('one-time-button').disabled = true;
       });

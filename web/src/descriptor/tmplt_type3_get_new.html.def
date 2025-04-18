@@ -36,6 +36,7 @@
     </div>
 
     <script>
+      // handle menu
       const btn = document.querySelector('.even-btn-menu');
       const nav = document.querySelector('nav');
 
@@ -51,12 +52,12 @@
           nav.classList.remove('open-menu')
           btn.innerHTML = '=';
         }
-      })
+      });
 
+      // handle one time button 
       document.getElementById('one-time-form').addEventListener('submit', function() {
         document.getElementById('one-time-button').disabled = true;
       });
-
     </script>
   </body>
 </html>
