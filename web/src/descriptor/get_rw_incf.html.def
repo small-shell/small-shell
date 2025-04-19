@@ -29,7 +29,7 @@
           <h1>#values</h1>
           <p><b>#ID </b>%%id</p>
         </div>
-        <form id="one-time-form" method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" onclick="document.charset='utf-8';">
+        <form id="one-time-form" method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" autocomplete="off" onclick="document.charset='utf-8';">
         <ul>
         %%dataset
         </ul>
