@@ -55,6 +55,10 @@
           btn.innerHTML = '=';
         }
       });
+
+      // adjust text area row
+      document.getElementById("txtara").rows="%%text_area_row";
+
     </script>
   </body>
 </html>
