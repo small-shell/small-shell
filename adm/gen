@@ -668,7 +668,7 @@ if [ "$param" = "-databox" ];then
     if [ "$column" = "col1" ];then
       echo "#primary_key"
     else
-      echo "#column${count}"
+      echo "#key(col${count})"
     fi
     cat $tmp_dir/$column 
     echo ""
@@ -991,7 +991,7 @@ if [ "$param" = "-addcol" ];then
   
   for column in `ls $tmp_dir/col* | xargs basename -a`
   do
-    echo "#column${count}"
+    echo "#key(col${count})"
     cat $tmp_dir/$column
     echo ""
     ((count += 1))
