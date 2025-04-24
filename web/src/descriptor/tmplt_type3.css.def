@@ -314,7 +314,7 @@ a {
 
 .auth-form button {
   font-weight: bold;
-  padding: 14px 12px;
+  padding: 14px 20px;
   border-style: none;
   background: #07ADAF;
   color: #f8f8f8;
