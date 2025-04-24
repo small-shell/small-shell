@@ -15,7 +15,7 @@
           <div class="wrapper">
             <input type="hidden" name="%%app_step_in_token" value="%%rand">
             <p>Please step in to the APP, your remote IP will be recorded for audit matter</p>
-            <button class="button" type="submit">Enter</button>
+            <button class="button" type="submit">LOGIN</button>
           </div>
           </form>
         </div>

@@ -15,7 +15,7 @@
           <div class="wrapper">
             <input type="text" id="dummy" name="dummy" placeholder="Your key" autocomplete="off" required>
             <input type="hidden" id="%%app_key_%%rand" name="%%app_key_%%rand">
-            <button class="button" type="submit" onclick="setKey()">CONNECT</button>
+            <button class="button" type="submit" onclick="setKey()">LOGIN</button>
           </div>
           </form>
         </div>

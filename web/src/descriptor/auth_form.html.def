@@ -16,7 +16,7 @@
           <div class="wrapper">
             <input type="text" id="dummy" name="dummy" placeholder="Your Key" autocomplete="off" required>
             <input type="hidden" id="small_shell_authkey_%%rand" name="small_shell_authkey_%%rand">
-            <button class="button" type="submit" onclick="setKey()">CONNECT</button>
+            <button class="button" type="submit" onclick="setKey()">LOGIN</button>
           </div>
         </div>
       </div>
