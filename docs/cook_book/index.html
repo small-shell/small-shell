@@ -312,7 +312,7 @@ DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&am
 DATA_SHELL=&quot;${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:book_search&quot;
 # add block1
 book_name=`$DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
---------
+---------------
 # update render HTML logic as block 2
 --block2 code--
 # render HTML
@@ -328,7 +328,7 @@ cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 | $SED &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
 | $SED &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
 | $SED &quot;s/%%params/session=$session\&amp;pin=$pin/g&quot;
---------
+---------------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_search_location_link.png" /></p>
 <h5 id="filter-table-to-show-only-available-data-that-is-available">Filter table to show only available data that is available</h5>
@@ -521,6 +521,7 @@ if [ &quot;$resource_id&quot; ];then
     fi
   fi
 fi
+--------
 </code></pre>
 <h4 id="add-status-and-message-to-end-user-page">Add status and message to end user page</h4>
 <p>Originally Form contained only these fields { requester,email,book_name} but end user msut want to know the booking status. so lets show these messages.</p>

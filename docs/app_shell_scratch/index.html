@@ -359,11 +359,11 @@ sudo -u small-shell /usr/local/small-shell/bin/meta get.attr:management/ken{admi
 <pre><code># e.g ) add delete function to test APP
 # sudo vi /var/www/descriptor/sapp_get.html.def
 sudo vi /var/www/descriptor/test_get.html.def
----target code--
+--code--
        &lt;div class=&quot;action_links&quot;&gt;
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;window.open('./test?%%params&amp;req=log_viewer&amp;id=%%id', 'log_viewer', 'width=820,height=280')&quot;&gt;Show data update history&lt;/p&gt;&lt;/span&gt;
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;del_confirmation()&quot;&gt;Delete&lt;/p&gt;&lt;/span&gt;
----------
+--------
 </code></pre>
 <h2 id="sub-app">Sub APP</h2>
 <p>Basically scratch APP connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to scratch APP that name is test. </p>
@@ -597,7 +597,7 @@ cat ../descriptor/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 | $SED &quot;/%%json/r ../tmp/$session/events&quot;\
 | $SED &quot;s/%%json//g&quot;\
 | $SED &quot;s/%%params/session=$session\&amp;pin=$pin\&amp;databox=$databox/g&quot;
--------
+--------
 
 </code></pre>
 <h4 id="4-disable-portal">4. Disable portal</h4>
