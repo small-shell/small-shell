@@ -58,7 +58,7 @@ do
        code_flg=""
      fi 
 
-   elif [[ "$code_flg" == "yes" && "$tab_4space" == "" ]];then
+   elif [[ "$code_flg" == "yes" ]] && [[ "$tab_4space" == "" ]];then
        echo "$line" | $SED "s/_%%tab_/\\t/g" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" \
        | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/description.tmp
 
@@ -72,7 +72,7 @@ do
        echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/description.tmp
      fi
 
-   elif [[ "$line" == "" && "$code_flg" == "yes" && "$tab_4space" == "yes" ]];then
+   elif [[ "$line" == "" ]] && [[ "$code_flg" == "yes" ]] && [[ "$tab_4space" == "yes" ]];then
       echo "</pre>" >> ${tmp}/description.tmp
       code_flg=""
       tab_4space=""
@@ -111,10 +111,10 @@ do
        fi
      fi
 
-   elif [[ "$line" == --* && "$table_flg" == "yes" ]];then
+   elif [[ "$line" == --* ]] && [[ "$table_flg" == "yes" ]];then
       echo "" > /dev/null
 
-   elif [[ "$line" != \|*\|* && "$table_flg" == "yes" ]];then
+   elif [[ ! "$line" == \|*\|* ]] && [[ "$table_flg" == "yes" ]];then
       echo "</ul>" >> ${tmp}/description.tmp
       echo "</div>" >> ${tmp}/description.tmp
       table_flg=""
@@ -151,20 +151,35 @@ do
      done
      echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/description.tmp
 
-   # list
+   # Normal list
    elif [[ "$line" == \** ]];then
-     if [ ! "$list_flg" ];then
-       list_flg=yes
+     if [ ! "$normal_list_flg" ];then
+       normal_list_flg=yes
        echo "<div class=\"standard-list\">" >> ${tmp}/description.tmp
        echo "<ul>" >> ${tmp}/description.tmp
        echo  "$line" | $SED "s/\*/<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
      else
        echo  "$line" | $SED "s/\*/<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
      fi
-   elif [[ "$line" != \** && "$list_flg" == "yes" ]];then
+   elif [[ ! "$line" == \** ]] && [[ "$normal_list_flg" == "yes" ]];then
        echo "</ul>" >> ${tmp}/description.tmp
        echo "</div>" >> ${tmp}/description.tmp
-       list_flg=""
+       normal_list_flg=""
+
+   # Number list
+   elif [[ "$line" =~ ^[0-9]+\. ]];then
+     if [ ! "$number_list_flg" ];then
+       number_list_flg=yes
+       echo "<div class=\"num-list\">" >> ${tmp}/description.tmp
+       echo "<ul>" >> ${tmp}/description.tmp
+       echo  "$line" | $SED -r "s/^[0-9]+\./<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     else
+       echo  "$line" | $SED -r "s/^[0-9]+\./<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     fi
+   elif [[ ! "$line" =~ ^[0-9]+\. ]] && [[ "$number_list_flg" == "yes" ]];then
+       echo "</ul>" >> ${tmp}/description.tmp
+       echo "</div>" >> ${tmp}/description.tmp
+       number_list_flg=""
 
    #HN
    elif [[ "$line" == \#\#\#\#\#\#* ]];then

@@ -149,7 +149,7 @@ elif [ "$form_chk" = "multipart" ];then
 fi
 
 # overwritten by markdown logic
-if [[ $databox == images.db && ! "$id" == "new" ]];then
+if [[ $databox == images.db ]] && [[ ! "$id" == "new" ]];then
   app=`echo $databox | $SED "s/.image//g"`
   if [ "$permission" = "rw" ];then
     view="get_rw_incf_image.html.def"

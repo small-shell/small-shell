@@ -464,6 +464,10 @@ a {
   list-style: square;
 }
 
+.main .num-list ul {
+  list-style-type: decimal;
+}
+
 .main button {
   font-weight: bold;
   padding: 14px 20px;
