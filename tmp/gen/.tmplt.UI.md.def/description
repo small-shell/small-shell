@@ -47,33 +47,39 @@ Link to [Internal table](./%%app?req=table)
 [Internal table](./%%app?req=table)
 ````
 
-## List and Bold
-List and bold can be defined by using asterisk.
-### List
-* text1
-* text2
-* text3
-* text4
+## List
+List can be defined by using asterisk or number.
+### Standard List
+* text
+* text
 
 ````
-* text1
-* text2
-* text3
-* text4
+* text
+* text
 ````
 
-### bold
-* bold text *
+### Number list
+1. text
+2. text
+
+```
+1. test
+2. test
+```
+
+## Bold text
+Bold text can be defined by using asterisk.
+** bold text **
 ````
-* bold text *
+** bold text **
 ````
 
 ## Code
-Code block can be defined by using 4 sequential backquote first and end line.
+Code block can be defined by using 3 sequential backquote first and end line.
 ````
-\`\`\`\`
+\`\`\`
 Code
-\`\`\`\`
+\`\`\`
 ````
 
 ## Extension syntax
@@ -94,3 +100,4 @@ text
 text
 :::
 ````
+
