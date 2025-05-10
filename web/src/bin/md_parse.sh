@@ -27,6 +27,7 @@ cat $source | $SED "s/^:::/{%%%}{%%%}{%%%}/g" | $SED "s/\`\`\`\`/%code_block%/g"
 echo "" >> ${tmp}/.description.md
 source=${tmp}/.description.md
 
+line_count=1
 while read line
 do
    # html tag
@@ -46,6 +47,40 @@ do
        # handle as normal HTML tag
        echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" >> ${tmp}/description.tmp
 
+     fi
+
+   # Normal list
+   elif echo "$line" | grep -q '^* '; then
+     if [ ! "$normal_list_flg" ];then
+       normal_list_flg=yes
+       echo "<div class=\"standard-list\">" >> ${tmp}/description.tmp
+       echo "<ul>" >> ${tmp}/description.tmp
+       echo  "$line" | $SED "s/\* /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     else
+       echo  "$line" | $SED "s/\* /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     fi
+     next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
+     if [[ ! "$next_line" == \** ]] && [[ "$normal_list_flg" == "yes" ]];then
+       echo "</ul>" >> ${tmp}/description.tmp
+       echo "</div>" >> ${tmp}/description.tmp
+       normal_list_flg=""
+     fi
+
+   # Number list
+   elif echo "$line" | grep -qE "^[0-9]+\. "; then
+     if [ ! "$number_list_flg" ];then
+       number_list_flg=yes
+       echo "<div class=\"num-list\">" >> ${tmp}/description.tmp
+       echo "<ul>" >> ${tmp}/description.tmp
+       echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     else
+       echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     fi
+     next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
+     if [[ ! "$next_line" =~ "^[0-9]+\.+ " ]] && [[ "$number_list_flg" == "yes" ]];then
+       echo "</ul>" >> ${tmp}/description.tmp
+       echo "</div>" >> ${tmp}/description.tmp
+       number_list_flg=""
      fi
 
    # code
@@ -151,36 +186,6 @@ do
      done
      echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/description.tmp
 
-   # Standard list
-   elif [[ "$line" == \** ]];then
-     if [ ! "$standard_list_flg" ];then
-       standard_list_flg=yes
-       echo "<div class=\"standard-list\">" >> ${tmp}/description.tmp
-       echo "<ul>" >> ${tmp}/description.tmp
-       echo  "$line" | $SED "s/\*/<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
-     else
-       echo  "$line" | $SED "s/\*/<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
-     fi
-   elif [[ ! "$line" == \** ]] && [[ "$standard_list_flg" == "yes" ]];then
-       echo "</ul>" >> ${tmp}/description.tmp
-       echo "</div>" >> ${tmp}/description.tmp
-       standard_list_flg=""
-
-   # Number list
-   elif [[ "$line" =~ ^[0-9]+\. ]];then
-     if [ ! "$num_list_flg" ];then
-       num_list_flg=yes
-       echo "<div class=\"num-list\">" >> ${tmp}/description.tmp
-       echo "<ul>" >> ${tmp}/description.tmp
-       echo  "$line" | $SED -r "s/^[0-9]+\./<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
-     else
-       echo  "$line" | $SED -r "s/^[0-9]+\./<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
-     fi
-   elif [[ ! "$line" =~ ^[0-9]+\. ]] && [[ "$num_list_flg" == "yes" ]];then
-       echo "</ul>" >> ${tmp}/description.tmp
-       echo "</div>" >> ${tmp}/description.tmp
-       num_list_flg=""
-
    #HN
    elif [[ "$line" == \#\#\#\#\#\#* ]];then
      echo "$line" | $SED "s/###### /######/g" | $SED "s/######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" >> ${tmp}/description.tmp
@@ -217,6 +222,9 @@ do
       | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/description.tmp
      fi
    fi
+
+  ((line_count++))
+
 done  < $source
 
 # handle right header of portal
