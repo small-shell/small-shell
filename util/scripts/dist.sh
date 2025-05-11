@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #---------------------------------------------------------------------
-# usage: dist.sh $APP
+# usage: dist.sh $APP $EXPORT_DIR
 #----------------------------------------------------------------------
 
 # global.conf load
@@ -9,6 +9,7 @@ SCRIPT_DIR=`dirname $0`
 . ${SCRIPT_DIR}/../../global.conf
 
 app=$1
+export_dir=$2
 
 WHOAMI=`whoami`
 if [ ! "$WHOAMI" = "root" ];then
@@ -39,7 +40,17 @@ css="$cgidir/../descriptor/${app}.css.def"
 descriptor="$cgidir/../descriptor"
 
 if [ ! "$app" ];then
-  echo "error: please input APP for exporting as static site, # dist.sh \$APP \$EXPORT_DIR"
+  echo "error: please input APP for exporting as static site # dist.sh \$APP \$EXPORT_DIR"
+  exit 1
+fi
+
+if [ ! "$export_dir" ];then
+  echo "error: please input export dir # dist.sh \$APP \$EXPORT_DIR"
+  exit 1
+fi
+
+if [ ! -d $export_dir ];then
+  echo "error: directry seems not found"
   exit 1
 fi
 
@@ -78,17 +89,12 @@ rm ${tmp_dir}/.index.html.tmp
 rm ${tmp_dir}/.images
 mv $tmp_dir ${SCRIPT_DIR}/tmp/${app}
 (cd ${SCRIPT_DIR}/tmp/ && tar cvfz ${app}.tar.gz ${app})
-mv ${SCRIPT_DIR}/tmp/${app}.tar.gz ${www}/html/${app}.tar.gz
+mv ${SCRIPT_DIR}/tmp/${app}.tar.gz ${export_dir}/${app}.tar.gz
 rm -rf ${SCRIPT_DIR}/tmp/${app}
 
 echo "============================================================"
-if [ "$index_url" ];then
-  echo "APP is successfully exported, download linnk is here"
-  echo "${index_url}${app}.tar.gz"
-else
-  echo "APP is successfully exported to html directory"
-  echo "${www}/html/${app}.tar.gz"
-fi
+echo "APP is successfully exported to your directory,"
+echo "PATH: ${export_dir}/${app}.tar.gz"
 echo "============================================================"
 
 exit 0
