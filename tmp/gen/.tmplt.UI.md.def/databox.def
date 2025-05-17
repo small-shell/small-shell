@@ -32,7 +32,7 @@ col2_required="yes"
 # col3
 #-------------------------------------------
 col3_key_name="righth"
-col3_key_label="YAML for right menu of header"
+col3_key_label="YAML for navbar-right-menu"
 col3_type="textarea"
 
 # only for select, checkbox
@@ -49,7 +49,7 @@ col3_required="no"
 # col4
 #-------------------------------------------
 col4_key_name="lefth"
-col4_key_label="YAML for left menu of header"
+col4_key_label="YAML for navbar-left-links"
 col4_type="textarea"
 
 # only for select, checkbox

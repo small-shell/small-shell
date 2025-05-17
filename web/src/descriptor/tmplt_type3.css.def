@@ -36,7 +36,7 @@ a {
 }
 
 @media screen and (min-width: 641px) {
-  .flex-header {
+  .navbar {
     margin-right: calc(50% - 50vw);
     margin-left: calc(50% - 50vw);
     padding-left: 48px;
@@ -57,7 +57,7 @@ a {
 }
 
 @media screen and (max-width: 640px) {
-  .flex-header {
+  .navbar {
     display:flex;
     flex-wrap:wrap;
     align-items: baseline;
@@ -65,11 +65,11 @@ a {
   }
 }
 
-.flex-header a:hover{
+.navbar a:hover{
   color: #dcdc;
 }
 
-.left-header {
+.navbar-left-links {
   font-weight: 300;
   line-height: 0.8em;
   font-size: 80%;
@@ -82,20 +82,20 @@ a {
   padding-left: 4px;
 }
 
-.left-header p {
+.navbar-left-links p {
   font-weight: bold;
   margin-top: 8px;
   margin-left: 2px;
 }
 
-.left-header a {
+.navbar-left-links a {
   color:inherit;
   text-decoration: none;
   padding-right: 12px;
 }
 
 
-.right-header {
+.navbar-right-menu {
   font-weight: 300;
   line-height: 0.8em;
   padding-right: 0px;
@@ -104,24 +104,24 @@ a {
   padding-top: 6px;
 }
 
-.right-header a {
+.navbar-right-menu a {
   color: #ADFBEA;
   text-decoration: none;
   white-space: nowrap;
 }
 
-.right-header ul {
+.navbar-right-menu ul {
   list-style: none;
   margin: 0px;
   padding: 0px;
   margin-bottom: 28px;
 }
 
-.right-header li {
+.navbar-right-menu li {
   margin: 2rem 0;
 }
 
-.right-header nav {
+.navbar-right-menu nav {
   background: #000011;
   min-width: 220px;
   opacity: 0.8;
@@ -135,7 +135,7 @@ a {
 }
 
 @media screen and (min-width: 641px) {
-  .right-header .even-btn-menu {
+  .navbar-right-menu .even-btn {
     margin: auto;
     border-style: none;
     background: transparent;
@@ -150,22 +150,22 @@ a {
     line-height: 1;
   }
 
-  .right-header .even-btn-menu:hover {
+  .navbar-right-menu .even-btn:hover {
     color: #dfe6f9;
   }   
 
-  .right-header a {
+  .navbar-right-menu a {
      color: #EEFAF6;
   }
 
-  .right-header a:hover {
+  .navbar-right-menu a:hover {
      color: #D0F1E6;
   }
 
 }
 
 @media screen and (max-width: 640px) {
-  .right-header .even-btn-menu {
+  .navbar-right-menu .even-btn {
     border-color: #000033;
     border-style: none;
     background: transparent;
@@ -180,18 +180,18 @@ a {
     line-height: 1;
   }
 
-  .right-header a {
+  .navbar-right-menu a {
      color: #EEFAF6;
   }
 
-  .right-header a:hover {
+  .navbar-right-menu a:hover {
      color: #D0F1E6;
   }
 
 }
 
 @media screen and (min-width: 641px) {
-  .right-header nav.open-menu {
+  .navbar-right-menu nav.open-menu {
     border-radius: 16px;
     font-size: 88%;
     font-weight: bold;
@@ -203,7 +203,7 @@ a {
   }
 }
 @media screen and (max-width: 640px) {
-  .right-header nav.open-menu {
+  .navbar-right-menu nav.open-menu {
     margin-top: 20px;
     width: 100%;
     font-weight: bold;
@@ -212,7 +212,7 @@ a {
   }
 }
 
-.right-header .inside-menu-button {
+.navbar-right-menu .inside-menu-button {
   font-weight: bold;
   padding: 6px 6px;
   border-style: none;
@@ -225,7 +225,7 @@ a {
   font-size: 80%;
 }   
   
-.right-header .inside-menu-button:hover {
+.navbar-right-menu .inside-menu-button:hover {
   color: #a2c0df;
 }
 

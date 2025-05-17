@@ -20,25 +20,5 @@
         </div>
       </div>
     </div>
-
-    <script>
-      // handle menu
-      const btn = document.querySelector('.even-btn-menu');
-      const nav = document.querySelector('nav');
-
-      document.addEventListener('click', (e) => {
-        if(e.target.closest('.even-btn-menu')) {
-          nav.classList.toggle('open-menu')
-          if (btn.innerHTML === '=') {
-            btn.innerHTML = '-';
-          } else {
-            btn.innerHTML = '=';
-          }
-        }else{
-          nav.classList.remove('open-menu')
-          btn.innerHTML = '=';
-        }
-      });
-    </script>
   </body>
 </html>

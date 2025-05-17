@@ -7,11 +7,11 @@
   </head>
   <body>
     <div class="container">
-      <div class="flex-header">
-        <div class="left-header">
+      <div class="navbar">
+        <div class="navbar-left-links">
         </div>
-        <div class="right-header">
-          <button class="even-btn-menu">=</button>
+        <div class="navbar-right-menu">
+          <button class="even-btn">=</button>
           <nav>
           <ul>
             %%common_menu
@@ -32,11 +32,11 @@
 
     <script>
       // handle menu
-      const btn = document.querySelector('.even-btn-menu');
+      const btn = document.querySelector('.even-btn');
       const nav = document.querySelector('nav');
 
       document.addEventListener('click', (e) => {
-        if(e.target.closest('.even-btn-menu')) {
+        if(e.target.closest('.even-btn')) {
           nav.classList.toggle('open-menu')
           if (btn.innerHTML === '=') {
             btn.innerHTML = '-';

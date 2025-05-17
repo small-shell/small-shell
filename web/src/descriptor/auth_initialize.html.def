@@ -16,13 +16,13 @@
        box-sizing: border-box;
      }
 
-     .flex-header {
+     .navbar {
        padding-top: 4px;
        display:flex;
        flex-wrap:wrap;
      }
 
-    .left-header {
+    .navbar-left-links {
        font-weight: 300;
        line-height: 0.8em;
        font-size: 80%;
@@ -84,8 +84,8 @@
   </head>
   <body>
     <div class="container">
-      <div class="flex-header">
-        <div class="left-header">
+      <div class="navbar">
+        <div class="navbar-left-links">
           <h2>DataBox@%%server</h2>
         </div>
       </div>

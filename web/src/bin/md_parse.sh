@@ -230,8 +230,8 @@ done  < $source
 # handle right header of portal
 righth=`$META chk.null:${databox}{$id} | grep righth | $AWK -F ":" '{print $2}'`
 if [ $righth -eq 1 ];then
-  echo "<div class=\"right-header\">" > ${tmp}/righth.tmp
-  echo "<button class=\"even-btn-menu\">=</button>" >> ${tmp}/righth.tmp
+  echo "<div class=\"navbar-right-menu\">" > ${tmp}/righth.tmp
+  echo "<button class=\"even-btn\">=</button>" >> ${tmp}/righth.tmp
   echo "<nav>" >> ${tmp}/righth.tmp
   echo "<ul>" >> ${tmp}/righth.tmp
   $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \

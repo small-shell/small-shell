@@ -7,15 +7,15 @@
   </head>
   <body>
     <div class="container">
-      <div class="flex-header">
-        <div class="left-header">
+      <div class="navbar">
+        <div class="navbar-left-links">
           <p>DataBox:</p>
           <select class="dataselect" onChange="location.href=value;">
            %%databox_list
           </select>
         </div>
-        <div class="right-header">
-          <button class="even-btn-menu">=</button>
+        <div class="navbar-right-menu">
+          <button class="even-btn">=</button>
           <nav>
           <ul>
           %%common_menu
@@ -56,12 +56,12 @@
 
     <script>
       // handle menu and tooltip
-      const btn = document.querySelector('.even-btn-menu');
+      const btn = document.querySelector('.even-btn');
       const nav = document.querySelector('nav');
       const tooltipText = document.querySelector('.tooltip-text');
 
       document.addEventListener('click', (e) => {
-        if(e.target.closest('.even-btn-menu')) {
+        if(e.target.closest('.even-btn')) {
           nav.classList.toggle('open-menu')
           if (btn.innerHTML === '=') {
             btn.innerHTML = '-';
