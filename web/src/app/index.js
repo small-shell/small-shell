@@ -39,9 +39,9 @@ if (%%cluster) {
   
   // handle e-cron GET request
   app.get('/cgi-bin/e-cron', (req, res)=> {
-    var uri = url.parse(req.url).pathname;
-    var req_path = url.parse(req.url).path;
-    var params = req_path.split("/")[2];
+
+    var uri = req.originalUrl;
+    var query_string = uri.split("?")[1];
     var remote_addr = req.ip.toString();
     var proxy_client_addr = req.headers['x-real-ip'];
     if ( proxy_client_addr != undefined ) {
@@ -49,7 +49,6 @@ if (%%cluster) {
     }
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var api_auth_key = req.headers['x-small-shell-authkey'];
-    var query_string = params.split("?")[1];
     var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
 
     if ( query_string == undefined ) {
@@ -58,7 +57,7 @@ if (%%cluster) {
 
     } else {
 
-      console.log( time_stamp + remote_addr + ' requested ' + params );
+      console.log( time_stamp + remote_addr + ' requested ' + uri );
       if ( query_string.indexOf('req=get&filename=') != -1 ) {
         var content = execSync("export REQUEST_METHOD=GET; export REMOTE_ADDR=\"" + remote_addr + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + www + "/cgi-bin/e-cron | %%sed -e 1,3d",{ maxBuffer: 1024000000 });
         // file contents with Content-Disposition
@@ -77,23 +76,20 @@ if (%%cluster) {
   
   
   // handle general GET request
-  app.get('/cgi-bin/*', (req, res)=> {
-    var uri = url.parse(req.url).pathname;
-    var req_path = url.parse(req.url).path;
-    var params = req_path.split("/")[2];
+  app.get('/cgi-bin/:name', (req, res)=> {
+    var uri = req.originalUrl;
+    var command = req.params.name;
+    var query_string = uri.split("?")[1];
     var remote_addr = req.ip.toString();
+
     var proxy_client_addr = req.headers['x-real-ip'];
     if ( proxy_client_addr != undefined ) {
       var remote_addr = proxy_client_addr;
     }
+
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var user_agent =  req.headers['user-agent'];
     var api_auth_key = req.headers['x-small-shell-authkey'];
-  
-    if (params) {
-      var command = params.split("?")[0];
-      var query_string = params.split("?")[1];
-    }
   
     if ( query_string == undefined ) {
       query_string = "query=null";
@@ -105,7 +101,7 @@ if (%%cluster) {
         res.writeHead(200, {'Content-Type' : 'application/octet-stream'});
         res.end(content);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-        console.log( time_stamp + remote_addr + ' requested ' + params );
+        console.log( time_stamp + remote_addr + ' requested ' + uri );
 
       } else if( query_string.indexOf('type=graph') != -1) {
         // handle graph contents
@@ -113,7 +109,7 @@ if (%%cluster) {
         res.writeHead(200, {'Content-Type' : 'image/png'});
         res.end(graph);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-        console.log( time_stamp + remote_addr + ' requested ' + params );
+        console.log( time_stamp + remote_addr + ' requested ' + uri );
   
       } else {
         // handle general request
@@ -121,7 +117,7 @@ if (%%cluster) {
         res.writeHead(200, {'Content-Type' : 'text/html'});
         res.end(html);
         var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-        console.log( time_stamp + remote_addr + ' requested ' + params );
+        console.log( time_stamp + remote_addr + ' requested ' + uri );
       }
 
     } else {
@@ -139,26 +135,23 @@ if (%%cluster) {
    }));
   
   //handle general POST request include e-cron req
-  app.post('/cgi-bin/*', (req, res) => {
-    var uri = url.parse(req.url).pathname;
-    var req_path = url.parse(req.url).path;
-    var params = req_path.split("/")[2];
+  app.post('/cgi-bin/:name', (req, res) => {
+    var uri = req.originalUrl;
+    var command = req.params.name;
+    var query_string = uri.split("?")[1];
     var remote_addr = req.ip.toString();
+
     var proxy_client_addr = req.headers['x-real-ip'];
     if ( proxy_client_addr != undefined ) {
       var remote_addr = proxy_client_addr;
     }
+
     var remote_addr = remote_addr.replace(/^::ffff:/g, "");
     var user_agent =  req.headers['user-agent'];
     var content_type = req.headers['content-type'];
     var api_auth_key = req.headers['x-small-shell-authkey'];
     var content_length = Buffer.byteLength(req.body);
     var dd_dump = session ;
-  
-    if (params) {
-      var command = params.split("?")[0];
-      var query_string = params.split("?")[1];
-    }
   
     if ( query_string == undefined ) {
       query_string = "query=null";
@@ -169,7 +162,7 @@ if (%%cluster) {
       var html = execSync("export REQUEST_METHOD=POST; export CONTENT_TYPE=\"" + content_type + "\";" + "export CONTENT_LENGTH=" + content_length + ";" +  "export REMOTE_ADDR=\"" + remote_addr + "\"; export HTTP_USER_AGENT=\"" + user_agent  + "\"; export QUERY_STRING=\"" + query_string + "\";" + "export HTTP_X_SMALL_SHELL_AUTHKEY="+ api_auth_key + ";" + "dd if=" + www + "/tmp/" + dd_dump + " 2>/dev/null |" + www + "/cgi-bin/" + command + "| %%sed -e 1d").toString();
   
       var time_stamp = execSync("date \"+%Y-%m-%d %H:%M:%S\"").toString().replace(/\r?\n/g," ");
-      console.log( time_stamp + remote_addr + ' requested ' + params );
+      console.log( time_stamp + remote_addr + ' requested ' + uri );
   
       if ( html.indexOf('meta http-equiv=\"refresh\"') != -1) {
         var redirect_dump = session ;
@@ -197,7 +190,7 @@ if (%%cluster) {
   });
   
   // handle static page
-  app.get("*", (req, res) => {
+  app.get('/{*any}', (req, res) => {
     var remote_addr = req.ip.toString();
     var proxy_client_addr = req.headers['x-real-ip'];
     if ( proxy_client_addr != undefined ) {
@@ -252,7 +245,7 @@ if (%%cluster) {
   
   /* forward option start
   var http = require("http");
-  http.createServer((express()).all("*", function (request, response) {
+  http.createServer((express()).all('/{*any}', function (request, response) {
       response.redirect(`https://${request.hostname}${request.url}`);
   })).listen(80);
   option end */
