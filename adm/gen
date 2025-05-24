@@ -1621,7 +1621,7 @@ if [ "$param" = "-app" ];then
         else
            port=443
         fi
-        (cd ${www}/app;npm init -y;npm install express) 
+        (cd ${www}/app;npm init -y;npm install express@latest) 
 
         # handle reverse proxy setting
         if [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "yes" ];then
