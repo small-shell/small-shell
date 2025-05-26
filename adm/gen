@@ -419,7 +419,7 @@ if [ "$param" = "-databox" ];then
       exit 1
     fi
 
-    echo -n "Add more column to the databox? (yes | no): "
+    echo -n "Add more columns to the databox? (yes | no): "
 
     read add_col_answer 
   done
@@ -637,7 +637,7 @@ if [ "$param" = "-databox" ];then
     echo "option=\"$option\"" >> $tmp_dir/col${count}
     
 
-    echo -n "Add more column to the databox? (yes | no) : "
+    echo -n "Add more columns to the databox? (yes | no) : "
     read add_col_answer 
     while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
     do
@@ -649,7 +649,7 @@ if [ "$param" = "-databox" ];then
         exit 1
       fi
 
-      echo -n "Add more column to the databox? (yes | no): "
+      echo -n "Add more columns to the databox? (yes | no): "
       read add_col_answer 
     done
       
@@ -1135,12 +1135,12 @@ if [ "$param" = "-delcol" ];then
     # dump del_key
     touch $tmp_dir/$del_key
  
-    echo -n "Delete more column from the databox? (yes | no) : "
+    echo -n "Delete more columns from the databox? (yes | no) : "
     read del_col_answer
     while [ ! "$del_col_answer" = "yes" -a ! "$del_col_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Delete more column from the databox? (yes | no): "
+      echo -n "Delete more columns from the databox? (yes | no): "
       read del_col_answer
     done
 
