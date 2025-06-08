@@ -53,7 +53,7 @@ if [ "$page" = "" ];then
 fi
 
 # set placeholder 
-placeholder="Type any filter words or you can sort column by sort command"
+placeholder="Type keywords or sort command"
 
 # load post param
 if [ -s %%www/tmp/$session/table_command ];then
