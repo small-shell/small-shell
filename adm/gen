@@ -1621,7 +1621,13 @@ if [ "$param" = "-app" ];then
         else
            port=443
         fi
-        (cd ${www}/app;npm init -y;npm install express@latest) 
+
+        node_version=`node --version | $SED "s/v//g" | $AWK -F "." '{print $1}'`
+        if [ "$node_version" -ge 18 ];then
+          (cd ${www}/app;npm init -y;npm install express@5) 
+	else
+          (cd ${www}/app;npm init -y;npm install express@4) 
+	fi
 
         # handle reverse proxy setting
         if [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "yes" ];then
@@ -1648,40 +1654,34 @@ if [ "$param" = "-app" ];then
         fi
 
         # generate index.js for upper version of v16        
-        node_version=`node --version | $SED "s/v//g" | $AWK -F "." '{print $1}'`
+	if [ "$node_version" -ge 18 ];then
+	   any_routing="/{*any}"
+	else
+	   any_routing="*"
+        fi
+
         if [ "$node_version" -ge 16 ];then
-          if [ "$protocol" = "https" ];then
-            if [ ! "$chain_cert" ];then
-              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
-              | $SED "s#option end \*/##g" | $SED "s/%%cluster/cluster.isPrimary/g" > ${www}/app/index.js
-            else
-              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
-              | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
-              | $SED "s/%%cluster/cluster.isPrimary/g" > ${www}/app/index.js
-            fi
+           cluster="cluster.isPrimary"
+	else
+           cluster="cluster.isMaster"
+        fi
+          
+        if [ "$protocol" = "https" ];then
+          if [ ! "$chain_cert" ];then
+            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
+            | $SED "s#option end \*/##g" | $SED "s/%%cluster/$cluster/g" \
+	    | $SED "s#%%any_routing#$any_routing#g" > ${www}/app/index.js
           else
             cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s/%%cluster/cluster.isPrimary/g" > ${www}/app/index.js
+            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
+            | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
+            | $SED "s/%%cluster/$cluster/g" | $SED "s#%%any_routing#$any_routing#g" > ${www}/app/index.js
           fi
         else
-        # generate index.js for lower version of v16        
-          if [ "$protocol" = "https" ];then
-            if [ ! "$chain_cert" ];then
-              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
-              | $SED "s#option end \*/##g" | $SED "s/%%cluster/cluster.isMaster/g" > ${www}/app/index.js
-            else
-              cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-              | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
-              | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
-              | $SED "s/%%cluster/cluster.isMaster/g" > ${www}/app/index.js
-            fi
-          else
-            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s/%%cluster/cluster.isMaster/g" > ${www}/app/index.js
-          fi
+          cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
+          | $SED "s#%%sed#$SED#g" | $SED "s/%%cluster/$cluster/g" \
+	  | $SED "s#%%any_routing#$any_routing#g" > ${www}/app/index.js
         fi
 
         NODE=`which node`

@@ -190,7 +190,7 @@ if (%%cluster) {
   });
   
   // handle static page
-  app.get('/{*any}', (req, res) => {
+  app.get('%%any_routing', (req, res) => {
     var remote_addr = req.ip.toString();
     var proxy_client_addr = req.headers['x-real-ip'];
     if ( proxy_client_addr != undefined ) {
