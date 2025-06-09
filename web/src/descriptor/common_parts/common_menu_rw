@@ -1,5 +1,5 @@
 <li><a href="./base?%%params&req=get&id=new">Add Data</a></li>
 <li><a href="./base?%%params&req=import">Import Data</a></li>
 <li><a href="./base?%%params&req=table">Table View</a></li>
-<li><a href="./base?%%params&req=console">Console Box</a></li>
+<li><a href="./base?%%params&req=console">Console</a></li>
 <li><a href="./base?%%params&req=logout">Log Out #%%user</a></li>
