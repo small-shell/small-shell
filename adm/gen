@@ -338,7 +338,7 @@ if [ "$param" = "-databox" ];then
   echo "$databox" > $tmp_dir/databox
 
   # define primary key 
-  echo -n "primary_key(col1): "
+  echo -n "Primary Key(col1): "
   read primary_key
   reserved_chk_result=`echo $primary_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
   eval $primary_key=test >/dev/null 2>&1
@@ -371,7 +371,7 @@ if [ "$param" = "-databox" ];then
 
   if [ ! "$primary_key" = "hashid" ];then
     
-    echo -n "primary_key label: "
+    echo -n "Primary Key Label: "
     read primary_key_label
     char_chk_result=`charset_check "$primary_key_label"`
 
@@ -429,7 +429,7 @@ if [ "$param" = "-databox" ];then
   while [ "$add_col_answer" = "yes" ]
   do
   clear
-  echo -n "key(col${count}) name: "
+  echo -n "Key(col${count}) Name: "
   read add_key 
   reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
   eval $add_key=test >/dev/null 2>&1
@@ -466,7 +466,7 @@ if [ "$param" = "-databox" ];then
         exit 1
       fi
 
-      echo -n "key(col${count}) name: "
+      echo -n "Key(col${count}) Name: "
       read add_key
       reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
       eval $add_key=test >/dev/null 2>&1
@@ -483,7 +483,7 @@ if [ "$param" = "-databox" ];then
 
     done
 
-    echo -n "key(col${count}) label: "
+    echo -n "Key(col${count}) Label: "
     read add_key_label
     char_chk_result=`charset_check "$add_key_label"`
 
@@ -549,13 +549,13 @@ if [ "$param" = "-databox" ];then
     done   
 
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      echo -n "please define parameters using comma as separator: "
+      echo -n "Please list the values, separated by commas: "
       read params
       char_chk_result=`charset_check "$params"`
       while [ "$char_chk_result" = "ERROR" ]
       do
-        echo "It seems invalid charactor is included, please try again. try not to use backspace as much as possible"
-        echo -n "parameters: "
+        echo "It seems invalid charactor is included, please try again."
+        echo -n "values: "
         read params
         char_chk_result=`charset_check "$params"`
       done
@@ -565,8 +565,8 @@ if [ "$param" = "-databox" ];then
       separator_chk=`echo "$params" | grep ,`
       while [ ! "$separator_chk" ]
       do
-        echo "There is no separator(comma), please set parameters using comma \",\""
-        echo -n "parameters: "
+        echo "There is no separator(comma), please list the values using comma \",\""
+        echo -n "values: "
         read params
         separator_chk=`echo "$params" | grep ,`
       done
@@ -827,7 +827,7 @@ if [ "$param" = "-addcol" ];then
 
     done
 
-    echo -n "key (col${count}) label: "
+    echo -n "Key (col${count}) Label: "
     read add_key_label
     char_chk_result=`charset_check "$add_key_label"`
 
@@ -889,13 +889,13 @@ if [ "$param" = "-addcol" ];then
     done
     
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      echo -n "please define parameters using comma as separator: "
+      echo -n "Please list the values, separated by commas: "
       read params
       char_chk_result=`charset_check "$params"`
       while [ "$char_chk_result" = "ERROR" ]
       do
-        echo "It seems invalid charactor is included, please try again. try not to use backspace as much as possible"
-        echo -n "parameters: "
+        echo "It seems invalid charactor is included, please try again."
+        echo -n "values: "
         read params
         char_chk_result=`charset_check "$params"`
       done
@@ -905,8 +905,8 @@ if [ "$param" = "-addcol" ];then
       separator_chk=`echo "$params" | grep ,`
       while [ ! "$separator_chk" ]
       do
-        echo "There is no separator(comma), please set parameters using comma \",\""
-        echo -n "parameters: "
+        echo "There is no separator(comma), please list the values using comma \",\""
+        echo -n "values: "
         read params
         separator_chk=`echo "$params" | grep ,`
       done
@@ -3357,7 +3357,7 @@ if [ "$param" = "-job" ];then
       echo "local_dir=\"$local_dir\"" >> $tmp_dir/${job}.def
     fi
 
-    echo -n "File_name: "
+    echo -n "File Name: "
     read file_name
     file_name_excld_astrsk=`echo $file_name | tr -d \*`
     ascii_chk_result=`ascii_check $file_name_excld_astrsk`
@@ -3366,8 +3366,8 @@ if [ "$param" = "-job" ];then
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$file_name" ]
     do
-      echo "error: File_name must be ascii text and you can't use meta charactor including space, please try again"
-      echo -n "File_name: "
+      echo "error: file name must be ascii text and you can't use meta charactor including space, please try again"
+      echo -n "File Name: "
       read file_name
       file_name_excld_astrsk=`echo $file_name | tr -d \*`
       ascii_chk_result=`ascii_check $file_name_excld_astrsk`
