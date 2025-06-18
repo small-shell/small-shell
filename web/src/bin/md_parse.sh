@@ -50,37 +50,47 @@ do
      fi
 
    # Normal list
-   elif echo "$line" | grep -q '^* '; then
-     if [ ! "$normal_list_flg" ];then
-       normal_list_flg=yes
-       echo "<div class=\"standard-list\">" >> ${tmp}/description.tmp
-       echo "<ul>" >> ${tmp}/description.tmp
-       echo  "$line" | $SED "s/\* /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+   elif echo "$line" | grep -q -e '^- ' -e '^* ' -e '^+ '; then
+     if [ ! "$extention_flg" -a ! "$code_flg" ];then
+       if [ ! "$normal_list_flg" ];then
+         normal_list_flg=yes
+         echo "<div class=\"standard-list\">" >> ${tmp}/description.tmp
+         echo "<ul>" >> ${tmp}/description.tmp
+         echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
+         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+       else
+         echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
+         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+       fi
+       next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
+       if [[ ! "$next_line" =~ "^[-*+] " ]] && [[ "$normal_list_flg" == "yes" ]];then
+         echo "</ul>" >> ${tmp}/description.tmp
+         echo "</div>" >> ${tmp}/description.tmp
+         normal_list_flg=""
+       fi
      else
-       echo  "$line" | $SED "s/\* /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
-     fi
-     next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
-     if [[ ! "$next_line" == \** ]] && [[ "$normal_list_flg" == "yes" ]];then
-       echo "</ul>" >> ${tmp}/description.tmp
-       echo "</div>" >> ${tmp}/description.tmp
-       normal_list_flg=""
+       echo "$line" >> ${tmp}/description.tmp
      fi
 
    # Number list
    elif echo "$line" | grep -qE "^[0-9]+\. "; then
-     if [ ! "$number_list_flg" ];then
-       number_list_flg=yes
-       echo "<div class=\"num-list\">" >> ${tmp}/description.tmp
-       echo "<ul>" >> ${tmp}/description.tmp
-       echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+     if [ ! "$extention_flg" -a ! "$code_flg" ];then
+       if [ ! "$number_list_flg" ];then
+         number_list_flg=yes
+         echo "<div class=\"num-list\">" >> ${tmp}/description.tmp
+         echo "<ul>" >> ${tmp}/description.tmp
+         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+       else
+         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+       fi
+       next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
+       if [[ ! "$next_line" =~ ^[0-9]+\. ]] && [[ "$number_list_flg" == "yes" ]];then
+         echo "</ul>" >> ${tmp}/description.tmp
+         echo "</div>" >> ${tmp}/description.tmp
+         number_list_flg=""
+       fi
      else
-       echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
-     fi
-     next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
-     if [[ ! "$next_line" =~ "^[0-9]+\.+ " ]] && [[ "$number_list_flg" == "yes" ]];then
-       echo "</ul>" >> ${tmp}/description.tmp
-       echo "</div>" >> ${tmp}/description.tmp
-       number_list_flg=""
+       echo "$line" >>  ${tmp}/description.tmp
      fi
 
    # code
