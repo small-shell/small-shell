@@ -48,8 +48,8 @@ Link to [Internal table](./%%app?req=table)
 ````
 
 ## List
-List can be defined by using asterisk or number.
 ### Standard List
+Asterisk or Hyphen or plus can be used.
 * text
 * text
 
