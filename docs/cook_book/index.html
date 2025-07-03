@@ -137,7 +137,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#design-recipe" class="nav-link">Design recipe</a>
+            <li class="nav-item" data-bs-level="2"><a href="#portal-page-cooking" class="nav-link">Portal page cooking</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -677,22 +677,26 @@ if [ &quot;$session&quot; ];then
 fi
 </code></pre>
 <p>Then you can get notification mail from inquiry APP when end user submit inquiry through Form. you can insert above code to any set action script of Form APPs or Scratch APPs.</p>
-<h2 id="design-recipe">Design recipe</h2>
-<p>In this section, you can learn how you can change design of portal page of your APP. let's create main page with no authentication and no databox for making the easiest example. of course any type of authentication can be selected and any databox can be attached.</p>
+<h2 id="portal-page-cooking">Portal page cooking</h2>
+<p>In this section, you can learn how you can change design of portal page of your APP. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is exmaple of creating kind of static portal page with no authentication and with no databox. of course any type of authentication can be selected and any databox can be attached.   </p>
+</div>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
-app_name: static_site
+APP Name: static_site
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
-primary databox: none
+Primary Databox: none
+Do you want to enable IP whitelisting for this APP? (yes | no): no
 </code></pre>
 <h3 id="cook-portal-page">Cook portal page</h3>
-<p>Let's start to cook portal page. you can edit the page by 2 way. 1 is edit the page on Base APP {$APP_UI.md.def} web UI. </p>
-<h4 id="update-appuimddef-on-base-app">Update $app.UI.md.def on <a href="../app_shell_tour/#access-url-of-base-app">Base APP</a></h4>
-<p><img alt="Screenshot" src="../img/book_search_portal.png" /></p>
-<p>You can update portal page using both markdown and legach HTML. 
-please check the markdown grammer <a href="https://21it.org/markdown.html">here</a> if needed. 
-also you can update "menu" "logo" and "footer" on the same admin page. 
-<img alt="Screenshot" src="../img/update_book_search_portal.png" /></p>
+<p>You can edit portal page by 2 way. 1 is edit the page on Base APP {$APP_UI.md.def} web UI like following.</p>
+<p><img alt="Screenshot" src="../img/static_site_portal.png" /></p>
+<p>You can use both markdown and HTML. 
+please check the markdown grammer <a href="https://21it.org/markdown.html">here</a>. 
+also you can update "menu" "logo" and "footer" on the same admin page.    </p>
+<p><img alt="Screenshot" src="../img/update_static_site_portal.png" /></p>
 <table>
 <thead>
 <tr>
@@ -710,7 +714,7 @@ also you can update "menu" "logo" and "footer" on the same admin page.
 <tr>
 <td>YAML for navbar-right-header</td>
 <td>YAML</td>
-<td>Define links in even button menu of navbar right side</td>
+<td>Define links in even button menu of navbar right side, If you delete contents of this field, right side menu will be disapeared</td>
 </tr>
 <tr>
 <td>YAML for navbar-left-links</td>
@@ -729,9 +733,13 @@ also you can update "menu" "logo" and "footer" on the same admin page.
 </tr>
 </tbody>
 </table>
-<h4 id="use-imagesdb">Use images.db</h4>
+<h3 id="insert-image">Insert image</h3>
 <p>You can upload logo or images to images.db. and then you can get link of img tag that can be utilized on description or logo field on $app.UI.md.def page.</p>
 <p><img alt="Screenshot" src="../img/scratch_app_logo.png" /></p>
+<h3 id="use-calendar">Use calendar</h3>
+<p>if you write down %%calendar in "Description", you can insert calendar to the Scratch APP.
+calendar events will be saved on $app.events databox that will be generated automatically when you create Scratch APP.
+<img alt="Screenshot" src="../img/calendar.png" /></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
 <p>Another way of updating portal is just editting hml.def directly {$APP_main.html.def} </p>
 <pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
@@ -1039,7 +1047,7 @@ sudo /usr/local/small-shell/adm/rstr $dir
 <p>It's required to Launch Base APP and check e-cron URL and key</p>
 <pre><code>@backup_node
 sudo /usr/local/small-shell/adm/gen -app 
-cat /usr/local/small-shell/web/base | grep hubapi
+cat /usr/local/small-shell/web/base | grep hub_api
 cat /usr/local/small-shell/web/base | grep api_authkey
 </code></pre>
 <h4 id="operation-at-production-node">Operation at production node</h4>
@@ -1073,7 +1081,7 @@ Week  [ any | mon - sun ]: any
 Type of file exchange (push | get): push
 local directory: /var/tmp
 file_name: *tar.xz
-HUB API URL: $hubapi
+HUB API URL: $hub_api
 API authkey: $api_authkey
 </code></pre>
 <h4 id="backup-file">Backup file</h4>
@@ -1139,7 +1147,7 @@ week: any
 exec_command=&quot;/usr/local/small-shell/util/scripts/ssw_log_analyzer.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;analyzer.done&quot;
-hubapi=&quot;&quot;
+hub_api=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
 <h6 id="statistics">statistics</h6>
@@ -1157,7 +1165,7 @@ week: any
 exec_command=&quot;/usr/local/small-shell/util/scripts/ssw_statistics.sh&quot;
 input_message=&quot;analyzer.done&quot;
 output_message=&quot;&quot;
-hubapi=&quot;&quot;
+hub_api=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
 <h4 id="confirm-result">Confirm result</h4>

@@ -259,7 +259,7 @@ week: any
 exec_command=&quot;/home/ubuntu/job1.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;&quot;
-hubapi=&quot;&quot;
+hub_api=&quot;&quot;
 authkey=&quot;&quot;
 </code></pre>
 <h5 id="confirm-job-list">confirm job list</h5>
@@ -333,7 +333,7 @@ SCHEDULE:1 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;done.1&quot;
-hubapi=&quot;&quot;
+hub_api=&quot;&quot;
 authkey=&quot;&quot;                     
 -----------------------------------------------------------
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
@@ -346,7 +346,7 @@ SCHEDULE:2 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
 input_message=&quot;done.1&quot;
 output_message=&quot;&quot;
-hubapi=&quot;&quot;
+hub_api=&quot;&quot;
 authkey=&quot;&quot;
 -----------------------------------------------------------
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
@@ -397,8 +397,8 @@ Once API HUB is ready, you can define job relationship using message.</p>
 </code></pre>
 <h5 id="confirm-base-information-at-api-hub-server">confirm base information at API HUB server</h5>
 <h6 id="hub">@hub</h6>
-<pre><code>sudo cat /usr/local/small-shell/web/base | grep hubapi
-hubapi=&quot;http://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep hub_api
+hub_api=&quot;http://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
 sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
@@ -439,7 +439,7 @@ SCHEDULE:1 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;done.1&quot; #modify
-hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
+hub_api=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
 api_authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
@@ -454,7 +454,7 @@ CHEDULE:2 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
 input_message=&quot;done.1&quot;
 output_message=&quot;&quot;
-hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
+hub_api=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
 authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
@@ -495,8 +495,8 @@ filter: job2
 </code></pre>
 <h5 id="confirm-base-information-at-api-hub-server_1">confirm base information at API HUB server</h5>
 <h6 id="hub_1">@hub</h6>
-<pre><code>sudo cat /usr/local/small-shell/web/base | grep hubapi
-hubapi=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep hub_api
+hub_api=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot;
 
 sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
@@ -660,7 +660,7 @@ SCHEDULE:* * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/send_mail \&quot;$mailto\&quot; \&quot;$mailfrom\&quot; \&quot;$subject\&quot; \&quot;$contents\&quot;&quot;
 input_message=&quot;&quot;
 output_message=&quot;&quot;
-hubapi=&quot;&quot;
+hub_api=&quot;&quot;
 authkey=&quot;&quot;
 
 # add manually

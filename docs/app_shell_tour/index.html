@@ -766,7 +766,7 @@ If you click the tag, search result will be shown.
 <pre><code>sudo cat /usr/local/small-shell/web/base | grep api_authkey
 </code></pre>
 <h4 id="confirm-api-url">confirm API url</h4>
-<pre><code>sudo cat /usr/local/small-shell/web/base | grep commandapi
+<pre><code>sudo cat /usr/local/small-shell/web/base | grep command_api
 </code></pre>
 <h4 id="change-permission-to-rw-optional">Change permission to rw (optional)</h4>
 <p>if you want to set data from external system, please change permission for api user. </p>
@@ -776,33 +776,33 @@ If you click the tag, search result will be shown.
 <p>please access command API from external system, you can access the data using curl very easily.</p>
 <h4 id="from-linux-shell-with-curl">From Linux shell with curl</h4>
 <pre><code>api_authkey="XXXX"
-commandapi="https://XXXX/cgi-bin/api"
+command_api="https://XXXX/cgi-bin/api"
 databox="XXXX"
 
 (e.g.) exec "grep test" command to index
-curl -X GET "${commandapi}?databox=$databox&amp;command=grep_test" -H "X-small-shell-authkey:$api_authkey"
+curl -X GET "${command_api}?databox=$databox&amp;command=grep_test" -H "X-small-shell-authkey:$api_authkey"
 
 (e.g.) get DATA
 id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please input id that you want to get
-curl -X GET "${commandapi}?databox=$databox&amp;keys=all&amp;id=$id" -H "X-small-shell-authkey:$api_authkey"
+curl -X GET "${command_api}?databox=$databox&amp;keys=all&amp;id=$id" -H "X-small-shell-authkey:$api_authkey"
 
 (e.g.) push DATA
 sudo /usr/local/small-shell/adm/ops set.attr:api{rw}
 id="new" #please input id that you want to set    
-curl -X POST "${commandapi}?databox=$databox&amp;id=$id" -H "X-small-shell-authkey:$api_authkey" -H "Content-Type: application/json" -d '{"item_name":"item1", "description":"test"}'
+curl -X POST "${command_api}?databox=$databox&amp;id=$id" -H "X-small-shell-authkey:$api_authkey" -H "Content-Type: application/json" -d '{"item_name":"item1", "description":"test"}'
 </code></pre>
 <h4 id="from-windows-power-shell-with-curl">From Windows power shell with curl</h4>
 <pre><code>@External system (windwos)
 $api_authkey="XXXX" #please input authkey that you confirmed
-$commandapi="https://XXXX/cgi-bin/api"
+$command_api="https://XXXX/cgi-bin/api"
 $databox="XXXX"
 
 (e.g.) exec grep command to index
-curl.exe -X GET "${commandapi}?command=grep_test&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
+curl.exe -X GET "${command_api}?command=grep_test&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
 
 (e.g.) get DATA
 $id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please input id that you want to get
-curl.exe -X GET "${commandapi}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
+curl.exe -X GET "${command_api}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
 </code></pre>
 <h2 id="upgrade-ssl-cert-and-key">Upgrade SSL cert and key</h2>
 <p>When you upgrade SSL cert and key for small-shell default WEB server, you need to re-generate Base APP by gen command. all service will be down during this upgrade.</p>
