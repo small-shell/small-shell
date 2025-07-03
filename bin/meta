@@ -494,7 +494,7 @@ if [ "$action" = "get.link" ];then
   fi
 
 
-  if [ ! -f ${cgidir}/${app} ];then
+  if [ ! -f ${cgi_dir}/${app} ];then
 
     subapp=`echo $app | $AWK -F "@" '{print $1}'`
     parent_app=`echo $app | $AWK -F "@" '{print $2}'`
