@@ -676,7 +676,6 @@ if [ "$param" = "-databox" ];then
   done
 
   echo "-----------------------------------------------------------------"
-  echo ""
 
   echo -n "Is it OK? (yes | no): "
   read fin_answer
@@ -998,7 +997,6 @@ if [ "$param" = "-addcol" ];then
   done
 
   echo "-----------------------------------------------------------------"
-  echo ""
 
   echo -n "Is it OK? (yes | no): "
   read fin_answer
@@ -1160,7 +1158,6 @@ if [ "$param" = "-delcol" ];then
 
   echo ""
   echo "-----------------------------------------------------------------"
-  echo ""
 
   echo -n "Is it OK? (yes | no): "
   read fin_answer
@@ -2139,7 +2136,6 @@ if [ "$param" = "-app" ];then
     echo "Access URL: ${static_url}${form_name}"
     echo ""
     echo "-----------------------------------------------------------------"
-    echo ""
     echo -n "Is it OK? (yes | no): "
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
@@ -2385,7 +2381,6 @@ if [ "$param" = "-app" ];then
 
     echo ""
     echo "-----------------------------------------------------------------"
-    echo ""
     echo -n "Is it OK? (yes | no): "
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
