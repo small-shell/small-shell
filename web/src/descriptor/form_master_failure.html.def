@@ -6,7 +6,7 @@
 
        <style type="text/css">
          body {
-           font-family: 'Hiragino Kaku Gothic Pro',sans-serif;
+           font-family: sans-serif;
            color: #000333;
            letter-spacing: .04em;
            font-size: 94%;

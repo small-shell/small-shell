@@ -249,7 +249,7 @@ if [ "$command" ];then
     # Handle show_all options
 
     ## Handle sort option
-    sort_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.sort
+    sort_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.sort
 
     if [ "${sort_key}" -o "${sort_option}" ];then
 
@@ -280,7 +280,7 @@ if [ "$command" ];then
     fi
 
     ## Handle show_all.filter_words
-    filter_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.filter
+    filter_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.filter
 
     if [ "$filter_words" ];then
 
@@ -291,11 +291,11 @@ if [ "$command" ];then
       fi
 
       exec_command=`echo "$filter_words" | $SED "s/,/ | grep -i /g" | $SED "s/^/grep -i /g"`
-      echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.filtering.exe
-      chmod 700 $ROOT/tmp/exec/$exec_session.filtering.exe
+      echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/${exec_session}.filtering.exe
+      chmod 700 $ROOT/tmp/exec/${exec_session}.filtering.exe
 
       # exec filtering
-      $ROOT/tmp/exec/$exec_session.filtering.exe > ${filter_tmp}
+      $ROOT/tmp/exec/${exec_session}.filtering.exe > ${filter_tmp}
 
       result_count=`cat ${filter_tmp} | wc -l | tr -d " "`
       target_file=${filter_tmp}
@@ -309,10 +309,10 @@ if [ "$command" ];then
                  if(match(\$3, /${filter_word}/))\
                  print \$0;\
               }\
-        '" > $ROOT/tmp/exec/$exec_session.${count}.remove_id.exe
-        chmod 700 $ROOT/tmp/exec/$exec_session.${count}.remove_id.exe
+        '" > $ROOT/tmp/exec/${exec_session}.${count}.remove_id.exe
+        chmod 700 $ROOT/tmp/exec/${exec_session}.${count}.remove_id.exe
         target_file="${target_file}.${count}"
-        $ROOT/tmp/exec/$exec_session.${count}.remove_id.exe > $target_file
+        $ROOT/tmp/exec/${exec_session}.${count}.remove_id.exe > $target_file
 
         if [ "$filter_key" ];then
           if [ "$filter_col" ];then
@@ -323,10 +323,10 @@ if [ "$command" ];then
                      if(match(\$${filter_col}, /${filter_word}/))\
                      print \$0;\
                   }\
-            '" > $ROOT/tmp/exec/$exec_session.c.${count}.remove_col.exe
-            chmod 700 $ROOT/tmp/exec/$exec_session.c.${count}.remove_col.exe
+            '" > $ROOT/tmp/exec/${exec_session}.c.${count}.remove_col.exe
+            chmod 700 $ROOT/tmp/exec/${exec_session}.c.${count}.remove_col.exe
             target_file="${target_file}.c.${count}"
-            $ROOT/tmp/exec/$exec_session.c.${count}.remove_col.exe > $target_file
+            $ROOT/tmp/exec/${exec_session}.c.${count}.remove_col.exe > $target_file
           else
             target_file="${target_file}.c.${count}"
             touch $target_file
@@ -338,7 +338,7 @@ if [ "$command" ];then
     fi
 
     ## Handle show_all.match_word
-    match_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.match
+    match_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.match
 
     if [ "$match_word" ];then
 
@@ -352,11 +352,11 @@ if [ "$command" ];then
       fi
 
       exec_command=`echo "$match_word" | $SED "s/^/grep  /g"`
-      echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.match.exe
-      chmod 700 $ROOT/tmp/exec/$exec_session.match.exe
+      echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/${exec_session}.match.exe
+      chmod 700 $ROOT/tmp/exec/${exec_session}.match.exe
 
       # exec matching
-      $ROOT/tmp/exec/$exec_session.match.exe > $match_tmp
+      $ROOT/tmp/exec/${exec_session}.match.exe > $match_tmp
 
       target_file=$match_tmp
       count=1
@@ -372,10 +372,10 @@ if [ "$command" ];then
                if(match(\$${filter_col}, /^${match_word}$/))\
                print \$0;\
            }\
-          '" > $ROOT/tmp/exec/$exec_session.c.${count}.match.exe
-          chmod 700 $ROOT/tmp/exec/$exec_session.c.${count}.match.exe
+          '" > $ROOT/tmp/exec/${exec_session}.c.${count}.match.exe
+          chmod 700 $ROOT/tmp/exec/${exec_session}.c.${count}.match.exe
           target_file="${target_file}.c.${count}"
-          $ROOT/tmp/exec/$exec_session.c.${count}.match.exe > $target_file
+          $ROOT/tmp/exec/${exec_session}.c.${count}.match.exe > $target_file
         else
           target_file="${target_file}.c.${count}"
           touch $target_file
@@ -384,7 +384,7 @@ if [ "$command" ];then
     fi
 
     ## Handle line start-end option
-    line_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.extract_line
+    line_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.extract_line
 
     if [ "${line_start}" -a "${line_end}"  ];then
       if [ "${line_start}" -lt "${line_end}" ];then
@@ -393,16 +393,16 @@ if [ "$command" ];then
       else
         echo "error: please set line adequately"
 
-        ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+        ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
         if [ $? -eq 0 ];then
-          rm $ROOT/tmp/exec/$exec_session*
+          rm $ROOT/tmp/exec/${exec_session}*
         fi
         exit 1
       fi
     fi
 
     ## Extract data with key_list
-    keys_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.extract_keys
+    keys_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.extract_keys
     if [ "$key_list" ];then
 
       for key in `echo $key_list | $SED "s/,/ /g"`
@@ -418,14 +418,14 @@ if [ "$command" ];then
       done
 
       # remove ID field with nl
-      split_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.split
+      split_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.split
       cat $target_file  | $AWK -F "::::::" '{print $2}' | $SED "s/^/::::::/g" | $SED "s/$/::::::/g" | nl > ${split_tmp}.id
 
       if [ "$col_list" ];then
         exec_command="cut -d \",\" -f $col_list"
-        echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/$exec_session.extract_key.exe
-        chmod 700 $ROOT/tmp/exec/$exec_session.extract_key.exe
-        $ROOT/tmp/exec/$exec_session.extract_key.exe | nl > ${split_tmp}.data
+        echo "cat $target_file | $exec_command" > $ROOT/tmp/exec/${exec_session}.extract_key.exe
+        chmod 700 $ROOT/tmp/exec/${exec_session}.extract_key.exe
+        $ROOT/tmp/exec/${exec_session}.extract_key.exe | nl > ${split_tmp}.data
         join ${split_tmp}.id ${split_tmp}.data \
         | $SED "s/ ::::::/######/g" | $SED "s/:::::: /::::::/g" | $SED -r "s/^(.*)######/::::::/g" > $keys_tmp
         target_file=$keys_tmp
@@ -436,7 +436,7 @@ if [ "$command" ];then
 
     # Generate result file of show_all with options
     if [ "$target_file" ];then
-      cat $target_file > $ROOT/tmp/exec/$exec_session.result
+      cat $target_file > $ROOT/tmp/exec/${exec_session}.result
     fi
 
   fi
@@ -484,10 +484,10 @@ if [ "$command" ];then
 
       if [ "$type" = "log" ];then
         # execute filtering command for log
-        log_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.log
-        echo "cat $target_file | $filter_command" > $ROOT/tmp/exec/$exec_session
-        chmod 700 $ROOT/tmp/exec/$exec_session
-        $ROOT/tmp/exec/$exec_session > $log_tmp
+        log_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.log
+        echo "cat $target_file | $filter_command" > $ROOT/tmp/exec/${exec_session}
+        chmod 700 $ROOT/tmp/exec/${exec_session}
+        $ROOT/tmp/exec/${exec_session} > $log_tmp
         target_file=$log_tmp
         count=1
 
@@ -501,17 +501,17 @@ if [ "$command" ];then
         exec_command="filter:$filter_words"
 
         # Generate result file for log filtering
-        cat $target_file  > $ROOT/tmp/exec/$exec_session.result
+        cat $target_file  > $ROOT/tmp/exec/${exec_session}.result
 
       fi
 
       if [ "$type" = "data" ];then
-        echo "cat $target_file | $filter_command" > $ROOT/tmp/exec/$exec_session
-        chmod 700 $ROOT/tmp/exec/$exec_session
+        echo "cat $target_file | $filter_command" > $ROOT/tmp/exec/${exec_session}
+        chmod 700 $ROOT/tmp/exec/${exec_session}
 
         # execute filtering command for data
-        filter_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.filter
-        $ROOT/tmp/exec/$exec_session > $filter_tmp
+        filter_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.filter
+        $ROOT/tmp/exec/${exec_session} > $filter_tmp
         data_type_chk=`cat $ROOT/databox/${databox}/def/col* | grep -e "type=\"file\"" -e "type=\"url\""`
         exec_command="filter:$filter_words"
         target_file=$filter_tmp
@@ -526,10 +526,10 @@ if [ "$command" ];then
                    if(match(\$3, /${filter_word}/))\
                    print \$0;\
                 }\
-          '" > $ROOT/tmp/exec/$exec_session.${count}.exe
-          chmod 700 $ROOT/tmp/exec/$exec_session.${count}.exe
+          '" > $ROOT/tmp/exec/${exec_session}.${count}.exe
+          chmod 700 $ROOT/tmp/exec/${exec_session}.${count}.exe
           target_file="${target_file}.${count}"
-          $ROOT/tmp/exec/$exec_session.${count}.exe > $target_file
+          $ROOT/tmp/exec/${exec_session}.${count}.exe > $target_file
   
           if [ "$format" = "html_tag" ];then
 
@@ -558,14 +558,14 @@ if [ "$command" ];then
     # it means no filter_flag and command will be pipelined to the data and work as Unix command not filtering.
 
       if [ "$type" = "log" ];then
-        log_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.log
+        log_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.log
         unix_command=`echo "$exec_command" | $SED "s/{%%%%%%}/,/g" \
         | $SED "s/{%%%%%%%%%%%%%%}/$/g" | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"`
 
-        echo "cat $target_file |  $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
-        chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
+        echo "cat $target_file |  $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/${exec_session}.command.exe
+        chmod 700 $ROOT/tmp/exec/${exec_session}.command.exe
         # execute unix command for log
-        $ROOT/tmp/exec/$exec_session.command.exe > $log_tmp
+        $ROOT/tmp/exec/${exec_session}.command.exe > $log_tmp
       fi
 
       if [ "$type" = "data" ];then
@@ -573,12 +573,12 @@ if [ "$command" ];then
         | $SED "s/{%%%%%%%%%%%%%%}/$/g" | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"`
 
         # detouch hash id  to be accurate input for Unix command. because hash id has so many random characters, it must be detouched.
-        echo "cat $target_file | $AWK -F "::::::" '{print \$3}' | $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/$exec_session.command.exe
-        chmod 700 $ROOT/tmp/exec/$exec_session.command.exe
+        echo "cat $target_file | $AWK -F "::::::" '{print \$3}' | $SED "s/{%%%%%%}/,/g" | $unix_command" > $ROOT/tmp/exec/${exec_session}.command.exe
+        chmod 700 $ROOT/tmp/exec/${exec_session}.command.exe
 
         # execute unix command for data
-        data_tmp=$ROOT/tmp/exec/$exec_session.result.tmp.data
-        $ROOT/tmp/exec/$exec_session.command.exe > $data_tmp
+        data_tmp=$ROOT/tmp/exec/${exec_session}.result.tmp.data
+        $ROOT/tmp/exec/${exec_session}.command.exe > $data_tmp
         target_file=$data_tmp
         num_of_line=`cat $target_file | wc -l | tr -d " "`
 
@@ -616,27 +616,27 @@ if [ "$command" ];then
             id_chk=`grep "::::::$hashid::::::" $ROOT/databox/$databox/index | $AWK -F "::::::" '{print $2}'`
 
             if [ "$id_chk" ];then
-              echo "::::::$hashid::::::$line" >> $ROOT/tmp/exec/$exec_session.result
+              echo "::::::$hashid::::::$line" >> $ROOT/tmp/exec/${exec_session}.result
             else
-              echo "$line" >> $ROOT/tmp/exec/$exec_session.result
+              echo "$line" >> $ROOT/tmp/exec/${exec_session}.result
             fi
           done < $target_file
         else
-          echo "<b>Info: <a>link</a> can be generated within 100 line of command result</b>" > $ROOT/tmp/exec/$exec_session.result
-          echo "Result is $num_of_line line" >> $ROOT/tmp/exec/$exec_session.result
-          echo "------------------------------------------------------------------" >> $ROOT/tmp/exec/$exec_session.result
-          cat $target_file >> $ROOT/tmp/exec/$exec_session.result
+          echo "<b>Info: <a>link</a> can be generated within 100 line of command result</b>" > $ROOT/tmp/exec/${exec_session}.result
+          echo "Result is $num_of_line line" >> $ROOT/tmp/exec/${exec_session}.result
+          echo "------------------------------------------------------------------" >> $ROOT/tmp/exec/${exec_session}.result
+          cat $target_file >> $ROOT/tmp/exec/${exec_session}.result
         fi
       fi
     fi
   fi
 
-  if [ ! -f $ROOT/tmp/exec/$exec_session.result ];then
-    touch $ROOT/tmp/exec/$exec_session.result
+  if [ ! -f $ROOT/tmp/exec/${exec_session}.result ];then
+    touch $ROOT/tmp/exec/${exec_session}.result
   fi
 
   # render by html format
-  if [ "$format" = "html_tag" -a -f $ROOT/tmp/exec/$exec_session.result ];then
+  if [ "$format" = "html_tag" -a -f $ROOT/tmp/exec/${exec_session}.result ];then
 
     if [ "$col_list" ];then
       header_info=`grep "^label=" $ROOT/databox/${databox}/def/col*  | $SED "s/,//g" \
@@ -661,7 +661,7 @@ if [ "$command" ];then
         echo "<p>$header_item</p>"
       done
       echo "</li>"
-      cat $ROOT/tmp/exec/$exec_session.result  | $SED -r "s/^::::::/<li><p><a href=\".\/$app?%%params\&req=get\&id=/g"  \
+      cat $ROOT/tmp/exec/${exec_session}.result  | $SED -r "s/^::::::/<li><p><a href=\".\/$app?%%params\&req=get\&id=/g"  \
       | $SED -r "s/::::::/\">/g" \
       | $SED -r "s/,/<\/a><\/p><p>/1" \
       | $SED "s/,/<\/p><p>/g" \
@@ -691,7 +691,7 @@ if [ "$command" ];then
     #  echo "</tr>"
     #  echo "</thead>"
     #  echo "<tbody>"
-    #  cat $ROOT/tmp/exec/$exec_session.result  | $SED -r "s/^::::::/<tr><td><a href=\".\/$app?%%params\&req=get\&id=/g"  \
+    #  cat $ROOT/tmp/exec/${exec_session}.result  | $SED -r "s/^::::::/<tr><td><a href=\".\/$app?%%params\&req=get\&id=/g"  \
     #  | $SED -r "s/::::::/\">/g" \
     #  | $SED -r "s/,/<\/a><\/td><td>/1" \
     #  | $SED "s/,/<\/td><td>/g" \
@@ -718,20 +718,20 @@ if [ "$command" ];then
         display_command=">> $databox.dump:csv | $exec_command"
       fi
 
-      if [ -s $ROOT/tmp/exec/$exec_session.result ];then
+      if [ -s $ROOT/tmp/exec/${exec_session}.result ];then
         echo "$display_command"
 
         if [[ $exec_command == filter:* ]]; then
           if [ "$type" = "data" ];then
             echo ""
-            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l | tr -d " " `
+            line_num=`cat $ROOT/tmp/exec/${exec_session}.result | wc -l | tr -d " " `
             echo "Result: $line_num"
             #echo "Label:  $header_info"
           fi
 
           if [ "$type" = "log" ];then
             echo ""
-            line_num=`cat $ROOT/tmp/exec/$exec_session.result | wc -l | tr -d " " `
+            line_num=`cat $ROOT/tmp/exec/${exec_session}.result | wc -l | tr -d " " `
             echo "Result: $line_num"
           fi
 
@@ -743,7 +743,7 @@ if [ "$command" ];then
         fi
 
         # dump result
-        cat $ROOT/tmp/exec/$exec_session.result \
+        cat $ROOT/tmp/exec/${exec_session}.result \
         | $SED -r "s/^::::::/<a href=\".\/$app?%%params\&req=get\&id=/g" | $SED -r "s/::::::/\">link <-  <\/a>/g"
 
       elif [ "$cmd_check_error" ];then
@@ -773,34 +773,35 @@ if [ "$command" ];then
     fi
     header_info="id,$header_info"
 
-    # remove hash id separator and others
+    # remove hash id, separator and others
     if [ ! "$data_type_chk" ];then
-      cat $ROOT/tmp/exec/$exec_session.result | $SED "s/^:::::://g" | $SED "s/::::::/,/g" | $SED "1s/^/$header_info\n/" \
+      cat $ROOT/tmp/exec/${exec_session}.result | $SED "s/^:::::://g" | $SED "s/::::::/,/g" | $SED "1s/^/$header_info\n/" \
       | $SED "s/,-,/,,/g" | $SED "s/,-$/,/g" | $SED  "s/<a href=\"//g" \
-      | $SED "s/\" (.*)//g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
+      | $SED "s/\" (.*)//g" > $ROOT/tmp/exec/${exec_session}.result_for_other_format
     else
-      cat $ROOT/tmp/exec/$exec_session.result | $SED -r "s/^:::::://g" | $SED -r "s/::::::/,/g" | $SED "1s/^/$header_info\n/" \
-      | $SED "s/,-,/,,/g" | $SED "s/,-$/,/g" > $ROOT/tmp/exec/$exec_session.result.except_html_tag
+      # data type is including URL or file
+      cat $ROOT/tmp/exec/${exec_session}.result | $SED -r "s/^:::::://g" | $SED -r "s/::::::/,/g" | $SED "1s/^/$header_info\n/" \
+      | $SED "s/,-,/,,/g" | $SED "s/,-$/,/g" > $ROOT/tmp/exec/${exec_session}.result_for_other_format
     fi
 
   fi
 
   # render by none format
-  if [ "$format" = "none" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_error" ];then
-    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | $SED -e '1d'
+  if [ "$format" = "none" -a -f $ROOT/tmp/exec/${exec_session}.result -a ! "$cmd_check_error" ];then
+    cat $ROOT/tmp/exec/${exec_session}.result_for_other_format | $SED -e '1d'
   elif [ "$format" = "none"  -a "$cmd_check_error" ];then
     echo "error: $cmd_check_error"
   fi
 
   # render by csv format
-  if [ "$format" = "csv" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_eror" ];then
+  if [ "$format" = "csv" -a -f $ROOT/tmp/exec/${exec_session}.result -a ! "$cmd_check_eror" ];then
 
     if [ "$type" = "log" ];then
       echo "error: csv can be provided only for data"
 
-      ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+      ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
       if [ $? -eq 0 ];then
-        rm $ROOT/tmp/exec/$exec_session*
+        rm $ROOT/tmp/exec/${exec_session}*
       fi
       exit 1
 
@@ -811,36 +812,57 @@ if [ "$command" ];then
 
     if [ "$id_chk" ];then
       # render csv with keeping id
-      cat $ROOT/tmp/exec/$exec_session.result.except_html_tag
+      cat $ROOT/tmp/exec/${exec_session}.result_for_other_format
     else
       # render csv with removing id 
-      cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | cut -d "," -f 2-
+      cat $ROOT/tmp/exec/${exec_session}.result_for_other_format | cut -d "," -f 2-
     fi
 
   elif [  "$format" = "csv" -a "$cmd_check_error" ];then
     echo "error: $cmd_check_error"
   fi
 
-  # render by json
-  if [ "$format" = "json" -a -f $ROOT/tmp/exec/$exec_session.result -a ! "$cmd_check_error" ];then
+  # render by json format
+  if [ "$format" = "json" -a -f $ROOT/tmp/exec/${exec_session}.result -a ! "$cmd_check_error" ];then
 
     if [ "$type" = "log" ];then
       echo "error: json can be provided only for data"
 
-      ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+      ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
       if [ $? -eq 0 ];then
-        rm -rf $ROOT/tmp/exec/$exec_session*
+        rm -rf $ROOT/tmp/exec/${exec_session}*
       fi
 
       exit 1
     fi
 
-    # change csv -> json
-    json_tmp="$ROOT/tmp/exec/${exec_session}.json.tmp.1"
-    echo "[" > $json_tmp
-    cat $ROOT/tmp/exec/$exec_session.result.except_html_tag | $SED "s/\"/\\\\\"/g" \
-    | $SED -e '1d' | $SED "s/^/{ %%key/g" | $SED "s/$/\" }%%comma/g" >> $json_tmp
-    echo "]" >> $json_tmp
+    if [[ $databox == *.events ]];then
+      # handle events json for Scratch APP
+      # load base URL
+      . $ROOT/web/base
+
+      header_info="id,title,start,end,color,description,detail"
+      cat $ROOT/tmp/exec/${exec_session}.result_for_other_format \
+      | $SED "s#^#${base_url}$app?%%params\&req=get\&databox=$databox\&&id=#g" \
+      | $AWK -F "," '{print $0","$1}' | cut -f 2- -d "," \
+      | $SED "1s/hashid/id/g" > $ROOT/tmp/exec/${exec_session}.add_calendar
+      cat $ROOT/tmp/exec/${exec_session}.add_calendar > $ROOT/tmp/exec/${exec_session}.result_for_other_format
+
+      # change csv -> json
+      json_tmp="$ROOT/tmp/exec/${exec_session}.json.tmp.1"
+      cat $ROOT/tmp/exec/${exec_session}.result_for_other_format | $SED "s/\"/\\\\\"/g" \
+      | $SED -e '1d' | $SED "s/^/{ %%key/g" | $SED "s/$/\" }%%comma/g" >> $json_tmp
+
+    else
+      # normal json format
+      # change csv -> json
+      json_tmp="$ROOT/tmp/exec/${exec_session}.json.tmp.1"
+      echo "[" > $json_tmp
+      cat $ROOT/tmp/exec/${exec_session}.result_for_other_format | $SED "s/\"/\\\\\"/g" \
+      | $SED -e '1d' | $SED "s/^/{ %%key/g" | $SED "s/$/\" }%%comma/g" >> $json_tmp
+      echo "]" >> $json_tmp
+    fi
+
 
     keys=`echo $header_info | $SED "s/,/ /g"`
     for key in $keys
@@ -857,11 +879,12 @@ if [ "$command" ];then
     echo "error: $cmd_check_error"
   fi
 
-  ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+  ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
   if [ $? -eq 0 ];then
-     rm -rf $ROOT/tmp/exec/$exec_session*
+     rm -rf $ROOT/tmp/exec/${exec_session}*
   fi
   exit 0
+
 fi
 
 ## DATA HANDLER ##
@@ -879,9 +902,9 @@ function get_data(){
     return 1
   fi
 
-  cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/$exec_session.$col
-  chmod 700 $ROOT/tmp/exec/$exec_session.$col
-  . $ROOT/tmp/exec/$exec_session.$col
+  cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/${exec_session}.$col
+  chmod 700 $ROOT/tmp/exec/${exec_session}.$col
+  . $ROOT/tmp/exec/${exec_session}.$col
   label=`echo $label | $SED "s/</\&lt;/g" | $SED "s/>/\&gt;/g"`
 
   if [ "$format" = "html_tag" ];then
@@ -1067,10 +1090,10 @@ function get_data(){
 
         # generate tmp exe file to extract specific column by awk
         echo "cat $ROOT/databox/${pdlsbox}/index | $AWK -F \"::::::\" '{print \$3}' \
-        | $AWK -F \",\" '{print \$1\" #\"\$$kvl_col}'"  > $ROOT/tmp/exec/$exec_session.pdls.$key
+        | $AWK -F \",\" '{print \$1\" #\"\$$kvl_col}'"  > $ROOT/tmp/exec/${exec_session}.pdls.$key
 
-        chmod 755 $ROOT/tmp/exec/$exec_session.pdls.$key
-        primary_key_values=`$ROOT/tmp/exec/$exec_session.pdls.$key`
+        chmod 755 $ROOT/tmp/exec/${exec_session}.pdls.$key
+        primary_key_values=`$ROOT/tmp/exec/${exec_session}.pdls.$key`
 
         if [ "$value" ];then
           primary_value=`echo ${value} | $AWK -F " #" '{print $1}'`
@@ -1191,9 +1214,9 @@ function get_mergeable_data(){
   fi
 
   # load column profile
-  cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/$exec_session.$col
-  chmod 700 $ROOT/tmp/exec/$exec_session.$col
-  . $ROOT/tmp/exec/$exec_session.$col
+  cp $ROOT/databox/${databox}/def/$col $ROOT/tmp/exec/${exec_session}.$col
+  chmod 700 $ROOT/tmp/exec/${exec_session}.$col
+  . $ROOT/tmp/exec/${exec_session}.$col
 
   if [ ! "$type" = "textarea" ];then
     echo "error: merge option could be used only for textarea"
@@ -1624,9 +1647,9 @@ if [ "$action" ];then
     if [ "$type" = "log" ];then
        get_log $id $format
        if [ $? -eq 1 ];then
-         ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+         ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
          if [ $? -eq 0 ];then
-           rm $ROOT/tmp/exec/$exec_session*
+           rm $ROOT/tmp/exec/${exec_session}*
          fi
          exit 1
        fi
@@ -1646,9 +1669,9 @@ if [ "$action" ];then
       do
         get_data $id $key $format $primary_key 
         if [ $? -eq 1 ];then
-          ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+          ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
           if [ $? -eq 0 ];then 
-            rm $ROOT/tmp/exec/$exec_session*
+            rm $ROOT/tmp/exec/${exec_session}*
           fi
           exit 1
         fi
@@ -1656,9 +1679,9 @@ if [ "$action" ];then
     elif [ "$key" ];then
         get_data $id $key $format $primary_key 
         if [ $? -eq 1 ];then
-          ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+          ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
           if [ $? -eq 0 ];then
-            rm $ROOT/tmp/exec/$exec_session*
+            rm $ROOT/tmp/exec/${exec_session}*
           fi
           exit 1
         fi
@@ -1953,9 +1976,9 @@ if [ "$action" ];then
     fi
   fi
   
-  ls $ROOT/tmp/exec/$exec_session* >/dev/null 2>&1
+  ls $ROOT/tmp/exec/${exec_session}* >/dev/null 2>&1
   if [ $? -eq 0 ];then
-    rm $ROOT/tmp/exec/$exec_session*
+    rm $ROOT/tmp/exec/${exec_session}*
   fi  
 
   exit 0

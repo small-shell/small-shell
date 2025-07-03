@@ -41,8 +41,8 @@ retry=100
 count=0
 sleep_time=10
 if [ "${input_message}" ];then
-  if [ "$hubapi" ];then
-    message_chk=`$CURL -X GET "${hubapi}?req=get&message=${input_message}" -H "X-small-shell-authkey:$api_authkey"`
+  if [ "$hub_api" ];then
+    message_chk=`$CURL -X GET "${hub_api}?req=get&message=${input_message}" -H "X-small-shell-authkey:$api_authkey"`
 
     if [ "$message_chk" = "" -o "$message_chk" = "KEY AUTHENTICATION FAILED" ];then
       echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR failed_to_connect_to_API_HUB" > ${status_que}
@@ -82,8 +82,8 @@ if [ "${input_message}" ];then
 
       exit 1
     fi
-    if [ "$hubapi" ];then
-      message_chk=`$CURL -X GET "${hubapi}?req=get&message=${input_message}" -H "X-small-shell-authkey:$api_authkey"`
+    if [ "$hub_api" ];then
+      message_chk=`$CURL -X GET "${hub_api}?req=get&message=${input_message}" -H "X-small-shell-authkey:$api_authkey"`
 
       if [ "$message_chk" = "" -o "$message_chk" = "KEY AUTHENTICATION FAILED" ];then
         echo "`date +%Y-%m-%d` `date +%T` ${job} ERROR failed_to_connect_to_API_HUB" > ${status_que}
@@ -192,8 +192,8 @@ elif [ ! "$err_flg" ];then
 
   # create output message
   if [ "${output_message}" ];then
-    if [ "$hubapi" ];then
-      $CURL -X POST "${hubapi}?req=push&message=${output_message}" -H "X-small-shell-authkey:$api_authkey" 
+    if [ "$hub_api" ];then
+      $CURL -X POST "${hub_api}?req=push&message=${output_message}" -H "X-small-shell-authkey:$api_authkey" 
     else
       echo "$output_message" > $ROOT/util/e-cron/que/message/$output_message
       echo "`date +%Y-%m-%d` `date +%T` localhost push ${output_message}" >> ${messaging_log}

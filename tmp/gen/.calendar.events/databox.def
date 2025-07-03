@@ -1,0 +1,98 @@
+#---------------------------------------------------------------
+# db definition
+#---------------------------------------------------------------
+
+# databox
+databox="%%app.events"
+
+# col1
+#-------------------------------------------
+primary_key="hashid"
+primary_key_label=""
+#-------------------------------------------
+
++addcol
+# col2
+#-------------------------------------------
+col2_key_name="title"
+col2_key_label="Event Title"
+col2_type="text"
+
+# only for select, radio
+col2_key_params=""
+
+# only for pdls
+col2_primary_databox=""
+
+# required
+col2_required="yes"
+#-------------------------------------------
+
++addcol
+# col3
+#-------------------------------------------
+col3_key_name="start"
+col3_key_label="Start"
+col3_type="datetime-local"
+
+# only for select, radio
+col3_key_params=""
+
+# only for pdls
+col3_primary_databox=""
+
+# required option
+col3_required="yes"
+#-------------------------------------------
+
++addcol
+# col4
+#-------------------------------------------
+col4_key_name="end"
+col4_key_label="End"
+col4_type="datetime-local"
+
+# only for select, radio
+col4_key_params=""
+
+# only for pdls
+col4_primary_databox=""
+
+# required option
+col4_required="no"
+#-------------------------------------------
+
++addcol
+# col5
+#-------------------------------------------
+col5_key_name="color"
+col5_key_label="Color"
+col5_type="select"
+
+# only for select, radio
+col5_key_params="blue,green,purple,black"
+
+# only for pdls
+col5_primary_databox=""
+
+# required option
+col5_required="no"
+#-------------------------------------------
+
++addcol
+# col6
+#-------------------------------------------
+col6_key_name="description"
+col6_key_label="Description"
+col6_type="textarea"
+
+# only for select, radio
+col6_key_params=""
+
+# only for pdls
+col6_primary_databox=""
+
+# required option
+col6_required="no"
+#-------------------------------------------
+

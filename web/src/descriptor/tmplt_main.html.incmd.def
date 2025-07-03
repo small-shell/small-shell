@@ -3,7 +3,9 @@
     <meta charset="UTF-8" />
     <title>%%app portal</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="stylesheet" href="./%%app_css">
+    <link rel="stylesheet" href="%%static_url/%%app.css">
+    <link rel="stylesheet" href="%%static_url/simple-calendar.css">
+    <script src="%%static_url/simple-calendar.js"></script>
   </head>
   <body>
     <div class="container">
@@ -44,6 +46,23 @@
           btn.innerHTML = '=';
         }
       });
+
+      // handle calendar
+      document.addEventListener('DOMContentLoaded', function() {
+        const calendar = new SimpleCalendar('#my-calendar', {
+          initialView: 'month',
+          initialDate: new Date(),
+          events: [
+            // %%events
+          ],
+          theme: 'default'
+        });
+        // Listen for events
+        calendar.on('eventClick', function(event) {
+          console.log('Event clicked:', event);
+        });
+      });
+
     </script>
   </body>
 </html>

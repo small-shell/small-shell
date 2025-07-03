@@ -163,7 +163,7 @@ function initialize_url(){
     user_dir="$ROOT/users/${t_app}.${user_id}"
   fi
 
-  if [ ! -f $cgidir/$auth ];then
+  if [ ! -f $cgi_dir/$auth ];then
     echo "error: please generate APP first #gen -app" 
     rm -rf $user_dir
     exit 1

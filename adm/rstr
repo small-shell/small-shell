@@ -70,8 +70,8 @@ fi
 
 num_chk=`ls ${bkuped_dir}/*cgi*xz 2>/dev/null | wc -l`
 if [ $num_chk -eq 1 ];then
-  (cd ${bkuped_dir} && tar -xf *cgi*.xz && \cp -Rf cgi-bin/* ${cgidir}/ )
-  chown -R small-shell:small-shell $cgidir
+  (cd ${bkuped_dir} && tar -xf *cgi*.xz && \cp -Rf cgi-bin/* ${cgi_dir}/ )
+  chown -R small-shell:small-shell $cgi_dir
 fi
 
 num_chk=`ls ${bkuped_dir}/*ssh*xz 2>/dev/null | wc -l`

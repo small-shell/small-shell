@@ -32,7 +32,7 @@ else
 fi
 
 
-if [ ! "$index_url" ];then
+if [ ! "$srv_type" = "default" ];then
   echo "error: replication option can not be enabled for this server type, it's only for small-shell default WEB server"
   exit 1
 fi
@@ -141,7 +141,7 @@ if [ "$param" = "reg.replica" ];then
       echo -n "Load balancing IP or FQDN: "
       read cluster_IP
       cluster_base_url=`echo $base_url | $SED "s/$server/$cluster_IP/g"`
-      cluster_index_url=`echo $index_url | $SED "s/$server/$cluster_IP/g"`
+      cluster_static_url=`echo $static_url | $SED "s/$server/$cluster_IP/g"`
       get_test=`$CURL -k ${cluster_base_url}shelltest.cgi | grep OK`
       if [ ! "$get_test" ];then
         echo "error: failed to connect ${cluster_base_url}shelltest.cgi,"
@@ -230,9 +230,9 @@ if [ "$param" = "reg.replica" ];then
       for target in `ls ${www}/descriptor/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a`
       do
         app=`echo "${target}" | $AWK -F "_common_menu" '{print $1}'`
-        chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app} 2>/dev/null`
+        chk_team=`grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null`
 
-        if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
+        if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
           # update UI.md.def
           mkdir ${tmp_dir}/${app}
 
@@ -275,7 +275,7 @@ if [ "$param" = "reg.replica" ];then
       for target in `ls ${www}/html | grep -v index | xargs basename -a`
       do
         if [ -f ${www}/html/${target}/index.html ];then
-          chk_form=`cat ${cgidir}/${target} | grep "controller for FORM"`
+          chk_form=`cat ${cgi_dir}/${target} | grep "controller for FORM"`
           if [ ! "$chk_form" ];then
             cp ${www}/html/${target}/index.html ${www}/html/${target}/index.html.org
             cat ${www}/html/${target}/index.html | $SED "s#${base_url}#${cluster_base_url}#g" > ${tmp_dir}/${target}.index.html
@@ -308,12 +308,12 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/cgi-bin
 
       # update descriptor for scratch APP
-      for app in `ls ${cgidir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
+      for app in `ls ${cgi_dir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
       | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null`
       do
-        type3_chk=`grep "# controller for Scratch APP" ${cgidir}/${app}`
+        type3_chk=`grep "# controller for Scratch APP" ${cgi_dir}/${app}`
         if [ "$type3_chk" ];then
-          subapps=`cat ${cgidir}/$app | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g"`
+          subapps=`cat ${cgi_dir}/$app | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g"`
     
           for target in `ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a`
           do
@@ -366,7 +366,7 @@ if [ "$param" = "reg.replica" ];then
       # update web/base
       echo "cluster_server=\"$cluster_IP\"" >> $ROOT/web/base
       echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
-      echo "cluster_index_url=\"$cluster_index_url\"" >> $ROOT/web/base
+      echo "cluster_static_url=\"$cluster_static_url\"" >> $ROOT/web/base
       echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
       echo "cluster_base_url=\"$cluster_base_url\"" >> ${www}/descriptor/.small_shell_conf
       echo "replica_hosts=\"$replica\"" >> ${www}/descriptor/.small_shell_conf
@@ -446,7 +446,7 @@ EOF
   echo "Replication is successfully started."
   echo "---------------------------------------------------------------"
   echo "Please be aware that Access URL is changed,"
-  echo "From ${index_url}\${app} To ${cluster_index_url}\${app}"
+  echo "From ${static_url}\${app} To ${cluster_static_url}\${app}"
   echo ""
 
 fi
@@ -581,23 +581,23 @@ if [ "$param" = "reg.master" ];then
   # get latest codes from master
   sudo -u small-shell scp -r small-shell@${master}:${www}/descriptor ${www}
   sudo -u small-shell scp -r small-shell@${master}:${www}/html ${www}
-  sudo -u small-shell scp -r small-shell@${master}:${cgidir}/* ${cgidir}
+  sudo -u small-shell scp -r small-shell@${master}:${cgi_dir}/* ${cgi_dir}
   sudo -u small-shell scp -r small-shell@${master}:${www}/bin ${www}
   
   # update index
   for target in `ls ${www}/html | grep -v index | xargs basename -a 2>/dev/null`
   do
     if [ -f ${www}/html/${target}/index.html ];then
-      chk_form=`cat ${cgidir}/${target} | grep "controller for FORM"`
+      chk_form=`cat ${cgi_dir}/${target} | grep "controller for FORM"`
       if [ "$chk_form" ];then
         cp ${www}/html/${target}/index.html ${www}/html/${target}/index.html.org
         cat ${www}/html/${target}/index.html | $SED "s#./${server}#${master_base_url}#g" > ${tmp_dir}/${target}.index.html
         cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
-        mv ${cgidir}/${target} ${cgidir}/_${target}
+        mv ${cgi_dir}/${target} ${cgi_dir}/_${target}
         cat $ROOT/web/src/cgi-bin/tmplt_redirect_form | $SED "s#%%www#${www}#g" | $SED "s#%%master_base_url#${master_base_url}#g" \
-        | $SED "s/%%app/${target}/g" > ${cgidir}/${target} 
-        chmod 755 ${cgidir}/${target}
-        chown small-shell:small-shell ${cgidir}/${target}
+        | $SED "s/%%app/${target}/g" > ${cgi_dir}/${target} 
+        chmod 755 ${cgi_dir}/${target}
+        chown small-shell:small-shell ${cgi_dir}/${target}
       fi
     fi
   done
@@ -663,7 +663,7 @@ EOF
     mv /etc/lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua.org
 
     # update web/base desc/.small_shell_conf
-    cat $ROOT/web/base | grep -v cluster_server=\" | grep -v cluster_index_url=\" \
+    cat $ROOT/web/base | grep -v cluster_server=\" | grep -v cluster_static_url=\" \
     | grep -v cluster_base_url=\" | grep -v replica_hosts=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
     cat ${www}/descriptor/.small_shell_conf | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/small_shell_conf
@@ -689,9 +689,9 @@ EOF
     do
 
       app=`echo "${bkup}" | $AWK -F "_common_menu" '{print $1}'`
-      chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app} 2>/dev/null`
+      chk_team=`grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null`
 
-      if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
+      if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
         mkdir ${tmp_dir}/${app}
         id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
@@ -772,9 +772,9 @@ EOF
     for bkup in `ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
     do
       app=`echo "${bkup}" | $AWK -F "_common_menu" '{print $1}'`
-      chk_team=`grep "# controller for Scratch APP #team" ${cgidir}/${app} 2>/dev/null`
+      chk_team=`grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null`
 
-      if [ -f ${cgidir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
+      if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
         mkdir ${tmp_dir}/${app}
         id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
@@ -800,9 +800,9 @@ EOF
       if [ -f ${www}/html/${target}/index.html ];then
         cat ${www}/html/${target}/index.html | $SED "s#${cluster_base_url}#${base_url}#g" > ${tmp_dir}/${target}.index.html
         cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
-        if [ -f ${cgidir}/_${target} ];then
+        if [ -f ${cgi_dir}/_${target} ];then
           cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${target}#g" > ${www}/html/${target}/index.html
-          mv ${cgidir}/_${target} ${cgidir}/${target}
+          mv ${cgi_dir}/_${target} ${cgi_dir}/${target}
         fi
       fi
     done 

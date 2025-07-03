@@ -115,20 +115,23 @@ fi
 case "$req" in
   
   "main")
-    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name remote_addr:${remote_addr};;
+    %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name ;;
 
   "get")
-    %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate;;
+    %%www/bin/%%app_get.sh databox:$databox session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate databox:$databox ;;
 
   "set")
-    %%www/bin/%%app_set.sh session:$session pin:$pin user_name:$user_name id:$id;;
+    %%www/bin/%%app_set.sh databox:$databox session:$session pin:$pin user_name:$user_name id:$id databox:$databox ;;
+
+  "del")
+    %%www/bin/%%app_del.sh databox:$databox session:$session pin:$pin user_name:$user_name id:$id databox:$databox ;;
 
   "table")
     table_command="`echo $table_command | $SED "s/ /{%%space}/g"`"
     %%www/bin/%%app_table.sh session:$session pin:$pin user_name:$user_name id:$id page:$page table_command:$table_command line:$line;;
 
   "log_viewer")
-    %%www/bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id ;;
+    %%www/bin/%%app_log_viewer.sh session:$session pin:$pin user_name:$user_name id:$id databox:$databox ;;
 
   "file")
     %%www/bin/%%app_dl.sh session:$session pin:$pin user_name:$user_name id:$id ;;

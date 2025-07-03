@@ -35,9 +35,9 @@ tmp_dir="$ROOT/util/scripts/tmp/$random"
 # load base 
 . $ROOT/web/base
 
-main="$cgidir/../descriptor/${app}_main.html.def"
-css="$cgidir/../descriptor/${app}.css.def"
-descriptor="$cgidir/../descriptor"
+main="$cgi_dir/../descriptor/${app}_main.html.def"
+css="$static_dir/${app}.css"
+descriptor="$cgi_dir/../descriptor"
 
 if [ ! "$app" ];then
   echo "error: please input APP for exporting as static site # dist.sh \$APP \$EXPORT_DIR"
@@ -62,8 +62,7 @@ fi
 # dist main
 cat $main | $SED "s/^ *</</g" \
 | $SED "/%%common_menu/r ${descriptor}/common_parts/${app}_common_menu" \
-| $SED "s/%%common_menu//g"\
-| $SED "s/${app}_css/${app}.css/g" > ${tmp_dir}/index.html
+| $SED "s/%%common_menu//g" | $SED "s#${static_url}${app}.css#./${app}.css#g" > ${tmp_dir}/index.html
 
 # replace images
 grep "<img src=" ${tmp_dir}/index.html | grep images > ${tmp_dir}/.images
@@ -85,12 +84,15 @@ done < ${tmp_dir}/.images
 
 # dist css
 cat $css > $tmp_dir/${app}.css
-rm ${tmp_dir}/.index.html.tmp
 rm ${tmp_dir}/.images
 mv $tmp_dir ${SCRIPT_DIR}/tmp/${app}
 (cd ${SCRIPT_DIR}/tmp/ && tar cvfz ${app}.tar.gz ${app})
 mv ${SCRIPT_DIR}/tmp/${app}.tar.gz ${export_dir}/${app}.tar.gz
 rm -rf ${SCRIPT_DIR}/tmp/${app}
+
+if [ -f ${tmp_dir}/.index.html.tmp ];then
+  rm ${tmp_dir}/.index.html.tmp
+fi
 
 echo "============================================================"
 echo "APP is successfully exported to your directory,"

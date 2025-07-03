@@ -49,10 +49,10 @@ fi
 # backuip apps
 target_www=`echo $www | xargs basename -a`
 
-if [ "$cgidir" = "/var/www/cgi-bin" ];then
+if [ "$cgi_dir" = "/var/www/cgi-bin" ];then
   (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.www.tar.xz $target_www)
 else
-  target_cgi=`echo $cgidir | xargs basename -a`
+  target_cgi=`echo $cgi_dir | xargs basename -a`
   (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.www.tar.xz $target_www)
   (cd ${www}/../ && tar -Jcf $bkup_dir/${server}.cgi.tar.xz $target_cgi)
 fi
