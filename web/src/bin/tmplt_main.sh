@@ -53,6 +53,31 @@ if [ $num_of_md_def -ge 1 ];then
   fi
 fi
 
+# ----------------
+# Handle calendar
+# ----------------
+
+chk_calendar=`grep "<div id=\"my-calendar\">"  %%www/descriptor/%%app_main.html.def`
+
+if [ "$chk_calendar" ];then
+  $DATA_SHELL databox:%%app.events command:show_all format:json \
+  | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
+  | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
+  | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
+  | $SED "s/{%%%%%%%%%%%%%%}/$/g"\
+  | $SED "s/{%%%%%%%%%%%%%}/\#/g"\
+  | $SED "s/{%%%%%%%%%%%%}/|/g"\
+  | $SED "s/{%%%%%%%%%%%}/\]/g"\
+  | $SED "s/{%%%%%%%%%%}/\[/g"\
+  | $SED "s/{%%%%%%%%%}/)/g"\
+  | $SED "s/{%%%%%%%%}/(/g"\
+  | $SED "s/{%%%%%%%}/_/g"\
+  | $SED "s/{%%%%%%}/,/g"\
+  | $SED "s/{%%%%%}/\//g"\
+  | $SED "s/{%%%%}/\&/g"\
+  | $SED "s/{%%%}/:/g" > /var/www/tmp/$session/events
+fi
+
 
 # -----------------
 # render HTML
@@ -61,6 +86,7 @@ fi
 cat %%www/descriptor/%%app_main.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
 | $SED "s/%%common_menu//g"\
+| $SED "/%%events/r /var/www/tmp/$session/events" \
 | $SED "s/%%user/$user_name/g" \
 | $SED "s/%%session/session=$session\&pin=$pin/g" \
 | $SED "s/%%params/session=$session\&pin=$pin/g"

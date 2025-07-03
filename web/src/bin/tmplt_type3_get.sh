@@ -37,6 +37,12 @@ do
     fi
   fi
 
+  # handle calendar events
+  if [[ $param == *.events ]]; then
+    databox=`echo $param | $AWK -F":" '{print $2}'`
+    databox=$databox
+  fi
+
 done
 
 if [ ! "$id"  ];then
@@ -154,7 +160,8 @@ cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
 | $SED "s/%%id/$id/g" \
 | $SED "s/%%pdls/session=$session\&pin=$pin\&req=get/g" \
 | $SED "s/%%session/session=$session\&pin=$pin/g" \
-| $SED "s/%%params/session=$session\&pin=$pin/g"
+| $SED "s/%%params/session=$session\&pin=$pin\&databox=$databox/g"
+
 
 if [ "$session" ];then
   rm -rf %%www/tmp/$session

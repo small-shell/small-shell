@@ -26,6 +26,12 @@ do
     id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  # handle calendar events
+  if [[ $param == *.events ]]; then
+    databox=`echo $param | $AWK -F":" '{print $2}'`
+    databox=$databox
+  fi
+
 done
 
 # BASE COMMAND
@@ -78,8 +84,14 @@ else
     sleep $index_update_time
   fi
 
-  # redirect to the table
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=table\">"
+  if [ $databox = %%app ];then
+    # redirect to the table
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=table\">"
+  else
+    # redirect to main page
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=main\">"
+  fi
+
 fi
 
 if [ "$session" ];then

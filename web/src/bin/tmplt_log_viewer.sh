@@ -23,6 +23,12 @@ do
     id=`echo $param | $AWK -F":" '{print $2}'`
   fi
 
+  # handle calendar events
+  if [[ $param == *.events ]]; then
+    databox=`echo $param | $AWK -F":" '{print $2}'`
+    databox=$databox
+  fi
+
 done
 
 if [ ! -d %%www/tmp/${session}_log ];then

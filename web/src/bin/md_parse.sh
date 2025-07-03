@@ -225,6 +225,14 @@ do
        echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
      fi
 
+   # Add Calendar
+   elif [[ "$line" == %%calendar ]];then
+     echo "<div id=\"my-calendar\"></div>" >> ${tmp}/description.tmp
+     echo "<div class=\"calendar-btn-fd\">" >> ${tmp}/description.tmp
+     echo "<a href=\"./$app?%%params&databox=$app.events&req=get&id=new\"><div class=\"custome-add-btn\"><p>+ADD</p></div></a>" \
+     >> ${tmp}/description.tmp
+     echo "</div>" >> ${tmp}/description.tmp
+
    # No tag
    else
      if [ ! "$line" = "" ];then
