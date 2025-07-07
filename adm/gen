@@ -1605,7 +1605,7 @@ if [ "$param" = "-app" ];then
 
       # deploy cgi to cgi-dir changing path etc
       bindir="${www}/bin"
-      descrdir="${www}/descriptor"
+      desc_dir="${www}/descriptor"
       cgitmp="${www}/tmp"
       
       if [ "$srv_type" = "default" ];then
@@ -1772,15 +1772,15 @@ if [ "$param" = "-app" ];then
         echo "error: failed to create directory for small-shell APP bin"
       fi
   
-      if [ ! -d $descrdir ];then
-        mkdir $descrdir
-        mkdir $descrdir/common_parts
+      if [ ! -d $desc_dir ];then
+        mkdir $desc_dir
+        mkdir $desc_dir/common_parts
         if [ ! $? -eq 0 ];then
           echo "error: failed to create directory for small-shell APP html descriptor"
         fi
       fi
-      chown $cgi_usr:$cgi_usr $descrdir
-      chown $cgi_usr:$cgi_usr $descrdir/common_parts
+      chown $cgi_usr:$cgi_usr $desc_dir
+      chown $cgi_usr:$cgi_usr $desc_dir/common_parts
 
       if [ ! $? -eq 0 ];then
         echo "error: failed to create directory for small-shell APP html descriptor"
@@ -1857,25 +1857,25 @@ if [ "$param" = "-app" ];then
 
       for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | grep -v redirect.html.def | xargs basename -a`
       do
-        cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" | $SED "s#%%static_url/#${static_url}#g" > $descrdir/$src
-        chmod 755 $descrdir/$src
+        cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" | $SED "s#%%static_url/#${static_url}#g" > $desc_dir/$src
+        chmod 755 $desc_dir/$src
       done
 
       for src in `ls $ROOT/web/src/descriptor/common_parts | grep -v tmplt | grep -v common_menu_button | xargs basename -a`
       do
-        cat $ROOT/web/src/descriptor/common_parts/$src  > $descrdir/common_parts/$src
-        chown $cgi_usr:$cgi_usr $descrdir/common_parts/$src
-        chmod 755 $descrdir/common_parts/$src
+        cat $ROOT/web/src/descriptor/common_parts/$src  > $desc_dir/common_parts/$src
+        chown $cgi_usr:$cgi_usr $desc_dir/common_parts/$src
+        chmod 755 $desc_dir/common_parts/$src
       done
       
       cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
-      | $SED "s/%%rand/$rand/g"  >> $descrdir/common_parts/common_menu
+      | $SED "s/%%rand/$rand/g"  >> $desc_dir/common_parts/common_menu
 
       cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
-      | $SED "s/%%rand/$rand/g"  >> $descrdir/common_parts/common_menu_ro 
+      | $SED "s/%%rand/$rand/g"  >> $desc_dir/common_parts/common_menu_ro 
 
       cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
-      | $SED "s/%%rand/$rand/g"  >> $descrdir/common_parts/common_menu_rw
+      | $SED "s/%%rand/$rand/g"  >> $desc_dir/common_parts/common_menu_rw
 
       # standadaize owner of Base APP
       chown -R ${cgi_usr}:${cgi_usr} ${cgi_dir}/*
@@ -1883,19 +1883,22 @@ if [ "$param" = "-app" ];then
       chown -R ${cgi_usr}:${cgi_usr} ${www}/bin/*
 
       if [ "$srv_type" = "default" ];then
-        echo "small_shell_path=$ROOT" > $descrdir/.small_shell_conf
-        echo "server=\"default\"" >>  $descrdir/.small_shell_conf
-        if [ ! -d $www/html/base ];then
-          mkdir $www/html/base
-        fi
-        cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.base#g" > $www/html/base/index.html
-        chmod 755 $www/html/base/index.html
+        echo "small_shell_path=$ROOT" > $desc_dir/.small_shell_conf
+        echo "server=\"default\"" >>  $desc_dir/.small_shell_conf
       else
-        echo "small_shell_path=\"sudo -u small-shell $ROOT\"" > $descrdir/.small_shell_conf
+        echo "small_shell_path=\"sudo -u small-shell $ROOT\"" > ${desc_dir}/.small_shell_conf
       fi
 
-      cat $ROOT/global.conf | grep -v ROOT >> $descrdir/.small_shell_conf
-      chmod 755 $descrdir/.small_shell_conf
+      if [ ! -d $static_dir ];then
+        mkdir $static_dir
+      fi
+      if [ ! -d ${static_dir}/base ];then
+        mkdir ${static_dir}/base
+      fi
+      cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.base#g" > ${static_dir}/base/index.html
+      chmod 755 ${static_dir}/base/index.html
+      cat $ROOT/global.conf | grep -v ROOT >> ${desc_dir}/.small_shell_conf
+      chmod 755 ${desc_dir}/.small_shell_conf
 
       if [ ! "$mac_chk" ];then
         # enable standard jobs
@@ -1934,7 +1937,7 @@ if [ "$param" = "-app" ];then
         echo "following command will be executed"
         echo "-----------------------------------------------------------------"
         echo "ln -s $bindir $tdir/bin"
-        echo "ln -s $descrdir $tdir/descriptor"
+        echo "ln -s $desc_dir $tdir/descriptor"
         echo "ln -s $cgitmp $tdir/tmp"
         echo "-----------------------------------------------------------------"
         echo -n "(yes | no): "
@@ -1948,7 +1951,7 @@ if [ "$param" = "-app" ];then
 
         if [ "$syml_answer" = "yes" ];then
           ln -s $bindir $tdir/bin
-          ln -s $descrdir $tdir/descriptor
+          ln -s $desc_dir $tdir/descriptor
           ln -s $cgitmp $tdir/tmp
         fi
      
