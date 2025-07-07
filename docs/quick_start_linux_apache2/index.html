@@ -174,7 +174,7 @@ sudo apt install curl
 sudo apt install apache2
 sudo a2enmod cgid
 #sudo systemctl start apache2
-sudo service apache2 start
+sudo service apache2 restart
 sudo update-rc.d apache2 defaults
 
 # install php library, it will be used for url encoding (required)
@@ -250,11 +250,14 @@ Type of server (1.small-shell WEB srv | 2.other WEB srv): 2
 <pre><code># Dialog result
 --------------------------------------------------------------------------
 APP Type: 1.BASE
-Protocol: https
+Srv Type: other
+Protocol: http
 APP Exec User: www-data
 Root Directory: /var/www
 CGI Directory: /usr/lib/cgi-bin
-Server: ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
+CGI base URL: http://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/
+Static Page Directory: /var/www/html
+Server: ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com 
 Access URL: https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/
 --------------------------------------------------------------------------
 </code></pre>
