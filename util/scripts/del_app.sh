@@ -25,7 +25,7 @@ if [ ! "$app" ];then
   exit 1
 fi
 
-if [ "$app" = "base" -o "$app" = "api" -o "$app" = "e-cron" -o "$app" = "css" ];then
+if [ "$app" = "base" -o "$app" = "api" -o "$app" = "e-cron" ];then
   echo "error: $app is part of Base APP"
   exit 1
 fi
@@ -78,11 +78,13 @@ else
     rm ${www}/cgi-bin/auth.${app}
   fi
   rm ${www}/cgi-bin/${app}
-  rm ${www}/cgi-bin/${app}_css
-  rm ${www}/descriptor/${app}.css.def
 
   # rm md.def
   rm -rf $ROOT/databox/${app}.UI.md.def
+
+  # rm static page
+  rm -rf ${static_dir}/${app}
+  rm ${static_dir}/${app}.css
 
   # show meesage
   echo "APP{${app}} has been deleted"
