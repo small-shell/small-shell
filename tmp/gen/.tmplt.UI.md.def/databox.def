@@ -14,8 +14,8 @@ primary_key_label=""
 +addcol
 # col2
 #-------------------------------------------
-col2_key_name="description"
-col2_key_label="Description"
+col2_key_name="body"
+col2_key_label="Body"
 col2_type="textarea"
 
 # only for select, checkbox

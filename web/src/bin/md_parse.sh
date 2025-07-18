@@ -17,15 +17,15 @@ DL="${small_shell_path}/bin/dl session:$session pin:$pin app:$app"
 # load mark down definition
 databox=${app}.UI.md.def
 id=`$DATA_SHELL databox:${databox} command:head_-1 format:none | $AWK -F "," '{print $1}'`
-$DATA_SHELL databox:${databox} action:get id:$id key:description format:none \
-| $SED "s/description://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/description.md
-source=${tmp}/description.md
+$DATA_SHELL databox:${databox} action:get id:$id key:body format:none \
+| $SED "s/body://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/body.md
+source=${tmp}/body.md
 
 # parse markdown
 cat $source | $SED "s/^:::/{%%%}{%%%}{%%%}/g" | $SED "s/\`\`\`\`/%code_block%/g" | $SED "s/\`\`\`/%code_block%/g" \
-| $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" > ${tmp}/.description.md
-echo "" >> ${tmp}/.description.md
-source=${tmp}/.description.md
+| $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" > ${tmp}/.body.md
+echo "" >> ${tmp}/.body.md
+source=${tmp}/.body.md
 
 line_count=1
 while read line
@@ -40,12 +40,12 @@ do
        img_id=`echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g"`
        file_type=`$DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
                  | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g"`
-       echo "$line" | $SED "s#../images/${img_id}#../images/${img_id}.${file_type}#g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s#../images/${img_id}#../images/${img_id}.${file_type}#g" >> ${tmp}/body.tmp
        $DL databox:images.db id:${img_id} remote_addr:localhost > %%www/html/images/${img_id}.${file_type}
 
      else
        # handle as normal HTML tag
-       echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" >> ${tmp}/body.tmp
 
      fi
 
@@ -54,22 +54,22 @@ do
      if [ ! "$extention_flg" -a ! "$code_flg" ];then
        if [ ! "$normal_list_flg" ];then
          normal_list_flg=yes
-         echo "<div class=\"standard-list\">" >> ${tmp}/description.tmp
-         echo "<ul>" >> ${tmp}/description.tmp
+         echo "<div class=\"standard-list\">" >> ${tmp}/body.tmp
+         echo "<ul>" >> ${tmp}/body.tmp
          echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
-         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
        else
          echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
-         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
        fi
        next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
        if [[ ! "$next_line" =~ "^[-*+] " ]] && [[ "$normal_list_flg" == "yes" ]];then
-         echo "</ul>" >> ${tmp}/description.tmp
-         echo "</div>" >> ${tmp}/description.tmp
+         echo "</ul>" >> ${tmp}/body.tmp
+         echo "</div>" >> ${tmp}/body.tmp
          normal_list_flg=""
        fi
      else
-       echo "$line" >> ${tmp}/description.tmp
+       echo "$line" >> ${tmp}/body.tmp
      fi
 
    # Number list
@@ -77,48 +77,48 @@ do
      if [ ! "$extention_flg" -a ! "$code_flg" ];then
        if [ ! "$number_list_flg" ];then
          number_list_flg=yes
-         echo "<div class=\"num-list\">" >> ${tmp}/description.tmp
-         echo "<ul>" >> ${tmp}/description.tmp
-         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+         echo "<div class=\"num-list\">" >> ${tmp}/body.tmp
+         echo "<ul>" >> ${tmp}/body.tmp
+         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
        else
-         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/description.tmp
+         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
        fi
        next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
        if [[ ! "$next_line" =~ ^[0-9]+\. ]] && [[ "$number_list_flg" == "yes" ]];then
-         echo "</ul>" >> ${tmp}/description.tmp
-         echo "</div>" >> ${tmp}/description.tmp
+         echo "</ul>" >> ${tmp}/body.tmp
+         echo "</div>" >> ${tmp}/body.tmp
          number_list_flg=""
        fi
      else
-       echo "$line" >>  ${tmp}/description.tmp
+       echo "$line" >>  ${tmp}/body.tmp
      fi
 
    # code
    elif [[ "$line" == "%code_block%" ]];then 
      if [ ! "$code_flg"  ];then
-       echo -n "<pre class=\"code\">" >> ${tmp}/description.tmp 
+       echo -n "<pre class=\"code\">" >> ${tmp}/body.tmp 
        code_flg=yes
      else
-       echo "</pre>" >> ${tmp}/description.tmp
+       echo "</pre>" >> ${tmp}/body.tmp
        code_flg=""
      fi 
 
    elif [[ "$code_flg" == "yes" ]] && [[ "$tab_4space" == "" ]];then
        echo "$line" | $SED "s/_%%tab_/\\t/g" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" \
-       | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/description.tmp
+       | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/body.tmp
 
    elif [[ "$line" == %%_tab_* || "$line" == _%%4space_* ]];then 
      if [ ! "$code_flg" ];then 
        tab_4space=yes
        code_flg=yes 
-       echo -n "<pre class=\"code\">" >> ${tmp}/description.tmp 
-       echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/description.tmp
+       echo -n "<pre class=\"code\">" >> ${tmp}/body.tmp 
+       echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/body.tmp
      elif [ "tab_4space" -a "$code_flg" ];then
-       echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/_%%tab_//g" | $SED "s/_%%4space_//g" | $SED "s/{%%%}{%%%}{%%%}/:::/g" >> ${tmp}/body.tmp
      fi
 
    elif [[ "$line" == "" ]] && [[ "$code_flg" == "yes" ]] && [[ "$tab_4space" == "yes" ]];then
-      echo "</pre>" >> ${tmp}/description.tmp
+      echo "</pre>" >> ${tmp}/body.tmp
       code_flg=""
       tab_4space=""
 
@@ -128,31 +128,31 @@ do
      if [ ! "$extension_code" ];then
        extension_code=yes
        if [[ "$line" == *Warning*  || "$line" == *warning* ]];then
-         echo "<pre class=\"warning\"><b>Warning</b>" >> ${tmp}/description.tmp
+         echo "<pre class=\"warning\"><b>Warning</b>" >> ${tmp}/body.tmp
        else
-         echo "<pre class=\"note\"><b>Note</b>" >> ${tmp}/description.tmp
+         echo "<pre class=\"note\"><b>Note</b>" >> ${tmp}/body.tmp
        fi
      else
-      echo "</pre>" >> ${tmp}/description.tmp
+      echo "</pre>" >> ${tmp}/body.tmp
       extension_code=""
      fi
 
    elif [[ "$extension_code" == "yes" ]];then
-     echo "$line" >> ${tmp}/description.tmp
+     echo "$line" >> ${tmp}/body.tmp
 
    #table
    elif [[ "$line" == \|*\|* ]];then
      if [ ! "$table_flg" ];then
        table_flg=yes
-       echo "<div class=\"flex-table\">" >> ${tmp}/description.tmp
-       echo "<ul>" >> ${tmp}/description.tmp
-       echo "<li class=\"flex-table-header\">" >> ${tmp}/description.tmp
-       echo "$line" | $SED "s/|/<p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/\n<\/li>/g" >> ${tmp}/description.tmp
+       echo "<div class=\"flex-table\">" >> ${tmp}/body.tmp
+       echo "<ul>" >> ${tmp}/body.tmp
+       echo "<li class=\"flex-table-header\">" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/|/<p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/\n<\/li>/g" >> ${tmp}/body.tmp
      else
        if [[ "$line" == \|--* ]];then
          echo "" > /dev/null
        else
-         echo "$line" | $SED "s/|/<li><p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/<\/li>/g" >> ${tmp}/description.tmp
+         echo "$line" | $SED "s/|/<li><p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/<\/li>/g" >> ${tmp}/body.tmp
        fi
      fi
 
@@ -160,8 +160,8 @@ do
       echo "" > /dev/null
 
    elif [[ ! "$line" == \|*\|* ]] && [[ "$table_flg" == "yes" ]];then
-      echo "</ul>" >> ${tmp}/description.tmp
-      echo "</div>" >> ${tmp}/description.tmp
+      echo "</ul>" >> ${tmp}/body.tmp
+      echo "</div>" >> ${tmp}/body.tmp
       table_flg=""
   
    # link
@@ -170,11 +170,11 @@ do
      tag=`echo "$line" | $AWK -F "[" '{print $2}' | $SED -r "s/](.*)//g"`
      url=`echo "$line" | $AWK -F "(" '{print $2}' | $SED -r "s/\)(.*)//g"`
      element_r=`echo "$line" | $AWK -F ")" '{print $2}'`
-     echo "<p>$element_l <a href=\"$url\">$tag</a> $element_r</p>" >> ${tmp}/description.tmp
+     echo "<p>$element_l <a href=\"$url\">$tag</a> $element_r</p>" >> ${tmp}/body.tmp
 
    # button 
    elif [[ "$line" == *\[*\]* ]];then
-     echo "$line" | $SED "s/\[/<button>/1" | $SED "s/\]/<\/button>/1" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/\[/<button>/1" | $SED "s/\]/<\/button>/1" >> ${tmp}/body.tmp
 
    # bold 
    elif [[ "$line" == *\*\**\*\** ]];then
@@ -184,7 +184,7 @@ do
      do
        new_line=`echo "$new_line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1"`
      done
-     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/description.tmp
+     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/body.tmp
 
    # italic
    elif [[ "$line" == *\**\** ]];then
@@ -194,50 +194,50 @@ do
      do
        new_line=`echo "$new_line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1"` 
      done
-     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/description.tmp
+     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/body.tmp
 
    #HN
    elif [[ "$line" == \#\#\#\#\#\#* ]];then
-     echo "$line" | $SED "s/###### /######/g" | $SED "s/######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/###### /######/g" | $SED "s/######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#\#\#\#* ]];then
-     echo "$line" | $SED "s/##### /#####/g" | $SED "s/#####/<h5>/1" | $SED "s/$/<\/h5>/g" |  $SED "s/######//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/##### /#####/g" | $SED "s/#####/<h5>/1" | $SED "s/$/<\/h5>/g" |  $SED "s/######//g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#\#\#* ]];then
-     echo "$line" | $SED "s/#### /####/g"  | $SED "s/####/<h4>/1" | $SED "s/$/<\/h4>/g" | $SED "s/####//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/#### /####/g"  | $SED "s/####/<h4>/1" | $SED "s/$/<\/h4>/g" | $SED "s/####//g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#\#* ]];then
-     echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#* ]];then
      hashlink=`echo $line | $SHASUM | $AWK '{print $1}'`
-     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"$hashlink\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/description.tmp
+     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"$hashlink\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
      echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
 
    elif [[ "$line" == \#* ]];then
      if [ ! "$home_flg" ];then
        home_flg=yes
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"HOME\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"HOME\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
        echo "<a href=\"#HOME\"><p>HOME</p></a>" >> ${tmp}/leftnav.tmp
      else
        hashlink=`echo $line | $SHASUM | $AWK '{print $1}'`
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"$hashlink\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/description.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"$hashlink\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
        echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
      fi
 
    # Add Calendar
    elif [[ "$line" == %%calendar ]];then
-     echo "<div id=\"my-calendar\"></div>" >> ${tmp}/description.tmp
-     echo "<div class=\"calendar-btn-fd\">" >> ${tmp}/description.tmp
+     echo "<div id=\"my-calendar\"></div>" >> ${tmp}/body.tmp
+     echo "<div class=\"calendar-btn-fd\">" >> ${tmp}/body.tmp
      echo "<a href=\"./$app?%%params&databox=$app.events&req=get&id=new\"><div class=\"custome-add-btn\"><p>+ADD</p></div></a>" \
-     >> ${tmp}/description.tmp
-     echo "</div>" >> ${tmp}/description.tmp
+     >> ${tmp}/body.tmp
+     echo "</div>" >> ${tmp}/body.tmp
 
    # No tag
    else
      if [ ! "$line" = "" ];then
        echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" \
-      | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/description.tmp
+      | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/body.tmp
      fi
    fi
 
@@ -335,7 +335,7 @@ fi
 
 # update main.html.def
 cat %%www/descriptor/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
-| $SED "/%%description/r ${tmp}/description.tmp" | $SED "s/%%description//g" \
+| $SED "/%%description/r ${tmp}/body.tmp" | $SED "s/%%description//g" \
 | $SED "/%%leftnav/r ${tmp}/leftnav.tmp" | $SED "s/%%leftnav//g" \
 | $SED "/%%righth/r ${tmp}/righth.tmp" | $SED "s/%%righth//g" \
 | $SED "/%%lefth/r ${tmp}/lefth.tmp" | $SED "s/%%lefth//g" \

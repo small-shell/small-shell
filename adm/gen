@@ -2780,7 +2780,7 @@ if [ "$param" = "-app" ];then
         mkdir $tmp_dir/data
 
 
-        for data in description righth lefth footer
+        for data in body righth lefth footer
         do
           cat $ROOT/tmp/gen/.tmplt.UI.md.def/${data} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" > $tmp_dir/data/${data}
         done
@@ -2803,11 +2803,11 @@ if [ "$param" = "-app" ];then
         if [ "$permission" = "ro" ];then
           $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
           sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:description,righth,lefth,footer input_dir:$tmp_dir/data
+          action:set id:new keys:body,righth,lefth,footer input_dir:$tmp_dir/data
           $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
         else
           sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:description,righth,lefth,footer input_dir:$tmp_dir/data
+          action:set id:new keys:body,righth,lefth,footer input_dir:$tmp_dir/data
         fi
 
         clear
