@@ -79,8 +79,9 @@ else
   fi
   rm ${www}/cgi-bin/${app}
 
-  # rm md.def
+  # rm databoxes
   rm -rf $ROOT/databox/${app}.UI.md.def
+  rm -rf $ROOT/databox/${app}.events
 
   # rm static page
   rm -rf ${static_dir}/${app}
