@@ -441,7 +441,6 @@ a {
 
 .main .flex-table ul {
   list-style: none;
-  /* table-width */ min-width: 641px;
   margin: 0px;
   padding: 0px;
 }
