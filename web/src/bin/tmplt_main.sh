@@ -60,6 +60,24 @@ fi
 chk_calendar=`grep "<div id=\"my-calendar\">"  %%www/descriptor/%%app_main.html.def`
 
 if [ "$chk_calendar" ];then
+
+  # load permission
+  if [ ! "$user_name" = "guest" ];then
+    permission=`$META get.attr:%%app/$user_name{permission}`
+  else 
+    permission="ro"
+  fi
+
+  if [ "$permission" = "rw" ];then
+    echo "
+    <div class=\"calendar-btn-fd\">
+    <a href=\"./%%app?%%params&databox=%%app.events&req=get&id=new\"><div class=\"custome-add-btn\"><p>+ADD</p></div></a>
+    </div>
+    " > /var/www/tmp/$session/event_add_btn
+  else
+    echo "" > /var/www/tmp/$session/event_add_btn
+  fi
+
   $DATA_SHELL databox:%%app.events command:show_all format:json \
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
@@ -87,6 +105,8 @@ cat %%www/descriptor/%%app_main.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
 | $SED "s/%%common_menu//g"\
 | $SED "/%%events/r /var/www/tmp/$session/events" \
+| $SED "/%%event_add_btn/r /var/www/tmp/$session/event_add_btn" \
+| $SED "s/%%event_add_btn//g"\
 | $SED "s/%%user/$user_name/g" \
 | $SED "s/%%session/session=$session\&pin=$pin/g" \
 | $SED "s/%%params/session=$session\&pin=$pin/g"

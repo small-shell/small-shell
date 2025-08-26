@@ -228,10 +228,7 @@ do
    # Add Calendar
    elif [[ "$line" == %%calendar ]];then
      echo "<div id=\"my-calendar\"></div>" >> ${tmp}/body.tmp
-     echo "<div class=\"calendar-btn-fd\">" >> ${tmp}/body.tmp
-     echo "<a href=\"./$app?%%params&databox=$app.events&req=get&id=new\"><div class=\"custome-add-btn\"><p>+ADD</p></div></a>" \
-     >> ${tmp}/body.tmp
-     echo "</div>" >> ${tmp}/body.tmp
+     echo "%%event_add_btn" >> ${tmp}/body.tmp
 
    # No tag
    else
