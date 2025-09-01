@@ -161,7 +161,7 @@ if [ $line_chk -eq 1 ];then
 
     which jq >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
-      echo "warn: please install jq command, if you want to use WEB API "
+      echo "warn: please install jq command, if you want to use Web API "
     else
       echo "JQ=\"`which jq`\"" >> ${SCRIPT_DIR}/../global.conf
     fi
@@ -1245,11 +1245,11 @@ if [ "$param" = "-app" ];then
   if [ "$apptype" = "1" ];then
     apptype="1.BASE"
 
-    echo -n "Type of server (1.small-shell WEB srv | 2.other WEB srv): "
+    echo -n "Type of Server (1.small-shell Web srv | 2.other Web srv): "
     read srv_type
     while [ ! "$srv_type" = "1"  -a  ! "$srv_type" = "2" ]
     do
-      echo -n "pleasee input number (1.small-shell WEB srv | 2.other WEB srv): "
+      echo -n "pleasee input number (1.small-shell Web srv | 2.other Web srv): "
       read srv_type
     done
 
@@ -1478,7 +1478,7 @@ if [ "$param" = "-app" ];then
     fi
 
     if [ "$protocol" = "http" -o "$use_existing_cert" = "no" -o ! "$server" ];then
-      echo -n "WEB Server FQDN or IP addr (e.g. 192.168.10.1): "
+      echo -n "Web Server FQDN or IP addr (e.g. 192.168.10.1): "
       read server
 
       ascii_chk_result=`ascii_check $server`
@@ -1492,7 +1492,7 @@ if [ "$param" = "-app" ];then
         else
           echo "error: server must be ascii text and you can't use meta charactor including space, please try again"
         fi
-        echo -n "WEB server: "
+        echo -n "Web server: "
         read server
         ascii_chk_result=`ascii_check $server`
         meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
@@ -1509,13 +1509,13 @@ if [ "$param" = "-app" ];then
     static_url="${protocol}://${server}/"
 
     if [ "$srv_type" = "other" ];then
-      echo -n "CGI base URL for WEB APP is ${base_url}, is it OK? (yes | no): "
+      echo -n "CGI base URL for Web APP is ${base_url}, is it OK? (yes | no): "
       read base_url_answer
 
       while [ ! "$base_url_answer" = "yes" -a ! "$base_url_answer" = "no" ]
       do
         echo "please input yes or no"
-        echo -n "Is it OK to use $base_url as CGI base URL for WEB APP? (yes | no): "
+        echo -n "Is it OK to use $base_url as CGI base URL for Web APP? (yes | no): "
         read base_url_answer
       done
 
