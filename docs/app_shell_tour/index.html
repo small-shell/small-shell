@@ -133,7 +133,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#small-shell-web-srv" class="nav-link">small-shell WEB srv</a>
+            <li class="nav-item" data-bs-level="2"><a href="#default-web-server" class="nav-link">Default Web Server</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -220,9 +220,9 @@
 <td>Full &amp; Flat but control rw/ro permission</td>
 </tr>
 <tr>
-<td><a href="../app_shell_form/">WEB Form</a></td>
+<td><a href="../app_shell_form/">Web Form</a></td>
 <td>No auth</td>
-<td>WEB form</td>
+<td>Web form</td>
 <td>Specific Databox</td>
 <td>Editable</td>
 <td>Just push new data through dedicated Form</td>
@@ -273,17 +273,17 @@ then start dialog by gen command.</p>
 -----------------------------------------------------------------
 sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
-Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
+Type of Server (1.small-shell Web srv | 2.other Web srv): 1
 Protocol (http | https): https
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.XXXX.com
+Web Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.XXXX.com
 ssl cert path : /root/cert.pem
 ssl privare key path : /root/private.pem
 Do you need to use chain certificate? (yes | no): no
 -----------------------------------------------------------------
 </code></pre>
-<h2 id="small-shell-web-srv">small-shell WEB srv</h2>
-<p>small-shell contain default WEB server that is written by javascipt using Node.js. it can be managed by systemctl command. ofcourse you can use your favorite WEB server as well, in that case please select "other WEB srv" and input detail to the dialog. we verified that small-shell can be worked without any problem on Apache and Nginx.</p>
-<h3 id="define-dataset-of-web-app">Define dataset of WEB APP</h3>
+<h2 id="default-web-server">Default Web Server</h2>
+<p>small-shell contains default Web server "small-shell Web srv" that is written by javascipt using Node.js. it can be managed by systemctl command. ofcourse you can use your favorite Web server as well, in that case please select "other Web srv" and input detail to the dialog. we verified that small-shell can be worked without any problem on Apache and Nginx.</p>
+<h3 id="define-dataset-for-web-app">Define dataset for Web APP</h3>
 <p>For the first step, it's required to define dataset that will be refered from APP. "label" will be shown in the table and Form of APP.
 you can also define parameters of select, radio or checkbox in the dialog. by the way, there is 2 type of primary key. please check detail on <a href="../data_shell_tour/#feature">databox feature</a></p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
@@ -322,7 +322,7 @@ option=&quot;required&quot;
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell WEB application framework.</p>
+<p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
 <p><b>type: select and radio</b>  <br />
 You can define parameters in the dialog. and change them anytime later.</p>
 <p><b>type: pdls</b><br />
@@ -344,7 +344,7 @@ https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
 <h2 id="access-url-of-base-app">Access URL of Base APP</h2>
-<p>As you already checked, access URL is shown in the result of ops add command. if you are using small-shell default WEB server, URL must be $FQDN/base.</p>
+<p>As you already checked, access URL is shown in the result of ops add command. if you are using small-shell default Web server, URL must be $FQDN/base.</p>
 <pre><code>e.g.) https://ec2-XX-XX-XX-XX.XXXX.com/base
 </code></pre>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
@@ -805,7 +805,7 @@ $id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please i
 curl.exe -X GET "${command_api}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
 </code></pre>
 <h2 id="upgrade-ssl-cert-and-key">Upgrade SSL cert and key</h2>
-<p>When you upgrade SSL cert and key for small-shell default WEB server, you need to re-generate Base APP by gen command. all service will be down during this upgrade.</p>
+<p>When you upgrade SSL cert and key for small-shell default Web server, you need to re-generate Base APP by gen command. all service will be down during this upgrade.</p>
 <pre><code>/usr/local/small-shell/gen -app
 -----------------------------------------------
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1

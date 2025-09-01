@@ -145,7 +145,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#re-start-web-server" class="nav-link">Re-start web server</a>
+            <li class="nav-item" data-bs-level="2"><a href="#re-start-web-server" class="nav-link">Re-start Web Server</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -203,7 +203,7 @@ sudo chown -R small-shell:small-shell /usr/local/small-shell
 sudo chmod 755 /usr/local/small-shell/adm/gen
 </code></pre>
 <h2 id="generate-databox">Generate Databox</h2>
-<p>Then Let's generate databox as the data store of WEB APP.
+<p>Then Let's generate databox as the data store of web APP.
 DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; dialog will be started
@@ -249,9 +249,9 @@ APP shell details are in <a href="../app_shell_tour/">APP shell tour</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 </code></pre>
 <pre><code>Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
-Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
+Type of Server (1.small-shell Web srv | 2.other Web srv): 1
 protocol (http | https): https
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
+Web Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
 ssl cert path : /root/cert.pem
 ssl privare key path : /root/private.pem
 Do you need to use chain certificate ? (yes | no): no
@@ -296,8 +296,8 @@ please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
 <p>If end user lost their key, you can re-generate initialize URL by following command. In this example, admin will re-generate initialize URL for user name "test"</p>
 <pre><code> sudo /usr/local/small-shell/adm/ops initialize.usr:test
 </code></pre>
-<h2 id="re-start-web-server">Re-start web server</h2>
-<p>You can restart web server by launchctl command    </p>
+<h2 id="re-start-web-server">Re-start Web Server</h2>
+<p>You can restart Web server by launchctl command    </p>
 <pre><code># restart
 sudo launchctl stop org.small-shell.node
 sudo launchctl start org.small-shell.node

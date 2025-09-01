@@ -173,7 +173,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="auth-shell-iam">Auth Shell (IAM)</h1>
-<p>Auth shell is designed to be used for key based authentication and session management for WEB APPs.</p>
+<p>Auth shell is designed to be used for key based authentication and session management for Web APPs.</p>
 <h2 id="base-64-key-auth">Base 64 key auth</h2>
 <p>Base64 key will be generated with accessing intialize URL. it will contain user_name and randome string. Because key length is long enough, we think it's secure. but please use Base APP with IP whitelisting and other security measure as well if possible.</p>
 <h6 id="flow-of-standard-auth">FLow of Standard Auth</h6>
@@ -192,7 +192,7 @@
 <p>Base64 key will be sotred at localstorage on browser using random name per instance in the personal key initializing process.</p>
 </div>
 <h2 id="pin-and-session-token">PIN and Session Token</h2>
-<p>Session itself is temporary hash that will be generated using randome PIN (not stored anywhere) and user name. and session file will contain user name, client remote address and user-agent. Besides session hash will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key. also WEB APP will check change of IP address and user-agent.</p>
+<p>Session itself is temporary hash that will be generated using randome PIN (not stored anywhere) and user name. and session file will contain user name, client remote address and user-agent. Besides session hash will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key. also Web APP will check change of IP address and user-agent.</p>
 <h2 id="basic-authentication-binauth">Basic Authentication (bin/auth)</h2>
 <p>Basic authentication will be done bin/auth script. it will be used by Base APP mainly.</p>
 <pre><code># CLI 
@@ -228,7 +228,7 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 #  COMMON
 #-----------------------------------------------------------------------
 #  remote_addr:ip_addr -&gt; IP addreess will be used for audit log and security check
-#  app:$app -&gt; WEB app name for authentication
+#  app:$app -&gt; Web app name for authentication
 
 #-----------------------------------------------------------------------
 #  AUTH REQUEST

@@ -691,7 +691,7 @@ Primary Databox: none
 Do you want to enable IP whitelisting for this APP? (yes | no): no
 </code></pre>
 <h3 id="cook-portal-page">Cook portal page</h3>
-<p>You can edit portal page by 2 way. 1 is edit the page on Base APP {$APP_UI.md.def} web UI like following.</p>
+<p>You can edit portal page by 2 way. 1 is edit the page on Base APP {$APP_UI.md.def} like following.</p>
 <p><img alt="Screenshot" src="../img/static_site_portal.png" /></p>
 <p>You can use both markdown and HTML. 
 please check the markdown grammer <a href="https://21it.org/markdown.html">here</a>. 
@@ -884,12 +884,12 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <p>A record of the domain must be set on DNS server beforehand. and it must be global IP that can be reachable from Let's encrypt server </p>
 </div>
 <h4 id="generate-base-app">Generate Base APP</h4>
-<p>Base APP that will use small-shell WEB srv should be launched as http server not https so far. FQDN must be same as A record that you set beforehand on your DNS server. </p>
+<p>Base APP that will use small-shell Web srv should be launched as http server not https so far. FQDN must be same as A record that you set beforehand on your DNS server. </p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
-Type of server (1.small-shell WEB srv | 2.other WEB srv): 1
+Type of Server (1.small-shell Web srv | 2.other Web srv): 1
 protocol (http | https): http
-WEB Server FQDN or IP addr (e.g. 192.168.10.1): $FQDN
+Web Server FQDN or IP addr (e.g. 192.168.10.1): $FQDN
 </code></pre>
 <h4 id="import-job-and-deploy-ssl-certificate">Import job and deploy ssl certificate</h4>
 <p>Once you install certbot and launched Base APP, please kick configure.sh and deploy.sh. then dialog will be started. please answer your mail address that is reqiured to publish certificate by Let's Encrypt</p>
@@ -939,7 +939,7 @@ ssl_auto.enabled
 </code></pre>
 <p>If it's enabled SSL implementation is completed.</p>
 <h2 id="make-replica-for-load-balancing">Make replica for load balancing</h2>
-<p>Small-Shell WEB APPs and databoxes can be synced to replica hosts and it can be put under load balancer. 
+<p>Small-Shell Web APPs and databoxes can be synced to replica hosts and it can be put under load balancer. 
 load balander must be setup beforehand on cloud env or physical env.   </p>
 <h4 id="requirement-of-load-balancing">Requirement of load balancing</h4>
 <p>Please be aware that load balancer must ensure session persistence.
@@ -955,7 +955,7 @@ And load balancing logic must be just TCP port proxy (not terminate SSL/TLS) bec
              |-  Replica hosts &gt; it will be redirected to real server FQDN of master host
 </code></pre>
 <h4 id="setup-environment">Setup environment</h4>
-<p>Before build replica, you need to setup Base APP using small-shell WEB srv on both master and replica server. when input server FQDN, please input real server FQDN (I mean not load balancing address) and protocol should be http so far not https if you will use ssl auto script later.</p>
+<p>Before build replica, you need to setup Base APP using small-shell Web srv on both master and replica server. when input server FQDN, please input real server FQDN (I mean not load balancing address) and protocol should be http so far not https if you will use ssl auto script later.</p>
 <pre><code>@master
 sudo apt install lsyncd
 sudo mkdir /etc/lsyncd
@@ -1096,7 +1096,7 @@ $server.core.tar.xz  $server.ssh.tar.xz  $server.www.tar.xz
 sudo /usr/local/small-shell/adm/rstr $dir
 </code></pre>
 <h2 id="dictionary-create-lang-pack">Dictionary (create lang pack)</h2>
-<p>You can create language pack for WEB APP using following template.</p>
+<p>You can create language pack for Web APP using following template.</p>
 <pre><code>cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd small-shell-apps/dictionary/template
