@@ -279,7 +279,7 @@ job1.enabled
 --------------------------------------------------------
 LATEST STATUS OF JOB
 --------------------------------------------------------
-2021-04-12 12:15:01 ls_tmp successfully completed
+2021-04-12 12:15:01 job1 successfully completed
 </code></pre>
 <pre><code>cat /usr/local/small-shell/util/scripts/log/hello.log
 Mon Jan  3 04:10:23 UTC 2022 Hello
@@ -298,7 +298,6 @@ Mon Jan  3 04:10:23 UTC 2022 Hello
 <p>If you want to define job relationship in same same host, please modify job definition directly. 
 This is an exmaple of job relationship. messae wil be exchanged in the host.</p>
 <pre><code>job1.success@host1 --&gt; message (done.1) --&gt; job2@host1 #if message is raedy, kicked
-! Once message is grabed, message will be cleared
 </code></pre>
 <h5 id="sample-job_1">sample job</h5>
 <h6 id="job1sh">job1.sh</h6>
@@ -324,9 +323,11 @@ exit 0
 sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job2.sh
 </code></pre>
 <h6 id="add-job-to-small-shell-and-set-message">Add job to small-shell and set message</h6>
-<pre><code>sudo /usr/local/small-shell/adm/gen -job
- #-&gt; please create job1 on small-shell
+<pre><code># create job1 throug dialog
+sudo /usr/local/small-shell/adm/gen -job
+ #-&gt; dialog will be started
 
+# add message to definition file
 sudo -u small-shell vi /usr/local/small-shell/util/e-cron/def/job1.def
 -----------------------------------------------------------
 SCHEDULE:1 * * * *
@@ -336,10 +337,15 @@ output_message=&quot;done.1&quot;
 hub_api=&quot;&quot;
 authkey=&quot;&quot;                     
 -----------------------------------------------------------
+
+# enable job1
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
 
+# create job2 through dialog 
 sudo /usr/local/small-shell/adm/gen -job
- #-&gt; please create job2 on small-shell
+ #-&gt; dialog will be started
+
+# add message to definition file
 sudo -u small-shell vi /usr/local/small-shell/util/e-cron/def/job2.def
 -----------------------------------------------------------
 SCHEDULE:2 * * * *
@@ -349,14 +355,17 @@ output_message=&quot;&quot;
 hub_api=&quot;&quot;
 authkey=&quot;&quot;
 -----------------------------------------------------------
+
+# enable job2
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
 </code></pre>
 <h5 id="exec-job">Exec job</h5>
 <p>Then let's try to execute jobs. if you execute job2 first, job will not be started because message is not set by job1.</p>
-<pre><code># execute manually
+<pre><code># execute job2 manually before message generated
 sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
- #-&gt; job will not be started. please exit Ctrl + C
+ #-&gt; job will not be started more than 1 minutes. please exit Ctrl + C
 
+# check job status
 sudo -u small-shell /usr/local/small-shell/bin/e-cron stats.job2 
 --------------------------------------------------------
 LATEST STATUS OF JOB
@@ -431,8 +440,12 @@ sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job2.sh
 </code></pre>
 <h6 id="add-job-to-small-shell-and-set-message_1">Add job to small-shell and set message</h6>
 <pre><code>@hostA
+
+# create job1 through dialog
 sudo /usr/local/small-shell/adm/gen -job
- #-&gt; please create job2
+ #-&gt; dialog will be started
+
+# add message to the definition file
 sudo vi /usr/local/small-shell/util/e-cron/def/job1.def
 -----------------------------------------------------------
 SCHEDULE:1 * * * *
@@ -442,12 +455,16 @@ output_message=&quot;done.1&quot; #modify
 hub_api=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
 api_authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
+
+# enable job1
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
- #-&gt; please enable ls_tmp job acordingly
 
 @hostB
+# create job2 through dialog
 sudo /usr/local/small-shell/adm/gen -job
- #-&gt; please create job2
+ #-&gt; dialog will be started
+
+# add message to the definintion file
 sudo vi /usr/local/small-shell/util/e-cron/def/job2.def
 -----------------------------------------------------------
 CHEDULE:2 * * * *
@@ -457,14 +474,18 @@ output_message=&quot;&quot;
 hub_api=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
 authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
+
+# enable job2
 sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job2
- #-&gt; please enable ls_tmp2 job acordingly
 </code></pre>
 <h5 id="execute-manually-and-confirm-result">Execute manually and confirm result</h5>
 <p>Then let's try to execute jobs. if you execute job2@hostB first, job will not be started because message is not set by job1.</p>
 <pre><code>@hostB
+# exec job2 before message generated
 sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
- #-&gt; job will not be started more than 1 minutes. then please exit Ctrl + C    
+ #-&gt; job will not be started more than 1 minutes. then please exit Ctrl + C
+
+# check fault status 
 sudo -u small-shell /usr/local/small-shell/bin/e-cron stat.job2
 --------------------------------------------------------
 LATEST STATUS OF JOB
@@ -472,9 +493,11 @@ filter: job2
 2022-01-07 14:18:12 job2 INFO input_message_done.1_was_not_set
 
 @hostA
+# exec job1 on hostA
 sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job1
 
 @hostB
+# exec job2 on hostB
 sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.job2
 sudo -u small-shell /usr/local/small-shell/bin/e-cron stat    
 --------------------------------------------------------
