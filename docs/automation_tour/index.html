@@ -484,14 +484,15 @@ filter: job2
 2022-01-07 14:19:12 job2 successfully completed
 </code></pre>
 <h2 id="data-file-exchange">DATA (file) exchange</h2>
-<p>e-cron can be dataExchange platform between several hosets . dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB.</p>
+<p>e-cron can be dataExchange platform between several hosets. dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell tour</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
 <pre><code> ---------------------------------
- |   API Server #DataExchange     |   HUB dir: /usr/local/small-shell/util/e-cron/que/file
+ |   API Server #DataExchange     |  
  ---------------------------------
+ Local dir: /usr/local/small-shell/util/e-cron/que/file 
                 |
                 | (http/https)
                 |
-  Edge servers {hostsA,B,C,D} # push or get files through HUB
+ Edge servers {hostsA,B,C,D} # push or get files through HUB
 </code></pre>
 <h5 id="confirm-base-information-at-api-hub-server_1">confirm base information at API HUB server</h5>
 <h6 id="hub_1">@hub</h6>
@@ -502,10 +503,7 @@ sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
 <h4 id="dataexchange-job">DataExchange Job</h4>
-<p>This is exmpale of exchange dummy file from host1 to host2 through HUB API.</p>
-<pre><code># data_push@hostA ---&gt; dummy file ---&gt; data_get@hostB
-! file will not be cleared even if it's synced to other hosts
-</code></pre>
+<p>This is an example of exchange dummy file from host1 to host2 through HUB API. by the way, file will not be removed from HUB when remote host get the file.</p>
 <h5 id="job-for-pushing-file">Job for pushing file</h5>
 <p>This is exmaple of generating job that will push dummy.log to HUB API server.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
