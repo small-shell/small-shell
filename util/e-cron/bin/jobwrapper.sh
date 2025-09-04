@@ -193,7 +193,7 @@ elif [ ! "$err_flg" ];then
   # create output message
   if [ "${output_message}" ];then
     if [ "$hub_api" ];then
-      $CURL -X POST "${hub_api}?req=push&message=${output_message}" -H "X-small-shell-authkey:$api_authkey" 
+      $CURL -X GET "${hub_api}?req=push&message=${output_message}" -H "X-small-shell-authkey:$api_authkey" 
     else
       echo "$output_message" > $ROOT/util/e-cron/que/message/$output_message
       echo "`date +%Y-%m-%d` `date +%T` localhost push ${output_message}" >> ${messaging_log}
