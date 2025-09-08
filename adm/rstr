@@ -19,6 +19,7 @@ SCRIPT_DIR=`dirname $0`
 
 if [ ! -f $ROOT/web/base ];then
   echo "please genterate Base APP before restore"
+  exit 1
 else
   . $ROOT/web/base
 fi
@@ -79,7 +80,6 @@ if [ $num_chk -eq 1 ];then
   if [ ! -d /home/small-shell ];then
     mkdir /home/small-shell
   fi
-  usermod -s /bin/bash small-shell
   cp ${bkuped_dir}/*ssh*.xz /home/small-shell/
   (cd /home/small-shell && tar -xf *ssh*.xz)
   chown -R small-shell:small-shell /home/small-shell
@@ -89,16 +89,15 @@ fi
 systemctl restart small-shell
 
 echo "-----------------------------------------------------------------------------------------------------"
-echo "backup files are restored, please exec gen just in case and restart Base APP and enable e-cron jobs"
+echo "Backup files are restored, pelase enable e-cron jobs by manually"
 echo "-----------------------------------------------------------------------------------------------------"
-echo "sudo $ROOT/adm/gen -app #Base APP"
 echo "sudo -u small-shell $ROOT/bin/e-cron ls"
 
 if [ "$ssl_flg" = "yes" ];then
   echo ""
   echo "!! importtant !!"
-  echo "If you want to enable ssl, please regenerate Base APP. cert and key is ready in ${www}/app/"
-  echo "Even if you regenearete Base APP, no impact to other APP or Jobs"
+  echo "Please regenerate Base APP using cert and key that is restored in ${www}/app/"
+  echo "sudo $ROOT/adm/gen -app"
 fi
 
 if [ "$mkrep_flg" = "yes" ];then

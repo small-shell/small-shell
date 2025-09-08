@@ -31,7 +31,7 @@ if [ ! -d $bkup_dir ];then
 fi
 
 # disk util check
-disk_usage=`df -k $bkup_dir | grep -v Avail | awk '{print $4}'`
+disk_usage=`df -k $bkup_dir --output=avail | sed 1d`
 small_shell_size=`du -sk $ROOT | awk '{print $1}'`
 
 if [ $small_shell_size -gt $disk_usage ];then
