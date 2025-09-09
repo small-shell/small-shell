@@ -35,7 +35,7 @@
         <div class="action_links">
           <span><p style="cursor: pointer" onclick="window.open('./%%app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
           <span><a href="./%%app?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
-          <span><p style="cursor: pointer" onclick="del_confirmation()">Delete</p></span>
+          <span><p style="cursor: pointer" onclick="delConfirmation()">Delete</p></span>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
       });
 
       // handle delete request
-      function del_confirmation(){
+      function delConfirmation(){
         ret = confirm("Are you OK to delete this data ?");
         if (ret == true){
           location.href = "./%%app?%%params&req=del&id=%%id";
