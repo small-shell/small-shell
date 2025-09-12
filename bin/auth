@@ -159,7 +159,7 @@ fi
 
 # key_auth 
 if [ "$key_auth" ];then
-  decrypted_value=`echo "$key_auth" | $BASE64_DEC`
+  decrypted_value=`echo "$key_auth" | $BASE64_DEC 2>/dev/null`
   user_name=`echo "$decrypted_value" | $AWK -F ":" '{print $1}'`
   user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
   hash_gen_key=`echo "$decrypted_value" | $AWK -F ":" '{print $2}'`
