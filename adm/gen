@@ -3379,7 +3379,7 @@ if [ "$param" = "-job" ];then
     -H "Content-Type:application/octet-stream" -H "X-small-shell-authkey:${authkey}" \
     --data-binary @${file_que}/${push_file}`
 
-    if [ ! "$result" -o ! "$result" = "file push failed" ];then
+    if [ "$(echo $push_result | grep "file pushed successfully")" ];then
       echo "File push test has been succesfully done" 
     else
       echo "Something wrong for file push test"
@@ -3396,7 +3396,7 @@ if [ "$param" = "-job" ];then
     fi
     (cd ${file_que}/.e-cron_test && $CURL -OLJ "${hub_api}?req=get&filename=e-cron_test" -H "X-small-shell-authkey:$authkey")
 
-    if [ -f ${file_que}/.e-cron_test/e-cron_test ];then
+    if [ "$(cat ${file_que}/.e-cron_test/e-cron_test 2>/dev/null | grep test)" ];then
       echo "File get test has been succesfully done" 
       rm -rf ${file_que}/.e-cron_test
     else
