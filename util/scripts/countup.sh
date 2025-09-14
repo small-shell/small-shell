@@ -146,16 +146,16 @@ if [ ! "$frequency" = "hourly" -a ! "$frequency" = "daily" -a ! "$frequency" = "
   echo "error: frequency:$frequency is wrong"
   exit 1
 elif [ "$frequency" = "hourly" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_${year}${month}${day}_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_db_${databox}_${year}${month}${day}
 
 elif [ "$frequency" = "daily" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_${year}${month}_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_db_${databox}_${year}${month}
 
 elif [ "$frequency" = "monthly" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_${year}_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_db_${databox}_${year}
 
 elif [ "$frequency" = "snapshot" ];then
-  output=${SCRIPT_DIR}/../statistics/rawdata/countup_s_${year}${month}${day}_db_${databox}
+  output=${SCRIPT_DIR}/../statistics/rawdata/countup_db_${databox}_s_${year}${month}${day}
   if [ -f "${output}.csv" ];then
     rm ${output}.csv
   fi
