@@ -132,8 +132,12 @@ if [ "$req" = "push" ];then
   if [ "$filename"  ];then
     echo "Content-Type: text/html"
     echo ""
-    mv %%www/tmp/$session/binary_file/binary.data %%www/tmp/$session/$filename
-    ${small_shell_path}/bin/e-cron push.file:%%www/tmp/$session/$filename remote_addr:$remote_addr
+    if [ -f %%www/tmp/${session}/binary_file/binary.data ];then
+      mv %%www/tmp/${session}/binary_file/binary.data %%www/tmp/${session}/${filename}
+      ${small_shell_path}/bin/e-cron push.file:%%www/tmp/${session}/${filename} remote_addr:$remote_addr
+    else
+      echo "$filename seems not uploaded"
+    fi
   fi
 fi
 
