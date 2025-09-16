@@ -4,7 +4,7 @@
 . %%www/descriptor/.small_shell_conf
 
 # IP restriction check
-whitelist_chk=`${small_shell_path}/bin/meta get.IP | grep -v "NO IP RESTRICTION"`
+whitelist_chk=`${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION"`
 if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do

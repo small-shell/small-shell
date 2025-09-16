@@ -22,7 +22,7 @@
 # get.tag:$databox
 # get.tag:$app{$databox}
 # get.command
-# get.IP #show whitelisted IPs
+# get.IPL #show whitelisted IPs
 # get.statistics:ls{html_tag}
 # get.statistics:ls.$filter_word,$filter_word2{html_tag}
 # get.statistics:$statistics{graph}
@@ -116,7 +116,7 @@ if [[ $param == get.command ]]; then
   action=`echo $param | $AWK -F":" '{print $1}'`
 fi
 
-if [[ $param == get.IP ]]; then
+if [[ $param == get.IPL ]]; then
   action=$param
 fi
 
@@ -340,7 +340,7 @@ if [ "$action" = "get.command" ];then
   grep "^ALLOWED_COMMANDS=\"*\"" $ROOT/bin/DATA_shell | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED "s/,/ /g"
 fi
 
-if [ "$action" = "get.IP" ];then
+if [ "$action" = "get.IPL" ];then
    if [ -f $ROOT/web/whitelist ];then
      IP_list=`cat $ROOT/web/whitelist | grep -v ^# `
      if [ "$IP_list" ];then 
