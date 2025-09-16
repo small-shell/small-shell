@@ -26,12 +26,12 @@
 
       // handle key
       const dummyValue = '***************************'
-      const storedKey = localStorage.getItem("%%app_key_%%rand");
+      const storedKey = localStorage.getItem("%%app_authkey_%%rand");
 
       window.onload = function() {
         if (storedKey !== null) {
           document.getElementById("dummy").value = dummyValue;
-          document.getElementById("%%app_key_%%rand").value = storedKey;
+          document.getElementById("%%app_authkey_%%rand").value = storedKey;
         }
       }
 
