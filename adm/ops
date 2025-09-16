@@ -53,7 +53,7 @@
 #------------------
 # IP whitelisting
 #------------------
-# ops set.IP #IP whitelisting
+# ops set.IPL #IP whitelisting
 
 #----------------------------------------------------------
 
@@ -121,8 +121,8 @@ do
     filter=`echo $param | $SED "s/$action:$databox//g" | $SED "s/^{//g" | $SED "s/}$//g"`
   fi
 
-  if [[ $param == set.IP ]]; then
-    action="set.IP"
+  if [[ $param == set.IPL ]]; then
+    action="set.IPL"
   fi
 
   if [[ $param == app:* ]]; then
@@ -456,7 +456,7 @@ if [[ $action == del.tag* ]];then
 fi
 
 # Handle IP whitelisting operation request
-if [ "$action" = "set.IP" ];then
+if [ "$action" = "set.IPL" ];then
   clear
   echo "please edit IP whitelisting list via Vim"
   echo "file will be opened after 3 sec"
