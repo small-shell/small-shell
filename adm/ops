@@ -49,12 +49,6 @@
 #-----------------------------------
 # ops add.tag:$databox{$filter} app:$app
 # ops del.tag:$databox{$filter} app:$app
-
-#------------------
-# IP whitelisting
-#------------------
-# ops set.IPL #IP whitelisting
-
 #----------------------------------------------------------
 
 WHOAMI=$(whoami)
@@ -119,10 +113,6 @@ do
     action=$(echo "$param" | $AWK -F":" '{print $1}')
     databox=$(echo "$param" | $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
     filter=$(echo "$param" | $SED "s/${action}:${databox}//g" | $SED "s/^{//g" | $SED "s/}$//g")
-  fi
-
-  if [[ $param == set.IPL ]]; then
-    action="set.IPL"
   fi
 
   if [[ $param == app:* ]]; then
@@ -455,26 +445,6 @@ if [[ $action == del.tag* ]];then
   fi
 fi
 
-# Handle IP whitelisting operation request
-if [ "$action" = "set.IPL" ];then
-  clear
-  echo "please edit IP whitelisting list via Vim"
-  echo "file will be opened after 3 sec"
-  sleep 1
-  clear
-  echo "please edit IP whitelisting list via Vim"
-  echo "file will be opened after 2 sec"
-  sleep 1 
-  clear
-  echo "please edit IP whitelisting list via Vim"
-  echo "file will be opened after 1 sec"
-  sleep 1 
-
-  chown small-shell:small-shell ${ROOT}/web/whitelist
-  vi ${ROOT}/web/whitelist
-fi
-
-
 if [ ! "$action" ];then
  echo "please set action properly, man is here"
  echo "--------------------------------------------------
@@ -502,9 +472,6 @@ if [ ! "$action" ];then
  set.attr:\$user{ro} app:\$app
  set.attr:\$user{\$attribute_key=\$param} app:\$app
  get.attr:\$user app:\$app
-
-# IP whitelisting
- set.IPL #IP whitelisting
  --------------------------------------------------"
 
 fi

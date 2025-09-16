@@ -10,28 +10,6 @@ IP_whitelisting=%%IP_whitelisting
 # load small-shell params
 . %%www/descriptor/.small_shell_conf
 
-# IP restriction check
-if [ "$IP_whitelisting" = "yes" ];then
-  whitelist_chk=$(${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION")
-  if [ "$whitelist_chk" ];then
-    for IP in $whitelist_chk
-    do
-      IP=$(echo "$IP" | $SED "s/*//g")
-      if [[ ${REMOTE_ADDR} == ${IP}* ]] ;then
-        IP_chk=yes
-        break
-      fi
-    done
-
-    if [ ! "$IP_chk" = "yes" ];then
-      echo "Content-Type: text/html"
-      echo ""
-      echo "error: your IP is not allowed to access"
-      exit 1
-    fi
-  fi
-fi
-
 # load header
 remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")
 user_agent=$(echo "$HTTP_USER_AGENT" | $SED "s/:/-/g" | $SED "s/ /_/g")

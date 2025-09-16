@@ -14,7 +14,7 @@
           <h1>%%app</h1>
           <div class="wrapper">
             <input type="text" id="dummy" name="dummy" placeholder="Your key" autocomplete="off" required>
-            <input type="hidden" id="%%app_key_%%rand" name="%%app_key_%%rand">
+            <input type="hidden" id="%%app_authkey_%%rand" name="%%app_authkey_%%rand">
             <button class="button" type="submit" onclick="setKey()">LOGIN</button>
           </div>
           </form>
@@ -57,8 +57,8 @@
             let decodedString = atob(newKey);
             let keyChkresult = keyFormatChk(decodedString); 
             if (keyChkresult === true){
-              localStorage.setItem("%%app_key_%%rand", newKey);
-              document.getElementById("%%app_key_%%rand").value = newKey;
+              localStorage.setItem("%%app_authkey_%%rand", newKey);
+              document.getElementById("%%app_authkey_%%rand").value = newKey;
             } else {
                keyAlert();
             }

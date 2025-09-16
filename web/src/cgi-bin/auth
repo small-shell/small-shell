@@ -20,24 +20,6 @@ echo ""
 # load small-shell conf
 . %%www/descriptor/.small_shell_conf
 
-# IP restriction check
-whitelist_chk=$(${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION")
-if [ "$whitelist_chk" ];then
-  for IP in $whitelist_chk
-  do
-    IP=$(echo "$IP" | $SED "s/*//g")
-    if [[ ${REMOTE_ADDR} == ${IP}* ]] ;then
-      IP_chk=yes
-      break
-    fi
-  done
-
-  if [ ! "$IP_chk" = "yes" ];then
-    echo "error: your IP is not allowed to access"
-    exit 1
-  fi
-fi
-
 # load header
 if [ "$IP_persistence" = "yes" ];then
   remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")
@@ -68,10 +50,10 @@ do
 done
 
 # parse QUERY STRING
-echo "$QUERY_STRING" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" |  tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+echo "$QUERY_STRING" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | $SED "s/\&/\n/g" > %%www/tmp/${param}
 
 # parse POST param
-echo "$input" | $SED "s/\`//g" | $SED "s/&/\n/g"  | $SED -r "s/small_shell_authkey(.*)=/small_shell_authkey=/g" \
+echo "$input" | $SED "s/&/\n/g"  | $SED -r "s/small_shell_authkey(.*)=/received_authkey=/g" \
 | $PHP -r "echo urldecode(file_get_contents('php://stdin'));"  >> %%www/tmp/${param}
 cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" |  tr -d \$ | tr -d \` > %%www/tmp/${param}.load
 
@@ -125,7 +107,7 @@ if [ "$initialize" ];then
 fi
 
 # render auth form 
-if [ ! "$small_shell_authkey" ];then
+if [ ! "$received_authkey" ];then
 
   # regenerate query string
   if [ "$databox" ];then
@@ -156,11 +138,11 @@ if [ ! "$small_shell_authkey" ];then
 fi
 
 # Authentication 
-if [ "$small_shell_authkey" ];then
-  if [[ $small_shell_authkey == *:* ]]; then
-    authkey=$(echo "$small_shell_authkey" | $AWK -F ":" '{print $2}')
+if [ "$received_authkey" ];then
+  if [[ $received_authkey == *:* ]]; then
+    authkey=$(echo "$received_authkey" | $AWK -F ":" '{print $2}')
   else
-    authkey="$small_shell_authkey"
+    authkey=$received_authkey
   fi
   auth_req=$(${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP})
   user_name=$(echo "$auth_req" | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}')

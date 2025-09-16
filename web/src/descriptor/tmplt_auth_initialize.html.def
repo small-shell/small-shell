@@ -106,7 +106,7 @@
     <script>
       // key push to localstorage
       function setKey() {
-        localStorage.setItem("%%app_key_%%rand", "%%user_key");
+        localStorage.setItem("%%app_authkey_%%rand", "%%user_key");
       }
     </script>
 
