@@ -11,7 +11,7 @@
 #----------------------------------------------------------
 
 param=$1
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
@@ -20,7 +20,7 @@ fi
 # user check
 cat /etc/passwd | grep small-shell > /dev/null 2>&1
 if [ ! $? -eq 0 ];then
-  mac_chk=`dscl . list /Users 2>/dev/null | grep small-shell 2>/dev/null`
+  mac_chk=$(dscl . list /Users 2>/dev/null | grep small-shell 2>/dev/null)
   if [ ! "$mac_chk" ];then
     echo "error: small-shell is not existing, please add user beforehand"
     exit 1
@@ -28,8 +28,8 @@ if [ ! $? -eq 0 ];then
 fi
 
 # update global.conf
-SCRIPT_DIR=`dirname $0`
-line_chk=`cat ${SCRIPT_DIR}/../global.conf | wc -l | tr -d " "`
+SCRIPT_DIR=$(dirname $0)
+line_chk=$(cat ${SCRIPT_DIR}/../global.conf | wc -l | tr -d " ")
 
 if [ $line_chk -eq 1 ];then
 
@@ -37,13 +37,13 @@ if [ $line_chk -eq 1 ];then
   chmod 755 ${SCRIPT_DIR}/../global.conf
   . ${SCRIPT_DIR}/../global.conf
   sudo chown -R small-shell:small-shell $ROOT
-  chmod 755 $ROOT/util/scripts/*
-  chmod 755 $ROOT/util/e-cron/bin/*
-  chmod 755 $ROOT/util/pyshell/pygraph.sh
-  chmod 755 $ROOT/util/pyshell/env
-  chmod 755 $ROOT/bin/*
-  chmod 755 $ROOT/adm/*
-  chmod 755 $ROOT/sbin/*
+  chmod 755 ${ROOT}/util/scripts/*
+  chmod 755 ${ROOT}/util/e-cron/bin/*
+  chmod 755 ${ROOT}/util/pyshell/pygraph.sh
+  chmod 755 ${ROOT}/util/pyshell/env
+  chmod 755 ${ROOT}/bin/*
+  chmod 755 ${ROOT}/adm/*
+  chmod 755 ${ROOT}/sbin/*
 
   if [ ! "$mac_chk" ];then
 
@@ -95,16 +95,16 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi
 
-    echo "SHASUM=\"`which sha256sum`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_ENC=\"`which base64` -w 0\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_DEC=\"`which base64` -d\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "SED=\"`which sed`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "AWK=\"`which awk`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "FLOCK=\"`which flock`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "PHP=\"`which php`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "CURL=\"`which curl`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BC=\"`which bc`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "JQ=\"`which jq`\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "SHASUM=\"$(which sha256sum)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "BASE64_ENC=\"$(which base64) -w 0\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "BASE64_DEC=\"$(which base64) -d\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "SED=\"$(which sed)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "AWK=\"$(which awk)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "BC=\"$(which bc)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../global.conf
 
   else
 
@@ -150,20 +150,20 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi
 
-    echo "SHASUM=\"`which shasum` -a 256\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_ENC=\"`which base64`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_DEC=\"`which base64` -D\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "SED=\"`which gsed`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "AWK=\"`which gawk`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "FLOCK=\"`which flock`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "PHP=\"`which php`\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "CURL=\"`which curl`\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "SHASUM=\"$(which shasum) -a 256\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "BASE64_ENC=\"$(which base64)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "BASE64_DEC=\"$(which base64) -D\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "SED=\"$(which gsed)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "AWK=\"$(which gawk)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../global.conf
 
     which jq >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "warn: please install jq command, if you want to use Web API "
     else
-      echo "JQ=\"`which jq`\"" >> ${SCRIPT_DIR}/../global.conf
+      echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../global.conf
     fi
 
   fi
@@ -176,7 +176,7 @@ fi
  . ${SCRIPT_DIR}/../global.conf
 
 # owner check
-shell_owner=`ls -ld $ROOT | $AWK '{print $3}'`
+shell_owner=$(ls -ld $ROOT | $AWK '{print $3}')
 if [ ! "$shell_owner" = "small-shell" ];then
   echo "error: $ROOT is not owned by small-shell. please change owner by following command"
   echo "sudo chown -R small-shell:small-shell $ROOT"
@@ -185,18 +185,18 @@ fi
 
 # gen tmpdir
 random=$RANDOM
-while [ -d $ROOT/tmp/gen/$random ]
+while [ -d ${ROOT}/tmp/gen/${random} ]
 do
  sleep 0.01
- count=`expr $count + 1`
+ count=$(expr $count + 1)
  if [ $count -eq 100 ];then
    echo "error: something is wrong"
    exit 1
  fi
  random=$RANDOM
 done
-mkdir $ROOT/tmp/gen/$random
-tmp_dir="$ROOT/tmp/gen/$random"
+mkdir ${ROOT}/tmp/gen/${random}
+tmp_dir="${ROOT}/tmp/gen/${random}"
 
 # handle kill signal
 trap 'clear_dialog' SIGINT
@@ -216,7 +216,7 @@ function clear_dialog(){
 # ascii check
 function ascii_check(){
   input=$1  
-  check=`echo "$input" | file -i - | grep -i ascii`
+  check=$(echo "$input" | file -i - | grep -i ascii)
   if [ "$check" ]; then
     echo "NP"
     return 0
@@ -228,7 +228,7 @@ function ascii_check(){
 
 function charset_check(){
   input=$1
-  check=`echo "$input" | file -i - | grep -i -e ascii -e utf`
+  check=$(echo "$input" | file -i - | grep -i -e ascii -e utf)
   if [ "$check" ]; then
     echo "NP"
     return 0
@@ -241,30 +241,30 @@ function charset_check(){
 
 # create AUTHKEY for SYS
 user_name=sys
-user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
+user_id=$(echo "$user_name" | $SHASUM | $AWK '{print $1}')
 
-if [ ! -d $ROOT/users/$user_id ];then
-  mkdir $ROOT/users/$user_id
-  echo "$user_name" > $ROOT/users/$user_id/user_name
-  echo "permission=ro" > $ROOT/users/$user_id/.attr.tmp
-  cat $ROOT/users/$user_id/.attr.tmp > $ROOT/users/$user_id/attr
-  chown small-shell:small-shell $ROOT/users/$user_id/attr
+if [ ! -d ${ROOT}/users/${user_id} ];then
+  mkdir ${ROOT}/users/${user_id}
+  echo "$user_name" > ${ROOT}/users/${user_id}/user_name
+  echo "permission=ro" > ${ROOT}/users/${user_id}/.attr.tmp
+  cat ${ROOT}/users/${user_id}/.attr.tmp > ${ROOT}/users/${user_id}/attr
+  chown small-shell:small-shell ${ROOT}/users/${user_id}/attr
 
   which openssl  >/dev/null 2>&1
   if [ $? -eq 0 ];then
-    hash_gen_key=`openssl rand -hex 20`
+    hash_gen_key=$(openssl rand -hex 20)
   else
     hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
   fi
 
-  hash=`echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-  echo "$hash" > $ROOT/users/${user_id}/hash
-  chown -R small-shell:small-shell $ROOT/users/$user_id
-  chmod 700 $ROOT/users/${user_id}/hash
-  user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
-  echo "authkey=\"$user_key\"" > $ROOT/util/scripts/.authkey
-  chown small-shell:small-shell $ROOT/util/scripts/.authkey
-  chmod 700 $ROOT/util/scripts/.authkey
+  hash=$(echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}')
+  echo "$hash" > ${ROOT}/users/${user_id}/hash
+  chown -R small-shell:small-shell ${ROOT}/users/${user_id}
+  chmod 700 ${ROOT}/users/${user_id}/hash
+  user_key=$(echo "${user_name}:${hash_gen_key}" | $BASE64_ENC)
+  echo "authkey=\"${user_key}\"" > ${ROOT}/util/scripts/.authkey
+  chown small-shell:small-shell ${ROOT}/util/scripts/.authkey
+  chmod 700 ${ROOT}/util/scripts/.authkey
 fi
 
 # GENERATE DATA BOX 
@@ -295,11 +295,11 @@ if [ "$param" = "-databox" ];then
   # start dialog 
   echo -n "Databox Name: "
   read databox
-  ascii_chk_result=`ascii_check $databox`
-  meta_chk_result=$(echo $databox | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  ascii_chk_result=$(ascii_check $databox)
+  meta_chk_result=$(echo "$databox" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
   -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
-  ls $ROOT/databox/$databox >/dev/null 2>&1
+  ls ${ROOT}/databox/${databox} >/dev/null 2>&1
   if [ $? -eq 0 ];then
     existing_chk_result=existing
   else
@@ -323,11 +323,11 @@ if [ "$param" = "-databox" ];then
 
     echo -n "Databox Name: "
     read databox
-    ascii_chk_result=`ascii_check $databox`
-    meta_chk_result=$(echo $databox | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    ascii_chk_result=$(ascii_check $databox)
+    meta_chk_result=$(echo "$databox" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
-    ls $ROOT/databox/$databox >/dev/null 2>&1
+    ls ${ROOT}/databox/${databox} >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result=existing
     else
@@ -335,15 +335,15 @@ if [ "$param" = "-databox" ];then
     fi
 
   done
-  echo "$databox" > $tmp_dir/databox
+  echo "$databox" > ${tmp_dir}/databox
 
   # define primary key 
   echo -n "Primary Key Name: "
   read primary_key
-  reserved_chk_result=`echo $primary_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+  reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
   eval $primary_key=test >/dev/null 2>&1
   load_chk=$?
-  meta_chk_result=$(echo $primary_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  meta_chk_result=$(echo "$primary_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
   -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
   while [ "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
@@ -362,10 +362,10 @@ if [ "$param" = "-databox" ];then
 
     echo -n "primary_key: "
     read primary_key
-    reserved_chk_result=`echo $primary_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+    reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
     eval $primary_key=test >/dev/null 2>&1
     load_chk=$?
-    meta_chk_result=$(echo $primary_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    meta_chk_result=$(echo "$primary_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
   done
 
@@ -373,7 +373,7 @@ if [ "$param" = "-databox" ];then
     
     echo -n "Primary Key Label: "
     read primary_key_label
-    char_chk_result=`charset_check "$primary_key_label"`
+    char_chk_result=$(charset_check "$primary_key_label")
 
     while [ "$char_chk_result" = "ERROR" ]
     do
@@ -387,20 +387,20 @@ if [ "$param" = "-databox" ];then
 
       echo -n "primary_key_label: "
       read primary_key_label
-      char_chk_result=`charset_check "$primary_key_label"`
+      char_chk_result=$(charset_check "$primary_key_label")
     done
   else
     primary_key_label="#ID"
   fi
 
   # escape meta character
-  primary_key_label=`echo "$primary_key_label" | $SED "s/\"//g"`
+  primary_key_label=$(echo "$primary_key_label" | $SED "s/\"//g")
   
   # dump primary_key
-  echo "name=\"$primary_key\"" > $tmp_dir/col1
-  echo "label=\"$primary_key_label\"" >> $tmp_dir/col1
-  echo "type=\"text\"" >> $tmp_dir/col1
-  echo "option=\"required\"" >> $tmp_dir/col1
+  echo "name=\"${primary_key}\"" > ${tmp_dir}/col1
+  echo "label=\"${primary_key_label}\"" >> ${tmp_dir}/col1
+  echo "type=\"text\"" >> ${tmp_dir}/col1
+  echo "option=\"required\"" >> ${tmp_dir}/col1
 
   if [ ! "$primary_key" = "hashid" ];then
     echo -n "Add more columns to the databox? (yes | no): "
@@ -431,14 +431,14 @@ if [ "$param" = "-databox" ];then
   clear
   echo -n "Col${count} Key Name: "
   read add_key 
-  reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+  reserved_chk_result=$(echo "$add_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
   eval $add_key=test >/dev/null 2>&1
   load_chk=$?
-  meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  meta_chk_result=$(echo "$add_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
   -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
 
-  grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+  grep "name=\"${add_key}\"" ${tmp_dir}/col* >/dev/null 2>&1
   if [ $? -eq 0 ];then
     existing_chk_result=existing
   else
@@ -468,13 +468,13 @@ if [ "$param" = "-databox" ];then
 
       echo -n "Col${count} Key Name: "
       read add_key
-      reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+      reserved_chk_result=$(echo "$add_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
       eval $add_key=test >/dev/null 2>&1
       load_chk=$?
-      meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      meta_chk_result=$(echo "$add_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
       -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
 
-      grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+      grep "name=\"${add_key}\"" ${tmp_dir}/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         existing_chk_result=existing
       else
@@ -485,7 +485,7 @@ if [ "$param" = "-databox" ];then
 
     echo -n "Col${count} Key Label: "
     read add_key_label
-    char_chk_result=`charset_check "$add_key_label"`
+    char_chk_result=$(charset_check "$add_key_label")
 
     while [ "$char_chk_result" = "ERROR" ]
     do
@@ -499,19 +499,19 @@ if [ "$param" = "-databox" ];then
 
       echo -n "add_key_label: "
       read add_key_label
-      char_chk_result=`charset_check "$add_key_label"`
+      char_chk_result=$(charset_check "$add_key_label")
     done
 
     # escape meta character
-    add_key_label=`echo "$add_key_label" | $SED "s/\"//g"`
+    add_key_label=$(echo "$add_key_label" | $SED "s/\"//g")
 
     echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
     read type
-    data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+    data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
     -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
 
     if [ "$type" = "file" ];then
-      grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+      grep "type=\"file\"" ${tmp_dir}/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         data_chk_result=""
         data_chk_flg="file"
@@ -534,12 +534,12 @@ if [ "$param" = "-databox" ];then
 
       echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
       read type
-      data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+      data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
       -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
 
       data_chk_flg=""
       if [ "$type" = "file" ];then
-        grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+        grep "type=\"file\"" ${tmp_dir}/col* >/dev/null 2>&1
         if [ $? -eq 0 ];then
           data_chk_result=""
           data_chk_flg="file"
@@ -551,24 +551,24 @@ if [ "$param" = "-databox" ];then
     if [ "$type" = "select" -o "$type" = "radio" ];then
       echo -n "Please list the values, separated by commas: "
       read params
-      char_chk_result=`charset_check "$params"`
+      char_chk_result=$(charset_check "$params")
       while [ "$char_chk_result" = "ERROR" ]
       do
         echo "It seems invalid charactor is included, please try again."
         echo -n "values: "
         read params
-        char_chk_result=`charset_check "$params"`
+        char_chk_result=$(charset_check "$params")
       done
     fi
 
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      separator_chk=`echo "$params" | grep ,`
+      separator_chk=$(echo "$params" | grep ,)
       while [ ! "$separator_chk" ]
       do
         echo "There is no separator(comma), please list the values using comma \",\""
         echo -n "values: "
         read params
-        separator_chk=`echo "$params" | grep ,`
+        separator_chk=$(echo "$params" | grep ,)
       done
     fi
 
@@ -583,7 +583,7 @@ if [ "$param" = "-databox" ];then
     if [ "$type" = "pdls" ];then
       echo -n "please input databox name for making pdls(primary value data list): "
       read pdlsbox
-      while [ "$pdlsbox" -a ! -d $ROOT/databox/$pdlsbox ]
+      while [ "$pdlsbox" -a ! -d ${ROOT}/databox/${pdlsbox} ]
       do
         echo -n "databox seems wrong, please try again: "
         read pdlsbox
@@ -622,19 +622,19 @@ if [ "$param" = "-databox" ];then
     fi
   
     # dump add_key
-    echo "name=\"$add_key\"" > $tmp_dir/col${count}
-    echo "label=\"$add_key_label\"" >> $tmp_dir/col${count}
-    echo "type=\"$type\"" >> $tmp_dir/col${count}
+    echo "name=\"${add_key}\"" > ${tmp_dir}/col${count}
+    echo "label=\"${add_key_label}\"" >> ${tmp_dir}/col${count}
+    echo "type=\"${type}\"" >> ${tmp_dir}/col${count}
 
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      echo "params=\"$params\"" >> $tmp_dir/col${count}
+      echo "params=\"${params}\"" >> ${tmp_dir}/col${count}
     fi
 
     if [ "$type" = "pdls" ];then
-      echo "pdlsbox=\"$pdlsbox\"" >> $tmp_dir/col${count}
+      echo "pdlsbox=\"${pdlsbox}\"" >> ${tmp_dir}/col${count}
     fi
 
-    echo "option=\"$option\"" >> $tmp_dir/col${count}
+    echo "option=\"${option}\"" >> ${tmp_dir}/col${count}
     
 
     echo -n "Add more columns to the databox? (yes | no) : "
@@ -663,14 +663,14 @@ if [ "$param" = "-databox" ];then
   echo "Databox Name:$databox"
 
   count=1
-  for column in `ls $tmp_dir/col* | xargs basename -a`
+  for column in $(ls ${tmp_dir}/col* | xargs basename -a)
   do
     if [ "$column" = "col1" ];then
       echo "#primary_key"
     else
       echo "#key(col${count})"
     fi
-    cat $tmp_dir/$column 
+    cat ${tmp_dir}/${column} 
     echo ""
     ((count += 1))  
   done
@@ -695,29 +695,29 @@ if [ "$param" = "-databox" ];then
 
   if [ "$fin_answer" = "yes" ];then
     # cp, chmod, touch
-    mkdir $ROOT/databox/$databox
-    mkdir $ROOT/databox/$databox/log
-    mkdir $ROOT/databox/$databox/data
-    touch $ROOT/databox/$databox/index
-    touch $ROOT/databox/$databox/hashchain
-    mkdir $ROOT/databox/$databox/file
-    touch $ROOT/databox/$databox/log.dump
-    chown -R small-shell:small-shell $ROOT/databox/$databox
-    chmod 700 $ROOT/databox/$databox/data
-    chmod 700 $ROOT/databox/$databox/file
-    chmod 700 $ROOT/databox/$databox/log
-    chmod 700 $ROOT/databox/$databox/index
-    chmod 700 $ROOT/databox/$databox/hashchain
-    chmod 700 $ROOT/databox/$databox/log.dump
+    mkdir ${ROOT}/databox/${databox}
+    mkdir ${ROOT}/databox/${databox}/log
+    mkdir ${ROOT}/databox/${databox}/data
+    touch ${ROOT}/databox/${databox}/index
+    touch ${ROOT}/databox/${databox}/hashchain
+    mkdir ${ROOT}/databox/${databox}/file
+    touch ${ROOT}/databox/${databox}/log.dump
+    chown -R small-shell:small-shell ${ROOT}/databox/${databox}
+    chmod 700 ${ROOT}/databox/${databox}/data
+    chmod 700 ${ROOT}/databox/${databox}/file
+    chmod 700 ${ROOT}/databox/${databox}/log
+    chmod 700 ${ROOT}/databox/${databox}/index
+    chmod 700 ${ROOT}/databox/${databox}/hashchain
+    chmod 700 ${ROOT}/databox/${databox}/log.dump
    
-    mkdir $ROOT/databox/${databox}/def
-    cp $tmp_dir/* $ROOT/databox/${databox}/def/
-    rm -f $ROOT/databox/${databox}/def/databox
-    chmod 755 $ROOT/databox/${databox}/def/*
-    chown -R small-shell:small-shell $ROOT/databox/${databox}/def
+    mkdir ${ROOT}/databox/${databox}/def
+    cp ${tmp_dir}/* ${ROOT}/databox/${databox}/def/
+    rm -f ${ROOT}/databox/${databox}/def/databox
+    chmod 755 ${ROOT}/databox/${databox}/def/*
+    chown -R small-shell:small-shell ${ROOT}/databox/${databox}/def
 
     echo "databox:$databox created"
-    echo "databox definition is here :$ROOT/databox/${databox}/def"
+    echo "databox definition is here :${ROOT}/databox/${databox}/def"
   else
     echo "Plese try again from beginning, #gen -databox"
     rm -rf $tmp_dir
@@ -732,7 +732,7 @@ if [ "$param" = "-addcol" ];then
   echo -n "Databox Name: "
   read databox
 
-  ls $ROOT/databox/$databox >/dev/null 2>&1
+  ls ${ROOT}/databox/${databox} >/dev/null 2>&1
   if [ $? -eq 0 ];then
     existing_chk_result=existing
   else
@@ -748,7 +748,7 @@ if [ "$param" = "-addcol" ];then
     echo -n "Databox Name: "
     read databox
 
-    ls $ROOT/databox/$databox >/dev/null 2>&1
+    ls ${ROOT}/databox/${databox} >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result=existing
     else
@@ -756,10 +756,10 @@ if [ "$param" = "-addcol" ];then
     fi
 
   done
-  echo "$databox" > $tmp_dir/databox
+  echo "$databox" > ${tmp_dir}/databox
   add_col_answer=yes
   
-  count=`ls $ROOT/databox/${databox}/def/col* | wc -l | tr -d " "`
+  count=$(ls ${ROOT}/databox/${databox}/def/col* | wc -l | tr -d " ")
   ((count += 1))
 
   while [ "$add_col_answer" = "yes" ]
@@ -767,22 +767,22 @@ if [ "$param" = "-addcol" ];then
     clear
     echo -n "key(col${count}) name: "
     read add_key
-    reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+    reserved_chk_result=$(echo "$add_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
 
     existing_chk_result=""
-    grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+    grep "name=\"${add_key}\"" ${tmp_dir}/col* >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result=existing
     fi
 
-    grep "name=\"$add_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+    grep "name=\"${add_key}\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result=existing
     fi
 
     eval $add_key=test
     load_chk=$?
-    meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    meta_chk_result=$(echo "$add_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
     while [ "$existing_chk_result" = "existing" -o "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
@@ -806,53 +806,53 @@ if [ "$param" = "-addcol" ];then
 
       echo -n "key(col${count}) name: "
       read add_key
-      reserved_chk_result=`echo $add_key | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data"`
+      reserved_chk_result=$(echo "$add_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
 
       existing_chk_result=""
-      grep "name=\"$add_key\"" $tmp_dir/col* >/dev/null 2>&1
+      grep "name=\"${add_key}\"" ${tmp_dir}/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         existing_chk_result=existing
       fi
 
-      grep "name=\"$add_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+      grep "name=\"${add_key}\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         existing_chk_result=existing
       fi
       
       eval $add_key=test >/dev/null 2>&1
       load_chk=$?
-      meta_chk_result=$(echo $add_key | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      meta_chk_result=$(echo "$add_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
       -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
     done
 
     echo -n "Key (col${count}) Label: "
     read add_key_label
-    char_chk_result=`charset_check "$add_key_label"`
+    char_chk_result=$(charset_check "$add_key_label")
 
     while [ "$char_chk_result" = "ERROR" ]
     do
       echo "error: key label charset seems wrong, please use UTF-8 as charset"
       echo -n "add_key_label: "
       read add_key_label
-      char_chk_result=`charset_check "$add_key_label"`
+      char_chk_result=$(charset_check "$add_key_label")
     done
 
     # escape meta character
-    add_key_label=`echo "$add_key_label" | $SED "s/\"//g"`
+    add_key_label=$(echo "$add_key_label" | $SED "s/\"//g")
 
     echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
     read type
-    data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+    data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
      -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
 
     if [ "$type" = "file" ];then
-      grep "type=\"file\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+      grep "type=\"file\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         data_chk_result=""
         data_chk_flg="file"
       fi
-      grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+      grep "type=\"file\"" ${tmp_dir}/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         data_chk_result=""
         data_chk_flg="file"
@@ -868,17 +868,17 @@ if [ "$param" = "-addcol" ];then
 
       echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
       read type
-      data_chk_result=$(echo $type | grep -e "text" -e "select" -e "radio" -e "checkbox" \
+      data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
        -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
 
       data_chk_flg=""
       if [ "$type" = "file" ];then
-        grep "type=\"file\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+        grep "type=\"file\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
         if [ $? -eq 0 ];then
           data_chk_result=""
           data_chk_flg="file"
         fi
-        grep "type=\"file\"" $tmp_dir/col* >/dev/null 2>&1
+        grep "type=\"file\"" ${tmp_dir}/col* >/dev/null 2>&1
         if [ $? -eq 0 ];then
           data_chk_result=""
           data_chk_flg="file"
@@ -890,24 +890,24 @@ if [ "$param" = "-addcol" ];then
     if [ "$type" = "select" -o "$type" = "radio" ];then
       echo -n "Please list the values, separated by commas: "
       read params
-      char_chk_result=`charset_check "$params"`
+      char_chk_result=$(charset_check "$params")
       while [ "$char_chk_result" = "ERROR" ]
       do
         echo "It seems invalid charactor is included, please try again."
         echo -n "values: "
         read params
-        char_chk_result=`charset_check "$params"`
+        char_chk_result=$(charset_check "$params")
       done
     fi
 
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      separator_chk=`echo "$params" | grep ,`
+      separator_chk=$(echo "$params" | grep ,)
       while [ ! "$separator_chk" ]
       do
         echo "There is no separator(comma), please list the values using comma \",\""
         echo -n "values: "
         read params
-        separator_chk=`echo "$params" | grep ,`
+        separator_chk=$(echo "$params" | grep ,)
       done
     fi
 
@@ -922,7 +922,7 @@ if [ "$param" = "-addcol" ];then
     if [ "$type" = "pdls" ];then
       echo -n "please input databox name for making pdls(primary value data list): "
       read pdlsbox
-      while [ "$pdlsbox" -a ! -d $ROOT/databox/$pdlsbox ]
+      while [ "$pdlsbox" -a ! -d ${ROOT}/databox/${pdlsbox} ]
       do
         echo -n "databox seems wrong, please try again: "
         read pdlsbox
@@ -954,19 +954,19 @@ if [ "$param" = "-addcol" ];then
     fi
 
     # dump add_key
-    echo "name=\"$add_key\"" > $tmp_dir/col${count}
-    echo "label=\"$add_key_label\"" >> $tmp_dir/col${count}
-    echo "type=\"$type\"" >> $tmp_dir/col${count}
+    echo "name=\"${add_key}\"" > ${tmp_dir}/col${count}
+    echo "label=\"${add_key_label}\"" >> ${tmp_dir}/col${count}
+    echo "type=\"${type}\"" >> ${tmp_dir}/col${count}
 
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      echo "params=\"$params\"" >> $tmp_dir/col${count}
+      echo "params=\"${params}\"" >> ${tmp_dir}/col${count}
     fi
 
     if [ "$type" = "pdls" ];then
-      echo "pdlsbox=\"$pdlsbox\"" >> $tmp_dir/col${count}
+      echo "pdlsbox=\"${pdlsbox}\"" >> ${tmp_dir}/col${count}
     fi
 
-    echo "option=\"$option\"" >> $tmp_dir/col${count}
+    echo "option=\"${option}\"" >> ${tmp_dir}/col${count}
 
     echo -n "Add more columns to the databox? (yes | no) : "
     read add_col_answer
@@ -985,13 +985,13 @@ if [ "$param" = "-addcol" ];then
   echo ""
   echo "Databox Name:$databox"
 
-  count=`ls $ROOT/databox/${databox}/def/col* | wc -l | tr -d " "`
+  count=$(ls ${ROOT}/databox/${databox}/def/col* | wc -l | tr -d " ")
   ((count += 1))
   
-  for column in `ls $tmp_dir/col* | xargs basename -a`
+  for column in $(ls ${tmp_dir}/col* | xargs basename -a)
   do
     echo "#key(col${count})"
-    cat $tmp_dir/$column
+    cat ${tmp_dir}/${column}
     echo ""
     ((count += 1))
   done
@@ -1008,16 +1008,16 @@ if [ "$param" = "-addcol" ];then
   done
 
   if [ "$fin_answer" = "yes" ];then
-    cp $tmp_dir/* $ROOT/databox/${databox}/def/
-    rm -f $ROOT/databox/${databox}/def/databox
-    chmod 755 $ROOT/databox/${databox}/def/*
-    chown -R small-shell:small-shell $ROOT/databox/${databox}/def
+    cp ${tmp_dir}/* ${ROOT}/databox/${databox}/def/
+    rm -f ${ROOT}/databox/${databox}/def/databox
+    chmod 755 ${ROOT}/databox/${databox}/def/*
+    chown -R small-shell:small-shell ${ROOT}/databox/${databox}/def
     
-    echo "databox definition is here :$ROOT/databox/${databox}/def"
+    echo "databox definition is here :${ROOT}/databox/${databox}/def"
 
     # rebuild index
-    keys=`grep "name=" $tmp_dir/col* | sort -V | xargs basename -a | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
-    $ROOT/adm/rebuild $databox $keys addcol
+    keys=$(grep "name=" ${tmp_dir}/col* | sort -V | xargs basename -a | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED -z "s/\n/,/g" | $SED "s/,$//g")
+    ${ROOT}/adm/rebuild $databox $keys addcol
   else
     echo "Plese try again from beginning, #gen -addcol"
     rm -rf $tmp_dir
@@ -1032,7 +1032,7 @@ if [ "$param" = "-delcol" ];then
   echo -n "Databox Name: "
   read databox
 
-  ls $ROOT/databox/$databox >/dev/null 2>&1
+  ls ${ROOT}/databox/${databox} >/dev/null 2>&1
   if [ $? -eq 0 ];then
     existing_chk_result=existing
   else
@@ -1048,7 +1048,7 @@ if [ "$param" = "-delcol" ];then
     echo -n "Databox Name: "
     read databox
 
-    ls $ROOT/databox/$databox >/dev/null 2>&1
+    ls ${ROOT}/databox/${databox} >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result=existing
     else
@@ -1058,7 +1058,7 @@ if [ "$param" = "-delcol" ];then
   done
   del_col_answer=yes
 
-  count=`ls $ROOT/databox/${databox}/def/col* | wc -l | tr -d " "`
+  count=$(ls ${ROOT}/databox/${databox}/def/col* | wc -l | tr -d " ")
   ((count += 1))
 
   while [ "$del_col_answer" = "yes" ]
@@ -1067,21 +1067,21 @@ if [ "$param" = "-delcol" ];then
     echo -n "column's key name: "
     read del_key
 
-    grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+    grep "name=\"${del_key}\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result1=existing
     else
       existing_chk_result1=""
     fi
 
-    ls  $tmp_dir/$del_key >/dev/null 2>&1
+    ls  ${tmp_dir}/${del_key} >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result2=existing
     else
       existing_chk_result2=""
     fi
 
-    grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col1 >/dev/null 2>&1
+    grep "name=\"${del_key}\"" ${ROOT}/databox/${databox}/def/col1 >/dev/null 2>&1
     if [ $? -eq 0 ];then
       primary_key_chk_result=yes
     else
@@ -1106,21 +1106,21 @@ if [ "$param" = "-delcol" ];then
       echo -n "Column's Key Name: "
       read del_key
       
-      grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col* >/dev/null 2>&1
+      grep "name=\"${del_key}\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
       if [ $? -eq 0 ];then
         existing_chk_result1=existing
       else
         existing_chk_result1=""
       fi
 
-      ls  $tmp_dir/$del_key >/dev/null 2>&1
+      ls  ${tmp_dir}/${del_key} >/dev/null 2>&1
       if [ $? -eq 0 ];then
         existing_chk_result2=existing
       else
         existing_chk_result2=""
       fi
 
-      grep "name=\"$del_key\"" $ROOT/databox/${databox}/def/col1 >/dev/null 2>&1
+      grep "name=\"${del_key}\"" ${ROOT}/databox/${databox}/def/col1 >/dev/null 2>&1
       if [ $? -eq 0 ];then
         primary_key_chk_result=yes
       else
@@ -1131,7 +1131,7 @@ if [ "$param" = "-delcol" ];then
 
 
     # dump del_key
-    touch $tmp_dir/$del_key
+    touch ${tmp_dir}/${del_key}
  
     echo -n "Delete more columns from the databox? (yes | no) : "
     read del_col_answer
@@ -1151,7 +1151,7 @@ if [ "$param" = "-delcol" ];then
   echo ""
   echo "Databox Name:$databox"
 
-  for key in `ls $tmp_dir/* | xargs basename -a`
+  for key in $(ls ${tmp_dir}/* | xargs basename -a)
   do
     echo "key of delete target column:$key"
   done
@@ -1170,16 +1170,16 @@ if [ "$param" = "-delcol" ];then
 
   if [ "$fin_answer" = "yes" ];then
   
-    for target_key in `ls $tmp_dir | xargs basename -a`
+    for target_key in $(ls $tmp_dir | xargs basename -a)
     do
-      col_name=`grep -l "name=\"$target_key\"" $ROOT/databox/${databox}/def/col* | xargs basename -a`
+      col_name=$(grep -l "name=\"${target_key}\"" ${ROOT}/databox/${databox}/def/col* | xargs basename -a)
 
-      if [ ! -f $ROOT/databox/${databox}/def/_${col_name} ];then
-        mv $ROOT/databox/${databox}/def/$col_name $ROOT/databox/${databox}/def/_${col_name}
+      if [ ! -f ${ROOT}/databox/${databox}/def/_${col_name} ];then
+        mv ${ROOT}/databox/${databox}/def/${col_name} ${ROOT}/databox/${databox}/def/_${col_name}
       else
-        duplicated=$ROOT/databox/${databox}/def/_${col_name}.duplicated.$RANDOM
+        duplicated=${ROOT}/databox/${databox}/def/_${col_name}.duplicated.$RANDOM
         if [ ! -f "$duplicated" ];then
-          mv $ROOT/databox/${databox}/def/$col_name $ROOT/databox/${databox}/def/_${col_name}.duplicated.$RANDOM
+          mv ${ROOT}/databox/${databox}/def/${col_name} ${ROOT}/databox/${databox}/def/_${col_name}.duplicated.$RANDOM
         else
           echo "error: failed to mv def file of $key"
           rm -rf $tmp_dir
@@ -1188,23 +1188,23 @@ if [ "$param" = "-delcol" ];then
       fi
       
       count=1
-      for column in `ls $ROOT/databox/${databox}/def/col* | sort -V | xargs basename -a`
+      for column in $(ls ${ROOT}/databox/${databox}/def/col* | sort -V | xargs basename -a)
       do
         if [ ! "$column" = "col${count}" ];then
-          mv $ROOT/databox/${databox}/def/$column  $ROOT/databox/${databox}/def/col${count}
+          mv ${ROOT}/databox/${databox}/def/${column}  ${ROOT}/databox/${databox}/def/col${count}
         fi
        ((count += 1))
       done
       
     done
     
-    chmod 755 $ROOT/databox/${databox}/def/*
-    chown -R small-shell:small-shell $ROOT/databox/${databox}/def
-    echo "databox definition is here :$ROOT/databox/${databox}/def"
+    chmod 755 ${ROOT}/databox/${databox}/def/*
+    chown -R small-shell:small-shell ${ROOT}/databox/${databox}/def
+    echo "databox definition is here :${ROOT}/databox/${databox}/def"
 
     # rebuild index
-    keys=`ls $tmp_dir | sort -V | xargs basename -a | $SED "s/ /,/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
-    $ROOT/adm/rebuild $databox $keys delcol
+    keys=$(ls $tmp_dir | sort -V | xargs basename -a | $SED "s/ /,/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g")
+    ${ROOT}/adm/rebuild $databox $keys delcol
   else
     echo "Plese try again from beginning, #gen -delcol"
     rm -rf $tmp_dir
@@ -1216,7 +1216,7 @@ fi
 if [ "$param" = "-app" ];then
 
   # env check
-  selinux_chk=`sestatus 2>/dev/null | grep enforcing` 
+  selinux_chk=$(sestatus 2>/dev/null | grep enforcing) 
   if [ "$selinux_chk" ];then
     echo "warn: SE Linux is enforcing, you can't use APP shell"
     echo "please change SE linux from enforcing to permissive or disabled"
@@ -1224,10 +1224,10 @@ if [ "$param" = "-app" ];then
     exit 1
   fi
 
-  if [ -f $ROOT/web/base ];then
-    replica_chk=`grep ^cluster_base_url= $ROOT/web/base`
+  if [ -f ${ROOT}/web/base ];then
+    replica_chk=$(grep ^cluster_base_url= ${ROOT}/web/base)
     if [ "$replica_chk" ];then
-      echo "warn: you must purge replication first. please execute \"$ROOT/util/scripts/mkrep.sh purge\""
+      echo "warn: you must purge replication first. please execute \"${ROOT}/util/scripts/mkrep.sh purge\""
       rm -rf $tmp_dir
       exit 1
     fi
@@ -1276,7 +1276,7 @@ if [ "$param" = "-app" ];then
         echo -n "Root directory of web (/Library/WebServer): "
       fi
       read www
-      www=`echo $www | $SED "s/\/$//g"`
+      www=$(echo "$www" | $SED "s/\/$//g")
 
       if [ ! "$www" ];then
         if [ ! "$mac_chk" ];then
@@ -1285,7 +1285,7 @@ if [ "$param" = "-app" ];then
           www=/Library/WebServer
         fi
       fi
-      www=`echo $www | $SED "s/\/$//g"`
+      www=$(echo "$www" | $SED "s/\/$//g")
 
       while [ ! -d $www ]
       do
@@ -1295,10 +1295,10 @@ if [ "$param" = "-app" ];then
         if [ ! "$www" ];then
           www=/var/www
         fi
-        www=`echo $www | $SED "s/\/$//g"`
+        www=$(echo "$www" | $SED "s/\/$//g")
       done
 
-      www=`echo $www | $SED "s/\/$//g"`
+      www=$(echo "$www" | $SED "s/\/$//g")
 
       if [ -f /etc/redhat-release ];then
         cgi_candidate=/var/www/cgi-bin
@@ -1314,12 +1314,12 @@ if [ "$param" = "-app" ];then
 
       echo -n "CGI directory ($cgi_candidate): "
       read cgi_dir
-      cgi_dir=`echo $cgi_dir | $SED "s/\/$//g"`
+      cgi_dir=$(echo "$cgi_dir" | $SED "s/\/$//g")
 
       if [ ! "$cgi_dir" ];then
         cgi_dir=$cgi_candidate
       fi
-      cgi_dir=`echo $cgi_dir | $SED "s/\/$//g"`
+      cgi_dir=$(echo "$cgi_dir" | $SED "s/\/$//g")
 
       while [ "$cgi_dir" = "$www" -o ! -d $cgi_dir ]
       do
@@ -1330,17 +1330,17 @@ if [ "$param" = "-app" ];then
         fi
         echo -n "CGI directory: "
         read cgi_dir
-        cgi_dir=`echo $cgi_dir | $SED "s/\/$//g"`
+        cgi_dir=$(echo "$cgi_dir" | $SED "s/\/$//g")
       done
 
       echo -n "Static page directory ($static_candidate): "
       read static_dir
-      static_dir=`echo $static_dir | $SED "s/\/$//g"`
+      static_dir=$(echo "$static_dir" | $SED "s/\/$//g")
 
       if [ ! "$static_dir" ];then
         static_dir=$static_candidate
       fi
-      static_dir=`echo $static_dir | $SED "s/\/$//g"`
+      static_dir=$(echo "$static_dir" | $SED "s/\/$//g")
 
       while [ "$static_dir" = "$www" -o ! -d $static_dir ]
       do
@@ -1351,7 +1351,7 @@ if [ "$param" = "-app" ];then
         fi
         echo -n "Static page directory: "
         read static_dir
-        static_dir=`echo $static_dir | $SED "s/\/$//g"`
+        static_dir=$(echo "$static_dir" | $SED "s/\/$//g")
       done
 
 
@@ -1389,8 +1389,8 @@ if [ "$param" = "-app" ];then
 
     if [ "$protocol" = "https" -a "$srv_type" = "default" ];then
 
-     if [ -f $ROOT/web/base ];then
-        reverse_proxy=`cat $ROOT/web/base | grep reverse_proxy= | $SED "s/reverse_proxy=//g" | $SED "s/\"//g"`  
+     if [ -f ${ROOT}/web/base ];then
+        reverse_proxy=$(cat ${ROOT}/web/base | grep reverse_proxy= | $SED "s/reverse_proxy=//g" | $SED "s/\"//g")  
         if [ "$reverse_proxy" = "yes" ];then
           echo -n "Continue to use automation setting of ssl cert deployement ? (yes | no): "
           read use_existing_cert 
@@ -1405,7 +1405,7 @@ if [ "$param" = "-app" ];then
       fi
 
       if [ ! "$use_existing_cert" ];then
-        if [ -f $www/app/cert.pem -a -f $www/app/privatekey.pem ];then
+        if [ -f ${www}/app/cert.pem -a -f ${www}/app/privatekey.pem ];then
           echo -n "Do you want to use existing cert and key? (yes | no): "
           read use_existing_cert 
           while [ ! "$use_existing_cert" = "yes" -a ! "$use_existing_cert" = "no" ]
@@ -1419,7 +1419,7 @@ if [ "$param" = "-app" ];then
       
       if [ "$use_existing_cert" = "yes" ];then
         echo "Base APP will be upgraded and restarted using exising cert & key, please be aware."
-        server=`cat $ROOT/web/base | grep server= | $SED "s/server=//g" | $SED "s/\"//g"`  
+        server=$(cat ${ROOT}/web/base | grep server= | $SED "s/server=//g" | $SED "s/\"//g")  
         sleep 2
       fi
 
@@ -1470,7 +1470,7 @@ if [ "$param" = "-app" ];then
     fi
 
     # command check for cgi
-    sudo -u small-shell echo $HOME >/dev/null 2>&1
+    sudo -u small-shell echo "$HOME" >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please add small-shell as linux user"
       rm -rf $tmp_dir
@@ -1481,8 +1481,8 @@ if [ "$param" = "-app" ];then
       echo -n "Web Server FQDN or IP addr (e.g. 192.168.10.1): "
       read server
 
-      ascii_chk_result=`ascii_check $server`
-      meta_chk_result=$(echo $server | grep -e " " -e ","  -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
+      ascii_chk_result=$(ascii_check $server)
+      meta_chk_result=$(echo "$server" | grep -e " " -e ","  -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
       -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
       while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$server" ]
@@ -1494,8 +1494,8 @@ if [ "$param" = "-app" ];then
         fi
         echo -n "Web server: "
         read server
-        ascii_chk_result=`ascii_check $server`
-        meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
+        ascii_chk_result=$(ascii_check $server)
+        meta_chk_result=$(echo "$server" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\"  -e "/" \
         -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
       done
 
@@ -1523,13 +1523,13 @@ if [ "$param" = "-app" ];then
 
         echo -n "please input CGI base url that defined at web server : "
         read base_url
-        ascii_chk_result=`ascii_check $base_url`
-        meta_chk_result=$(echo $base_url | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
+        ascii_chk_result=$(ascii_check $base_url)
+        meta_chk_result=$(echo "$base_url" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
         -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
-        slash_chk=`echo $base_url | grep \/$`
+        slash_chk=$(echo "$base_url" | grep \/$)
         if [ ! "$slash_chk" ];then
-          base_url=`echo $base_url | $SED "s/$/\//g"`
+          base_url=$(echo "$base_url" | $SED "s/$/\//g")
         fi
 
         while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$base_url" ]
@@ -1541,8 +1541,8 @@ if [ "$param" = "-app" ];then
           fi
           echo -n "CGI base url: "
           read base_url
-          ascii_chk_result=`ascii_check $base_url`
-          meta_chk_result=$(echo $server | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
+          ascii_chk_result=$(ascii_check $base_url)
+          meta_chk_result=$(echo "$server" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" \
           -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
         done
  
@@ -1579,29 +1579,29 @@ if [ "$param" = "-app" ];then
 
     if [ "$fin_answer" = "yes" ];then
        
-      if [ -f $ROOT/web/base ];then
+      if [ -f ${ROOT}/web/base ];then
         upgrade=yes
-        api_authkey=`cat $ROOT/web/base | grep api_authkey | $SED "s/api_authkey=//g" | $SED "s/\"//g"` 
+        api_authkey=$(cat ${ROOT}/web/base | grep api_authkey | $SED "s/api_authkey=//g" | $SED "s/\"//g") 
       fi
 
       # gen base info
       if [ "$srv_type" = "default" ];then
         static_dir=/var/www/html
       fi
-      echo "protocol=\"$protocol\"" > $ROOT/web/base
-      echo "server=\"$server\"" >> $ROOT/web/base
-      echo "srv_type=\"$srv_type\"" >> $ROOT/web/base
-      echo "cgi_usr=\"$cgi_usr\"" >> $ROOT/web/base
-      echo "www=\"$www\"" >> $ROOT/web/base
-      echo "cgi_dir=\"$cgi_dir\"" >> $ROOT/web/base
-      echo "static_dir=\"$static_dir\"" >> $ROOT/web/base
-      echo "base_url=\"$base_url\"" >> $ROOT/web/base
-      echo "static_url=\"$static_url\"" >> $ROOT/web/base
+      echo "protocol=\"${protocol}\"" > ${ROOT}/web/base
+      echo "server=\"${server}\"" >> ${ROOT}/web/base
+      echo "srv_type=\"${srv_type}\"" >> ${ROOT}/web/base
+      echo "cgi_usr=\"${cgi_usr}\"" >> ${ROOT}/web/base
+      echo "www=\"${www}\"" >> ${ROOT}/web/base
+      echo "cgi_dir=\"${cgi_dir}\"" >> ${ROOT}/web/base
+      echo "static_dir=\"${static_dir}\"" >> ${ROOT}/web/base
+      echo "base_url=\"${base_url}\"" >> ${ROOT}/web/base
+      echo "static_url=\"${static_url}\"" >> ${ROOT}/web/base
       if [ "$reverse_proxy" = "yes" ];then
-        echo "reverse_proxy=\"yes\"" >> $ROOT/web/base
+        echo "reverse_proxy=\"yes\"" >> ${ROOT}/web/base
       fi
-      chown small-shell:small-shell $ROOT/web/base
-      chmod 700 $ROOT/web/base
+      chown small-shell:small-shell ${ROOT}/web/base
+      chmod 700 ${ROOT}/web/base
 
       # deploy cgi to cgi-dir changing path etc
       bindir="${www}/bin"
@@ -1643,7 +1643,7 @@ if [ "$param" = "-app" ];then
            port=443
         fi
 
-        node_version=`node --version | $SED "s/v//g" | $AWK -F "." '{print $1}'`
+        node_version=$(node --version | $SED "s/v//g" | $AWK -F "." '{print $1}')
         if [ "$node_version" -ge 18 ];then
           (cd ${www}/app;npm init -y;npm install express@5) 
 	else
@@ -1659,9 +1659,9 @@ if [ "$param" = "-app" ];then
           systemctl stop nginx
           systemctl disable nginx
           reverse_proxy=""
-          sudo -u small-shell $ROOT/bin/e-cron disable.ssl_auto
+          sudo -u small-shell ${ROOT}/bin/e-cron disable.ssl_auto
         else
-          nginx_chk=`ps -ef | grep nginx | grep -v grep`
+          nginx_chk=$(ps -ef | grep nginx | grep -v grep)
           if [ "$nginx_chk" ];then
             if [ ! "$mac_chk" ];then
               systemctl stop nginx
@@ -1689,44 +1689,44 @@ if [ "$param" = "-app" ];then
           
         if [ "$protocol" = "https" ];then
           if [ ! "$chain_cert" ];then
-            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
-            | $SED "s#option end \*/##g" | $SED "s/%%cluster/$cluster/g" \
-	    | $SED "s#%%any_routing#$any_routing#g" > ${www}/app/index.js
+            cat ${ROOT}/web/src/app/index.js | $SED "s/%%protocol/${protocol}/g" | $SED "s/%%port/${port}/g" \
+            | $SED "s#%%sed#${SED}#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
+            | $SED "s#option end \*/##g" | $SED "s/%%cluster/${cluster}/g" \
+	    | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
           else
-            cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-            | $SED "s#%%sed#$SED#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
+            cat ${ROOT}/web/src/app/index.js | $SED "s/%%protocol/${protocol}/g" | $SED "s/%%port/${port}/g" \
+            | $SED "s#%%sed#${SED}#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
             | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
-            | $SED "s/%%cluster/$cluster/g" | $SED "s#%%any_routing#$any_routing#g" > ${www}/app/index.js
+            | $SED "s/%%cluster/${cluster}/g" | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
           fi
         else
-          cat $ROOT/web/src/app/index.js | $SED "s/%%protocol/$protocol/g" | $SED "s/%%port/$port/g" \
-          | $SED "s#%%sed#$SED#g" | $SED "s/%%cluster/$cluster/g" \
-	  | $SED "s#%%any_routing#$any_routing#g" > ${www}/app/index.js
+          cat ${ROOT}/web/src/app/index.js | $SED "s/%%protocol/${protocol}/g" | $SED "s/%%port/${port}/g" \
+          | $SED "s#%%sed#${SED}#g" | $SED "s/%%cluster/${cluster}/g" \
+	  | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
         fi
 
-        NODE=`which node`
-        cat $ROOT/web/src/app/app.sh | $SED "s#%%node#$NODE#g" \
-        | $SED "s#%%sed#$SED#g" > ${www}/app/app.sh
+        NODE=$(which node)
+        cat ${ROOT}/web/src/app/app.sh | $SED "s#%%node#${NODE}#g" \
+        | $SED "s#%%sed#${SED}#g" > ${www}/app/app.sh
         chmod 755 ${www}/app/app.sh
 
         if [ ! "$mac_chk" ];then
 
-          apache2_chk=`ps -ef | grep apache2 | grep -v grep`
+          apache2_chk=$(ps -ef | grep apache2 | grep -v grep)
           if [ "$apache2_chk" ];then
             systemctl stop apache2
             systemctl disable apache2
           fi
 
           if [ ! -f /etc/systemd/system/small-shell.service ];then
-            cat $ROOT/web/src/app/small-shell.service | $SED "s#%%www#${www}#g" \
+            cat ${ROOT}/web/src/app/small-shell.service | $SED "s#%%www#${www}#g" \
             > /etc/systemd/system/small-shell.service 
             systemctl enable small-shell.service 
             systemctl start small-shell 
             sleep 2
           else
             systemctl restart small-shell
-            enable_chk=`systemctl is-enabled small-shell`
+            enable_chk=$(systemctl is-enabled small-shell)
             if [ "$enable_chk" != "enabled" ];then
                systemctl enable small-shell.service
             fi
@@ -1734,20 +1734,20 @@ if [ "$param" = "-app" ];then
           fi
         else
 
-          httpd_chk=`launchctl list | grep httpd`
+          httpd_chk=$(launchctl list | grep httpd)
           if [ "$httpd_chk" ];then
             apachectl stop
           fi
 
           if [ ! -f /Library/LaunchDaemons/org.small-shell.node.plist ];then
 
-            cat $ROOT/web/src/app/org.small-shell.node.plist | $SED "s#%%www#${www}#g" \
+            cat ${ROOT}/web/src/app/org.small-shell.node.plist | $SED "s#%%www#${www}#g" \
             > /Library/LaunchDaemons/org.small-shell.node.plist
 
-            cat $ROOT/web/src/app/org.small-shell.util.plist | $SED "s#%%www#${www}#g" \
+            cat ${ROOT}/web/src/app/org.small-shell.util.plist | $SED "s#%%www#${www}#g" \
             > /Library/LaunchDaemons/org.small-shell.util.plist
 
-            cat $ROOT/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
+            cat ${ROOT}/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
             > ${www}/app/util.sh
             chmod 755 ${www}/app/util.sh
  
@@ -1774,13 +1774,13 @@ if [ "$param" = "-app" ];then
   
       if [ ! -d $desc_dir ];then
         mkdir $desc_dir
-        mkdir $desc_dir/common_parts
+        mkdir ${desc_dir}/common_parts
         if [ ! $? -eq 0 ];then
           echo "error: failed to create directory for small-shell APP html descriptor"
         fi
       fi
       chown $cgi_usr:$cgi_usr $desc_dir
-      chown $cgi_usr:$cgi_usr $desc_dir/common_parts
+      chown $cgi_usr:$cgi_usr ${desc_dir}/common_parts
 
       if [ ! $? -eq 0 ];then
         echo "error: failed to create directory for small-shell APP html descriptor"
@@ -1795,87 +1795,87 @@ if [ "$param" = "-app" ];then
       fi
 
       # gen command API key and URL  
-      echo "command_api=\"${base_url}api\"" >> $ROOT/web/base
-      echo "hub_api=\"${base_url}e-cron\""  >> $ROOT/web/base
+      echo "command_api=\"${base_url}api\"" >> ${ROOT}/web/base
+      echo "hub_api=\"${base_url}e-cron\""  >> ${ROOT}/web/base
 
       user_name=api
-      user_id=`echo "$user_name" | $SHASUM | $AWK '{print $1}'`
+      user_id=$(echo "$user_name" | $SHASUM | $AWK '{print $1}')
 
-      if [ -d $ROOT/users/$user_id ];then
-        echo "api_authkey=\"$api_authkey\"" >> $ROOT/web/base
+      if [ -d ${ROOT}/users/${user_id} ];then
+        echo "api_authkey=\"${api_authkey}\"" >> ${ROOT}/web/base
       else
-        mkdir $ROOT/users/$user_id
-        echo "$user_name" > $ROOT/users/$user_id/user_name
-        echo "permission=ro" > $ROOT/users/$user_id/.attr.tmp
-        cat $ROOT/users/$user_id/.attr.tmp > $ROOT/users/$user_id/attr
-        chown small-shell:small-shell $ROOT/users/$user_id/attr
+        mkdir ${ROOT}/users/${user_id}
+        echo "$user_name" > ${ROOT}/users/${user_id}/user_name
+        echo "permission=ro" > ${ROOT}/users/${user_id}/.attr.tmp
+        cat ${ROOT}/users/${user_id}/.attr.tmp > ${ROOT}/users/${user_id}/attr
+        chown small-shell:small-shell ${ROOT}/users/${user_id}/attr
 
         which openssl  >/dev/null 2>&1
         if [ $? -eq 0 ];then
-          hash_gen_key=`openssl rand -hex 20`
+          hash_gen_key=$(openssl rand -hex 20)
         else
           hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
         fi
-        hash=`echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-        echo "$hash" > $ROOT/users/${user_id}/hash
-        chown -R small-shell:small-shell $ROOT/users/$user_id
-        chmod 700 $ROOT/users/${user_id}/hash
-        user_key=`echo "${user_name}:${hash_gen_key}" | $BASE64_ENC`
-        echo "api_authkey=\"$user_key\"" >> $ROOT/web/base
+        hash=$(echo "${user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}')
+        echo "$hash" > ${ROOT}/users/${user_id}/hash
+        chown -R small-shell:small-shell ${ROOT}/users/${user_id}
+        chmod 700 ${ROOT}/users/${user_id}/hash
+        user_key=$(echo "${user_name}:${hash_gen_key}" | $BASE64_ENC)
+        echo "api_authkey=\"${user_key}\"" >> ${ROOT}/web/base
       fi
 
-      for src in `ls $ROOT/web/src/cgi-bin | grep -v controller | grep -v tmplt | grep -v auth | xargs basename -a`
+      for src in $(ls ${ROOT}/web/src/cgi-bin | grep -v controller | grep -v tmplt | grep -v auth | xargs basename -a)
       do
-        cat $ROOT/web/src/cgi-bin/$src | $SED "s#%%www#${www}#g" > $cgi_dir/$src
-        chmod 755 $cgi_dir/$src
+        cat ${ROOT}/web/src/cgi-bin/${src} | $SED "s#%%www#${www}#g" > ${cgi_dir}/${src}
+        chmod 755 ${cgi_dir}/${src}
       done
-      cat $ROOT/web/src/cgi-bin/controller | $SED "s#%%www#${www}#g" > $cgi_dir/base
-      cat $ROOT/web/src/cgi-bin/auth | $SED "s#%%www#${www}#g" > $cgi_dir/auth.base
-      cp $ROOT/web/src/lib/base.css $static_dir
-      cp $ROOT/web/src/lib/simple-calendar.css $static_dir
-      cp $ROOT/web/src/lib/simple-calendar.js $static_dir
-      chmod 755 $cgi_dir/base
-      chmod 755 $cgi_dir/auth.base
-      chmod 755 $static_dir/base.css
-      chmod 755 $static_dir/simple-calendar.css
-      chmod 755 $static_dir/simple-calendar.js
+      cat ${ROOT}/web/src/cgi-bin/controller | $SED "s#%%www#${www}#g" > ${cgi_dir}/base
+      cat ${ROOT}/web/src/cgi-bin/auth | $SED "s#%%www#${www}#g" > ${cgi_dir}/auth.base
+      cp ${ROOT}/web/src/lib/base.css $static_dir
+      cp ${ROOT}/web/src/lib/simple-calendar.css $static_dir
+      cp ${ROOT}/web/src/lib/simple-calendar.js $static_dir
+      chmod 755 ${cgi_dir}/base
+      chmod 755 ${cgi_dir}/auth.base
+      chmod 755 ${static_dir}/base.css
+      chmod 755 ${static_dir}/simple-calendar.css
+      chmod 755 ${static_dir}/simple-calendar.js
 
-      for src in `ls $ROOT/web/src/bin | grep -v tmplt | xargs basename -a`
+      for src in $(ls ${ROOT}/web/src/bin | grep -v tmplt | xargs basename -a)
       do
-        cat $ROOT/web/src/bin/$src | $SED "s#%%www#${www}#g" > $bindir/$src
-        chmod 755 $bindir/$src
+        cat ${ROOT}/web/src/bin/${src} | $SED "s#%%www#${www}#g" > ${bindir}/${src}
+        chmod 755 ${bindir}/${src}
       done
 
-      if [ -f $ROOT/web/.rand ];then
-        . $ROOT/web/.rand
+      if [ -f ${ROOT}/web/.rand ];then
+        . ${ROOT}/web/.rand
       else
         rand=$RANDOM
-        echo "rand=$rand" > $ROOT/web/.rand
-        chmod 755 $ROOT/web/.rand
-        chown small-shell:small-shell $ROOT/web/.rand
+        echo "rand=$rand" > ${ROOT}/web/.rand
+        chmod 755 ${ROOT}/web/.rand
+        chown small-shell:small-shell ${ROOT}/web/.rand
       fi
 
-      for src in `ls $ROOT/web/src/descriptor | grep -v tmplt | grep -v common_parts | grep -v redirect.html.def | xargs basename -a`
+      for src in $(ls ${ROOT}/web/src/descriptor | grep -v tmplt | grep -v common_parts | grep -v redirect.html.def | xargs basename -a)
       do
-        cat $ROOT/web/src/descriptor/$src | $SED "s/%%rand/$rand/g" | $SED "s#%%static_url/#${static_url}#g" > $desc_dir/$src
-        chmod 755 $desc_dir/$src
+        cat ${ROOT}/web/src/descriptor/${src} | $SED "s/%%rand/${rand}/g" | $SED "s#%%static_url/#${static_url}#g" > ${desc_dir}/${src}
+        chmod 755 ${desc_dir}/${src}
       done
 
-      for src in `ls $ROOT/web/src/descriptor/common_parts | grep -v tmplt | grep -v common_menu_button | xargs basename -a`
+      for src in $(ls ${ROOT}/web/src/descriptor/common_parts | grep -v tmplt | grep -v common_menu_button | xargs basename -a)
       do
-        cat $ROOT/web/src/descriptor/common_parts/$src  > $desc_dir/common_parts/$src
-        chown $cgi_usr:$cgi_usr $desc_dir/common_parts/$src
-        chmod 755 $desc_dir/common_parts/$src
+        cat ${ROOT}/web/src/descriptor/common_parts/${src}  > ${desc_dir}/common_parts/${src}
+        chown $cgi_usr:$cgi_usr ${desc_dir}/common_parts/${src}
+        chmod 755 ${desc_dir}/common_parts/${src}
       done
       
-      cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
-      | $SED "s/%%rand/$rand/g"  >> $desc_dir/common_parts/common_menu
+      cat ${ROOT}/web/src/descriptor/common_parts/common_menu_button \
+      | $SED "s/%%rand/${rand}/g"  >> ${desc_dir}/common_parts/common_menu
 
-      cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
-      | $SED "s/%%rand/$rand/g"  >> $desc_dir/common_parts/common_menu_ro 
+      cat ${ROOT}/web/src/descriptor/common_parts/common_menu_button \
+      | $SED "s/%%rand/${rand}/g"  >> ${desc_dir}/common_parts/common_menu_ro 
 
-      cat $ROOT/web/src/descriptor/common_parts/common_menu_button \
-      | $SED "s/%%rand/$rand/g"  >> $desc_dir/common_parts/common_menu_rw
+      cat ${ROOT}/web/src/descriptor/common_parts/common_menu_button \
+      | $SED "s/%%rand/${rand}/g"  >> ${desc_dir}/common_parts/common_menu_rw
 
       # standadaize owner of Base APP
       chown -R ${cgi_usr}:${cgi_usr} ${cgi_dir}/*
@@ -1883,10 +1883,10 @@ if [ "$param" = "-app" ];then
       chown -R ${cgi_usr}:${cgi_usr} ${www}/bin/*
 
       if [ "$srv_type" = "default" ];then
-        echo "small_shell_path=$ROOT" > $desc_dir/.small_shell_conf
-        echo "server=\"default\"" >>  $desc_dir/.small_shell_conf
+        echo "small_shell_path=$ROOT" > ${desc_dir}/.small_shell_conf
+        echo "server=\"default\"" >>  ${desc_dir}/.small_shell_conf
       else
-        echo "small_shell_path=\"sudo -u small-shell $ROOT\"" > ${desc_dir}/.small_shell_conf
+        echo "small_shell_path=\"sudo -u small-shell ${ROOT}\"" > ${desc_dir}/.small_shell_conf
       fi
 
       if [ ! -d $static_dir ];then
@@ -1895,50 +1895,50 @@ if [ "$param" = "-app" ];then
       if [ ! -d ${static_dir}/base ];then
         mkdir ${static_dir}/base
       fi
-      cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.base#g" > ${static_dir}/base/index.html
+      cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.base#g" > ${static_dir}/base/index.html
       chmod 755 ${static_dir}/base/index.html
-      cat $ROOT/global.conf | grep -v ROOT >> ${desc_dir}/.small_shell_conf
+      cat ${ROOT}/global.conf | grep -v ROOT >> ${desc_dir}/.small_shell_conf
       chmod 755 ${desc_dir}/.small_shell_conf
 
       if [ ! "$mac_chk" ];then
         # enable standard jobs
-        if [ ! -f $ROOT/util/e-cron/def/del_session.def ];then
-          sudo -u small-shell echo "SCHEDULE:* * * * *" > $ROOT/util/e-cron/def/del_session.def
-          sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_session.sh\"" >> $ROOT/util/e-cron/def/del_session.def
-          chown small-shell:small-shell $ROOT/util/e-cron/def/del_session.def
+        if [ ! -f ${ROOT}/util/e-cron/def/del_session.def ];then
+          sudo -u small-shell echo "SCHEDULE:* * * * *" > ${ROOT}/util/e-cron/def/del_session.def
+          sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/del_session.sh\"" >> ${ROOT}/util/e-cron/def/del_session.def
+          chown small-shell:small-shell ${ROOT}/util/e-cron/def/del_session.def
         fi
 
-        if [ ! -f $ROOT/util/e-cron/def/del_util_log.def ];then
-          sudo -u small-shell echo "SCHEDULE:5 0 * * *" > $ROOT/util/e-cron/def/del_util_log.def
-          sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/del_log.sh\"" >> $ROOT/util/e-cron/def/del_util_log.def
-          chown small-shell:small-shell $ROOT/util/e-cron/def/del_util_log.def
+        if [ ! -f ${ROOT}/util/e-cron/def/del_util_log.def ];then
+          sudo -u small-shell echo "SCHEDULE:5 0 * * *" > ${ROOT}/util/e-cron/def/del_util_log.def
+          sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/del_log.sh\"" >> ${ROOT}/util/e-cron/def/del_util_log.def
+          chown small-shell:small-shell ${ROOT}/util/e-cron/def/del_util_log.def
         fi
  
-        sudo -u small-shell $ROOT/bin/e-cron enable.del_session
-        sudo -u small-shell $ROOT/bin/e-cron enable.del_util_log
+        sudo -u small-shell ${ROOT}/bin/e-cron enable.del_session
+        sudo -u small-shell ${ROOT}/bin/e-cron enable.del_util_log
 
         if [ "$srv_type" = "default" ];then
-          if [ ! -f $ROOT/util/e-cron/def/rotate_srv_log.def ];then
-            sudo -u small-shell echo "SCHEDULE:0 0 * * *" > $ROOT/util/e-cron/def/rotate_srv_log.def
-            sudo -u small-shell echo "exec_command=\"$ROOT/util/scripts/rotate_srvlog.sh\"" >> $ROOT/util/e-cron/def/rotate_srv_log.def
-            chown small-shell:small-shell $ROOT/util/e-cron/def/rotate_srv_log.def
+          if [ ! -f ${ROOT}/util/e-cron/def/rotate_srv_log.def ];then
+            sudo -u small-shell echo "SCHEDULE:0 0 * * *" > ${ROOT}/util/e-cron/def/rotate_srv_log.def
+            sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/rotate_srvlog.sh\"" >> ${ROOT}/util/e-cron/def/rotate_srv_log.def
+            chown small-shell:small-shell ${ROOT}/util/e-cron/def/rotate_srv_log.def
           fi
-          sudo -u small-shell $ROOT/bin/e-cron enable.rotate_srv_log
+          sudo -u small-shell ${ROOT}/bin/e-cron enable.rotate_srv_log
         fi
       fi
 
       ls ${cgi_dir}/../bin/shelltest.sh >/dev/null 2>&1
 
       if [ ! $? -eq 0 ];then
-        (cd $cgi_dir && cd .. && pwd > $tmp_dir/.tdir) 
-        tdir=`cat $tmp_dir/.tdir`
+        (cd $cgi_dir && cd .. && pwd > ${tmp_dir}/.tdir) 
+        tdir=$(cat ${tmp_dir}/.tdir)
         clear
         echo "www dir must have relation with CGI dir. Is it OK to make symbolic link on $tdir ?"
         echo "following command will be executed"
         echo "-----------------------------------------------------------------"
-        echo "ln -s $bindir $tdir/bin"
-        echo "ln -s $desc_dir $tdir/descriptor"
-        echo "ln -s $cgitmp $tdir/tmp"
+        echo "ln -s $bindir ${tdir}/bin"
+        echo "ln -s $desc_dir ${tdir}/descriptor"
+        echo "ln -s $cgitmp ${tdir}/tmp"
         echo "-----------------------------------------------------------------"
         echo -n "(yes | no): "
         read syml_answer
@@ -1950,9 +1950,9 @@ if [ "$param" = "-app" ];then
         done
 
         if [ "$syml_answer" = "yes" ];then
-          ln -s $bindir $tdir/bin
-          ln -s $desc_dir $tdir/descriptor
-          ln -s $cgitmp $tdir/tmp
+          ln -s $bindir ${tdir}/bin
+          ln -s $desc_dir ${tdir}/descriptor
+          ln -s $cgitmp ${tdir}/tmp
         fi
      
       fi
@@ -1960,12 +1960,12 @@ if [ "$param" = "-app" ];then
       sleep 6
 
       if [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "yes" ];then
-        test_url=`echo $base_url | $SED "s/https:/http:/g"`
+        test_url=$(echo "$base_url" | $SED "s/https:/http:/g")
       else
         test_url=$base_url
       fi
 
-      get_test=`$CURL -k ${test_url}shelltest.cgi | grep OK`
+      get_test=$($CURL -k ${test_url}shelltest.cgi | grep OK)
 
       if [ "$get_test" ];then
         clear
@@ -1975,7 +1975,7 @@ if [ "$param" = "-app" ];then
           echo "Access URL: ${static_url}base"
           echo "-----------------------------------------------------------------"
           echo "Please add user using ops command."
-          echo "-> sudo $ROOT/adm/ops add.usr:\$user"
+          echo "-> sudo ${ROOT}/adm/ops add.usr:\$user"
         else
           echo "Base APP has been upgraded. please access to the APP using existing key"
         fi
@@ -2000,13 +2000,13 @@ if [ "$param" = "-app" ];then
 
   if [ "$apptype" = "2" ];then
 
-    if [ ! -f $ROOT/web/base ];then
+    if [ ! -f ${ROOT}/web/base ];then
       echo "error: please generate BASE APP first"
       rm -rf $tmp_dir
       exit 1
     else
      # load web/base
-      . $ROOT/web/base
+      . ${ROOT}/web/base
     fi
 
     apptype="2.FORM"
@@ -2020,8 +2020,8 @@ if [ "$param" = "-app" ];then
       read form_name
     done
 
-    ascii_chk_result=`ascii_check $form_name`
-    meta_chk_result=$(echo $form_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    ascii_chk_result=$(ascii_check $form_name)
+    meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
 
 
@@ -2030,22 +2030,22 @@ if [ "$param" = "-app" ];then
       echo "error: Form name must be ascii text and you can't use meta charactor including space, please try again"
       echo -n "Form Name: "
       read form_name
-      ascii_chk_result=`ascii_check $form_name`
-      meta_chk_result=$(echo $form_name | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      ascii_chk_result=$(ascii_check $form_name)
+      meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
       -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
     done
 
     echo -n "Target Databox: "
     read databox
 
-    while [ ! "$databox" -o ! -d $ROOT/databox/$databox ]
+    while [ ! "$databox" -o ! -d ${ROOT}/databox/${databox} ]
     do
       echo "error: databox name seems wrong, please try again"
       echo -n "Target Databox: "
       read databox
     done 
 
-    primary_key=`cat $ROOT/databox/$databox/def/col1 | grep name= | $SED "s/name=//g"  | $SED "s/\"//g"`
+    primary_key=$(cat ${ROOT}/databox/${databox}/def/col1 | grep name= | $SED "s/name=//g"  | $SED "s/\"//g")
     if [ ! "$primary_key" = "hashid" ];then
       echo "error: $databox is not suitable, primary key must be \"hashid\" if you want to use the databox for Form"
       echo "please try again from beginning."
@@ -2065,22 +2065,22 @@ if [ "$param" = "-app" ];then
     done
 
     clear
-    datas=`cat $ROOT/databox/$databox/def/col* | grep name=\" | grep -v $primary_key | $AWK -F "name=" '{print $2}' \
-    | $SED "s/\"//g" | $SED -z "s/\n/ | /g" | $SED "s/ | $//g"`
+    datas=$(cat ${ROOT}/databox/${databox}/def/col* | grep name=\" | grep -v $primary_key | $AWK -F "name=" '{print $2}' \
+    | $SED "s/\"//g" | $SED -z "s/\n/ | /g" | $SED "s/ | $//g")
     echo -n "Select key that must be in the Form ($datas) : "
     read key
     
-    key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+    key_chk=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/col*)
 
     while [ ! "$key_chk" ]
     do
       echo "error: key name must be wrong"
       echo -n "please try again ($datas): "
       read key
-      key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+      key_chk=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/col*)
     done
     keys=$key
-    datas=`echo $datas | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g"`
+    datas=$(echo "$datas" | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g")
 
 
     if [ "$datas" ];then
@@ -2100,17 +2100,17 @@ if [ "$param" = "-app" ];then
     do 
       echo -n "Select additional key that must be in the Form ($datas) : "
       read key
-      key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+      key_chk=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/col*)
 
       while [ ! "$key_chk" ]
       do
         echo "error: key name must be wrong"
         echo -n "please try again ($datas): "
         read key
-        key_chk=`grep "name=\"$key\"" $ROOT/databox/$databox/def/col*`
+        key_chk=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/col*)
       done
       keys="$keys,$key"
-      datas=`echo $datas | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g"`
+      datas=$(echo "$datas" | $SED "s/| $key //g" | $SED "s/^$key | //g" | $SED "s/| $key$//g" | $SED "s/^$key$//g")
   
       if [ "$datas" ];then
         echo -n "Add more keys to the Form? (yes | no): "
@@ -2125,7 +2125,7 @@ if [ "$param" = "-app" ];then
     done
 
     # load base info
-    . $ROOT/web/base
+    . ${ROOT}/web/base
     clear
     echo "Form will be generated by following order, please check it"
     echo "-----------------------------------------------------------------"
@@ -2153,59 +2153,59 @@ if [ "$param" = "-app" ];then
       app=$form_name
       # careate APP user and authkey
       app_user_name=${app}.app
-      app_user_id=`echo "$app_user_name" | $SHASUM | $AWK '{print $1}'`
+      app_user_id=$(echo "$app_user_name" | $SHASUM | $AWK '{print $1}')
 
-      if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
-        mkdir $ROOT/users/${app}.${app_user_id}
+      if [ ! -d ${ROOT}/users/${app}.${app_user_id} ];then
+        mkdir ${ROOT}/users/${app}.${app_user_id}
       fi
-      echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
-      echo "permission=rw" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
-      cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
-      chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+      echo "$app_user_name" > ${ROOT}/users/${app}.${app_user_id}/user_name
+      echo "permission=rw" > ${ROOT}/users/${app}.${app_user_id}/.attr.tmp
+      cat ${ROOT}/users/${app}.${app_user_id}/.attr.tmp > ${ROOT}/users/${app}.${app_user_id}/attr
+      chown small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}/attr
 
       which openssl  >/dev/null 2>&1
       if [ $? -eq 0 ];then
-        hash_gen_key=`openssl rand -hex 20`
+        hash_gen_key=$(openssl rand -hex 20)
       else
         hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
       fi
 
-      hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-      echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
-      chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
-      chmod 700 $ROOT/users/${app}.${app_user_id}/hash
-      authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
+      hash=$(echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}')
+      echo "$hash" > ${ROOT}/users/${app}.${app_user_id}/hash
+      chown -R small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}
+      chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
+      authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
       # deploy form APP
-      cat $ROOT/web/src/cgi-bin/tmplt_controller_form | $SED "s#%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
-      | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" | $SED "s/%%app/$form_name/g" > $cgi_dir/$form_name
-      cp $ROOT/web/src/lib/tmplt_type2.css  ${static_dir}/${form_name}.css
+      cat ${ROOT}/web/src/cgi-bin/tmplt_controller_form | $SED "s#%%www#${www}#g" | $SED "s/%%authkey/${authkey}/g" \
+      | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" | $SED "s/%%app/${form_name}/g" > ${cgi_dir}/${form_name}
+      cp ${ROOT}/web/src/lib/tmplt_type2.css  ${static_dir}/${form_name}.css
 
-      chown $cgi_usr:$cgi_usr $cgi_dir/${form_name}*
+      chown $cgi_usr:$cgi_usr ${cgi_dir}/${form_name}*
       chmod 700 ${cgi_dir}/${form_name}*
       chmod 755 ${static_dir}/${form_name}*
 
-      cat $ROOT/web/src/bin/tmplt_type2_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > ${www}/bin/${form_name}_get.sh
+      cat ${ROOT}/web/src/bin/tmplt_type2_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+      | $SED "s/%%app/${form_name}/g"  | $SED "s/%%keys/${keys}/g" > ${www}/bin/${form_name}_get.sh
 
-      cat $ROOT/web/src/bin/tmplt_type2_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-      | $SED "s/%%app/$form_name/g"  | $SED "s/%%keys/$keys/g" > ${www}/bin/${form_name}_set.sh
+      cat ${ROOT}/web/src/bin/tmplt_type2_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+      | $SED "s/%%app/${form_name}/g"  | $SED "s/%%keys/${keys}/g" > ${www}/bin/${form_name}_set.sh
 
       chown $cgi_usr:$cgi_usr ${www}/bin/${form_name}*
       chmod 755 ${www}/bin/${form_name}*
 
-      for src in `ls $ROOT/web/src/descriptor | grep tmplt_type2 | xargs basename -a`
+      for src in $(ls ${ROOT}/web/src/descriptor | grep tmplt_type2 | xargs basename -a)
       do
-        html_def=`echo $src | $SED "s/tmplt_type2_//g"`
-        cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$form_name/g" | $SED "s/%%description/$description/g" \
-        | $SED "s#%%static_url/#$static_url#g" | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${form_name}_${html_def}
+        html_def=$(echo "$src" | $SED "s/tmplt_type2_//g")
+        cat ${ROOT}/web/src/descriptor/${src} | $SED "s/%%app/${form_name}/g" | $SED "s/%%description/${description}/g" \
+        | $SED "s#%%static_url/#${static_url}#g" | $SED "s/%%databox/${databox}/g" > ${www}/descriptor/${form_name}_${html_def}
         chmod 755 ${www}/descriptor/${form_name}_${html_def}
       done
 
       if [ ! -d ${www}/html/${form_name} ];then
         mkdir ${www}/html/${form_name}
       fi
-      cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${form_name}#g" > ${www}/html/${form_name}/index.html
+      cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${form_name}#g" > ${www}/html/${form_name}/index.html
       chmod 755 ${www}/html/${form_name}/index.html
 
       echo "Form is successfully generated"
@@ -2223,17 +2223,17 @@ if [ "$param" = "-app" ];then
 
   if [ "$apptype" = "3" ];then
 
-    if [ ! -f $ROOT/web/base ];then
+    if [ ! -f ${ROOT}/web/base ];then
       echo "error: please generate BASE APP first"
       rm -rf $tmp_dir
       exit 1
     else
       # load web/base
-      . $ROOT/web/base
+      . ${ROOT}/web/base
     fi
 
     # load base info
-    . $ROOT/web/base
+    . ${ROOT}/web/base
 
     apptype="3.SCRATCH"
     echo -n "APP Name: "
@@ -2246,9 +2246,9 @@ if [ "$param" = "-app" ];then
       read app
     done
 
-    parent_app=`echo $app | $AWK -F "@" '{print $2}'`
+    parent_app=$(echo "$app" | $AWK -F "@" '{print $2}')
     if [ "$parent_app" ];then
-       app=`echo $app | $AWK -F "@" '{print $1}'`
+       app=$(echo "$app" | $AWK -F "@" '{print $1}')
       if [ ! -f ${cgi_dir}/${parent_app} ];then
         echo "error: there is no parement APP $parent_app"
         exit 1
@@ -2259,8 +2259,8 @@ if [ "$param" = "-app" ];then
       fi
     fi
    
-    ascii_chk_result=`ascii_check $app`
-    meta_chk_result=$(echo $app | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    ascii_chk_result=$(ascii_check $app)
+    meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
@@ -2269,9 +2269,9 @@ if [ "$param" = "-app" ];then
       echo -n "APP Name: "
       read app
 
-      parent_app=`echo $app | $AWK -F "@" '{print $2}'`
+      parent_app=$(echo "$app" | $AWK -F "@" '{print $2}')
       if [ "$parent_app" ];then
-       app=`echo $app | $AWK -F "@" '{print $1}'`
+       app=$(echo "$app" | $AWK -F "@" '{print $1}')
         if [ ! -f ${cgi_dir}/${parent_app} ];then
           echo "error: there is no parement APP $parent_app"
           exit 1
@@ -2281,8 +2281,8 @@ if [ "$param" = "-app" ];then
           exit 1
         fi
       fi
-      ascii_chk_result=`ascii_check $app`
-      meta_chk_result=$(echo $app | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      ascii_chk_result=$(ascii_check $app)
+      meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
       -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
     done
 
@@ -2300,14 +2300,14 @@ if [ "$param" = "-app" ];then
       auth_method=shared_pass
       echo -n "Shared Passcode: "
       read shared_pass
-      num_value_chk=`echo $shared_pass | $SED "s/[0-9]//g" | $SED "s/-//g"`
-      value_chk=`echo $shared_pass | $SED -z "s/\n//g"`
+      num_value_chk=$(echo "$shared_pass" | $SED "s/[0-9]//g" | $SED "s/-//g")
+      value_chk=$(echo "$shared_pass" | $SED -z "s/\n//g")
       while [ "$shared_pass" -a "$num_value_chk" ]
       do
         echo -n "code must be numetric character, please try again: "
         read shared_pass
-        num_value_chk=`echo $shared_pass | $SED "s/[0-9]//g" | $SED "s/-//g"`
-        value_chk=`echo $shared_pass | $SED -z "s/\n//g"`
+        num_value_chk=$(echo "$shared_pass" | $SED "s/[0-9]//g" | $SED "s/-//g")
+        value_chk=$(echo "$shared_pass" | $SED -z "s/\n//g")
       done
     fi
 
@@ -2331,7 +2331,7 @@ if [ "$param" = "-app" ];then
     read databox
 
     if [ ! "$databox" = "null" -a ! "$databox" = "none" ];then
-      while [[ ! "$databox" || ! -d $ROOT/databox/$databox ]] && [[ ! "$databox" == "null" && ! "$databox" == "none" ]]
+      while [[ ! "$databox" || ! -d ${ROOT}/databox/${databox} ]] && [[ ! "$databox" == "null" && ! "$databox" == "none" ]]
       do
         echo "error: databox name seems wrong, please try again"
         echo -n "Target Databox: "
@@ -2404,84 +2404,84 @@ if [ "$param" = "-app" ];then
 
           # careate app authkey
           app_user_name=${app}.app
-          app_user_id=`echo "$app_user_name" | $SHASUM | $AWK '{print $1}'`
+          app_user_id=$(echo "$app_user_name" | $SHASUM | $AWK '{print $1}')
 
-          if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
-            mkdir $ROOT/users/${app}.${app_user_id}
+          if [ ! -d ${ROOT}/users/${app}.${app_user_id} ];then
+            mkdir ${ROOT}/users/${app}.${app_user_id}
           fi
-          echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
-          echo "permission=rw" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
-          cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
-          chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+          echo "$app_user_name" > ${ROOT}/users/${app}.${app_user_id}/user_name
+          echo "permission=rw" > ${ROOT}/users/${app}.${app_user_id}/.attr.tmp
+          cat ${ROOT}/users/${app}.${app_user_id}/.attr.tmp > ${ROOT}/users/${app}.${app_user_id}/attr
+          chown small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}/attr
 
           which openssl  >/dev/null 2>&1
           if [ $? -eq 0 ];then
-            hash_gen_key=`openssl rand -hex 20`
+            hash_gen_key=$(openssl rand -hex 20)
           else
             hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
           fi
 
-          hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-          echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
-          chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
-          chmod 700 $ROOT/users/${app}.${app_user_id}/hash
-          authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
+          hash=$(echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}')
+          echo "$hash" > ${ROOT}/users/${app}.${app_user_id}/hash
+          chown -R small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}
+          chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
+          authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
 
           # store passcode of shared pass APP
-          echo "$shared_pass" > $ROOT/web/${app}.code
+          echo "$shared_pass" > ${ROOT}/web/${app}.code
 
           # deploy psscode APP
-          cat $ROOT/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%auth/required/g" | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" > $cgi_dir/$app
-          chown $cgi_usr:$cgi_usr $cgi_dir/$app
-          chmod 700 $cgi_dir/$app
+          cat ${ROOT}/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" \
+          | $SED "s/%%auth/required/g" | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" > ${cgi_dir}/${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
+          chmod 700 ${cgi_dir}/${app}
 
-          cat $ROOT/web/src/cgi-bin/tmplt_pass_auth | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%authkey/$authkey/g" | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" > $cgi_dir/auth.${app}
-          chown $cgi_usr:$cgi_usr $cgi_dir/auth.${app}
-          chmod 700 $cgi_dir/auth.${app}
+          cat ${ROOT}/web/src/cgi-bin/tmplt_pass_auth | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" \
+          | $SED "s/%%authkey/${authkey}/g" | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" > ${cgi_dir}/auth.${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/auth.${app}
+          chmod 700 ${cgi_dir}/auth.${app}
 
-          cp $ROOT/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
+          cp ${ROOT}/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
           chmod 755 ${static_dir}/${app}.css
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_get.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_set.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_del.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_table.sh
 
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+          cat ${ROOT}/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_log_viewer.sh
 
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+          cat ${ROOT}/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_main.sh
 
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+          cat ${ROOT}/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_page_links.sh
 
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+          cat ${ROOT}/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_dl.sh
 
           chown $cgi_usr:$cgi_usr ${www}/bin/${app}*
           chmod 755 ${www}/bin/${app}*
 
-          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a)
           do
-            html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%user/there/g" \
-            | $SED "s/%%databox/$databox/g" | $SED "s#%%static_url/#$static_url#g" > ${www}/descriptor/${app}_${html_def}
+            html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%user/there/g" \
+            | $SED "s/%%databox/${databox}/g" | $SED "s#%%static_url/#${static_url}#g" > ${www}/descriptor/${app}_${html_def}
             chmod 755 ${www}/descriptor/${app}_${html_def}
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a)
           do
-            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            menu=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/common_parts/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" \
             > ${www}/descriptor/common_parts/${app}_${menu}
             chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
           done
@@ -2489,90 +2489,90 @@ if [ "$param" = "-app" ];then
           chown $cgi_usr:$cgi_usr ${www}/descriptor/${app}*
           chown $cgi_usr:$cgi_usr ${www}/descriptor/common_parts/${app}*
 
-          . $ROOT/web/.rand
-          cat $ROOT/web/src/descriptor/tmplt_pass_auth_form.html.def | $SED "s/%%input_type/$input_type/g" \
-          | $SED "s/%%placeholder/$placeholder/g" | $SED "s/%%app/$app/g" | $SED "s#%%static_url/#$static_url#g" \
-          | $SED "s/%%rand/$rand/g" > ${www}/descriptor/${app}_auth_form.html.def
+          . ${ROOT}/web/.rand
+          cat ${ROOT}/web/src/descriptor/tmplt_pass_auth_form.html.def | $SED "s/%%input_type/${input_type}/g" \
+          | $SED "s/%%placeholder/${placeholder}/g" | $SED "s/%%app/${app}/g" | $SED "s#%%static_url/#${static_url}#g" \
+          | $SED "s/%%rand/${rand}/g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
           chown $cgi_usr:$cgi_usr ${www}/descriptor/${app}*
 
-          if [ ! -d $www/html/$app ];then
-            mkdir $www/html/$app
+          if [ ! -d ${www}/html/${app} ];then
+            mkdir ${www}/html/${app}
           fi
-          cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > $www/html/$app/index.html
-          chmod 755 $www/html/$app/index.html
+          cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > ${www}/html/${app}/index.html
+          chmod 755 ${www}/html/${app}/index.html
 
         fi
 
         if [ "$auth_method" = "key" ];then
 
           # deploy key auth APP
-          cat $ROOT/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" \
-          | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" > $cgi_dir/$app
-          chown $cgi_usr:$cgi_usr $cgi_dir/$app
-          chmod 700 $cgi_dir/$app
+          cat ${ROOT}/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" \
+          | $SED "s/%%app/${app}/g" | $SED "s/%%auth/required/g" | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" > ${cgi_dir}/${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
+          chmod 700 ${cgi_dir}/${app}
 
-          cp $ROOT/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
+          cp ${ROOT}/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
           chmod 755 ${static_dir}/${app}.css
 
-          cat $ROOT/web/src/cgi-bin/tmplt_auth | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" > $cgi_dir/auth.${app}
-          chown $cgi_usr:$cgi_usr $cgi_dir/auth.${app}
-          chmod 700 $cgi_dir/auth.${app}
+          cat ${ROOT}/web/src/cgi-bin/tmplt_auth | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" \
+          | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" > ${cgi_dir}/auth.${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/auth.${app}
+          chmod 700 ${cgi_dir}/auth.${app}
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_get.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_set.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_del.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_table.sh
 
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+          cat ${ROOT}/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_log_viewer.sh
 
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+          cat ${ROOT}/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_main.sh
 
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+          cat ${ROOT}/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_page_links.sh
 
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+          cat ${ROOT}/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_dl.sh
           chown $cgi_usr:$cgi_usr ${www}/bin/${app}*
           chmod 755 ${www}/bin/${app}*
 
-          . $ROOT/web/.rand
-          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a`
+          . ${ROOT}/web/.rand
+          for src in $(ls ${ROOT}/web/src/descriptor | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a)
           do
-            html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
-            | $SED "s/%%databox/$databox/g" | $SED "s#%%static_url/#$static_url#g" > ${www}/descriptor/${app}_${html_def}
+            html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%rand/${rand}/g" \
+            | $SED "s/%%databox/${databox}/g" | $SED "s#%%static_url/#${static_url}#g" > ${www}/descriptor/${app}_${html_def}
             chmod 755 ${www}/descriptor/${app}_${html_def}
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a)
           do
-            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            menu=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/common_parts/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" \
             > ${www}/descriptor/common_parts/${app}_${menu}
             chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
           done
 
-           cat $ROOT/web/src/descriptor/common_parts/tmplt_common_menu_button | $SED "s/%%app/$app/g" | $SED "s/%%rand/$rand/g" \
+           cat ${ROOT}/web/src/descriptor/common_parts/tmplt_common_menu_button | $SED "s/%%app/${app}/g" | $SED "s/%%rand/${rand}/g" \
            >> ${www}/descriptor/common_parts/${app}_common_menu
 
           chown $cgi_usr:$cgi_usr ${www}/descriptor/${app}*
           chown $cgi_usr:$cgi_usr ${www}/descriptor/common_parts/${app}*
 
           if [ "$srv_type" = "default" ];then
-             if [ ! -d $www/html/$app ];then
-               mkdir $www/html/$app
+             if [ ! -d ${www}/html/${app} ];then
+               mkdir ${www}/html/${app}
              fi
-             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > $www/html/$app/index.html
-             chmod 755 $www/html/$app/index.html
+             cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.${app}#g" > ${www}/html/${app}/index.html
+             chmod 755 ${www}/html/${app}/index.html
           fi
 
         fi
@@ -2581,82 +2581,82 @@ if [ "$param" = "-app" ];then
 
           # careate app authkey
           app_user_name=${app}.app
-          app_user_id=`echo "$app_user_name" | $SHASUM | $AWK '{print $1}'`
+          app_user_id=$(echo "$app_user_name" | $SHASUM | $AWK '{print $1}')
           input_type="text"
 
-          if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
-            mkdir $ROOT/users/${app}.${app_user_id}
+          if [ ! -d ${ROOT}/users/${app}.${app_user_id} ];then
+            mkdir ${ROOT}/users/${app}.${app_user_id}
           fi
-          echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
-          echo "permission=rw" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
-          cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
-          chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+          echo "$app_user_name" > ${ROOT}/users/${app}.${app_user_id}/user_name
+          echo "permission=rw" > ${ROOT}/users/${app}.${app_user_id}/.attr.tmp
+          cat ${ROOT}/users/${app}.${app_user_id}/.attr.tmp > ${ROOT}/users/${app}.${app_user_id}/attr
+          chown small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}/attr
 
           which openssl  >/dev/null 2>&1
           if [ $? -eq 0 ];then
-            hash_gen_key=`openssl rand -hex 20`
+            hash_gen_key=$(openssl rand -hex 20)
           else
             hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
           fi
 
-          hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-          echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
-          chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
-          chmod 700 $ROOT/users/${app}.${app_user_id}/hash
-          authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
+          hash=$(echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}')
+          echo "$hash" > ${ROOT}/users/${app}.${app_user_id}/hash
+          chown -R small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}
+          chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
+          authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
           # deploy other APP
-          cat $ROOT/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" \
-          | $SED "s/%%app/$app/g" | $SED "s/%%auth/required/g" | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" > $cgi_dir/$app
-          chown $cgi_usr:$cgi_usr $cgi_dir/$app
-          chmod 700 $cgi_dir/$app
+          cat ${ROOT}/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" \
+          | $SED "s/%%app/${app}/g" | $SED "s/%%auth/required/g" | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" > ${cgi_dir}/${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
+          chmod 700 ${cgi_dir}/${app}
 
-          cp $ROOT/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
+          cp ${ROOT}/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
           chmod 755 ${static_dir}/${app}.css
 
-          cat $ROOT/web/src/cgi-bin/tmplt_other_auth | $SED "s#%%www#${www}#g" | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" \
-          | $SED "s/%%app/$app/g" | $SED "s/%%authkey/$authkey/g" > $cgi_dir/auth.${app}
-          chown $cgi_usr:$cgi_usr $cgi_dir/auth.${app}
-          chmod 700 $cgi_dir/auth.${app}
+          cat ${ROOT}/web/src/cgi-bin/tmplt_other_auth | $SED "s#%%www#${www}#g" | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" \
+          | $SED "s/%%app/${app}/g" | $SED "s/%%authkey/${authkey}/g" > ${cgi_dir}/auth.${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/auth.${app}
+          chmod 700 ${cgi_dir}/auth.${app}
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_get.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_set.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_del.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_table.sh
 
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+          cat ${ROOT}/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_log_viewer.sh
 
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+          cat ${ROOT}/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_main.sh
 
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+          cat ${ROOT}/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_page_links.sh
 
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+          cat ${ROOT}/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_dl.sh
 
           chown $cgi_usr:$cgi_usr ${www}/bin/${app}*
           chmod 755 ${www}/bin/${app}*
 
-          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a)
           do
-            html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%user/there/g" \
-            | $SED "s#%%static_url/#$static_url#g" | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
+            html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%user/there/g" \
+            | $SED "s#%%static_url/#${static_url}#g" | $SED "s/%%databox/${databox}/g" > ${www}/descriptor/${app}_${html_def}
             chmod 755 ${www}/descriptor/${app}_${html_def}
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a)
           do
-            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            menu=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/common_parts/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" \
             > ${www}/descriptor/common_parts/${app}_${menu}
             chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
           done
@@ -2664,9 +2664,9 @@ if [ "$param" = "-app" ];then
           chown $cgi_usr:$cgi_usr ${www}/descriptor/${app}*
           chown $cgi_usr:$cgi_usr ${www}/descriptor/common_parts/${app}*
 
-          . $ROOT/web/.rand
-          cat $ROOT/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/$input_type/g" | $SED "s/%%app/$app/g" \
-          | $SED "s/%%rand/$rand/g" | $SED "s#%%static_url/#$static_url#g" > ${www}/descriptor/${app}_auth_form.html.def
+          . ${ROOT}/web/.rand
+          cat ${ROOT}/web/src/descriptor/tmplt_other_auth_form.html.def | $SED "s/%%input_type/${input_type}/g" | $SED "s/%%app/${app}/g" \
+          | $SED "s/%%rand/${rand}/g" | $SED "s#%%static_url/#${static_url}#g" > ${www}/descriptor/${app}_auth_form.html.def
           chmod 755 ${www}/descriptor/${app}_auth_form.html.def
           chown $cgi_usr:$cgi_usr ${www}/descriptor/${app}*
 
@@ -2676,79 +2676,79 @@ if [ "$param" = "-app" ];then
 
           # careate app authkey
           app_user_name=${app}.app
-          app_user_id=`echo "$app_user_name" | $SHASUM | $AWK '{print $1}'`
+          app_user_id=$(echo "$app_user_name" | $SHASUM | $AWK '{print $1}')
 
           input_type="text"
           placeholder="please input your name"
 
-          if [ ! -d $ROOT/users/${app}.${app_user_id} ];then
-            mkdir $ROOT/users/${app}.${app_user_id}
+          if [ ! -d ${ROOT}/users/${app}.${app_user_id} ];then
+            mkdir ${ROOT}/users/${app}.${app_user_id}
           fi
-          echo "$app_user_name" > $ROOT/users/${app}.${app_user_id}/user_name
-          echo "permission=ro" > $ROOT/users/${app}.${app_user_id}/.attr.tmp
-          cat $ROOT/users/${app}.${app_user_id}/.attr.tmp > $ROOT/users/${app}.${app_user_id}/attr
-          chown small-shell:small-shell $ROOT/users/${app}.${app_user_id}/attr
+          echo "$app_user_name" > ${ROOT}/users/${app}.${app_user_id}/user_name
+          echo "permission=ro" > ${ROOT}/users/${app}.${app_user_id}/.attr.tmp
+          cat ${ROOT}/users/${app}.${app_user_id}/.attr.tmp > ${ROOT}/users/${app}.${app_user_id}/attr
+          chown small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}/attr
 
           which openssl  >/dev/null 2>&1
           if [ $? -eq 0 ];then
-            hash_gen_key=`openssl rand -hex 20`
+            hash_gen_key=$(openssl rand -hex 20)
           else
             hash_gen_key="${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}.${RANDOM}"
           fi
 
-          hash=`echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}'`
-          echo "$hash" > $ROOT/users/${app}.${app_user_id}/hash
-          chown -R small-shell:small-shell $ROOT/users/${app}.${app_user_id}
-          chmod 700 $ROOT/users/${app}.${app_user_id}/hash
-          authkey=`echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC`
+          hash=$(echo "${app}:${app_user_name}:${hash_gen_key}" | $SHASUM | $AWK '{print $1}')
+          echo "$hash" > ${ROOT}/users/${app}.${app_user_id}/hash
+          chown -R small-shell:small-shell ${ROOT}/users/${app}.${app_user_id}
+          chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
+          authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
           # deploy none auth APP
-          cat $ROOT/web/src/cgi-bin/tmplt_controller_noauth | $SED "s#%%www#${www}#g" | $SED "s/%%authkey/$authkey/g" \
-          | $SED "s/%%app/$app/g" | $SED "s/%%auth//g" | $SED "s/%%IP_whitelisting/$IP_whitelisting/g" > $cgi_dir/$app
-          chown $cgi_usr:$cgi_usr $cgi_dir/$app
-          chmod 700 $cgi_dir/$app
+          cat ${ROOT}/web/src/cgi-bin/tmplt_controller_noauth | $SED "s#%%www#${www}#g" | $SED "s/%%authkey/${authkey}/g" \
+          | $SED "s/%%app/${app}/g" | $SED "s/%%auth//g" | $SED "s/%%IP_whitelisting/${IP_whitelisting}/g" > ${cgi_dir}/${app}
+          chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
+          chmod 700 ${cgi_dir}/${app}
 
-          cp $ROOT/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
+          cp ${ROOT}/web/src/lib/tmplt_type3.css ${static_dir}/${app}.css
           chmod 755 ${static_dir}/${app}.css
 
-          cat $ROOT/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_get.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_get.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_set.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_set.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_del.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_del.sh
 
-          cat $ROOT/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+          cat ${ROOT}/web/src/bin/tmplt_type3_table.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_table.sh
 
-          cat $ROOT/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+          cat ${ROOT}/web/src/bin/tmplt_log_viewer.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_log_viewer.sh
 
-          cat $ROOT/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_main.sh
+          cat ${ROOT}/web/src/bin/tmplt_main.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_main.sh
 
-          cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_page_links.sh
+          cat ${ROOT}/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_page_links.sh
 
-          cat $ROOT/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/$databox/g" \
-          | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+          cat ${ROOT}/web/src/bin/tmplt_dl.sh | $SED "s#%%www#${www}#g" | $SED "s/%%databox/${databox}/g" \
+          | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_dl.sh
 
           chown $cgi_usr:$cgi_usr ${www}/bin/${app}*
           chmod 755 ${www}/bin/${app}*
 
-          for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a)
           do
-            html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/$src | $SED "s/%%app/$app/g" | $SED "s/%%user/there/g" \
-            | $SED "s/%%databox/$databox/g" | $SED "s#%%static_url/#$static_url#g" > ${www}/descriptor/${app}_${html_def}
+            html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%user/there/g" \
+            | $SED "s/%%databox/${databox}/g" | $SED "s#%%static_url/#${static_url}#g" > ${www}/descriptor/${app}_${html_def}
             chmod 755 ${www}/descriptor/${app}_${html_def}
           done
 
-          for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a`
+          for src in $(ls ${ROOT}/web/src/descriptor/common_parts | grep tmplt | grep -v common_menu_button | xargs basename -a)
           do
-            menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-            cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$app/g" | $SED "s/%%databox/$databox/g" \
+            menu=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+            cat ${ROOT}/web/src/descriptor/common_parts/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" \
             > ${www}/descriptor/common_parts/${app}_${menu}
             chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
           done
@@ -2757,57 +2757,57 @@ if [ "$param" = "-app" ];then
           chown $cgi_usr:$cgi_usr ${www}/descriptor/common_parts/${app}*
 
           if [ "$srv_type" = "default" ];then
-             if [ ! -d $www/html/$app ];then
-               mkdir $www/html/$app
+             if [ ! -d ${www}/html/${app} ];then
+               mkdir ${www}/html/${app}
              fi
-             cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${app}#g" > $www/html/$app/index.html
-             chmod 755 $www/html/$app/index.html
+             cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${app}#g" > ${www}/html/${app}/index.html
+             chmod 755 ${www}/html/${app}/index.html
           fi
 
         fi
 
         # create databox for images, UI.md.def and claendar
-        if [ ! -d $ROOT/databox/images.db ];then
-          $ROOT/util/scripts/bat_gen.sh $ROOT/tmp/gen/.images.db/databox.def
-          if [ ! -d $www/html/images ];then
-            mkdir $www/html/images
-            chown $cgi_usr:$cgi_usr $www/html/images
+        if [ ! -d ${ROOT}/databox/images.db ];then
+          ${ROOT}/util/scripts/bat_gen.sh ${ROOT}/tmp/gen/.images.db/databox.def
+          if [ ! -d ${www}/html/images ];then
+            mkdir ${www}/html/images
+            chown $cgi_usr:$cgi_usr ${www}/html/images
           fi 
         fi
 
-        cat $ROOT/tmp/gen/.tmplt.UI.md.def/databox.def | $SED "s/%%app/$app/g" > $tmp_dir/${app}.tmplt.UI.md.def
-        $ROOT/util/scripts/bat_gen.sh $tmp_dir/${app}.tmplt.UI.md.def
-        mkdir $tmp_dir/data
+        cat ${ROOT}/tmp/gen/.tmplt.UI.md.def/databox.def | $SED "s/%%app/${app}/g" > ${tmp_dir}/${app}.tmplt.UI.md.def
+        ${ROOT}/util/scripts/bat_gen.sh ${tmp_dir}/${app}.tmplt.UI.md.def
+        mkdir ${tmp_dir}/data
 
 
         for data in body righth lefth footer
         do
-          cat $ROOT/tmp/gen/.tmplt.UI.md.def/${data} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" > $tmp_dir/data/${data}
+          cat ${ROOT}/tmp/gen/.tmplt.UI.md.def/${data} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" > ${tmp_dir}/data/${data}
         done
 
         if [ "$auth_method" = "key" ];then
-          $SED -e "1i ExportKey: yes" $tmp_dir/data/righth > $tmp_dir/data/.righth
-          cat $tmp_dir/data/.righth > $tmp_dir/data/righth
-          rm $tmp_dir/data/.righth
+          $SED -e "1i ExportKey: yes" ${tmp_dir}/data/righth > ${tmp_dir}/data/.righth
+          cat ${tmp_dir}/data/.righth > ${tmp_dir}/data/righth
+          rm ${tmp_dir}/data/.righth
         fi
         if [ ! "$auth_method" = "none" ];then
-          echo "Log Out: ./${app}?req=logout" >> $tmp_dir/data/righth
+          echo "Log Out: ./${app}?req=logout" >> ${tmp_dir}/data/righth
         fi
 
-        cat $ROOT/tmp/gen/.calendar.events/databox.def | $SED "s/%%app/$app/g" > $tmp_dir/${app}.events.def
-        $ROOT/util/scripts/bat_gen.sh $tmp_dir/${app}.events.def
+        cat ${ROOT}/tmp/gen/.calendar.events/databox.def | $SED "s/%%app/${app}/g" > ${tmp_dir}/${app}.events.def
+        ${ROOT}/util/scripts/bat_gen.sh ${tmp_dir}/${app}.events.def
 
         # push template datas
-        . $ROOT/util/scripts/.authkey
-        permission=`$ROOT/bin/meta get.attr:sys`
+        . ${ROOT}/util/scripts/.authkey
+        permission=$(${ROOT}/bin/meta get.attr:sys)
         if [ "$permission" = "ro" ];then
-          $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:body,righth,lefth,footer input_dir:$tmp_dir/data
-          $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+          ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data
+          ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
         else
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:body,righth,lefth,footer input_dir:$tmp_dir/data
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data
         fi
 
         clear
@@ -2825,7 +2825,7 @@ if [ "$param" = "-app" ];then
         echo "You can also update portal page on Base APP #${app}.UI.md.def using markdown."
 
         if [ ! "$auth_method" = "none" ];then
-          ls  $cgi_dir/auth.${app}
+          ls  ${cgi_dir}/auth.${app}
         fi
 
         ls  ${cgi_dir}/${app}
@@ -2837,48 +2837,48 @@ if [ "$param" = "-app" ];then
           echo "------------------------------------------------------------"
           echo "please create user for the APP by following command"
           echo "------------------------------------------------------------"
-          echo "sudo $ROOT/adm/ops app:${app} add.usr:\$user"
+          echo "sudo ${ROOT}/adm/ops app:${app} add.usr:\$user"
         fi
 
       else
       # else means this is subapp
 
-        cat $ROOT/web/src/bin/tmplt_type3_table_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_table.sh
+        cat ${ROOT}/web/src/bin/tmplt_type3_table_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/${parent_app}/g" \
+        | $SED "s/%%databox/${databox}/g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_table.sh
 
-        cat $ROOT/web/src/bin/tmplt_type3_get_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_get.sh
+        cat ${ROOT}/web/src/bin/tmplt_type3_get_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/${parent_app}/g" \
+        | $SED "s/%%databox/${databox}/g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_get.sh
 
-        cat $ROOT/web/src/bin/tmplt_type3_set_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_set.sh
+        cat ${ROOT}/web/src/bin/tmplt_type3_set_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/${parent_app}/g" \
+        | $SED "s/%%databox/${databox}/g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_set.sh
 
-        cat $ROOT/web/src/bin/tmplt_type3_del_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_del.sh
+        cat ${ROOT}/web/src/bin/tmplt_type3_del_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/${parent_app}/g" \
+        | $SED "s/%%databox/${databox}/g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_del.sh
 
-        cat $ROOT/web/src/bin/tmplt_log_viewer_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_log_viewer.sh
+        cat ${ROOT}/web/src/bin/tmplt_log_viewer_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/${parent_app}/g" \
+        | $SED "s/%%databox/${databox}/g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_log_viewer.sh
 
-        cat $ROOT/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/$parent_app/g" \
+        cat ${ROOT}/web/src/bin/tmplt_page_links.sh | $SED "s#%%www#${www}#g" | $SED "s/%%app/${parent_app}/g" \
         > ${www}/bin/${app}_page_links.sh
 
-        cat $ROOT/web/src/bin/tmplt_dl_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/$parent_app/g" \
-        | $SED "s/%%databox/$databox/g" | $SED "s/%%app/$app/g" > ${www}/bin/${app}_dl.sh
+        cat ${ROOT}/web/src/bin/tmplt_dl_sub.sh | $SED "s#%%www#${www}#g" | $SED "s/%%parent_app/${parent_app}/g" \
+        | $SED "s/%%databox/${databox}/g" | $SED "s/%%app/${app}/g" > ${www}/bin/${app}_dl.sh
 
         chown $cgi_usr:$cgi_usr ${www}/bin/${app}*
         chmod 755 ${www}/bin/${app}*
 
 
-        for src in `ls $ROOT/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a`
+        for src in $(ls ${ROOT}/web/src/descriptor | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a)
         do
-          html_def=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3//g"`
-          cat $ROOT/web/src/descriptor/$src | $SED "s/.\/%%app/.\/$parent_app/g" | $SED "s#%%static_url/#$static_url#g" \
-          | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" > ${www}/descriptor/${app}_${html_def}
+          html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3//g")
+          cat ${ROOT}/web/src/descriptor/${src} | $SED "s/.\/%%app/.\/${parent_app}/g" | $SED "s#%%static_url/#${static_url}#g" \
+          | $SED "s/%%app/${parent_app}/g" | $SED "s/%%databox/${databox}/g" > ${www}/descriptor/${app}_${html_def}
         done
 
-        for src in `ls $ROOT/web/src/descriptor/common_parts | grep tmplt_table | grep -v common_menu_button | xargs basename -a`
+        for src in $(ls ${ROOT}/web/src/descriptor/common_parts | grep tmplt_table | grep -v common_menu_button | xargs basename -a)
         do
-          menu=`echo $src | $SED "s/tmplt_//g" | $SED "s/type3_//g"`
-          cat $ROOT/web/src/descriptor/common_parts/$src | $SED "s/%%app/$parent_app/g" | $SED "s/%%databox/$databox/g" \
+          menu=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+          cat ${ROOT}/web/src/descriptor/common_parts/${src} | $SED "s/%%app/${parent_app}/g" | $SED "s/%%databox/${databox}/g" \
           > ${www}/descriptor/common_parts/${app}_${menu}
           chmod 755 ${www}/descriptor/common_parts/${app}_${menu}
         done
@@ -2888,54 +2888,54 @@ if [ "$param" = "-app" ];then
         chown $cgi_usr:$cgi_usr ${www}/descriptor/common_parts/${app}*
 
         # add routing to parent app
-        cat $ROOT/web/src/cgi-bin/tmplt_subapp_routing | $SED "s#%%www#${www}#g" | $SED "s#%%app#${app}#g" > $tmp_dir/subapp_routing
-        cat $cgi_dir/${parent_app} | $SED "/# sub app routing section/r ${tmp_dir}/subapp_routing"  > $tmp_dir/new_parent
-        cat $tmp_dir/new_parent > $cgi_dir/${parent_app}
+        cat ${ROOT}/web/src/cgi-bin/tmplt_subapp_routing | $SED "s#%%www#${www}#g" | $SED "s#%%app#${app}#g" > ${tmp_dir}/subapp_routing
+        cat ${cgi_dir}/${parent_app} | $SED "/# sub app routing section/r ${tmp_dir}/subapp_routing"  > ${tmp_dir}/new_parent
+        cat ${tmp_dir}/new_parent > ${cgi_dir}/${parent_app}
 
         # add menu to common menu
         if [ -f ${cgi_dir}/auth.${parent_app} ];then
           echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\"><p style=\"text-transform: capitalize;\">${databox} Table</p></a></li>" \
-          >> $tmp_dir/subAPP_link
-          cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Log Out/i `cat $tmp_dir/subAPP_link`" > $tmp_dir/new_menu
-          cat $tmp_dir/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
+          >> ${tmp_dir}/subAPP_link
+          cat ${www}/descriptor/common_parts/${parent_app}_common_menu | $SED -e "/Log Out/i $(cat ${tmp_dir}/subAPP_link)" > ${tmp_dir}/new_menu
+          cat ${tmp_dir}/new_menu > ${www}/descriptor/common_parts/${parent_app}_common_menu
         else
           echo "<li><a href=\"./${parent_app}?%%session&subapp=${app}&req=table\"><p style=\"text-transform: capitalize;\">${databox} Table</p></a></li>" \
            >> ${www}/descriptor/common_parts/${parent_app}_common_menu
         fi
 
         # add menu to UI.md.def
-        . $ROOT/util/scripts/.authkey
-        permission=`$ROOT/bin/meta get.attr:sys`
-	chk_md_def=`$ROOT/bin/meta get.databox | grep ${parent_app}.UI.md.def`
+        . ${ROOT}/util/scripts/.authkey
+        permission=$(${ROOT}/bin/meta get.attr:sys)
+	chk_md_def=$(${ROOT}/bin/meta get.databox | grep ${parent_app}.UI.md.def)
 	if [ "$chk_md_def" ];then
-          id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}'`
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
-          | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > $tmp_dir/UI_md_def_menu
-          mkdir $tmp_dir/data
+          id=$(sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
+          | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu
+          mkdir ${tmp_dir}/data
 
           if [ "$permission" = "ro" ];then
-            $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+            ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
             tmp_permission_flg=yes
           fi
 
           if [ -f ${cgi_dir}/auth.${parent_app} ];then
-            cat $tmp_dir/UI_md_def_menu | $SED -e "/Log Out/i ${databox} Table: ./${parent_app}?req=table&subapp=${app}" > $tmp_dir/data/righth
-            sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-            action:set id:$id key:righth input_dir:$tmp_dir/data
+            cat ${tmp_dir}/UI_md_def_menu | $SED -e "/Log Out/i ${databox} Table: ./${parent_app}?req=table&subapp=${app}" > ${tmp_dir}/data/righth
+            sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+            action:set id:$id key:righth input_dir:${tmp_dir}/data
           else
-            cat $tmp_dir/UI_md_def_menu > $tmp_dir/data/righth
-            echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> $tmp_dir/data/righth
-            sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-            action:set id:$id key:righth input_dir:$tmp_dir/data
+            cat ${tmp_dir}/UI_md_def_menu > ${tmp_dir}/data/righth
+            echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> ${tmp_dir}/data/righth
+            sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+            action:set id:$id key:righth input_dir:${tmp_dir}/data
           fi
 
           if [ "$tmp_permission_flg" = "yes" ];then
-              $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+              ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
           fi
 
 	fi
 
-        echo "subAPP is successfully generated, parent app is updated -> $cgi_dir/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"
+        echo "subAPP is successfully generated, parent app is updated -> ${cgi_dir}/${parent_app},${www}/descriptor/common_parts/${parent_app}_common_menu"
         echo "Following is generated codes that you can update."
         ls  ${www}/bin/${app}_*
         ls  ${www}/descriptor/${app}_*
@@ -2955,128 +2955,128 @@ fi
 # GENERATE BATCH (e-cron)
 
 function gen_schedule(){
-  echo -n "" > $tmp_dir/cron_entry
+  echo -n "" > ${tmp_dir}/cron_entry
   echo "--Define schedule--"
   echo -n "Month [ any | 1-12 ]: "
   read month
-  month_chk=`echo $month | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1][0-2]\""`
+  month_chk=$(echo "$month" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1][0-2]\"")
 
   while [ ! "$month" = "any" -a ! "$month_chk" ]  
   do
     echo -n "Try again [ any | 1-12 ]: "
     read month
-    month_chk=`echo $month | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1][0-2]\""`
+    month_chk=$(echo "$month" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1][0-2]\"")
   done 
 
   echo -n "Date  [ any | 1-31 ]: "
   read date
-  date_chk=`echo $date | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1-2][0-9]\"" -e  "\"[3][0-1]\""`
+  date_chk=$(echo "$date" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1-2][0-9]\"" -e  "\"[3][0-1]\"")
 
   while [ ! "$date" = "any" -a ! "$date_chk" ]
   do
     echo -n "Try again [ any | 1-31 ]: "
     read date
-    date_chk=`echo $date | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1-2][0-9]\"" -e  "\"[3][0-1]\""`
+    date_chk=$(echo "$date" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[1-9]\"" -e "\"[1-2][0-9]\"" -e  "\"[3][0-1]\"")
   done
 
   echo -n "Hour  [ any | 0-23 ]: "
   read hour
-  hour_chk=`echo $hour | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1][0-9]\""  -e "\"[2][0-3]\""`
+  hour_chk=$(echo "$hour" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1][0-9]\""  -e "\"[2][0-3]\"")
 
   while [ ! "$hour" = "any" -a ! "$hour_chk" ]
   do
     echo -n "Try again [ any | 0-23 ]: "
     read hour
-    hour_chk=`echo $hour | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1][0-9]\""  -e "\"[2][0-3]\""`
+    hour_chk=$(echo "$hour" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1][0-9]\""  -e "\"[2][0-3]\"")
   done
 
   echo -n "Min   [ any | 0-59 ]: "
   read min
-  min_chk=`echo $min | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1-5][0-9]\""`
+  min_chk=$(echo "$min" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1-5][0-9]\"")
 
   while [ ! "$min" = "any" -a ! "$min_chk" ]
   do
     echo -n "Try again [ any | 0-59 ]: "
     read min
-    min_chk=`echo $min | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1-5][0-9]\""`
+    min_chk=$(echo "$min" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep  -e  "\"[0-9]\"" -e "\"[1-5][0-9]\"")
   done
 
   if [ "$min" = "any" ];then
-    echo -n "* " >> $tmp_dir/cron_entry
-    echo "Min: any" >> $tmp_dir/confirm
+    echo -n "* " >> ${tmp_dir}/cron_entry
+    echo "Min: any" >> ${tmp_dir}/confirm
   else
-    echo -n "$min " >> $tmp_dir/cron_entry
-    echo "Min: $min" >> $tmp_dir/confirm
+    echo -n "$min " >> ${tmp_dir}/cron_entry
+    echo "Min: $min" >> ${tmp_dir}/confirm
   fi
 
   if [ "$hour" = "any" ];then
-    echo -n "* " >> $tmp_dir/cron_entry
-    echo "Hour: any" >> $tmp_dir/confirm
+    echo -n "* " >> ${tmp_dir}/cron_entry
+    echo "Hour: any" >> ${tmp_dir}/confirm
   else
-    echo -n "$hour " >> $tmp_dir/cron_entry
-    echo "Hour: $hour" >> $tmp_dir/confirm
+    echo -n "$hour " >> ${tmp_dir}/cron_entry
+    echo "Hour: $hour" >> ${tmp_dir}/confirm
   fi
 
   if [ "$date" = "any" ];then
-    echo -n "* " >> $tmp_dir/cron_entry
-    echo "Date: any" >> $tmp_dir/confirm
+    echo -n "* " >> ${tmp_dir}/cron_entry
+    echo "Date: any" >> ${tmp_dir}/confirm
   else
-    echo -n "$date " >> $tmp_dir/cron_entry
-    echo "Date: $date" >> $tmp_dir/confirm
+    echo -n "$date " >> ${tmp_dir}/cron_entry
+    echo "Date: $date" >> ${tmp_dir}/confirm
   fi
 
   if [ "$month" = "any" ];then
-    echo -n "* " >> $tmp_dir/cron_entry
-    echo "Month: any" >> $tmp_dir/confirm
+    echo -n "* " >> ${tmp_dir}/cron_entry
+    echo "Month: any" >> ${tmp_dir}/confirm
   else
-    echo -n "$month " >> $tmp_dir/cron_entry
-    echo "Month: $month" >> $tmp_dir/confirm
+    echo -n "$month " >> ${tmp_dir}/cron_entry
+    echo "Month: $month" >> ${tmp_dir}/confirm
   fi
 
   echo -n "Week  [ any | mon - sun ]: "
   read week
-  week_chk=`echo $week | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep -e "\"mon\"" -e "\"tue\"" -e "\"wed\"" -e "\"thu\"" \
-            -e "\"fri\"" -e  "\"sat\"" -e "\"sun\""`
+  week_chk=$(echo "$week" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep -e "\"mon\"" -e "\"tue\"" -e "\"wed\"" -e "\"thu\"" \
+  -e "\"fri\"" -e  "\"sat\"" -e "\"sun\"")
 
   while [ ! "$week" = "any" -a ! "$week_chk" ]
   do
     echo -n "Try again [ any | mon - sun ]: "
     read week
-     week_chk=`echo $week | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep -e "\"mon\"" -e "\"tue\"" -e "\"wed\"" -e "\"thu\"" \
-            -e "\"fri\"" -e  "\"sat\"" -e "\"sun\""`
+     week_chk=$(echo "$week" | $SED "s/^/\"/g" | $SED "s/$/\"/g" | grep -e "\"mon\"" -e "\"tue\"" -e "\"wed\"" -e "\"thu\"" \
+     -e "\"fri\"" -e  "\"sat\"" -e "\"sun\"")
   done
 
   if [ "$week" = "any" ];then
-    echo "*" >> $tmp_dir/cron_entry
-    echo "Week: any" >> $tmp_dir/confirm
+    echo "*" >> ${tmp_dir}/cron_entry
+    echo "Week: any" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "mon" ];then
-    echo "1" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "1" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "tue" ];then
-    echo "2" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "2" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "wed" ];then
-    echo "3" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "3" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "thu" ];then
-    echo "4" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "4" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "fri" ];then
-    echo "5" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "5" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "sat" ];then
-    echo "6" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "6" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
 
   elif [ "$week" = "sun" ];then
-    echo "7" >> $tmp_dir/cron_entry
-    echo "Week: $week" >> $tmp_dir/confirm
+    echo "7" >> ${tmp_dir}/cron_entry
+    echo "Week: $week" >> ${tmp_dir}/confirm
   fi
 }
 
@@ -3085,11 +3085,11 @@ if [ "$param" = "-job" ];then
   # start dialog
   echo -n "Job Name: "
   read job
-  ascii_chk_result=`ascii_check $job`
-  meta_chk_result=$(echo $job | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+  ascii_chk_result=$(ascii_check $job)
+  meta_chk_result=$(echo "$job" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
   -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "\." -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
-  ls $ROOT/util/e-cron/def/${job}.def >/dev/null 2>&1
+  ls ${ROOT}/util/e-cron/def/${job}.def >/dev/null 2>&1
   if [ $? -eq 0 ];then
     existing_chk_result=existing
   else
@@ -3104,11 +3104,11 @@ if [ "$param" = "-job" ];then
     fi
     echo -n "Job Name: "
     read job
-    ascii_chk_result=`ascii_check $job`
-    meta_chk_result=$(echo $job | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    ascii_chk_result=$(ascii_check $job)
+    meta_chk_result=$(echo "$job" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "\." -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
-    ls $ROOT/util/e-cron/def/${job}.def >/dev/null 2>&1
+    ls ${ROOT}/util/e-cron/def/${job}.def >/dev/null 2>&1
     if [ $? -eq 0 ];then
       existing_chk_result=existing
     else
@@ -3116,8 +3116,8 @@ if [ "$param" = "-job" ];then
     fi
 
   done
-  echo "Job_name: $job" > $tmp_dir/confirm
-  touch $tmp_dir/${job}.def
+  echo "Job_name: $job" > ${tmp_dir}/confirm
+  touch ${tmp_dir}/${job}.def
 
   if [ ! "$existing_chk_result" = existing ];then
     echo -n "Type of job (1.job automation | 2.file exchange) : "
@@ -3128,7 +3128,7 @@ if [ "$param" = "-job" ];then
       read jobtype
     done
   else
-    command_chk=`grep "^exec_command=" $ROOT/util/e-cron/def/${job}.def`
+    command_chk=$(grep "^exec_command=" ${ROOT}/util/e-cron/def/${job}.def)
     if [ "$command_chk" ];then
       jobtype=1
     else
@@ -3143,39 +3143,39 @@ if [ "$param" = "-job" ];then
       echo "WARN job:${job} is existing, please update the job by dialog.and if you don't want to update it, please exit with ctrl + C"
     fi
     gen_schedule
-    cat $tmp_dir/cron_entry | $SED "s/^/SCHEDULE:/g" > $tmp_dir/${job}.def
+    cat ${tmp_dir}/cron_entry | $SED "s/^/SCHEDULE:/g" > ${tmp_dir}/${job}.def
     echo -n "Exec command or batch script: "
     read exec_command
 
     
     while [ ! "$exec_command" -o ! -x "$solo_command" -o ! "$exec_chk" ]
     do
-      solo_command=`echo $exec_command | $AWK '{print $1}'`
-      basename_chk=`echo $exec_command | $AWK '{print $1}' | xargs basename -a | grep $solo_command`
+      solo_command=$(echo "$exec_command" | $AWK '{print $1}')
+      basename_chk=$(echo "$exec_command" | $AWK '{print $1}' | xargs basename -a | grep $solo_command)
 
       if [ "$basename_chk" ];then
 
         if [ -f ${ROOT}/util/scripts/${solo_command} ];then
           solo_command="${ROOT}/util/scripts/${solo_command}"
-          command_path=`echo $ROOT/util/scripts/ | $SED "s/\//{%%%%%%%}/g"`
-          exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
+          command_path=$(echo ${ROOT}/util/scripts/ | $SED "s/\//{%%%%%%%}/g")
+          exec_command=$(echo "$exec_command" | $SED "s/^/${command_path}/g" | $SED "s/{%%%%%%%}/\//g")
 
         elif [ -f /usr/bin/${solo_command} ];then
           solo_command="/usr/bin/${solo_command}"
-          command_path=`echo /usr/bin/ | $SED "s/\//{%%%%%%%}/g"`
-          exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
+          command_path=$(echo /usr/bin/ | $SED "s/\//{%%%%%%%}/g")
+          exec_command=$(echo "$exec_command" | $SED "s/^/${command_path}/g" | $SED "s/{%%%%%%%}/\//g")
 
         elif [ -f /bin/${solo_command} ];then
           solo_command="/bin/${solo_command}"
-          command_path=`echo /bin/ | $SED "s/\//{%%%%%%%}/g"`
-          exec_command=`echo "$exec_command" | $SED "s/^/$command_path/g" | $SED "s/{%%%%%%%}/\//g"`
+          command_path=$(echo /bin/ | $SED "s/\//{%%%%%%%}/g")
+          exec_command=$(echo "$exec_command" | $SED "s/^/${command_path}/g" | $SED "s/{%%%%%%%}/\//g")
 
         else
-          solo_command="`pwd`/${solo_command}"
-          exec_command="`pwd`/$exec_command"
+          solo_command="$(pwd)/${solo_command}"
+          exec_command="$(pwd)/${exec_command}"
         fi
 
-        exec_chk=`sudo -u small-shell file $solo_command | grep -i -e executable -e gnu`
+        exec_chk=$(sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)
       fi
 
       if [ ! "$exec_command" ];then
@@ -3192,25 +3192,25 @@ if [ "$param" = "-job" ];then
       fi
     done
 
-    echo "exec_command=\"`echo $exec_command | $SED "s/'/{%%%%%%}/g"\
+    echo "exec_command=\"$(echo "$exec_command" | $SED "s/'/{%%%%%%}/g"\
     | php -r "echo addslashes(file_get_contents('php://stdin'));"\
-    | $SED "s/{%%%%%%}/'/g"`\"" >> $tmp_dir/${job}.def
+    | $SED "s/{%%%%%%}/'/g")\"" >> ${tmp_dir}/${job}.def
 
-    echo "Exec_command: `echo $exec_command |  $SED "s/'/{%%%%%%}/g" \
+    echo "Exec_command: $(echo "$exec_command" |  $SED "s/'/{%%%%%%}/g" \
     | php -r "echo addslashes(file_get_contents('php://stdin'));"\
-    | $SED "s/{%%%%%%}/'/g"`" >> $tmp_dir/confirm
+    | $SED "s/{%%%%%%}/'/g")" >> ${tmp_dir}/confirm
 
-    echo "input_message=\"\"" >> $tmp_dir/${job}.def
-    echo "output_message=\"\"" >> $tmp_dir/${job}.def
-    echo "hub_api=\"\"" >> $tmp_dir/${job}.def
-    echo "api_authkey=\"\"" >> $tmp_dir/${job}.def
+    echo "input_message=\"\"" >> ${tmp_dir}/${job}.def
+    echo "output_message=\"\"" >> ${tmp_dir}/${job}.def
+    echo "hub_api=\"\"" >> ${tmp_dir}/${job}.def
+    echo "api_authkey=\"\"" >> ${tmp_dir}/${job}.def
 
     #clear
     echo "Job will be generated by following order, please check it" 
     echo "-----------------------------------------------------------------"
     echo ""
     echo "Jobtype: 1.job automation"
-    cat $tmp_dir/confirm
+    cat ${tmp_dir}/confirm
     echo ""
     echo "-----------------------------------------------------------------"
     echo -n "Is it OK? (yes | no): "
@@ -3225,18 +3225,18 @@ if [ "$param" = "-job" ];then
     if [ "$fin_answer" = "yes" ];then
 
       if [ "$existing_chk_result" = "existing" ];then
-        sudo -u small-shell $ROOT/bin/e-cron disable.${job}
+        sudo -u small-shell ${ROOT}/bin/e-cron disable.${job}
       fi
-      cat $tmp_dir/${job}.def > $ROOT/util/e-cron/def/${job}.def
-      chown small-shell:small-shell $ROOT/util/e-cron/def/${job}.def
-      chmod 755 $ROOT/util/e-cron/def/${job}.def
+      cat ${tmp_dir}/${job}.def > ${ROOT}/util/e-cron/def/${job}.def
+      chown small-shell:small-shell ${ROOT}/util/e-cron/def/${job}.def
+      chmod 755 ${ROOT}/util/e-cron/def/${job}.def
 
 
       if [ $? -eq 0 ];then
         echo "Succesfully generated. job definition is here"
-        echo "def: $ROOT/util/e-cron/def/${job}.def" 
-        echo "Please enable job \"sudo -u small-shell $ROOT/bin/e-cron enable.$job\""
-        cat $tmp_dir/confirm | grep -v "Exec_command:" | grep -v "Job_name:" > $ROOT/util/e-cron/def/.${job}.dump
+        echo "def: ${ROOT}/util/e-cron/def/${job}.def" 
+        echo "Please enable job \"sudo -u small-shell ${ROOT}/bin/e-cron enable.${job}\""
+        cat ${tmp_dir}/confirm | grep -v "Exec_command:" | grep -v "Job_name:" > ${ROOT}/util/e-cron/def/.${job}.dump
       else
         echo "error: something wrong"
       fi
@@ -3254,7 +3254,7 @@ if [ "$param" = "-job" ];then
       echo "WARN job:${job} is existing, please update the job by dialog.and if you don't want to update it, please exit with ctrl + C"
     fi
     gen_schedule
-    cat $tmp_dir/cron_entry | $SED "s/^/SCHEDULE:/g" > $tmp_dir/${job}.def
+    cat ${tmp_dir}/cron_entry | $SED "s/^/SCHEDULE:/g" > ${tmp_dir}/${job}.def
     echo -n "Type of file exchange (push | get): "
     read exchange_type
     while [ ! "$exchange_type" = "push" -a ! "$exchange_type" = "get" ]
@@ -3263,13 +3263,13 @@ if [ "$param" = "-job" ];then
       echo -n "Type (push | get): "
       read exchange_type
     done
-    echo "Exchange Type: $exchange_type" >> $tmp_dir/confirm
+    echo "Exchange Type: $exchange_type" >> ${tmp_dir}/confirm
 
     if [ "$exchange_type" = "get" ];then
       echo -n "Local directory: "
       read local_dir
       if [ -d $local_dir ];then
-        sudo -u small-shell echo "test" > $local_dir/.gentest
+        sudo -u small-shell echo "test" > ${local_dir}/.gentest
 	if [ $? -eq 0 ];then
 	  gen_test=success
         else
@@ -3282,7 +3282,7 @@ if [ "$param" = "-job" ];then
         echo -n "Local directory: "
         read local_dir
         if [ -d $local_dir ];then
-          sudo -u small-shell echo "test" > $local_dir/.gentest
+          sudo -u small-shell echo "test" > ${local_dir}/.gentest
           if [ $? -eq 0 ];then
             gen_test=success
           else
@@ -3290,15 +3290,15 @@ if [ "$param" = "-job" ];then
           fi
         fi
       done
-      echo "local_dir=\"$local_dir\"" >> $tmp_dir/${job}.def
+      echo "local_dir=\"${local_dir}\"" >> ${tmp_dir}/${job}.def
     fi
 
     if [ "$exchange_type" = "push" ];then
       echo -n "Local directory: "
       read local_dir
       if [ -d $local_dir ];then
-        echo "test" > $local_dir/.gentest
-        sudo -u small-shell ls $local_dir/.gentest > /dev/null 2>&1
+        echo "test" > ${local_dir}/.gentest
+        sudo -u small-shell ls ${local_dir}/.gentest > /dev/null 2>&1
         if [ $? -eq 0 ];then
           gen_test=success
         else
@@ -3311,8 +3311,8 @@ if [ "$param" = "-job" ];then
         echo -n "Local directory: "
         read local_dir
         if [ -d $local_dir ];then
-          echo "test" > $local_dir/.gentest
-          sudo -u small-shell ls  $local_dir/.gentest > /dev/null 2>&1
+          echo "test" > ${local_dir}/.gentest
+          sudo -u small-shell ls  ${local_dir}/.gentest > /dev/null 2>&1
           if [ $? -eq 0 ];then
             gen_test=success
           else
@@ -3320,14 +3320,14 @@ if [ "$param" = "-job" ];then
           fi
         fi
       done
-      echo "local_dir=\"$local_dir\"" >> $tmp_dir/${job}.def
+      echo "local_dir=\"${local_dir}\"" >> ${tmp_dir}/${job}.def
     fi
 
     echo -n "File Name: "
     read file_name
-    file_name_excld_astrsk=`echo $file_name | tr -d \*`
-    ascii_chk_result=`ascii_check $file_name_excld_astrsk`
-    meta_chk_result=$(echo $file_name_exld_astrsk | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+    file_name_excld_astrsk=$(echo "$file_name" | tr -d \*)
+    ascii_chk_result=$(ascii_check $file_name_excld_astrsk)
+    meta_chk_result=$(echo "$file_name_exld_astrsk" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
     -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$file_name" ]
@@ -3335,13 +3335,13 @@ if [ "$param" = "-job" ];then
       echo "error: file name must be ascii text and you can't use meta charactor including space, please try again"
       echo -n "File Name: "
       read file_name
-      file_name_excld_astrsk=`echo $file_name | tr -d \*`
-      ascii_chk_result=`ascii_check $file_name_excld_astrsk`
-      meta_chk_result=$(echo $file_name_excld_astrsk | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      file_name_excld_astrsk=$(echo "$file_name" | tr -d \*)
+      ascii_chk_result=$(ascii_check $file_name_excld_astrsk)
+      meta_chk_result=$(echo "$file_name_excld_astrsk" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
       -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
     done
-    echo "${exchange_type}_file=\"$file_name\"" >> $tmp_dir/${job}.def
-    echo "File: $file_name" >> $tmp_dir/confirm
+    echo "${exchange_type}_file=\"${file_name}\"" >> ${tmp_dir}/${job}.def
+    echo "File: $file_name" >> ${tmp_dir}/confirm
     
     echo -n "HUB API URL: "
     read hub_api
@@ -3375,9 +3375,9 @@ if [ "$param" = "-job" ];then
     echo "test" > ${file_que}/e-cron_test
     chown small-shell:small-shell ${file_que}/e-cron_test
     push_file=e-cron_test
-    result=`$CURL -X POST "${hub_api}?req=push&filename=${push_file}" \
+    result=$($CURL -X POST "${hub_api}?req=push&filename=${push_file}" \
     -H "Content-Type:application/octet-stream" -H "X-small-shell-authkey:${authkey}" \
-    --data-binary @${file_que}/${push_file}`
+    --data-binary @${file_que}/${push_file})
 
     if [ "$(echo $push_result | grep "file pushed successfully")" ];then
       echo "File push test has been succesfully done" 
@@ -3407,10 +3407,10 @@ if [ "$param" = "-job" ];then
       rm -rf $tmp_dir
       exit 1
     fi   
-    echo "hub_api=\"$hub_api\"" >> $tmp_dir/${job}.def
-    echo "api_authkey=\"$authkey\"" >> $tmp_dir/${job}.def
-    echo "HUB API URL: $hub_api" >> $tmp_dir/confirm
-    echo "API authkey: $authkey" >> $tmp_dir/confirm
+    echo "hub_api=\"${hub_api}\"" >> ${tmp_dir}/${job}.def
+    echo "api_authkey=\"${authkey}\"" >> ${tmp_dir}/${job}.def
+    echo "HUB API URL: $hub_api" >> ${tmp_dir}/confirm
+    echo "API authkey: $authkey" >> ${tmp_dir}/confirm
 
     sleep 1
     clear
@@ -3418,7 +3418,7 @@ if [ "$param" = "-job" ];then
     echo "-----------------------------------------------------------------"
     echo ""
     echo "Job_type: 2.file exchange"
-    cat $tmp_dir/confirm
+    cat ${tmp_dir}/confirm
     echo ""
     echo "-----------------------------------------------------------------"
     echo -n "Is it OK? (yes | no): "
@@ -3433,20 +3433,20 @@ if [ "$param" = "-job" ];then
     if [ "$fin_answer" = "yes" ];then
 
       if [ "$existing_chk_result" = "existing" ];then
-        sudo -u small-shell $ROOT/bin/e-cron disable.${job}
+        sudo -u small-shell ${ROOT}/bin/e-cron disable.${job}
       fi
 
-      cat $tmp_dir/${job}.def > $ROOT/util/e-cron/def/${job}.def
-      chown small-shell:small-shell $ROOT/util/e-cron/def/${job}.def
-      chmod 755 $ROOT/util/e-cron/def/${job}.def
+      cat ${tmp_dir}/${job}.def > ${ROOT}/util/e-cron/def/${job}.def
+      chown small-shell:small-shell ${ROOT}/util/e-cron/def/${job}.def
+      chmod 755 ${ROOT}/util/e-cron/def/${job}.def
 
       if [ $? -eq 0 ];then
         echo "Succesfully generated. job definition is here"
-        echo "def: $ROOT/util/e-cron/def/${job}.def"
-        echo "Please enable job \"sudo -u small-shell $ROOT/bin/e-cron enable.$job\""
+        echo "def: ${ROOT}/util/e-cron/def/${job}.def"
+        echo "Please enable job \"sudo -u small-shell ${ROOT}/bin/e-cron enable.${job}\""
 
-        cat $tmp_dir/confirm | grep -v "HUB API URL:" | grep -v "API authkey:" \
-        | grep -v "File:" | grep -v "Job_name:" | grep -v "Exchange Type: " > $ROOT/util/e-cron/def/.${job}.dump
+        cat ${tmp_dir}/confirm | grep -v "HUB API URL:" | grep -v "API authkey:" \
+        | grep -v "File:" | grep -v "Job_name:" | grep -v "Exchange Type: " > ${ROOT}/util/e-cron/def/.${job}.dump
 
       else
         echo "error: something is wrong"

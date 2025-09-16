@@ -4,11 +4,11 @@
 . %%www/descriptor/.small_shell_conf
 
 # IP restriction check
-whitelist_chk=`${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION"`
+whitelist_chk=$(${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION")
 if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
-    IP=`echo $IP | $SED "s/*//g"`
+    IP=$(echo "$IP" | $SED "s/*//g")
     if [[ ${REMOTE_ADDR} == ${IP}* ]];then
       IP_chk=yes
       break
@@ -24,17 +24,17 @@ if [ "$whitelist_chk" ];then
 fi
 
 # load remote addr
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")
 
 # preproceduure
-param=`date +%s`
+param=$(date +%s)
 param="$param:$RANDOM"
 count=1
 
 while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
- count=`expr $count + 1`
+ count=$(expr $count + 1)
  if [ $count -eq 100 ];then
    echo "Content-Type: text/html"
    echo ""
@@ -44,7 +44,7 @@ do
 done
 
 # parse QUERY_STRING
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+echo "$QUERY_STRING" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
 cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > %%www/tmp/${param}.load
 chmod 755 %%www/tmp/${param}.load
 
@@ -56,10 +56,10 @@ rm  %%www/tmp/${param}*
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
-auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:e-cron`
-user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
-session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
-pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
+auth_req=$(${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:e-cron)
+user_name=$(echo "$auth_req" | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}')
+session=$(echo "$auth_req" | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}')
+pin=$(echo "$auth_req" | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}')
 
 if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
   echo "Content-Type: text/html"
@@ -68,24 +68,24 @@ if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
   exit 1
 fi
 
-# dump POST data
-if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
-
-  if [ "`echo $CONTENT_TYPE | grep "application/json"`" ];then
+# parse POST data
+if [ "$(echo "$REQUEST_METHOD" | grep -i "POST")" ];then
+  
+  if [ "$(echo "$CONTENT_TYPE" | grep "application/json")" ];then
     method=json
-  elif [ "`echo $CONTENT_TYPE | grep "multipart/form-data"`" ];then
+  elif [ "$(echo "$CONTENT_TYPE" | grep "multipart/form-data")" ];then
     method=multipart
-  elif [ "`echo $CONTENT_TYPE | grep "application/octet-stream"`" ];then
+  elif [ "$(echo "$CONTENT_TYPE" | grep "application/octet-stream")" ];then
     method=data-binary
   else
     method=urlenc
   fi
-
-  mkdir %%www/tmp/$session
+ 
+  mkdir %%www/tmp/${session}
   # dump posted data
-  dd bs=${CONTENT_LENGTH} of=%%www/tmp/$session/input 2>/dev/null
+  dd bs=${CONTENT_LENGTH} of=%%www/tmp/${session}/input 2>/dev/null
   %%www/bin/parse.sh $session $method
-
+ 
 fi
 
 # chk request
@@ -106,7 +106,7 @@ if [ "$req" = "get" ];then
   fi
 
   if [ "$filename" ];then
-    file_chk=`${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr`
+    file_chk=$(${small_shell_path}/bin/e-cron ls.file:$filename remote_addr:$remote_addr)
     if [ "$file_chk" ];then
       echo "Content-Disposition: attachment; filename=$filename"
       echo "Content-Type: application/octet-stream"
@@ -141,8 +141,8 @@ if [ "$req" = "push" ];then
   fi
 fi
 
-if [ -d %%www/tmp/$session ];then
-  rm -rf %%www/tmp/$session
+if [ -d %%www/tmp/${session} ];then
+  rm -rf %%www/tmp/${session}
 fi
 
 exit 0

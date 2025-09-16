@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # global.conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../global.conf
 
 session_dir=${ROOT}/tmp/session

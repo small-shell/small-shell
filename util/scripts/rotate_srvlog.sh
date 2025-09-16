@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # global.conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../global.conf
-. $ROOT/web/base
+. ${ROOT}/web/base
 
 count=8
 tdir=${www}/log
@@ -18,7 +18,7 @@ do
     mv ${org} ${new}
   elif [ $count -eq 0 ];then
     cp ${tdir}/srvdump.log ${tdir}/srvdump.log.1
-    echo "`date \"+%Y-%m-%d %H:%M:%S\"` log rotated" > ${tdir}/srvdump.log
+    echo "$(date "+%Y-%m-%d %H:%M:%S") log rotated" > ${tdir}/srvdump.log
   fi
   ((count -= 1))
 done

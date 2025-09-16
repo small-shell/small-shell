@@ -9,38 +9,38 @@ databox=$1
 keys=$2
 flag=$3
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
 fi
 
 # global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../global.conf
 
 # set audit log
-access_log=${ROOT}/users/audit/access_log_`date +%Y%m%d`
+access_log=${ROOT}/users/audit/access_log_$(date +%Y%m%d)
 
 if [ ! "$databox" -a ! "$keys" -a ! "$flag" ];then
   echo "error: please input params correctly"
   exit 1
 fi
 
-if [ ! -d "$ROOT/databox/$databox" ];then
+if [ ! -d "${ROOT}/databox/${databox}" ];then
   echo "error: databox is wrong"
   exit 1
 fi
 
 # key check
-for key in `echo $keys | $SED "s/,/ /g"`
+for key in $(echo "$keys" | $SED "s/,/ /g")
 do
   if [ "$flag" = "addcol" ];then
-    key_check=`grep "name=\"$key\"" $ROOT/databox/${databox}/def/col*`
+    key_check=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/col*)
   fi
 
   if [ "$flag" = "delcol" ];then
-    key_check=`grep "name=\"$key\"" $ROOT/databox/${databox}/def/_col*`
+    key_check=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/_col*)
   fi
     
   if [ ! ${key_check} ];then 
@@ -51,47 +51,47 @@ done
 
 # create dummy session as root priviledge
 pin=$RANDOM
-session=`echo "root:${pin}" | $SHASUM | $AWK '{print $1}'`
-echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost logged in successfully" >> $access_log
+session=$(echo "root:${pin}" | $SHASUM | $AWK '{print $1}')
+echo "$(date +%Y-%m-%d) $(date +%T) user_name:root remote_user:localhost logged in successfully" >> $access_log
 chown small-shell:small-shell $access_log
 
 echo "Index rebuild has been successfully started"
 echo "rebild_session:$session"
-echo "progress can be checked here: $ROOT/tmp/log/$session.log"
-echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost index rebuild start #keys:$keys $flag" >> $ROOT/databox/$databox/log.dump
+echo "progress can be checked here: ${ROOT}/tmp/log/${session}.log"
+echo "$(date +%Y-%m-%d) $(date +%T) user_name:root remote_user:localhost index rebuild start #keys:$keys $flag" >> ${ROOT}/databox/${databox}/log.dump
 
 function rebuild(){
- echo "INDEX REBUILD START"  > $ROOT/tmp/log/$session.log
+ echo "INDEX REBUILD START"  > ${ROOT}/tmp/log/${session}.log
  
  count=1
- for id in `cat $ROOT/databox/$databox/index | $AWK -F "::::::" '{print $2}'`
+ for id in $(cat ${ROOT}/databox/${databox}/index | $AWK -F "::::::" '{print $2}')
  do 
     if [ "$flag" = "delcol" ];then
-      for key in `echo $keys | $SED "s/,/ /g"`
+      for key in $(echo "$keys" | $SED "s/,/ /g")
       do
-        if [ -f $ROOT/databox/$databox/data/$id/$key ];then
-          rm $ROOT/databox/$databox/data/$id/$key
+        if [ -f ${ROOT}/databox/${databox}/data/${id}/${key} ];then
+          rm ${ROOT}/databox/${databox}/data/${id}/${key}
         fi
       done
     fi
  
     # send que
-    echo "root:localhost" > $ROOT/tmp/que/${session}
-    chown small-shell:small-shell $ROOT/tmp/que/${session}
-    sudo -u small-shell $ROOT/sbin/que $databox $id $keys $session $pin $flag base
+    echo "root:localhost" > ${ROOT}/tmp/que/${session}
+    chown small-shell:small-shell ${ROOT}/tmp/que/${session}
+    sudo -u small-shell ${ROOT}/sbin/que $databox $id $keys $session $pin $flag base
 
     # logging
-    echo "updated_data:$count"  > $ROOT/tmp/log/$session.log
+    echo "updated_data:$count"  > ${ROOT}/tmp/log/${session}.log
     ((count += 1))
     sleep 0.1
   done
 
   wait
-  echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost index rebuild end" > $ROOT/tmp/log/$session.log
-  echo "`date +%Y-%m-%d` `date +%T` user_name:root remote_user:localhost index rebuild end" >> $ROOT/databox/$databox/log.dump
-  chown small-shell:small-shell $ROOT/tmp/log/$session.log
-  chown small-shell:small-shell $ROOT/databox/$databox/log.dump
-  rm -rf $ROOT/databox/${databox}/def/_col*
+  echo "$(date +%Y-%m-%d) $(date +%T) user_name:root remote_user:localhost index rebuild end" > ${ROOT}/tmp/log/${session}.log
+  echo "$(date +%Y-%m-%d) $(date +%T) user_name:root remote_user:localhost index rebuild end" >> ${ROOT}/databox/${databox}/log.dump
+  chown small-shell:small-shell ${ROOT}/tmp/log/${session}.log
+  chown small-shell:small-shell ${ROOT}/databox/${databox}/log.dump
+  rm -rf ${ROOT}/databox/${databox}/def/_col*
 }
 
 rebuild &

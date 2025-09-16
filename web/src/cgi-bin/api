@@ -10,11 +10,11 @@ echo ""
 . %%www/descriptor/.small_shell_conf
 
 # IP restriction check
-whitelist_chk=`${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION"`
+whitelist_chk=$(${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION")
 if [ "$whitelist_chk" ];then
   for IP in $whitelist_chk
   do
-    IP=`echo $IP | $SED "s/*//g"`
+    IP=$(echo "$IP" | $SED "s/*//g")
     if [[ ${REMOTE_ADDR} == ${IP}* ]];then
       IP_chk=yes
       break
@@ -28,25 +28,25 @@ if [ "$whitelist_chk" ];then
 fi
 
 # load remote addr and user_agent
-remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
-user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
+remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")
+user_agent=$(echo "$HTTP_USER_AGENT" | $SED "s/:/-/g" | $SED "s/ /_/g")
 
 # preproceduure
-param=`date +%s`
+param=$(date +%s)
 param="$param:$RANDOM"
 count=1
 
 while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
- count=`expr $count + 1`
+ count=$(expr $count + 1)
  if [ $count -eq 100 ];then
    echo "error: please contact to adimin"
    exit 1
  fi
 done
 
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+echo "$QUERY_STRING" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
 cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" > %%www/tmp/${param}.load
 chmod 755 %%www/tmp/${param}.load
 
@@ -58,10 +58,10 @@ rm  %%www/tmp/${param}*
 authkey=$HTTP_X_SMALL_SHELL_AUTHKEY
 
 # key auth
-auth_req=`${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent}`
-user_name=`echo $auth_req | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}'`
-session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
-pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
+auth_req=$(${small_shell_path}/bin/auth key_auth:${authkey} remote_addr:${remote_addr} user_agent:${user_agent})
+user_name=$(echo "$auth_req" | $AWK -F "," '{print $1}' | $AWK -F ":" '{print $2}')
+session=$(echo "$auth_req" | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}')
+pin=$(echo "$auth_req" | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}')
 
 if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
   echo "{ \"error\": \"KEY AUTHENTICATION FAILED\" }"
@@ -69,22 +69,24 @@ if [ ! "$user_name" -o ! "$session" -o ! "$pin" ];then
 fi
 
 # Handle POST request
-if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
-  mkdir %%www/tmp/$session
+post_chk=$(echo "$REQUEST_METHOD" | grep -i "POST")
+if [ "$post_chk" ];then
+  mkdir %%www/tmp/${session}
   # dump posted data
-  dd bs=${CONTENT_LENGTH} of=%%www/tmp/$session/input 2>/dev/null
+  dd bs=${CONTENT_LENGTH} of=%%www/tmp/${session}/input 2>/dev/null
 
-  if [ "`echo $CONTENT_TYPE | grep "application/json"`" ];then
+  json_chk=$(echo "$CONTENT_TYPE" | grep "application/json")
+  if [ "$json_chk" ];then
     %%www/bin/parse.sh $session json
-    keys=`ls %%www/tmp/$session | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
+    keys=$(ls %%www/tmp/${session} | grep -v binary_file | $SED -z "s/\n/,/g" | $SED "s/,$//g")
 
     if [ "$id" -a "$databox" ];then
 
       # set posted data
       ${small_shell_path}/bin/DATA_shell \
       session:$session pin:$pin action:set id:$id databox:$databox keys:$keys \
-      input_dir:%%www/tmp/$session databox:$databox  > %%www/tmp/$session/result
-      echo "{ \"info\": \"`cat %%www/tmp/$session/result | $SED -z "s/\n/, /g" | $SED "s/, \$//g" | $SED "s/:/->/g"`\" }"
+      input_dir:%%www/tmp/${session} databox:$databox  > %%www/tmp/${session}/result
+      echo "{ \"info\": \"$(cat %%www/tmp/${session}/result | $SED -z "s/\n/, /g" | $SED "s/, \$//g" | $SED "s/:/->/g")\" }"
     else
 
       echo "{ \"error\": \"PLEASE INPUT DATABOX AND ID\" }"
@@ -95,8 +97,9 @@ if [ "`echo $REQUEST_METHOD | grep -i "POST"`" ];then
 fi
 
 # Handle GET request
-if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
-  mkdir %%www/tmp/$session
+get_chk=$(echo "$REQUEST_METHOD" | grep -i "GET")
+if [ "$get_chk" ];then
+  mkdir %%www/tmp/${session}
   if [ "$command" ];then
     ${small_shell_path}/bin/DATA_shell session:$session pin:$pin command:$command databox:$databox format:json \
     | $SED "s/{%%%%%%%%%%%%%}/#/g"\
@@ -109,28 +112,28 @@ if [ "`echo $REQUEST_METHOD | grep -i "GET"`" ];then
     | $SED "s/{%%%%%%}/,/g"\
     | $SED "s/{%%%%%}/\//g"\
     | $SED "s/{%%%%}/\&/g"\
-    | $SED "s/{%%%}/:/g" > %%www/tmp/$session/result
+    | $SED "s/{%%%}/:/g" > %%www/tmp/${session}/result
 
-    error_chk=`grep error: %%www/tmp/$session/result | $SED "s/error://g"`
+    error_chk=$(grep error: %%www/tmp/${session}/result | $SED "s/error://g")
     if [ "$error_chk" ];then
       echo "{ \"error\": \"$error_chk\" }"
-    elif [ ! -s %%www/tmp/$session/result ];then
+    elif [ ! -s %%www/tmp/${session}/result ];then
       echo "{ \"info\": \"no result\" }"
     else
-      cat %%www/tmp/$session/result
+      cat %%www/tmp/${session}/result
     fi
 
   elif [ "$id" ];then
     ${small_shell_path}/bin/DATA_shell session:$session pin:$pin \
-    action:get keys:$keys id:$id databox:$databox format:json  > %%www/tmp/$session/result
+    action:get keys:$keys id:$id databox:$databox format:json  > %%www/tmp/${session}/result
 
-    error_chk=`grep error: %%www/tmp/$session/result | $SED "s/error://g"`
+    error_chk=$(grep error: %%www/tmp/${session}/result | $SED "s/error://g")
     if [ "$error_chk" ];then
       echo "{ \"error\": \"$error_chk\" }"
-    elif [ ! -s %%www/tmp/$session/result ];then
+    elif [ ! -s %%www/tmp/${session}/result ];then
       echo "{ \"info\": \"no result\" }"
     else
-      cat %%www/tmp/$session/result
+      cat %%www/tmp/${session}/result
     fi
   fi
 fi
@@ -140,7 +143,7 @@ logout:${session} > /dev/null 2>&1
 
 
 if [ "$session" ];then
-  rm -rf %%www/tmp/$session
+  rm -rf %%www/tmp/${session}
 fi
 
 exit 0

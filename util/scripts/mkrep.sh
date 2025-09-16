@@ -14,21 +14,21 @@ param=$1
 small_shell_home=/home/small-shell
 
 # global.conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../global.conf
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
 fi
 
 # load base 
-if [ ! -f $ROOT/web/base ];then
+if [ ! -f ${ROOT}/web/base ];then
   echo "error: please generate Base APP first"
   exit 1
 else
-  . $ROOT/web/base
+  . ${ROOT}/web/base
 fi
 
 
@@ -39,18 +39,18 @@ fi
 
 # gen tmpdir
 random=$RANDOM
-while [ -d $ROOT/tmp/gen/$random ]
+while [ -d ${ROOT}/tmp/gen/${random} ]
 do
  sleep 0.01
- count=`expr $count + 1`
+ count=$(expr $count + 1)
  if [ $count -eq 100 ];then
    echo "error: something is wrong"
    exit 1
  fi
  random=$RANDOM
 done
-mkdir $ROOT/util/scripts/tmp/$random
-tmp_dir="$ROOT/util/scripts/tmp/$random"
+mkdir ${ROOT}/util/scripts/tmp/${random}
+tmp_dir="${ROOT}/util/scripts/tmp/${random}"
 
 # handle kill signal
 trap 'clear_dialog' SIGINT
@@ -124,14 +124,14 @@ if [ "$param" = "reg.replica" ];then
   fi
 
   # load base setting
-  . $ROOT/web/base
+  . ${ROOT}/web/base
 
   # read replica IP or FQDN
   echo -n "Replica server IP or FQDN: "
   read replica
 
   if [ "$replica_hosts" ];then
-    chk_host=`echo "$replica_hosts" | $SED "s/ /\n/g" | grep ^${replica}$`
+    chk_host=$(echo "$replica_hosts" | $SED "s/ /\n/g" | grep ^${replica}$)
   fi
 
   if [ ! "$chk_host" ];then
@@ -140,9 +140,9 @@ if [ "$param" = "reg.replica" ];then
       cluster_flag=new
       echo -n "Load balancing IP or FQDN: "
       read cluster_IP
-      cluster_base_url=`echo $base_url | $SED "s/$server/$cluster_IP/g"`
-      cluster_static_url=`echo $static_url | $SED "s/$server/$cluster_IP/g"`
-      get_test=`$CURL -k ${cluster_base_url}shelltest.cgi | grep OK`
+      cluster_base_url=$(echo "$base_url" | $SED "s/${server}/${cluster_IP}/g")
+      cluster_static_url=$(echo "$static_url" | $SED "s/${server}/${cluster_IP}/g")
+      get_test=$($CURL -k ${cluster_base_url}shelltest.cgi | grep OK)
       if [ ! "$get_test" ];then
         echo "error: failed to connect ${cluster_base_url}shelltest.cgi,"
         echo "you need to review your DNS setting or Load balancer or Firewall setting."
@@ -173,11 +173,11 @@ if [ "$param" = "reg.replica" ];then
     sleep 2
     clear
     echo "trying to connect ${replica}"
-    ls_chk=`sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls $ROOT/global.conf`
-    if [ ! "$ls_chk" = "$ROOT/global.conf" ];then
+    ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls ${ROOT}/global.conf)
+    if [ ! "$ls_chk" = "${ROOT}/global.conf" ];then
       echo "--------------------------------------------Action required---------------------------------------------------"
       echo "Master public key seems not copied to $replica yet."
-      echo "Please put public key by executing \"sudo $ROOT/util/scripts/mkrep.sh reg.master\" on replica server for success of connection test."
+      echo "Please put public key by executing \"sudo ${ROOT}/util/scripts/mkrep.sh reg.master\" on replica server for success of connection test."
       echo "By the way, this script will retry to connect replica every 30 sec. for the interuption, just execute ctrl + c"
       echo "---------------------------------------------------------------------------------------------------------------"
       echo "Following is the public key to be copied to replica server."
@@ -185,10 +185,10 @@ if [ "$param" = "reg.replica" ];then
       cat /home/small-shell/.ssh/id_rsa.pub
       echo "---------------------------------------------------------------------------------------------------------------"
       count=0
-      while [ ! "$ls_chk" = "$ROOT/global.conf" ]
+      while [ ! "$ls_chk" = "${ROOT}/global.conf" ]
       do
         sleep 30
-        ls_chk=`sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls $ROOT/global.conf`
+        ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls ${ROOT}/global.conf)
         ((count += 1))
         if [ $count -gt 120 ];then
            echo "warn: retry count has been over threthhold(120 time), script will be gone. please try again."
@@ -212,38 +212,38 @@ if [ "$param" = "reg.replica" ];then
     if [ "$cluster_flag" = "new" ];then
 
       # update menu for Base APP
-      for target in `ls ${www}/descriptor/common_parts/common* | grep -v .org$ | xargs basename -a`
+      for target in $(ls ${www}/descriptor/common_parts/common* | grep -v .org$ | xargs basename -a)
       do
         cp ${www}/descriptor/common_parts/${target} ${www}/descriptor/common_parts/${target}.org
         cat ${www}/descriptor/common_parts/${target} | $SED "s#./base#${cluster_base_url}base#g" > ${tmp_dir}/${target}
-        cat ${tmp_dir}/${target} > $www/descriptor/common_parts/${target}
+        cat ${tmp_dir}/${target} > ${www}/descriptor/common_parts/${target}
         echo "updated $target"
       done
 
       # update menu for Scratch APP
-      . $ROOT/util/scripts/.authkey
-      permission=`$ROOT/bin/meta get.attr:sys`
+      . ${ROOT}/util/scripts/.authkey
+      permission=$(${ROOT}/bin/meta get.attr:sys)
       if [ "$permission" = "ro" ];then
-        $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+        ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
       fi
 
-      for target in `ls ${www}/descriptor/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a`
+      for target in $(ls ${www}/descriptor/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a)
       do
-        app=`echo "${target}" | $AWK -F "_common_menu" '{print $1}'`
-        chk_team=`grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null`
+        app=$(echo "${target}" | $AWK -F "_common_menu" '{print $1}')
+        chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
 
         if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
           # update UI.md.def
           mkdir ${tmp_dir}/${app}
 
-          id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:righth format:none \
+          id=$(sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}')
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:righth format:none \
           | $SED "s#./${app}#${cluster_base_url}${app}#g" | $SED "s/_%%enter_/\n/g" | $SED "s/righth://g"  > ${tmp_dir}/${app}/righth
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:righth input_dir:${tmp_dir}/${app}
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:righth input_dir:${tmp_dir}/${app}
 
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:lefth format:none \
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:lefth format:none \
           | $SED "s#./${app}#${cluster_base_url}${app}#g" | $SED "s/_%%enter_/\n/g" | $SED "s/lefth://g"  > ${tmp_dir}/${app}/lefth
-          sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
+          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
 
         fi
 
@@ -254,7 +254,7 @@ if [ "$param" = "reg.replica" ];then
         echo "updated $target"
 
         # update left menu
-        for descriptor in `grep -l "./${app}?%%params&req=main" ${www}/descriptor/* 2>/dev/null | grep -v .org | sort | uniq | xargs basename -a`
+        for descriptor in $(grep -l "./${app}?%%params&req=main" ${www}/descriptor/* 2>/dev/null | grep -v .org | sort | uniq | xargs basename -a)
         do
           if [ ! -f ${www}/descriptor/${descriptor}.org ];then
             cp ${www}/descriptor/${descriptor} ${www}/descriptor/${descriptor}.org
@@ -268,14 +268,14 @@ if [ "$param" = "reg.replica" ];then
       done
 
       if [ "$permission" = "ro" ];then
-        $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+        ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
       fi
 
       # update index
-      for target in `ls ${www}/html | grep -v index | xargs basename -a`
+      for target in $(ls ${www}/html | grep -v index | xargs basename -a)
       do
         if [ -f ${www}/html/${target}/index.html ];then
-          chk_form=`cat ${cgi_dir}/${target} | grep "controller for FORM"`
+          chk_form=$(cat ${cgi_dir}/${target} | grep "controller for FORM")
           if [ ! "$chk_form" ];then
             cp ${www}/html/${target}/index.html ${www}/html/${target}/index.html.org
             cat ${www}/html/${target}/index.html | $SED "s#${base_url}#${cluster_base_url}#g" > ${tmp_dir}/${target}.index.html
@@ -288,7 +288,7 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/html
 
       # update controller and auth
-      for target in `ls ${www}/cgi-bin | grep -v "^auth\." | grep -v api | grep -v e-cron | xargs basename -a`
+      for target in $(ls ${www}/cgi-bin | grep -v "^auth\." | grep -v api | grep -v e-cron | xargs basename -a)
       do
         app=$target
         cat ${www}/cgi-bin/${app} | $SED "s#./auth.${app}#${cluster_base_url}auth.${app}#g" \
@@ -297,7 +297,7 @@ if [ "$param" = "reg.replica" ];then
         echo "updated controller of $app"
       done
 
-      for target in `ls ${www}/cgi-bin | grep "^auth\." | xargs basename -a`
+      for target in $(ls ${www}/cgi-bin | grep "^auth\." | xargs basename -a)
       do
         app_auth=$target
         cat ${www}/cgi-bin/${app_auth} | $SED "s#IP_persistence=\"yes\"#IP_persistence=\"no\"#g" > ${tmp_dir}/${app_auth}
@@ -308,14 +308,14 @@ if [ "$param" = "reg.replica" ];then
       chown -R small-shell:small-shell ${www}/cgi-bin
 
       # update descriptor for scratch APP
-      for app in `ls ${cgi_dir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
-      | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null`
+      for app in $(ls ${cgi_dir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
+      | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null)
       do
-        type3_chk=`grep "# controller for Scratch APP" ${cgi_dir}/${app}`
+        type3_chk=$(grep "# controller for Scratch APP" ${cgi_dir}/${app})
         if [ "$type3_chk" ];then
-          subapps=`cat ${cgi_dir}/$app | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g"`
+          subapps=$(cat ${cgi_dir}/${app} | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g")
     
-          for target in `ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a`
+          for target in $(ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a)
           do
             if [ ! -f ${www}/descriptor/${target}.org ];then
               cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org  
@@ -329,7 +329,7 @@ if [ "$param" = "reg.replica" ];then
           if [ "$subapps" ];then
             for subapp in $subapps
             do
-              for target in `ls ${www}/descriptor/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null`
+              for target in $(ls ${www}/descriptor/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null)
               do
                 if [ ! -f ${www}/descriptor/${target}.org ];then
                   cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
@@ -345,7 +345,7 @@ if [ "$param" = "reg.replica" ];then
       done
     
       # update base APP
-      for target in `ls ${www}/descriptor/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null` 
+      for target in $(ls ${www}/descriptor/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null) 
       do
         if [ ! -f ${www}/descriptor/${target}.org ];then
           cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
@@ -364,15 +364,15 @@ if [ "$param" = "reg.replica" ];then
 
 
       # update web/base
-      echo "cluster_server=\"$cluster_IP\"" >> $ROOT/web/base
-      echo "cluster_base_url=\"$cluster_base_url\"" >> $ROOT/web/base
-      echo "cluster_static_url=\"$cluster_static_url\"" >> $ROOT/web/base
-      echo "replica_hosts=\"$replica\"" >> $ROOT/web/base
-      echo "cluster_base_url=\"$cluster_base_url\"" >> ${www}/descriptor/.small_shell_conf
-      echo "replica_hosts=\"$replica\"" >> ${www}/descriptor/.small_shell_conf
+      echo "cluster_server=\"${cluster_IP}\"" >> ${ROOT}/web/base
+      echo "cluster_base_url=\"${cluster_base_url}\"" >> ${ROOT}/web/base
+      echo "cluster_static_url=\"${cluster_static_url}\"" >> ${ROOT}/web/base
+      echo "replica_hosts=\"${replica}\"" >> ${ROOT}/web/base
+      echo "cluster_base_url=\"${cluster_base_url}\"" >> ${www}/descriptor/.small_shell_conf
+      echo "replica_hosts=\"${replica}\"" >> ${www}/descriptor/.small_shell_conf
 
       # initialiize .rep.def
-      cat <<EOF > $ROOT/util/scripts/.rep.def 
+      cat <<EOF > ${ROOT}/util/scripts/.rep.def 
 ssync = {
         default.rsync,
         delete=yes,
@@ -393,49 +393,49 @@ EOF
     else
       # else means not new
       # update web/base
-      new_replica_hosts=`echo "$replica_hosts" | $SED "s/\"//g" | $SED "s/$/ $replica/g"`
-      cat $ROOT/web/base | grep -v replica_hosts=\" > $ROOT/web/.base
-      echo "replica_hosts=\"$new_replica_hosts\"" >> $ROOT/web/.base
-      cat $ROOT/web/.base > $ROOT/web/base
+      new_replica_hosts=$(echo "$replica_hosts" | $SED "s/\"//g" | $SED "s/$/ ${replica}/g")
+      cat ${ROOT}/web/base | grep -v replica_hosts=\" > ${ROOT}/web/.base
+      echo "replica_hosts=\"${new_replica_hosts}\"" >> ${ROOT}/web/.base
+      cat ${ROOT}/web/.base > ${ROOT}/web/base
     
       # update small_shell_conf
-      cat $www/descriptor/.small_shell_conf | grep -v replica_hosts=\" > $www/descriptor/.small_shell_conf.tmp
-      echo "replica_hosts=\"$new_replica_hosts\"" >> $www/descriptor/.small_shell_conf.tmp
-      cat $www/descriptor/.small_shell_conf.tmp > $www/descriptor/.small_shell_conf
+      cat ${www}/descriptor/.small_shell_conf | grep -v replica_hosts=\" > ${www}/descriptor/.small_shell_conf.tmp
+      echo "replica_hosts=\"${new_replica_hosts}\"" >> ${www}/descriptor/.small_shell_conf.tmp
+      cat ${www}/descriptor/.small_shell_conf.tmp > ${www}/descriptor/.small_shell_conf
 
     fi
 
   # update .rep.def
-  cat <<EOF >> $ROOT/util/scripts/.rep.def 
+  cat <<EOF >> ${ROOT}/util/scripts/.rep.def 
 sync{
     ssync,
-    source="$ROOT/users",
-    target="small-shell@${replica}:$ROOT/users"
+    source="${ROOT}/users",
+    target="small-shell@${replica}:${ROOT}/users"
 }
 
 sync{
     ssync,
     source="/usr/local/small-shell/databox",
-    target="small-shell@${replica}:$ROOT/databox"
+    target="small-shell@${replica}:${ROOT}/databox"
 }
 
 sync{ 
     ssync,
     source="/usr/local/small-shell/web",
-    target="small-shell@${replica}:$ROOT/web"
+    target="small-shell@${replica}:${ROOT}/web"
 }
 
 EOF
 
   fi
 
-  chk_process=`ps -ef | grep lsyncd | grep -v grep`
+  chk_process=$(ps -ef | grep lsyncd | grep -v grep)
   if [ "$chk_process" ];then
     echo "warn: trying to stop lsyncd to install new setting"
     systemctl stop lsyncd
   fi
 
-  cat $ROOT/util/scripts/.rep.def > /etc/lsyncd/lsyncd.conf.lua
+  cat ${ROOT}/util/scripts/.rep.def > /etc/lsyncd/lsyncd.conf.lua
   systemctl restart lsyncd
   systemctl status lsyncd
   systemctl enable lsyncd
@@ -467,7 +467,7 @@ if [ "$param" = "reg.master" ];then
   fi
 
   # load web/base
-  . $ROOT/web/base
+  . ${ROOT}/web/base
 
   # read master IP or FQDN
   echo -n "Master server IP or FQDN: "
@@ -494,11 +494,11 @@ if [ "$param" = "reg.master" ];then
     sleep 2
     clear
     echo "trying to connect $new_master"
-    ls_chk=`sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls $ROOT/global.conf`
+    ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls ${ROOT}/global.conf)
     if [ ! "$ls_chk" = "/usr/local/small-shell/global.conf" ];then
       echo "--------------------------------------------Action required---------------------------------------------------"
       echo "Replica server key seems not copied to $new_master yet." 
-      echo "Please execute \"sudo $ROOT/util/scripts/mkrep.sh reg.replica\" on master server for success of connection test."
+      echo "Please execute \"sudo ${ROOT}/util/scripts/mkrep.sh reg.replica\" on master server for success of connection test."
       echo "By the way, this script will retry to connect master every 30 sec. for the interuption, just execute ctrl + c"
       echo "---------------------------------------------------------------------------------------------------------------"
       echo "Following is the public key to be copied to master server."
@@ -506,10 +506,10 @@ if [ "$param" = "reg.master" ];then
       cat /home/small-shell/.ssh/id_rsa.pub
       echo "---------------------------------------------------------------------------------------------------------------"
       count=0
-      while [ ! "$ls_chk" = "$ROOT/global.conf" ]
+      while [ ! "$ls_chk" = "${ROOT}/global.conf" ]
       do
         sleep 30
-        ls_chk=`sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls $ROOT/global.conf`
+        ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls ${ROOT}/global.conf)
         ((count += 1))
         if [ $count -gt 120 ];then
            echo "warn: retry count has been over threthhold(120 time), script will be gone. please try again."
@@ -531,8 +531,8 @@ if [ "$param" = "reg.master" ];then
   fi
 
   # load cluster_base_url
-  cluster_base_url=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep cluster_base_url \
-  | $SED "s/cluster_base_url=//g" | $SED "s/\"//g"` 
+  cluster_base_url=$(sudo -u small-shell ssh $master cat ${ROOT}/web/base | grep cluster_base_url \
+  | $SED "s/cluster_base_url=//g" | $SED "s/\"//g")
 
   echo "waiting update of web/base of master server"
   echo "this process will retry to connect master every 10 sec. for the interuption, just execute ctrl + c"
@@ -541,8 +541,8 @@ if [ "$param" = "reg.master" ];then
   do
     sleep 10
 
-    cluster_base_url=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep cluster_base_url \
-    | $SED "s/cluster_base_url=//g" | $SED "s/\"//g"` 
+    cluster_base_url=$(sudo -u small-shell ssh $master cat ${ROOT}/web/base | grep cluster_base_url \
+    | $SED "s/cluster_base_url=//g" | $SED "s/\"//g")
     ((count += 1))
 
        if [ $count -gt 120 ];then
@@ -560,12 +560,12 @@ if [ "$param" = "reg.master" ];then
   done
 
   # update env
-  cluster_server=`echo $cluster_base_url | $SED -r "s#http(.*)://##g" | $AWK -F "/" '{print $1}' | $SED "s/\"//g"`
-  cat $ROOT/web/base | grep -v "master=\"" | grep -v "cluster_server=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
-  echo "master=\"$master\"" >>  ${tmp_dir}/base
-  echo "cluster_server=\"$cluster_server\"" >>  ${tmp_dir}/base
-  echo "cluster_base_url=\"$cluster_base_url\"" >>  ${tmp_dir}/base
-  cat ${tmp_dir}/base > $ROOT/web/base
+  cluster_server=$(echo "$cluster_base_url" | $SED -r "s#http(.*)://##g" | $AWK -F "/" '{print $1}' | $SED "s/\"//g")
+  cat ${ROOT}/web/base | grep -v "master=\"" | grep -v "cluster_server=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
+  echo "master=\"${master}\"" >>  ${tmp_dir}/base
+  echo "cluster_server=\"${cluster_server}\"" >>  ${tmp_dir}/base
+  echo "cluster_base_url=\"${cluster_base_url}\"" >>  ${tmp_dir}/base
+  cat ${tmp_dir}/base > ${ROOT}/web/base
 
   # remove local APP 
   rm -rf ${www}/html/base
@@ -585,16 +585,16 @@ if [ "$param" = "reg.master" ];then
   sudo -u small-shell scp -r small-shell@${master}:${www}/bin ${www}
   
   # update index
-  for target in `ls ${www}/html | grep -v index | xargs basename -a 2>/dev/null`
+  for target in $(ls ${www}/html | grep -v index | xargs basename -a 2>/dev/null)
   do
     if [ -f ${www}/html/${target}/index.html ];then
-      chk_form=`cat ${cgi_dir}/${target} | grep "controller for FORM"`
+      chk_form=$(cat ${cgi_dir}/${target} | grep "controller for FORM")
       if [ "$chk_form" ];then
         cp ${www}/html/${target}/index.html ${www}/html/${target}/index.html.org
         cat ${www}/html/${target}/index.html | $SED "s#./${server}#${master_base_url}#g" > ${tmp_dir}/${target}.index.html
         cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
         mv ${cgi_dir}/${target} ${cgi_dir}/_${target}
-        cat $ROOT/web/src/cgi-bin/tmplt_redirect_form | $SED "s#%%www#${www}#g" | $SED "s#%%master_base_url#${master_base_url}#g" \
+        cat ${ROOT}/web/src/cgi-bin/tmplt_redirect_form | $SED "s#%%www#${www}#g" | $SED "s#%%master_base_url#${master_base_url}#g" \
         | $SED "s/%%app/${target}/g" > ${cgi_dir}/${target} 
         chmod 755 ${cgi_dir}/${target}
         chown small-shell:small-shell ${cgi_dir}/${target}
@@ -604,23 +604,23 @@ if [ "$param" = "reg.master" ];then
 
   # update desc/.small-shell_conf
   cat ${www}/descriptor/small_shell_conf.org | grep -v master=\" | grep -v replica=\" > ${tmp_dir}/small_shell_conf
-  echo "master=\"$master\"" >> ${tmp_dir}/small_shell_conf
+  echo "master=\"${master}\"" >> ${tmp_dir}/small_shell_conf
   cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
   rm -f ${www}/descriptor/small_shell_conf.org 
 
   # update api authkey
-  api_authkey=`sudo -u small-shell ssh $master cat $ROOT/web/base | grep api_authkey \
-  | $SED "s/api_authkey=//g" | $SED "s/\"//g"` 
+  api_authkey=$(sudo -u small-shell ssh $master cat ${ROOT}/web/base | grep api_authkey \
+  | $SED "s/api_authkey=//g" | $SED "s/\"//g")
   
-  cat $ROOT/web/base | grep -v api_authkey > ${tmp_dir}/base 
-  echo "api_authkey=\"$api_authkey\"" >> ${tmp_dir}/base
-  cat ${tmp_dir}/base > $ROOT/web/base
+  cat ${ROOT}/web/base | grep -v api_authkey > ${tmp_dir}/base 
+  echo "api_authkey=\"${api_authkey}\"" >> ${tmp_dir}/base
+  cat ${tmp_dir}/base > ${ROOT}/web/base
 
 
   # update sys authkey
-  sys_authkey=`sudo -u small-shell ssh $master cat $ROOT/util/scripts/.authkey \
-  | $SED "s/authkey=//g" | $SED "s/\"//g"`
-  echo "authkey=\"${sys_authkey}\"" > $ROOT/util/scripts/.authkey
+  sys_authkey=$(sudo -u small-shell ssh $master cat ${ROOT}/util/scripts/.authkey \
+  | $SED "s/authkey=//g" | $SED "s/\"//g")
+  echo "authkey=\"${sys_authkey}\"" > ${ROOT}/util/scripts/.authkey
 
 
   chown -R small-shell:small-shell ${www}/descriptor
@@ -635,7 +635,7 @@ fi
 if [ "$param" = "purge" ];then
 
   # load web/base
-  . $ROOT/web/base
+  . ${ROOT}/web/base
 
   if [ ! "$cluster_base_url" ];then
     echo "error: it seems replication setting is already purged"
@@ -648,7 +648,7 @@ if [ "$param" = "purge" ];then
     systemctl disable lsyncd
  
     # initialize cluster definition
-    cat <<EOF > $ROOT/util/scripts/.rep.def
+    cat <<EOF > ${ROOT}/util/scripts/.rep.def
 ssync = {
         default.rsync,
         delete=yes,
@@ -663,58 +663,58 @@ EOF
     mv /etc/lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua.org
 
     # update web/base desc/.small_shell_conf
-    cat $ROOT/web/base | grep -v cluster_server=\" | grep -v cluster_static_url=\" \
+    cat ${ROOT}/web/base | grep -v cluster_server=\" | grep -v cluster_static_url=\" \
     | grep -v cluster_base_url=\" | grep -v replica_hosts=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
     cat ${www}/descriptor/.small_shell_conf | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/small_shell_conf
     cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
 
 
-    . $ROOT/util/scripts/.authkey
-    permission=`$ROOT/bin/meta get.attr:sys`
+    . ${ROOT}/util/scripts/.authkey
+    permission=$(${ROOT}/bin/meta get.attr:sys)
     if [ "$permission" = "ro" ];then
-      $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+      ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
     fi
 
     # restore descriptor
-    for bkup in `ls ${www}/descriptor/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
+    for bkup in $(ls ${www}/descriptor/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
-       target=`echo $bkup | awk -F ".org" '{print $1}'`
+       target=$(echo "$bkup" | awk -F ".org" '{print $1}')
        cat ${www}/descriptor/${bkup} > ${www}/descriptor/${target}
        rm ${www}/descriptor/${bkup} 
     done
 
     # restore menu
-    for bkup in `ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
+    for bkup in $(ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
 
-      app=`echo "${bkup}" | $AWK -F "_common_menu" '{print $1}'`
-      chk_team=`grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null`
+      app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}')
+      chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
 
       if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
         mkdir ${tmp_dir}/${app}
-        id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
+        id=$(sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}')
 
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:righth format:none \
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:righth format:none \
         | $SED "s#${cluster_base_url}${app}#./${app}#g" | $SED "s/_%%enter_/\n/g" | $SED "s/righth://g" > ${tmp_dir}/${app}/righth
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:righth input_dir:${tmp_dir}/${app}
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:righth input_dir:${tmp_dir}/${app}
 
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:lefth format:none \
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:lefth format:none \
         | $SED "s#${cluster_base_url}${app}#./${app}#g" | $SED "s/_%%enter_/\n/g" | $SED "s/lefth://g"  > ${tmp_dir}/${app}/lefth
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
       fi
 
-       target=`echo $bkup | $AWK -F ".org" '{print $1}'`
+       target=$(echo "$bkup" | $AWK -F ".org" '{print $1}')
        cat ${www}/descriptor/common_parts/${bkup} > ${www}/descriptor/common_parts/${target}
     done
 
     if [ "$permission" = "ro" ];then
-      $ROOT/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+      ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
     fi
 
     # restore index
-    for target in `ls ${www}/html | grep -v index | xargs basename -a 2>/dev/null`
+    for target in $(ls ${www}/html | grep -v index | xargs basename -a 2>/dev/null)
     do
       if [ -f ${www}/html/${target}/index.html ];then
         cat ${www}/html/${target}/index.html | $SED "s#${cluster_base_url}#${base_url}#g" > ${tmp_dir}/${target}.index.html
@@ -726,7 +726,7 @@ EOF
     chown -R small-shell:small-shell ${www}/html
 
     # restore controller and auth
-    for target in `ls ${www}/cgi-bin | grep -v api | grep -v e-cron | grep -v ^auth\. |  xargs basename -a`
+    for target in $(ls ${www}/cgi-bin | grep -v api | grep -v e-cron | grep -v ^auth\. |  xargs basename -a)
     do
       app=$target
       cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \
@@ -749,59 +749,59 @@ EOF
   else
      
     # update web/base desc/.small_shell_conf
-    cat $ROOT/web/base | grep -v master=\" | grep -v cluster_server=\" | grep -v cluster_base_url=\" > ${tmp_dir}/base
+    cat ${ROOT}/web/base | grep -v master=\" | grep -v cluster_server=\" | grep -v cluster_base_url=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
     cat ${www}/descriptor/.small_shell_conf | grep -v master=\" > ${tmp_dir}/small_shell_conf
     cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
 
     # restore descriptor
-    for bkup in `ls ${www}/descriptor/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
+    for bkup in $(ls ${www}/descriptor/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
-       target=`echo $bkup | awk -F ".org" '{print $1}'`
+       target=$(echo "$bkup" | awk -F ".org" '{print $1}')
        cat ${www}/descriptor/${bkup} > ${www}/descriptor/${target}
        rm ${www}/descriptor/${bkup}
     done
 
-    . $ROOT/util/scripts/.authkey
-    permission=`$ROOT/bin/meta get.attr:sys`
+    . ${ROOT}/util/scripts/.authkey
+    permission=$(${ROOT}/bin/meta get.attr:sys)
     if [ "$permission" = "ro" ];then
-      $ROOT/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+      ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
     fi
 
     # restore menu
-    for bkup in `ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null`
+    for bkup in $(ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
-      app=`echo "${bkup}" | $AWK -F "_common_menu" '{print $1}'`
-      chk_team=`grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null`
+      app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}')
+      chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
 
       if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
         mkdir ${tmp_dir}/${app}
-        id=`sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}'`
+        id=$(sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:get command:head_-1 format:none | awk -F "," '{print $1}')
 
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:righth format:none \
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:righth format:none \
         | $SED "s#${cluster_base_url}${app}#./${app}#g" | $SED "s/_%%enter_/\n/g" | $SED "s/righth://g" > ${tmp_dir}/${app}/righth
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:righth input_dir:${tmp_dir}/${app}
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:righth input_dir:${tmp_dir}/${app}
 
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:lefth format:none \
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def action:get id:${id} key:lefth format:none \
         | $SED "s#${cluster_base_url}${app}#./${app}#g" | $SED "s/_%%enter_/\n/g" | $SED "s/lefth://g" > ${tmp_dir}/${app}/lefth
-        sudo -u small-shell $ROOT/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
+        sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.UI.md.def action:set id:${id} key:lefth input_dir:${tmp_dir}/${app}
       fi
 
-       target=`echo $bkup | $AWK -F ".org" '{print $1}'`
+       target=$(echo "$bkup" | $AWK -F ".org" '{print $1}')
        cat ${www}/descriptor/common_parts/${target} | $SED "s#${cluster_base_url}${app}#./${app}#g" > ${tmp_dir}/${target}.menu
        cat ${tmp_dir}/${target}.menu > ${www}/descriptor/common_parts/${target}
     done
 
 
     # restore index
-    for target in `ls ${www}/html | grep -v index | xargs basename -a`
+    for target in $(ls ${www}/html | grep -v index | xargs basename -a)
     do  
       if [ -f ${www}/html/${target}/index.html ];then
         cat ${www}/html/${target}/index.html | $SED "s#${cluster_base_url}#${base_url}#g" > ${tmp_dir}/${target}.index.html
         cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
         if [ -f ${cgi_dir}/_${target} ];then
-          cat $ROOT/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${target}#g" > ${www}/html/${target}/index.html
+          cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${target}#g" > ${www}/html/${target}/index.html
           mv ${cgi_dir}/_${target} ${cgi_dir}/${target}
         fi
       fi
@@ -811,7 +811,7 @@ EOF
     chown -R small-shell:small-shell ${www}/html
 
     # restore controller and auth
-    for target in `ls ${www}/cgi-bin | grep -v api | grep -v e-cron | grep -v ^auth\. |  xargs basename -a`
+    for target in $(ls ${www}/cgi-bin | grep -v api | grep -v e-cron | grep -v ^auth\. |  xargs basename -a)
     do
       app=$target
       cat ${www}/cgi-bin/${target} | $SED "s#${cluster_base_url}auth.${app}#./auth.${app}#g" \

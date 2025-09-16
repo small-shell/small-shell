@@ -6,14 +6,14 @@
 
 db_def=$1
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
 fi
 
 # global.conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../global.conf
 
 if [ ! "$db_def" ];then
@@ -27,40 +27,40 @@ if [ ! -f $db_def ];then
 fi
 
 # global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../../global.conf
 
 # gen tmp/db.def.load
-cat $db_def | grep "^databox="  | $SED "s/databox=//g" | $SED "s/\"//g"  > $ROOT/util/scripts/tmp/db.def.load
+cat $db_def | grep "^databox="  | $SED "s/databox=//g" | $SED "s/\"//g"  > ${ROOT}/util/scripts/tmp/db.def.load
 
-primary_key=`cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g"`
+primary_key=$(cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g")
 if [ "$primary_key" = "hashid" ];then
   #exclude label
-  cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g" >> $ROOT/util/scripts/tmp/db.def.load
+  cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g" >> ${ROOT}/util/scripts/tmp/db.def.load
 else
   #include label
-  cat $db_def | grep "^primary_key" | cut -d '=' -f 2- | $SED "s/\"//g" >> $ROOT/util/scripts/tmp/db.def.load
-  echo "yes" >> $ROOT/util/scripts/tmp/db.def.load
+  cat $db_def | grep "^primary_key" | cut -d '=' -f 2- | $SED "s/\"//g" >> ${ROOT}/util/scripts/tmp/db.def.load
+  echo "yes" >> ${ROOT}/util/scripts/tmp/db.def.load
 fi
 
 
 # load cols
-col_num=`cat $db_def | grep "^+addcol" | wc -l`
+col_num=$(cat $db_def | grep "^+addcol" | wc -l)
 ((col_num += 1))
 
 count=2
 while [ $count -le $col_num ]
 do
-  cat $db_def | grep "^col${count}_" | $SED "s/col${count}_//g" > $ROOT/util/scripts/tmp/.col${count}
-  line_num=`cat $ROOT/util/scripts/tmp/.col${count} | wc -l`
+  cat $db_def | grep "^col${count}_" | $SED "s/col${count}_//g" > ${ROOT}/util/scripts/tmp/.col${count}
+  line_num=$(cat ${ROOT}/util/scripts/tmp/.col${count} | wc -l)
   if [ $line_num -gt 6 ];then
     echo "col${count} seems too much definition"
     exit 1
   fi
 
   # load columns
-  chmod 755 $ROOT/util/scripts/tmp/.col${count}
-  . $ROOT/util/scripts/tmp/.col${count} 2>/dev/null
+  chmod 755 ${ROOT}/util/scripts/tmp/.col${count}
+  . ${ROOT}/util/scripts/tmp/.col${count} 2>/dev/null
 
   if [ ! "$key_name" ];then
     echo "error: col${count} please define key name"
@@ -79,8 +79,8 @@ do
     fi
   fi
 
-   param_chk=`cat $ROOT/util/scripts/tmp/.col${count} | grep -A 1 "type=\"$type\"" \
-  | grep key_params= | $SED "s/key_params=//g" | $SED "s/\"//g"`
+   param_chk=$(cat ${ROOT}/util/scripts/tmp/.col${count} | grep -A 1 "type=\"${type}\"" \
+  | grep key_params= | $SED "s/key_params=//g" | $SED "s/\"//g")
   if [ "$type" = "select" -o "$type" = "radio" ];then
     if [ ! "$param_chk" ];then
       echo "error: please define params after select or radio"
@@ -93,8 +93,8 @@ do
     fi
   fi
 
-  param_chk=`cat $ROOT/util/scripts/tmp/.col${count} | grep -A 2 "type=\"$type\"" \
-  | grep primary_databox= | $SED "s/primary_databox=//g" | $SED "s/\"//g"`
+  param_chk=$(cat ${ROOT}/util/scripts/tmp/.col${count} | grep -A 2 "type=\"${type}\"" \
+  | grep primary_databox= | $SED "s/primary_databox=//g" | $SED "s/\"//g")
   if [ "$type" = "pdls" ];then
     if [ ! "$param_chk" ];then
       echo "error: please define primary_databox for pdls "
@@ -107,29 +107,29 @@ do
     fi
   fi
 
-  type_chk=`cat $db_def \
-  | grep -e "col${count}_type=\"checkbox\"" -e "col${count}_type=\"select\"" -e "col${count}_type=\"radio\"" -e "col${count}_type=\"file\""`  
+  type_chk=$(cat $db_def \
+  | grep -e "col${count}_type=\"checkbox\"" -e "col${count}_type=\"select\"" -e "col${count}_type=\"radio\"" -e "col${count}_type=\"file\"")
 
   if [ ! "$type_chk" ];then
-    cat $db_def | grep "^col${count}_" | cut -d '=' -f 2- | $SED "s/\"//g" | $SED "/^$/d" >> $ROOT/util/scripts/tmp/db.def.load
+    cat $db_def | grep "^col${count}_" | cut -d '=' -f 2- | $SED "s/\"//g" | $SED "/^$/d" >> ${ROOT}/util/scripts/tmp/db.def.load
   else 
     cat $db_def | grep "^col${count}_" | grep -v col${count}_required= | cut -d '=' -f 2- \
-    | $SED "s/\"//g" | $SED "/^$/d" >> $ROOT/util/scripts/tmp/db.def.load
+    | $SED "s/\"//g" | $SED "/^$/d" >> ${ROOT}/util/scripts/tmp/db.def.load
   fi
   
   if [ $count -lt $col_num ];then
     # add more column
-    echo "yes" >> $ROOT/util/scripts/tmp/db.def.load
+    echo "yes" >> ${ROOT}/util/scripts/tmp/db.def.load
   else
-    echo "no" >> $ROOT/util/scripts/tmp/db.def.load
+    echo "no" >> ${ROOT}/util/scripts/tmp/db.def.load
   fi
 
   ((count += 1))
 done
 
 # add fin answer
-echo "yes" >> $ROOT/util/scripts/tmp/db.def.load
+echo "yes" >> ${ROOT}/util/scripts/tmp/db.def.load
 
-cat $ROOT/util/scripts/tmp/db.def.load | $ROOT/adm/gen -databox -bat
+cat ${ROOT}/util/scripts/tmp/db.def.load | ${ROOT}/adm/gen -databox -bat
 
 exit 0

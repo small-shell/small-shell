@@ -7,21 +7,21 @@
 # load param
 bkuped_dir=$1
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
 fi
 
 # global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../global.conf
 
-if [ ! -f $ROOT/web/base ];then
+if [ ! -f ${ROOT}/web/base ];then
   echo "please genterate Base APP before restore"
   exit 1
 else
-  . $ROOT/web/base
+  . ${ROOT}/web/base
 fi
 
 if [ ! "$bkuped_dir" ];then
@@ -35,20 +35,20 @@ if [ ! -d ${bkuped_dir} ];then
 fi
 
 # file check
-num_chk=`ls ${bkuped_dir}/*core*.xz 2>/dev/null | wc -l`
+num_chk=$(ls ${bkuped_dir}/*core*.xz 2>/dev/null | wc -l)
 if [ ! $num_chk -eq 1 ];then
   echo "error: number of backup file seems wrong. please check $bkuped_dir"
   exit 1
 else
-  rm -rf $ROOT/databox
-  rm -rf $ROOT/users
+  rm -rf ${ROOT}/databox
+  rm -rf ${ROOT}/users
   (cd ${bkuped_dir} && tar -xf *core*.xz \
-  && \cp -Rf small-shell/databox $ROOT/databox && \cp -Rf small-shell/users $ROOT/users \
-  && cp small-shell/web/*.code $ROOT/web/ && \cp -Rf small-shell/util $ROOT/users/util )
+  && \cp -Rf small-shell/databox ${ROOT}/databox && \cp -Rf small-shell/users ${ROOT}/users \
+  && cp small-shell/web/*.code ${ROOT}/web/ && \cp -Rf small-shell/util ${ROOT}/users/util )
   chown -R small-shell:small-shell $ROOT
 fi
 
-num_chk=`ls ${bkuped_dir}/*www*xz 2>/dev/null | wc -l`
+num_chk=$(ls ${bkuped_dir}/*www*xz 2>/dev/null | wc -l)
 if [ ! $num_chk -eq 1 ];then
   echo "error: number of backup file seems wrong. please check $bkuped_dir"
   exit 1
@@ -69,13 +69,13 @@ else
   fi
 fi
 
-num_chk=`ls ${bkuped_dir}/*cgi*xz 2>/dev/null | wc -l`
+num_chk=$(ls ${bkuped_dir}/*cgi*xz 2>/dev/null | wc -l)
 if [ $num_chk -eq 1 ];then
   (cd ${bkuped_dir} && tar -xf *cgi*.xz && \cp -Rf cgi-bin/* ${cgi_dir}/ )
   chown -R small-shell:small-shell $cgi_dir
 fi
 
-num_chk=`ls ${bkuped_dir}/*ssh*xz 2>/dev/null | wc -l`
+num_chk=$(ls ${bkuped_dir}/*ssh*xz 2>/dev/null | wc -l)
 if [ $num_chk -eq 1 ];then
   if [ ! -d /home/small-shell ];then
     mkdir /home/small-shell
@@ -91,18 +91,18 @@ systemctl restart small-shell
 echo "-----------------------------------------------------------------------------------------------------"
 echo "Backup files are restored, pelase enable e-cron jobs by manually"
 echo "-----------------------------------------------------------------------------------------------------"
-echo "sudo -u small-shell $ROOT/bin/e-cron ls"
+echo "sudo -u small-shell ${ROOT}/bin/e-cron ls"
 
 if [ "$ssl_flg" = "yes" ];then
   echo ""
   echo "!! importtant !!"
   echo "Please regenerate Base APP using cert and key that is restored in ${www}/app/"
-  echo "sudo $ROOT/adm/gen -app"
+  echo "sudo ${ROOT}/adm/gen -app"
 fi
 
 if [ "$mkrep_flg" = "yes" ];then
   echo ""
-  echo "Additionally please execute $ROOT/util/scripts/mkrep.sh for building replication again"
+  echo "Additionally please execute ${ROOT}/util/scripts/mkrep.sh for building replication again"
 fi
 
 exit 0

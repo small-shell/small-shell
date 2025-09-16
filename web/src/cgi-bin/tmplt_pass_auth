@@ -20,11 +20,11 @@ echo ""
 
 # IP restriction check
 if [ "$IP_whitelisting" = "yes" ];then
-  whitelist_chk=`${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION"`
+  whitelist_chk=$(${small_shell_path}/bin/meta get.IPL | grep -v "NO IP RESTRICTION")
   if [ "$whitelist_chk" ];then
     for IP in $whitelist_chk
     do
-      IP=`echo $IP | $SED "s/*//g"`
+      IP=$(echo "$IP" | $SED "s/*//g")
       if [[ ${REMOTE_ADDR} == ${IP}* ]] ;then
         IP_chk=yes
         break
@@ -40,21 +40,21 @@ fi
 
 # load header
 if [ "$IP_persistence" = "yes" ];then
-  remote_addr=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+  remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")
 else
-  logging_IP=`echo $REMOTE_ADDR | $SED "s/:/-/g"`
+  logging_IP=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")
 fi
 if [ "$User_agent_persistence" = "yes" ];then
-  user_agent=`echo $HTTP_USER_AGENT | $SED "s/:/-/g" | $SED "s/ /_/g"`
+  user_agent=$(echo "$HTTP_USER_AGENT" | $SED "s/:/-/g" | $SED "s/ /_/g")
 fi
 
-param=`date +%s`
+param=$(date +%s)
 param="$param:$RANDOM"
 count=1
 while [ -f %%www/tmp/${param} ]
 do
  sleep 0.01
- count=`expr $count + 1`
+ count=$(expr $count + 1)
  if [ $count -eq 100 ];then
    echo "error: please contact to adimin"
    exit 1
@@ -62,7 +62,7 @@ do
 done
 
 # parse QUERY STRING
-echo $QUERY_STRING | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
+echo "$QUERY_STRING" | $PHP -r "echo urldecode(file_get_contents('php://stdin'));" | tr -d \$ | tr -d \` | $SED "s/\&/\n/g" > %%www/tmp/${param}
 cat %%www/tmp/${param} | $SED -e "s/=/=\"/1" | $SED "s/$/\"/g" | $SED "s/^\"//g" | tr -d \$ | tr -d \` > %%www/tmp/${param}.load
 chmod 755 %%www/tmp/${param}.load
 
@@ -71,17 +71,17 @@ chmod 755 %%www/tmp/${param}.load
 
 # dump posted data
 dummy_session="$param.post"
-mkdir %%www/tmp/$dummy_session
-dd bs=${CONTENT_LENGTH} of=%%www/tmp/$dummy_session/input 2>/dev/null
+mkdir %%www/tmp/${dummy_session}
+dd bs=${CONTENT_LENGTH} of=%%www/tmp/${dummy_session}/input 2>/dev/null
 
-if [ -f %%www/tmp/$dummy_session/input ];then
+if [ -f %%www/tmp/${dummy_session}/input ];then
   %%www/bin/parse.sh $dummy_session urlenc
 fi
 
 # load posted data
-ls %%www/tmp/$dummy_session/%%app_pass* >/dev/null 2>&1
+ls %%www/tmp/${dummy_session}/%%app_pass* >/dev/null 2>&1
 if [ $? -eq 0 ];then
-  app_pass=`cat %%www/tmp/$dummy_session/%%app_pass*`
+  app_pass=$(cat %%www/tmp/${dummy_session}/%%app_pass*)
 fi
 rm -rf %%www/tmp/${param}*
 
@@ -89,15 +89,15 @@ rm -rf %%www/tmp/${param}*
 if [ ! "$app_pass" ];then
 
   if [ "$req" ];then
-    req="?req=`echo $req`"
+    req="?req=$(echo "$req")"
   fi
 
   if [ "$id" ];then
-    id="\&id=`echo $id`"
+    id="\&id=$(echo "$id")"
   fi
 
   if [ "$message" ];then
-    message="<p><b>`echo $message`<\/b><\/p>"
+    message="<p><b>$(echo "$message")<\/b><\/p>"
   fi
 
   # render standard login form with queyr string and messge
@@ -115,14 +115,14 @@ fi
 # Authentication 
 if [ "$app_pass" ];then
 
-  pass_code_chk=`${small_shell_path}/bin/meta get.shared_pass:%%app | grep "^${app_pass}$"`
+  pass_code_chk=$(${small_shell_path}/bin/meta get.shared_pass:%%app | grep "^${app_pass}$")
 
   if [ "$pass_code_chk" ];then
     # use app authkey for session controll
-    auth_req=`${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} \
-    remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP}`
-    session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
-    pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
+    auth_req=$(${small_shell_path}/bin/extension_auth app:%%app key_auth:${authkey} \
+    remote_addr:${remote_addr} user_agent:${user_agent} logging_IP:${logging_IP})
+    session=$(echo "$auth_req" | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}')
+    pin=$(echo "$auth_req" | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}')
    
     if [ "$session" -a "$pin" ];then
       if [ ! "$req" ];then
@@ -131,11 +131,11 @@ if [ "$app_pass" ];then
 
       # redirect to APP if auth is OK
       if [[ $req == *table ]];then
-        echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req\">"
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=${req}\">"
       elif [[ $req == *get || $req == *log_viewer ]];then
-        echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req&id=$id\">"
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req&id=${id}\">"
       else
-        echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=$req\">"
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=${req}\">"
       fi
     else
       echo "error: internal key authentication failure"

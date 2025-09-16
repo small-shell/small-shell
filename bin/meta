@@ -10,7 +10,7 @@
 # get.databox
 # get.server
 # get.attr:$user{$attribute_key}
-# get.attr:$app/$user{$attribute_key}
+# get.attr:${app}/${user}{$attribute_key}
 # get.key:$databox{primary}
 # get.key:$databox{all}
 # get.key:$databox{$label}
@@ -36,25 +36,25 @@
 #----------------------------------------------------------
 
 # global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../global.conf
 
 # load param
 param=$1
 
 if [[ $param == get.chain:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == get.progress:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  import_session=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  import_session=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == get.num:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == get.databox ]]; then
@@ -66,54 +66,54 @@ if [[ $param == get.server ]]; then
 fi
 
 if [[ $param == get.attr:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  user=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  user=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
 
   if [[ $user == */* ]]; then
-    app=`echo "$user" | $AWK -F "/" '{print $1}'`
-    user=`echo "$user" | $AWK -F "/" '{print $2}'`
+    app=$(echo "$user" | $AWK -F "/" '{print $1}')
+    user=$(echo "$user" | $AWK -F "/" '{print $2}')
   fi
 
-  attr_key=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
+  attr_key=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g")
 fi
 
 if [[ $param == get.key:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
-  key=`echo $param |  $AWK -F":" '{print $2}' | cut -f 2- -d "{" | $SED "s/{%%space}/ /g" | $SED "s/}//g"`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
+  key=$(echo "$param" |  $AWK -F":" '{print $2}' | cut -f 2- -d "{" | $SED "s/{%%space}/ /g" | $SED "s/}//g")
 fi
 
 if [[ $param == get.pdls:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
-  filter=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
+  filter=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g")
 fi
 
 if [[ $param == get.label:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
-  label=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
+  label=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g")
 fi
 
 if [[ $param == get.header:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
-  type=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
+  type=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $2}' | $SED "s/}//g")
 fi
 
 if [[ $param == get.tag:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  target=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  target=$(echo "$param" |  $AWK -F":" '{print $2}')
   if [[ $target == *{*} ]]; then
-    app=`echo $target | $AWK -F"{" '{print $1}'`
-    databox=`echo $target |  $AWK -F"{" '{print $2}' | $SED "s/}//g"`
+    app=$(echo "$target" | $AWK -F"{" '{print $1}')
+    databox=$(echo "$target" |  $AWK -F"{" '{print $2}' | $SED "s/}//g")
   else
    databox=$target
   fi
 fi
 
 if [[ $param == get.command ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
 fi
 
 if [[ $param == get.IPL ]]; then
@@ -121,13 +121,13 @@ if [[ $param == get.IPL ]]; then
 fi
 
 if [[ $param == get.statistics:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  target=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  target=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == get.shared_pass:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  app=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  app=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == get.users ]]; then
@@ -135,36 +135,36 @@ if [[ $param == get.users ]]; then
 fi
 
 if [[ $param == get.users:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  app=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  app=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == get.link:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  app=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  app=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == chk.form:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}')
 fi
 
 if [[ $param == chk.null:* ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
-  databox=`echo $param |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}'`
-  id=`echo $param |  $AWK -F":" '{print $2}' | cut -f 2- -d "{" | $SED "s/}//g"`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
+  databox=$(echo "$param" |  $AWK -F":" '{print $2}' | $AWK -F"{" '{print $1}')
+  id=$(echo "$param" |  $AWK -F":" '{print $2}' | cut -f 2- -d "{" | $SED "s/}//g")
 fi
 
 if [[ $param == get.rand ]]; then
-  action=`echo $param | $AWK -F":" '{print $1}'`
+  action=$(echo "$param" | $AWK -F":" '{print $1}')
 fi
 
 # return meta data
 
 if [ "$action" = "get.chain" ];then
 
-  if [ -f $ROOT/databox/$databox/hashchain ];then
-    cat $ROOT/databox/$databox/hashchain
+  if [ -f ${ROOT}/databox/${databox}/hashchain ];then
+    cat ${ROOT}/databox/${databox}/hashchain
   else
     echo "error: there is no hash chain so far"
     exit 1
@@ -174,8 +174,8 @@ fi
 
 if [ "$action" = "get.progress" ];then
 
-  if [ -f $ROOT/tmp/log/${import_session}.log ];then
-    cat $ROOT/tmp/log/${import_session}.log
+  if [ -f ${ROOT}/tmp/log/${import_session}.log ];then
+    cat ${ROOT}/tmp/log/${import_session}.log
   else
     echo "error: there is no session log"
     exit 1
@@ -184,17 +184,17 @@ if [ "$action" = "get.progress" ];then
 fi
 
 if [ "$action" = "get.num" ];then
-  num_of_data=`cat $ROOT/databox/$databox/index | wc -l | tr -d " "`
+  num_of_data=$(cat ${ROOT}/databox/${databox}/index | wc -l | tr -d " ")
   echo "$num_of_data"
 fi
 
 if [ "$action" = "get.databox" ];then
-  databox_list=`ls $ROOT/databox | xargs basename -a  2>/dev/null | $SED -z "s/\n/ /g"`
+  databox_list=$(ls ${ROOT}/databox | xargs basename -a  2>/dev/null | $SED -z "s/\n/ /g")
   echo "$databox_list"
 fi
 
 if [ "$action" = "get.server" ];then
-  server=`cat $ROOT/web/base | grep ^server= | $AWK -F "=" '{print $2}' | $SED "s/\"//g"`
+  server=$(cat ${ROOT}/web/base | grep ^server= | $AWK -F "=" '{print $2}' | $SED "s/\"//g")
   if [ "$server" ];then
     echo "$server"
   else
@@ -203,39 +203,39 @@ if [ "$action" = "get.server" ];then
 fi
 
 if [ "$action" = "get.attr" ];then 
-  user_id=`echo ${user} |  $SHASUM | $AWK '{print $1}'`
+  user_id=$(echo ${user} |  $SHASUM | $AWK '{print $1}')
   if [ ! "${attr_key}" ];then
     attr_key=permission
   fi
 
   if [ ! "$app" ];then
-    attr_param=`grep "^${attr_key}=" $ROOT/users/$user_id/attr 2>/dev/null | $AWK -F "=" '{print $2}'`
+    attr_param=$(grep "^${attr_key}=" ${ROOT}/users/${user_id}/attr 2>/dev/null | $AWK -F "=" '{print $2}')
   else
-    attr_param=`grep "^${attr_key}=" $ROOT/users/${app}.${user_id}/attr 2>/dev/null | $AWK -F "=" '{print $2}'`
+    attr_param=$(grep "^${attr_key}=" ${ROOT}/users/${app}.${user_id}/attr 2>/dev/null | $AWK -F "=" '{print $2}')
   fi
-  echo $attr_param
+  echo "$attr_param"
   exit 0
 fi
 
 
 if [ "$action" = "get.key" ];then 
   if [ "$key" = "primary" ];then
-    primary_key=`cat $ROOT/databox/${databox}/def/col1 | grep name= | $AWK -F "=" '{print $2}' | $SED "s/\"//g" ` 
-    echo $primary_key
+    primary_key=$(cat ${ROOT}/databox/${databox}/def/col1 | grep name= | $AWK -F "=" '{print $2}' | $SED "s/\"//g" ) 
+    echo "$primary_key"
     exit 0
 
   elif [ "$key" = "all" ];then
-    keys=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
-          | $SED "s/ //g" | $SED -z "s/\n/ /g" `
-    echo $keys
+    keys=$(grep "^name=" ${ROOT}/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+    | $SED "s/ //g" | $SED -z "s/\n/ /g")
+    echo "$keys"
     exit 0
 
   else
     label="$key"
-    col=`grep -l "^label=\"$label\"" $ROOT/databox/${databox}/def/col* | xargs basename -a 2>/dev/null`
+    col=$(grep -l "^label=\"${label}\"" ${ROOT}/databox/${databox}/def/col* | xargs basename -a 2>/dev/null)
     if [ "$col" ];then
-      . $ROOT/databox/${databox}/def/$col
-      echo $name
+      . ${ROOT}/databox/${databox}/def/${col}
+      echo "$name"
       exit 0 
     fi
   fi
@@ -243,13 +243,13 @@ fi
 
 if [ "$action" = "get.pdls" ];then 
 
-  label=`cat $ROOT/databox/${databox}/def/col1 | grep label=  | $AWK -F"=" '{print $2}' | $SED "s/\"//g"`
-  name=`cat $ROOT/databox/${databox}/def/col1 | grep name=  | $AWK -F"=" '{print $2}' | $SED "s/\"//g"`
+  label=$(cat ${ROOT}/databox/${databox}/def/col1 | grep label=  | $AWK -F"=" '{print $2}' | $SED "s/\"//g")
+  name=$(cat ${ROOT}/databox/${databox}/def/col1 | grep name=  | $AWK -F"=" '{print $2}' | $SED "s/\"//g")
 
   if [ "$filter" ];then
-    primary_key_values=`cat $ROOT/databox/${databox}/index | grep $filter | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}'` 
+    primary_key_values=$(cat ${ROOT}/databox/${databox}/index | grep $filter | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}') 
   else
-    primary_key_values=`cat $ROOT/databox/${databox}/index | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}'` 
+    primary_key_values=$(cat ${ROOT}/databox/${databox}/index | $AWK -F "::::::" '{print $3}' | $AWK -F "," '{print $1}') 
   fi
 
   echo "<li>"
@@ -276,17 +276,17 @@ fi
 if [ "$action" = "get.label" ];then 
 
   if [ "$label" = "all" ];then
-    labels=`grep "^label=" $ROOT/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
-            | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
-    echo $labels
+    labels=$(grep "^label=" ${ROOT}/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+    | $SED -z "s/\n/,/g" | $SED "s/,$//g")
+    echo "$labels"
     exit 0
   fi
 
   if [ "$label" = "primary" ];then 
     label=""
     key=primary
-    label=`grep "^label=" $ROOT/databox/${databox}/def/col1 |  $AWK -F"=" '{print $2}' | $SED "s/\"//g"`
-    echo $label
+    label=$(grep "^label=" ${ROOT}/databox/${databox}/def/col1 |  $AWK -F"=" '{print $2}' | $SED "s/\"//g")
+    echo "$label"
     exit 0
   fi
 fi
@@ -294,18 +294,18 @@ fi
 if [ "$action" = "get.header" ];then 
 
   if [ "$type" = "csv" ];then
-    header=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
-            | $SED "s/ //g" | $SED -z "s/\n/,/g" | $SED "s/,$//"`
+    header=$(grep "^name=" ${ROOT}/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+    | $SED "s/ //g" | $SED -z "s/\n/,/g" | $SED "s/,$//")
     echo "$header"
   fi 
 
   if [ "$type" = "json" ];then
-    header=`grep "^name=" $ROOT/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
-            | $SED "s/ //g" | $SED -z "s/\n/,/g" | $SED "s/,$//"`
+    header=$(grep "^name=" ${ROOT}/databox/${databox}/def/col*  | sort -V |  $AWK -F"=" '{print $2}' | $SED "s/\"//g" \
+    | $SED "s/ //g" | $SED -z "s/\n/,/g" | $SED "s/,$//")
     
     JQ_EXE="echo \$header | $JQ -R 'split(\",\") | {"
     count=0
-    for col in `ls $ROOT/databox/${databox}/def/col* 2>/dev/null | sort -V | xargs basename -a 2>/dev/null`
+    for col in $(ls ${ROOT}/databox/${databox}/def/col* 2>/dev/null | sort -V | xargs basename -a 2>/dev/null)
     do
       if [ $count -eq 0 ];then
         JQ_EXE="${JQ_EXE}\"$col\": .[$count]"
@@ -322,27 +322,27 @@ fi
 
 if [ "$action" = "get.tag" ];then
   if [ ! "$app" ];then
-    ls $ROOT/tmp/tag/$databox/* >/dev/null 2>&1
+    ls ${ROOT}/tmp/tag/${databox}/* >/dev/null 2>&1
     if [ $? -eq 0 ];then
-      cat $ROOT/tmp/tag/$databox/*
+      cat ${ROOT}/tmp/tag/${databox}/*
       exit 0
     fi
   else
-    ls $ROOT/tmp/tag/${app}.$databox/* >/dev/null 2>&1
+    ls ${ROOT}/tmp/tag/${app}.${databox}/* >/dev/null 2>&1
     if [ $? -eq 0 ];then
-      cat $ROOT/tmp/tag/${app}.$databox/*
+      cat ${ROOT}/tmp/tag/${app}.${databox}/*
       exit 0
     fi
   fi
 fi
 
 if [ "$action" = "get.command" ];then
-  grep "^ALLOWED_COMMANDS=\"*\"" $ROOT/bin/DATA_shell | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED "s/,/ /g"
+  grep "^ALLOWED_COMMANDS=\"*\"" ${ROOT}/bin/DATA_shell | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED "s/,/ /g"
 fi
 
 if [ "$action" = "get.IPL" ];then
-   if [ -f $ROOT/web/whitelist ];then
-     IP_list=`cat $ROOT/web/whitelist | grep -v ^# `
+   if [ -f ${ROOT}/web/whitelist ];then
+     IP_list=$(cat ${ROOT}/web/whitelist | grep -v ^# )
      if [ "$IP_list" ];then 
        echo "$IP_list"
      else
@@ -352,24 +352,24 @@ if [ "$action" = "get.IPL" ];then
 fi
 
 if [ "$action" = "get.statistics" ];then
-  target=`echo $target | $SED "s/{%%%%%%%}/_/g" `
+  target=$(echo "$target" | $SED "s/{%%%%%%%}/_/g" )
 
   if [[ $target == ls* ]]; then
-    format=`echo $target | $AWK -F"{" '{print $2}' | $SED "s/}//g"`
-    target=`echo $target | $AWK -F "{" '{print $1}'`
+    format=$(echo "$target" | $AWK -F"{" '{print $2}' | $SED "s/}//g")
+    target=$(echo "$target" | $AWK -F "{" '{print $1}')
 
     if [ ! "$format" ];then
       format=none
     fi
 
     if [ "$target" = ls ];then
-      list=`ls $ROOT/util/statistics/rawdata | xargs basename -a 2>/dev/null`
+      list=$(ls ${ROOT}/util/statistics/rawdata | xargs basename -a 2>/dev/null)
       for rawdata in $list
       do
         if [ "$format" = "none" ];then
           echo "- $rawdata :rawdata" | $SED "s/.csv//g"
-          graph=`echo $rawdata | $SED "s/.csv/.png/g"`
-          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+          graph=$(echo "$rawdata" | $SED "s/.csv/.png/g")
+          if [ -f ${ROOT}/util/statistics/graph/${graph} ];then
             echo "+ $graph :graph" | $SED  "s/.png//g"
           fi
         fi
@@ -377,13 +377,13 @@ if [ "$action" = "get.statistics" ];then
         if [ "$format" = "html_tag" ];then
           html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%rawdata&type=rawdata',"
           html_tag="$html_tag 'statistics_viewer', 'width=820,height=280')\">%%rawdata :rawdata</a>"
-          echo "$html_tag" | $SED "s/%%rawdata/$rawdata/g" | $SED "s/.csv//g"
+          echo "$html_tag" | $SED "s/%%rawdata/${rawdata}/g" | $SED "s/.csv//g"
 
-          graph=`echo $rawdata | $SED "s/.csv/.png/g"`
-          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+          graph=$(echo "$rawdata" | $SED "s/.csv/.png/g")
+          if [ -f ${ROOT}/util/statistics/graph/${graph} ];then
             html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%graph&type=graph',"
             html_tag="$html_tag 'statistics_viewer', 'width=1200,height=820')\">%%graph :graph</a>"
-            echo "$html_tag" | $SED "s/%%graph/$graph/g" | $SED "s/.png//g"
+            echo "$html_tag" | $SED "s/%%graph/${graph}/g" | $SED "s/.png//g"
           fi
         fi
       done
@@ -391,24 +391,24 @@ if [ "$action" = "get.statistics" ];then
     else
     #else means ls with filters
 
-      filters=`echo $target | $AWK -F "ls." '{print $2}' \
-      | $SED "s/^/grep /g" | $SED "s/,/ | grep /g"`
+      filters=$(echo "$target" | $AWK -F "ls." '{print $2}' \
+      | $SED "s/^/grep /g" | $SED "s/,/ | grep /g")
 
       if [ ! "$format" ];then
         format=none
       fi
 
-      target=`echo $target | $AWK -F "{" '{print $1}'`
+      target=$(echo "$target" | $AWK -F "{" '{print $1}')
 
-      list="ls $ROOT/util/statistics/rawdata | $filters | xargs basename -a 2>/dev/null"
-      list=`eval $list`
+      list="ls ${ROOT}/util/statistics/rawdata | $filters | xargs basename -a 2>/dev/null"
+      list=$(eval $list)
      
       for rawdata in $list
       do
         if [ "$format" = "none" ];then
           echo "- $rawdata :rawdata" | $SED "s/.csv//g"
-          graph=`echo $rawdata | $SED "s/.csv/.png/g"`
-          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+          graph=$(echo "$rawdata" | $SED "s/.csv/.png/g")
+          if [ -f ${ROOT}/util/statistics/graph/${graph} ];then
             echo "+ $graph :graph" | $SED  "s/.png//g"
           fi
         fi
@@ -416,13 +416,13 @@ if [ "$action" = "get.statistics" ];then
         if [ "$format" = "html_tag" ];then
           html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%rawdata&type=rawdata',"
           html_tag="$html_tag 'statistics_viewer', 'width=820,height=280')\">%%rawdata :rawdata</a>"
-          echo "$html_tag" | $SED "s/%%rawdata/$rawdata/g" | $SED "s/.csv//g"
+          echo "$html_tag" | $SED "s/%%rawdata/${rawdata}/g" | $SED "s/.csv//g"
 
-          graph=`echo $rawdata | $SED "s/.csv/.png/g"`
-          if [ -f $ROOT/util/statistics/graph/${graph} ];then
+          graph=$(echo "$rawdata" | $SED "s/.csv/.png/g")
+          if [ -f ${ROOT}/util/statistics/graph/${graph} ];then
             html_tag="<a style=\"cursor: pointer\" onclick=\"window.open('./base?%%params&req=stats&target=%%graph&type=graph',"
             html_tag="$html_tag 'statistics_viewer', 'width=1200,height=820')\">%%graph :graph</a>"
-            echo "$html_tag" | $SED "s/%%graph/$graph/g" | $SED "s/.png//g"
+            echo "$html_tag" | $SED "s/%%graph/${graph}/g" | $SED "s/.png//g"
           fi
         fi
       done
@@ -431,9 +431,9 @@ if [ "$action" = "get.statistics" ];then
   else 
   # else means target is specific file
 
-    rawdata_chk=`echo $target | grep {rawdata}`
+    rawdata_chk=$(echo "$target" | grep {rawdata})
     if [ "$rawdata_chk" ];then
-      target=`echo $ROOT/util/statistics/rawdata/$target | $SED "s/{rawdata}/.csv/g"`
+      target=$(echo ${ROOT}/util/statistics/rawdata/${target} | $SED "s/{rawdata}/.csv/g")
       if [ -f $target ];then
         cat $target
       else
@@ -442,9 +442,9 @@ if [ "$action" = "get.statistics" ];then
       fi
     fi
 
-    graph_chk=`echo $target | grep {graph}`
+    graph_chk=$(echo "$target" | grep {graph})
     if [ "$graph_chk" ];then
-      target=`echo $ROOT/util/statistics/graph/$target | $SED "s/{graph}/.png/g"`
+      target=$(echo ${ROOT}/util/statistics/graph/${target} | $SED "s/{graph}/.png/g")
       if [ -f $target ];then
         dd if=$target 2>/dev/null
       else
@@ -457,8 +457,8 @@ if [ "$action" = "get.statistics" ];then
 fi
 
 if [ "$action" = "get.shared_pass" ];then
-  if [ -f $ROOT/web/${app}.code ];then
-    cat $ROOT/web/${app}.code
+  if [ -f ${ROOT}/web/${app}.code ];then
+    cat ${ROOT}/web/${app}.code
   else
     echo "error: there is no shared pass code of $app"
   fi
@@ -467,15 +467,15 @@ fi
 if [ "$action" = "get.users" ];then
 
   if [ "$app" ];then
-    users=`ls -d $ROOT/users/${app}.* 2>/dev/null | xargs basename -a 2>/dev/null`
+    users=$(ls -d ${ROOT}/users/${app}.* 2>/dev/null | xargs basename -a 2>/dev/null)
   else
-    users=`ls -d $ROOT/users/* 2>/dev/null | $SED "s/\./%%/g" | grep -v %% | xargs basename -a 2>/dev/null`
+    users=$(ls -d ${ROOT}/users/* 2>/dev/null | $SED "s/\./%%/g" | grep -v %% | xargs basename -a 2>/dev/null)
   fi
 
   if [ "$users"  ];then
     for id in $users
     do
-      echo "`cat $ROOT/users/$id/user_name`"
+      echo "$(cat ${ROOT}/users/${id}/user_name)"
     done
   else
     echo "error: there is no user@${app}"
@@ -486,18 +486,18 @@ fi
 if [ "$action" = "get.link" ];then
 
   # load base
-  if [ ! -f $ROOT/web/base ];then
+  if [ ! -f ${ROOT}/web/base ];then
     echo "please generate base APP first"
     exit 1
   else
-    . $ROOT/web/base
+    . ${ROOT}/web/base
   fi
 
 
   if [ ! -f ${cgi_dir}/${app} ];then
 
-    subapp=`echo $app | $AWK -F "@" '{print $1}'`
-    parent_app=`echo $app | $AWK -F "@" '{print $2}'`
+    subapp=$(echo "$app" | $AWK -F "@" '{print $1}')
+    parent_app=$(echo "$app" | $AWK -F "@" '{print $2}')
 
     if [ ! "$parent_app" ];then
 
@@ -508,24 +508,24 @@ if [ "$action" = "get.link" ];then
 
       # redner subapp link
       echo "APP:$app"
-      echo "Table: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=table\">link</a>"
-      echo "DATA.new: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=new\">link</a>"
-      echo "DATA.\$id: <a href=\"./$parent_app?%%session&subapp=${subapp}&req=get&id=\$id\">link</a>"
+      echo "Table: <a href=\"./${parent_app}?%%session&subapp=${subapp}&req=table\">link</a>"
+      echo "DATA.new: <a href=\"./${parent_app}?%%session&subapp=${subapp}&req=get&id=new\">link</a>"
+      echo "DATA.\$id: <a href=\"./${parent_app}?%%session&subapp=${subapp}&req=get&id=\${id}\">link</a>"
 
     fi
 
   else
     # render links
     echo "APP:$app"
-    echo "Table: <a href=\"./$app?%%session&req=table\">link</a>"
-    echo "DATA.new: <a href=\"./$app?%%session&req=get&id=new\">link</a>"
-    echo "DATA.\$id: <a href=\"./$app?%%session&req=get&id=\$id\">link</a>"
+    echo "Table: <a href=\"./${app}?%%session&req=table\">link</a>"
+    echo "DATA.new: <a href=\"./${app}?%%session&req=get&id=new\">link</a>"
+    echo "DATA.\$id: <a href=\"./${app}?%%session&req=get&id=\${id}\">link</a>"
   fi
 
 fi
 
 if [ "$action" = "chk.form" ];then
-  data_type_chk=`grep "type=\"file\"" $ROOT/databox/${databox}/def/col*`
+  data_type_chk=$(grep "type=\"file\"" ${ROOT}/databox/${databox}/def/col*)
 
   if [ "$data_type_chk" ];then
     echo "multipart"
@@ -536,22 +536,22 @@ if [ "$action" = "chk.form" ];then
 fi
 
 if [ "$action" = "chk.null" ];then
-  for col in `ls $ROOT/databox/${databox}/def`
+  for col in $(ls ${ROOT}/databox/${databox}/def)
   do
     #load type
-    . $ROOT/databox/${databox}/def/$col
+    . ${ROOT}/databox/${databox}/def/${col}
     if [ "$type" = "file" ];then
-      ls $ROOT/databox/${databox}/file/${id} >/dev/null 2>&1
+      ls ${ROOT}/databox/${databox}/file/${id} >/dev/null 2>&1
       if [ $? -eq 0 ];then
         echo "$name:1"
       else
         echo "$name:0"
       fi
     else
-      if [ ! -f $ROOT/databox/${databox}/data/${id}/${name} ];then 
+      if [ ! -f ${ROOT}/databox/${databox}/data/${id}/${name} ];then 
         echo "$name:0" 
       else
-        value=`cat $ROOT/databox/${databox}/data/${id}/${name} 2>/dev/null | $SED -z "s/\n//g"`
+        value=$(cat ${ROOT}/databox/${databox}/data/${id}/${name} 2>/dev/null | $SED -z "s/\n//g")
         if [ ! "$value" ];then 
           echo "$name:0"
         else
@@ -563,7 +563,7 @@ if [ "$action" = "chk.null" ];then
 fi
 
 if [ "$action" = "get.rand" ];then
-  cat $ROOT/web/.rand | $SED "s/rand=//g"
+  cat ${ROOT}/web/.rand | $SED "s/rand=//g"
 fi
 
 if [ ! "$action" ];then
@@ -577,7 +577,7 @@ echo "#------------------------------------------------------
 # get.databox
 # get.server
 # get.attr:\$user{\$attribute_key}
-# get.attr:\$app/\$user{\$attribute_key}
+# get.attr:\${app}/\$user{\$attribute_key}
 # get.key:\$databox{primary}
 # get.key:\$databox{all}
 # get.key:\$databox{\$label}
@@ -588,7 +588,7 @@ echo "#------------------------------------------------------
 # get.tag:\$databox
 # get.tag:\$app{\$databox}
 # get.command
-# get.IP #show whitelisted IPs
+# get.IPL #show whitelisted IPs
 # get.statistics:ls{html_tag}
 # get.statistics:ls.\$filter_word,\$filter_word2{html_tag}
 # get.statistics:\$statistics{graph}

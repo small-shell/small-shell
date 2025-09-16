@@ -6,47 +6,47 @@
 #------------------------------------------------------------------------------------
 
 # global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../global.conf
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "small-shell" ];then
   echo "error: user must be small-shell"
   exit 1
 fi
 
-for param in `echo $@`
+for param in $(echo $@)
 do
   if [[ $param == import_file:* ]];then
-    import_file=`echo $param | $AWK -F":" '{print $2}'`
+    import_file=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == databox:* ]];then
-    databox=`echo $param | $AWK -F":" '{print $2}'`
+    databox=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == session:* ]];then
-    session=`echo $param | $AWK -F":" '{print $2}'`
+    session=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == pin:* ]];then
-    pin=`echo $param | $AWK -F":" '{print $2}'`
+    pin=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == remote_addr:* ]];then
-    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
+    remote_addr=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == user_agent:* ]];then
-    user_agent=`echo $param | $AWK -F":" '{print $2}'`
+    user_agent=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 done
 
 
 # authorized session check
-get_session=`$ROOT/bin/auth data_import_session:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent}`
-session=`echo $get_session | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
-pin=`echo $get_session | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
+get_session=$(${ROOT}/bin/auth data_import_session:${session} pin:${pin} remote_addr:${remote_addr} user_agent:${user_agent})
+session=$(echo "$get_session" | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}')
+pin=$(echo "$get_session" | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}')
 
 if [ ! "$session" ];then
   echo "error: session is wrong"
@@ -54,11 +54,11 @@ if [ ! "$session" ];then
 fi
 
 # change file format
-file_header=`head -1 $import_file`
-header=`grep "^name=" $ROOT/databox/${databox}/def/col* | sort -V \
-       | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | tr -d ' ' | $SED -z "s/\n/,/g" | $SED "s/,$//g"`
+file_header=$(head -1 $import_file)
+header=$(grep "^name=" ${ROOT}/databox/${databox}/def/col* | sort -V \
+| $AWK -F"=" '{print $2}' | $SED "s/\"//g" | tr -d ' ' | $SED -z "s/\n/,/g" | $SED "s/,$//g")
 
-primary_key_name=`cat $ROOT/databox/$databox/def/col1 | grep "^name=\"" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g"`
+primary_key_name=$(cat ${ROOT}/databox/${databox}/def/col1 | grep "^name=\"" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g")
 if [ "$primary_key_name" = "hashid" ];then
   hashid=yes
 fi
@@ -68,75 +68,75 @@ if [ ! "$header" = "$file_header" ];then
   exit 1
 fi
 
-if [ ! -d "$ROOT/tmp/import/$session" ];then
-  mkdir $ROOT/tmp/import/$session
-  mkdir $ROOT/tmp/import/$session/column
+if [ ! -d "${ROOT}/tmp/import/${session}" ];then
+  mkdir ${ROOT}/tmp/import/${session}
+  mkdir ${ROOT}/tmp/import/${session}/column
 fi
 
 # remove header
-tail -n +2 $import_file > $ROOT/tmp/import/$session/data.csv
+tail -n +2 $import_file > ${ROOT}/tmp/import/${session}/data.csv
 echo "Import has been successfully started"
 echo "Import_session:$session"
-echo "Import_log:$ROOT/tmp/log/$session.log"
+echo "Import_log:${ROOT}/tmp/log/${session}.log"
 
 function import(){
- echo "IMPORT START"  >> $ROOT/tmp/log/$session.log
+ echo "IMPORT START"  >> ${ROOT}/tmp/log/${session}.log
  line_count=1
  while read line
   do
     count=1
-    line=`echo $line | tr -d \\\r | $SED -z "s/\n//g"`
+    line=$(echo "$line" | tr -d \\\r | $SED -z "s/\n//g")
     if [ "$line" ];then
 
-      for column in `echo $header | $SED "s/,/ /g"`
+      for column in $(echo "$header" | $SED "s/,/ /g")
       do
 
        if [ $count -eq 1 ];then
 
          if [ ! "$hashid" = "yes" ];then
-           echo "$line" | cut -d',' -f$count  > $ROOT/tmp/import/$session/column/$column
-           id=`cat $ROOT/tmp/import/$session/column/$column | $SHASUM | $AWK '{print $1}'`
+           echo "$line" | cut -d',' -f$count  > ${ROOT}/tmp/import/${session}/column/${column}
+           id=$(cat ${ROOT}/tmp/import/${session}/column/${column} | $SHASUM | $AWK '{print $1}')
 
-           if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
+           if [ ! -d "${ROOT}/databox/${databox}/data/${id}" ];then
              id="new"
            fi
 
          else
-           echo "$line" | cut -d',' -f$count  > $ROOT/tmp/import/$session/column/$column
-           id=`cat $ROOT/tmp/import/$session/column/$column`
+           echo "$line" | cut -d',' -f$count  > ${ROOT}/tmp/import/${session}/column/${column}
+           id=$(cat ${ROOT}/tmp/import/${session}/column/${column})
            if [ ! "$id" ];then
              id="-"
            fi
-           if [ ! -d "$ROOT/databox/$databox/data/$id" ];then
+           if [ ! -d "${ROOT}/databox/${databox}/data/${id}" ];then
              id="new"
-             rm $ROOT/tmp/import/$session/column/hashid
+             rm ${ROOT}/tmp/import/${session}/column/hashid
            fi
          fi
 
        else
-         echo "$line" | cut -d',' -f$count  > $ROOT/tmp/import/$session/column/$column
+         echo "$line" | cut -d',' -f$count  > ${ROOT}/tmp/import/${session}/column/${column}
        fi
        ((count += 1))
       done
       keys=all
 
       # logging
-      echo "+ line:$line_count"  >> $ROOT/tmp/log/$session.log
+      echo "+ line:$line_count"  >> ${ROOT}/tmp/log/${session}.log
 
       # exec
-      $ROOT/bin/DATA_shell session:$session pin:$pin databox:$databox keys:$keys \
-      action:set id:$id input_dir:$ROOT/tmp/import/$session/column bat:yes \
-       >> $ROOT/tmp/log/$session.log
+      ${ROOT}/bin/DATA_shell session:$session pin:$pin databox:$databox keys:$keys \
+      action:set id:$id input_dir:${ROOT}/tmp/import/${session}/column bat:yes \
+       >> ${ROOT}/tmp/log/${session}.log
 
       ((line_count += 1))
-      rm -rf $ROOT/tmp/import/$session/column/*
+      rm -rf ${ROOT}/tmp/import/${session}/column/*
 
     fi
 
-  done < $ROOT/tmp/import/$session/data.csv
+  done < ${ROOT}/tmp/import/${session}/data.csv
 
-  rm -rf $ROOT/tmp/session/$session
-  rm -rf $ROOT/tmp/import/$session
+  rm -rf ${ROOT}/tmp/session/${session}
+  rm -rf ${ROOT}/tmp/import/${session}
 }
 
 import &

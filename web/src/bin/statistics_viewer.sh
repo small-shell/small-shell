@@ -7,19 +7,19 @@
 . %%www/descriptor/.small_shell_conf
 
 # load query string param
-for param in `echo $@`
+for param in $(echo $@)
 do
 
   if [[ $param == target:* ]]; then
-    target=`echo $param | $AWK -F":" '{print $2}'`
+    target=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == type:* ]]; then
-    type=`echo $param | $AWK -F":" '{print $2}'`
+    type=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | $AWK -F":" '{print $2}'`
+    session=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
 done
@@ -50,7 +50,7 @@ if [ "$type" = "rawdata" ];then
   cat %%www/descriptor/statistics_viewer.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%statistics/r %%www/tmp/${session}_statistics/result" \
   | $SED "s/%%statistics//g"\
-  | $SED "s/%%target/$target/g"
+  | $SED "s/%%target/${target}/g"
 
 elif [ "$type" = "graph" ];then
   echo "Content-Type: image/png"

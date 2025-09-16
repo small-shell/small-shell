@@ -6,14 +6,14 @@
 #--------------------------------------------------------------------------------------
 
 ## global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../global.conf
 
 # set audit log
-access_log=${ROOT}/users/audit/access_log_`date +%Y%m%d`
+access_log=${ROOT}/users/audit/access_log_$(date +%Y%m%d)
 
 # exec user check
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "small-shell" ];then
   echo "error: user must be small-shell"
   exit 1
@@ -21,49 +21,49 @@ fi
 
 # gen tmpdir
 random=$RANDOM
-while [ -d $ROOT/tmp/gen/$random ]
+while [ -d ${ROOT}/tmp/gen/${random} ]
 do
  sleep 0.01
- count=`expr $count + 1`
+ count=$(expr $count + 1)
  if [ $count -eq 100 ];then
    echo "error: something is wrong"
    exit 1
  fi
  random=$RANDOM
 done
-mkdir $ROOT/tmp/gen/$random
-tmp_dir="$ROOT/tmp/gen/$random"
+mkdir ${ROOT}/tmp/gen/${random}
+tmp_dir="${ROOT}/tmp/gen/${random}"
 
 # parse input params
-for param in `echo $@`
+for param in $(echo $@)
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | $AWK -F":" '{print $2}'`
+    databox=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | $AWK -F":" '{print $2}'`
+    id=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | $AWK -F":" '{print $2}'`
+    session=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | $AWK -F":" '{print $2}'`
+    pin=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == authkey:* ]]; then
-    authkey=`echo $param | $AWK -F":" '{print $2}'`
+    authkey=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == app:* ]];then
-    app=`echo $param | $AWK -F":" '{print $2}'`
+    app=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == remote_addr:* ]];then
-    remote_addr=`echo $param | $AWK -F":" '{print $2}'`
+    remote_addr=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
 done
@@ -71,22 +71,22 @@ done
 
 # authentication
 if [ "$authkey" ];then
-  auth_req=`$ROOT/bin/auth key_auth:${authkey} remote_addr:localhost`
-  session=`echo $auth_req | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}'`
-  pin=`echo $auth_req | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}'`
+  auth_req=$(${ROOT}/bin/auth key_auth:${authkey} remote_addr:localhost)
+  session=$(echo "$auth_req" | $AWK -F "," '{print $2}' | $AWK -F ":" '{print $2}')
+  pin=$(echo "$auth_req" | $AWK -F "," '{print $3}' | $AWK -F ":" '{print $2}')
 fi
 
 # authorized session check
-if [ -f $ROOT/tmp/session/$session ];then
-  user=`cat $ROOT/tmp/session/$session | $AWK -F ":" '{print $1}'`
+if [ -f ${ROOT}/tmp/session/${session} ];then
+  user=$(cat ${ROOT}/tmp/session/${session} | $AWK -F ":" '{print $1}')
 
   if [ ! "$app" ];then
     # check token
-    tokencheck=`echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    tokencheck=$(echo "${user}:${pin}" | $SHASUM | $AWK '{print $1}')
     app=base
   else
     # check app token
-    tokencheck=`echo "${app}:${user}:${pin}" | $SHASUM | $AWK '{print $1}'`
+    tokencheck=$(echo "${app}:${user}:${pin}" | $SHASUM | $AWK '{print $1}')
   fi
 
   if [ ! "$session" = "$tokencheck" ];then
@@ -103,22 +103,22 @@ else
 
 fi
 
-if [ ! -f $ROOT/databox/$databox/file/$id ];then
+if [ ! -f ${ROOT}/databox/${databox}/file/${id} ];then
    echo "error: $id does not have file"
    rm -rf $tmp_dir
    exit 1
 fi
 
 # get filename
-key=`grep -B 4  type=\"file\" $ROOT/databox/$databox/def/col* | grep name=\" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g"`
-file_name=`cat $ROOT/databox/$databox/data/$id/$key`
+key=$(grep -B 4  type=\"file\" ${ROOT}/databox/${databox}/def/col* | grep name=\" | $AWK -F "name=" '{print $2}' | $SED "s/\"//g")
+file_name=$(cat ${ROOT}/databox/${databox}/data/${id}/${key})
    
 # output binary data
-dd if=$ROOT/databox/$databox/file/$id 2>/dev/null
+dd if=${ROOT}/databox/${databox}/file/${id} 2>/dev/null
 if [ "$remote_addr" ];then
-  echo "`date +%Y-%m-%d` `date +%T` user_name:$user $remote_addr download databox:$databox id:$id file:$file_name" >> $access_log
+  echo "$(date +%Y-%m-%d) $(date +%T) user_name:$user $remote_addr download databox:$databox id:$id file:$file_name" >> $access_log
 else
-  echo "`date +%Y-%m-%d` `date +%T` user_name:$user download databox:$databox id:$id file:$file_name" >> $access_log
+  echo "$(date +%Y-%m-%d) $(date +%T) user_name:$user download databox:$databox id:$id file:$file_name" >> $access_log
 fi
 
 if [ -d $tmp_dir ];then

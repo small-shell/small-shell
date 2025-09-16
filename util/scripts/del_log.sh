@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # global.conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../global.conf
 
 ecron_job=${ROOT}/util/e-cron/log/job

@@ -4,23 +4,23 @@
 . %%www/descriptor/.small_shell_conf
 
 # load query string param
-for param in `echo $@`
+for param in $(echo $@)
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | $AWK -F":" '{print $2}'`
+    databox=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | $AWK -F":" '{print $2}'`
+    session=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == pin:* ]]; then
-    pin=`echo $param | $AWK -F":" '{print $2}'`
+    pin=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | $AWK -F":" '{print $2}'`
+    id=$(echo "$param" | $AWK -F":" '{print $2}')
   fi
 
 done
@@ -36,8 +36,8 @@ META="${small_shell_path}/bin/meta"
 DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
 
 # load filename
-key=`$META get.key:${databox}{file}`
-filename=`$DATA_SHELL databox:$databox action:get key:$key id:$id format:none | $SED "s/${key}://g" | $AWK -F " #" '{print $1}'`
+key=$($META get.key:${databox}{file})
+filename=$($DATA_SHELL databox:$databox action:get key:$key id:$id format:none | $SED "s/${key}://g" | $AWK -F " #" '{print $1}')
 
 # -----------------
 # render contents

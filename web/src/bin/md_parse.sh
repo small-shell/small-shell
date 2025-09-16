@@ -16,7 +16,7 @@ DL="${small_shell_path}/bin/dl session:$session pin:$pin app:$app"
 
 # load mark down definition
 databox=${app}.UI.md.def
-id=`$DATA_SHELL databox:${databox} command:head_-1 format:none | $AWK -F "," '{print $1}'`
+id=$($DATA_SHELL databox:${databox} command:head_-1 format:none | $AWK -F "," '{print $1}')
 $DATA_SHELL databox:${databox} action:get id:$id key:body format:none \
 | $SED "s/body://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/body.md
 source=${tmp}/body.md
@@ -37,9 +37,9 @@ do
      if [[ "$line" == *"<img src=\"../images"* ]];then
 
        echo "aaa" > /var/tmp/md_parse
-       img_id=`echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g"`
-       file_type=`$DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
-                 | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g"`
+       img_id=$(echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g")
+       file_type=$($DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
+       | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g")
        echo "$line" | $SED "s#../images/${img_id}#../images/${img_id}.${file_type}#g" >> ${tmp}/body.tmp
        $DL databox:images.db id:${img_id} remote_addr:localhost > %%www/html/images/${img_id}.${file_type}
 
@@ -62,7 +62,7 @@ do
          echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
          | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
        fi
-       next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
+       next_line=$($SED -n "$(echo "$line_count + 1" | bc)p" $source)
        if [[ ! "$next_line" =~ "^[-*+] " ]] && [[ "$normal_list_flg" == "yes" ]];then
          echo "</ul>" >> ${tmp}/body.tmp
          echo "</div>" >> ${tmp}/body.tmp
@@ -83,7 +83,7 @@ do
        else
          echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
        fi
-       next_line=`$SED -n "$(echo "$line_count + 1" | bc)p" $source`
+       next_line=$($SED -n "$(echo "$line_count + 1" | bc)p" $source)
        if [[ ! "$next_line" =~ ^[0-9]+\. ]] && [[ "$number_list_flg" == "yes" ]];then
          echo "</ul>" >> ${tmp}/body.tmp
          echo "</div>" >> ${tmp}/body.tmp
@@ -166,11 +166,11 @@ do
   
    # link
    elif [[ "$line" == *\[*\]\(*\)* ]];then
-     element_l=`echo "$line" | $AWK -F "[" '{print $1}'`
-     tag=`echo "$line" | $AWK -F "[" '{print $2}' | $SED -r "s/](.*)//g"`
-     url=`echo "$line" | $AWK -F "(" '{print $2}' | $SED -r "s/\)(.*)//g"`
-     element_r=`echo "$line" | $AWK -F ")" '{print $2}'`
-     echo "<p>$element_l <a href=\"$url\">$tag</a> $element_r</p>" >> ${tmp}/body.tmp
+     element_l=$(echo "$line" | $AWK -F "[" '{print $1}')
+     tag=$(echo "$line" | $AWK -F "[" '{print $2}' | $SED -r "s/](.*)//g")
+     url=$(echo "$line" | $AWK -F "(" '{print $2}' | $SED -r "s/\)(.*)//g")
+     element_r=$(echo "$line" | $AWK -F ")" '{print $2}')
+     echo "<p>$element_l <a href=\"${url}\">$tag</a> $element_r</p>" >> ${tmp}/body.tmp
 
    # button 
    elif [[ "$line" == *\[*\]* ]];then
@@ -178,21 +178,21 @@ do
 
    # bold 
    elif [[ "$line" == *\*\**\*\** ]];then
-     new_line=`echo "$line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1"`
+     new_line=$(echo "$line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1")
 
      while [[ "$new_line" == *\*\** ]]
      do
-       new_line=`echo "$new_line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1"`
+       new_line=$(echo "$new_line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1")
      done
      echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/body.tmp
 
    # italic
    elif [[ "$line" == *\**\** ]];then
-     new_line=`echo "$line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1"`
+     new_line=$(echo "$line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1")
 
      while [[ "$new_line" == *\** ]]
      do
-       new_line=`echo "$new_line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1"` 
+       new_line=$(echo "$new_line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1") 
      done
      echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/body.tmp
 
@@ -210,9 +210,9 @@ do
      echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#* ]];then
-     hashlink=`echo $line | $SHASUM | $AWK '{print $1}'`
-     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"$hashlink\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
-     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
+     hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
+     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"${hashlink}\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
 
    elif [[ "$line" == \#* ]];then
      if [ ! "$home_flg" ];then
@@ -220,9 +220,9 @@ do
        echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"HOME\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
        echo "<a href=\"#HOME\"><p>HOME</p></a>" >> ${tmp}/leftnav.tmp
      else
-       hashlink=`echo $line | $SHASUM | $AWK '{print $1}'`
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"$hashlink\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#$hashlink\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
+       hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
      fi
 
    # Add Calendar
@@ -243,7 +243,7 @@ do
 done  < $source
 
 # handle right header of portal
-righth=`$META chk.null:${databox}{$id} | grep righth | $AWK -F ":" '{print $2}'`
+righth=$($META chk.null:${databox}{$id} | grep righth | $AWK -F ":" '{print $2}')
 if [ $righth -eq 1 ];then
   echo "<div class=\"navbar-right-menu\">" > ${tmp}/righth.tmp
   echo "<button class=\"even-btn\">=</button>" >> ${tmp}/righth.tmp
@@ -255,15 +255,15 @@ if [ $righth -eq 1 ];then
 
   while read r_line
   do
-    tag=`echo "$r_line" |$AWK -F ":" '{print $1}'`
-    url=`echo "$r_line" |cut -f 2- -d ":" | $SED "s/ //g"`
+    tag=$(echo "$r_line" |$AWK -F ":" '{print $1}')
+    url=$(echo "$r_line" |cut -f 2- -d ":" | $SED "s/ //g")
     if [ "$tag" = "ExportKey" -a "$url" = "yes" ];then
       export_key=yes
     else
       if [[ "$tag" == *Table ]];then
-        echo "<li><a href=\"$url\"><p style=\"text-transform: capitalize;\">$tag</p></a></li>" >> ${tmp}/righth.tmp
+        echo "<li><a href=\"${url}\"><p style=\"text-transform: capitalize;\">$tag</p></a></li>" >> ${tmp}/righth.tmp
       else
-        echo "<li><a href=\"$url\">$tag</a></li>" >> ${tmp}/righth.tmp
+        echo "<li><a href=\"${url}\">$tag</a></li>" >> ${tmp}/righth.tmp
       fi
     fi
   done < ${tmp}/righth_raw.data
@@ -277,9 +277,9 @@ if [ $righth -eq 1 ];then
   echo "</div>" >> ${tmp}/righth.tmp
 
   if [ "$export_key" = "yes" ];then
-    rand=`$META get.rand`
+    rand=$($META get.rand)
     cat ${small_shell_path}/web/src/descriptor/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
-    | ${SED} "s/%%rand/$rand/g" | ${SED} "s/%%app/${app}/g" >> ${tmp}/righth.tmp
+    | ${SED} "s/%%rand/${rand}/g" | ${SED} "s/%%app/${app}/g" >> ${tmp}/righth.tmp
 
   fi
 else
@@ -287,26 +287,26 @@ else
 fi
 
 # handle left header of portal page
-lefth=`$META chk.null:${databox}{$id} | grep lefth | $AWK -F ":" '{print $2}'`
+lefth=$($META chk.null:${databox}{$id} | grep lefth | $AWK -F ":" '{print $2}')
 if [ $lefth -eq 1 ];then
   $DATA_SHELL databox:${databox} action:get id:$id key:lefth format:none \
   | $SED "s/lefth://g" | ${SED} "s/_%%enter_/\n/g" > ${tmp}/lefth_raw.data
   while read l_line
   do
-    tag=`echo "$l_line" |$AWK -F ":" '{print $1}'`
-    url=`echo "$l_line" |cut -f 2- -d ":" | $SED "s/ //g"`
-    echo "<h2><a href=\"$url\">$tag</a></h2>" >> ${tmp}/lefth.tmp
+    tag=$(echo "$l_line" |$AWK -F ":" '{print $1}')
+    url=$(echo "$l_line" |cut -f 2- -d ":" | $SED "s/ //g")
+    echo "<h2><a href=\"${url}\">$tag</a></h2>" >> ${tmp}/lefth.tmp
   done < ${tmp}/lefth_raw.data
 else
   echo "<!-- no left header-->" > ${tmp}/lefth.tmp
 fi
 
 # handle logo
-logo_img=`$DATA_SHELL databox:${databox} action:get id:$id key:logo format:none | $SED "s/logo://g"`
+logo_img=$($DATA_SHELL databox:${databox} action:get id:$id key:logo format:none | $SED "s/logo://g")
 if [ "$logo_img" ];then
-  logo_id=`echo "$logo_img" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g"`
-  file_type=`$DATA_SHELL databox:images.db id:${logo_id} remote_addr:localhost key:image action:get format:none \
-             | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g"`
+  logo_id=$(echo "$logo_img" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g")
+  file_type=$($DATA_SHELL databox:images.db id:${logo_id} remote_addr:localhost key:image action:get format:none \
+  | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g")
 
   $DL databox:images.db id:${logo_id} remote_addr:localhost > %%www/html/images/${logo_id}.${file_type}
   cat ${tmp}/leftnav.tmp | grep -v "<p>HOME</p>" > ${tmp}/leftnav.tmp.1
@@ -315,13 +315,13 @@ if [ "$logo_img" ];then
   if [ ! -s ${tmp}/leftnav.tmp.1 ];then
     cat ${tmp}/logo.tmp > ${tmp}/leftnav.tmp.2
   else
-    $SED -e "1i `cat ${tmp}/logo.tmp`" ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp.2
+    $SED -e "1i $(cat ${tmp}/logo.tmp)" ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp.2
   fi
   cat ${tmp}/leftnav.tmp.2 > ${tmp}/leftnav.tmp
 fi 
 
 # handle footer
-footer=`$META chk.null:${databox}{$id} | grep footer | $AWK -F ":" '{print $2}'`
+footer=$($META chk.null:${databox}{$id} | grep footer | $AWK -F ":" '{print $2}')
 
 if [ $footer -eq 1 ];then
   $DATA_SHELL databox:${databox} action:get id:$id key:footer format:none \
@@ -346,7 +346,7 @@ cat ${tmp}/righth.tmp | grep \<li\> | $SED "s/?req=/?%%session\&req=/g" \
 
 if [ "$export_key" = "yes" ];then
   cat ${small_shell_path}/web/src/descriptor/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
-  | ${SED} "s/%%rand/$rand/g" | ${SED} "s/%%app/${app}/g" \
+  | ${SED} "s/%%rand/${rand}/g" | ${SED} "s/%%app/${app}/g" \
   >> %%www/descriptor/common_parts/${app}_common_menu
 fi
 

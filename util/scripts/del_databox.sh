@@ -6,14 +6,14 @@
 
 databox=$1
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
   exit 1
 fi
 
 # global conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../../global.conf
 
 # web/basee load
@@ -25,13 +25,13 @@ if [ ! "$databox" ];then
   exit 1
 fi
 
-if [ ! -d $ROOT/databox/${databox} ];then
+if [ ! -d ${ROOT}/databox/${databox} ];then
   echo "error: there is no databox{${databox}}"
   exit 1
 fi
 
-chk_app=`grep "databox=${databox}" ${www}/bin/*_get.sh  | xargs basename -a | $AWK -F "_get.sh" '{print $1}' \
-| $SED -z "s/\n/,/g" | $SED "s/,$//g"`
+chk_app=$(grep "databox=${databox}" ${www}/bin/*_get.sh  | xargs basename -a  2>/dev/null | $AWK -F "_get.sh" '{print $1}' \
+| $SED -z "s/\n/,/g" | $SED "s/,$//g")
 
 if [ "$chk_app" ];then
   echo "warn: ${databox} is used by Scratch APP {$chk_app}, please delete APP first by using del_app.sh"
@@ -39,7 +39,7 @@ if [ "$chk_app" ];then
 fi
 
 # delete databox
-rm -rf $ROOT/databox/${databox}
+rm -rf ${ROOT}/databox/${databox}
 
 if [ $? -eq 0 ];then
   echo "databox{${databox}} has been deleted. "

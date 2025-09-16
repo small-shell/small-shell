@@ -7,14 +7,14 @@ echo "Content-Type: text/html"
 echo ""
 
 # check master availability
-master_chk=`$CURL %%master_base_url%%app | grep %%app`
+master_chk=$($CURL %%master_base_url%%app | grep %%app)
 
 if [ "$master_chk" ];then
   echo "<meta http-equiv=\"refresh\" content=\"0; url=%%master_base_url%%app\">"
 else
   message="error: it seems master server failed, please contact to webadmin"
   cat %%www/descriptor/key_initialize_err.html.def \
-  | $SED "s/%%message/$message/g"
+  | $SED "s/%%message/${message}/g"
   exit 1
 fi
 
