@@ -224,7 +224,7 @@ Set this as required? (yes | no):
 </code></pre>
 <h2 id="directory-structure">Directory Structure</h2>
 <p>Data will be stored on Unix file system with indexing and logging transactions.</p>
-<pre><code> sudo ls /usr/local/small-shell/databox/$databox
+<pre><code> sudo ls /usr/local/small-shell/databox/${databox}
  data  def  file  hashchain  index  log  log.dump
 </code></pre>
 <h2 id="command-reference">Command reference</h2>
@@ -422,8 +422,7 @@ sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey datab
 <h2 id="meta-charactors-in-index">Meta charactors in index</h2>
 <p>Some meta charactors are removed or changed to specific tags in the index to be searchable. index is just an index, data itself will not be impacted.
 It's required to use Meta charactors {%*%} when accessing index by executing DATA_shell with command: option.</p>
-<pre><code>` - delete
-:  - {%%%}
+<pre><code>:  - {%%%}
 &amp;  - {%%%%}
 /  - {%%%%%}
 ,  - {%%%%%%}
@@ -441,20 +440,20 @@ $  - {%%%%%%%%%%%%%%}
 null - -
 </code></pre>
 <h2 id="hashchain">Hashchain</h2>
-<p>Hashchain is created by que.sh which make index and log and hashchain as well.
+<p>Hashchain is created by que.sh for providing proof of data integrity to end user. user can verify hash by calculating it based on following algorithm please check the code.
 log.dump data will be hashed and it will be integrated to synthesis hash with previous updated keys. following is code of que.sh</p>
 <pre><code>#view /usr/local/small-shell/sbin/que.sh
     log_dump=&quot;${timestamp} user:${user} primary_key:$primary_key_value updated_key:${updated_key} value:${value} #id:$id&quot;
 
     # gen hash
-    hash=`echo &quot;$log_dump&quot; | sha256sum | awk '{print $1}'`
+    hash=$(echo &quot;$log_dump&quot; | sha256sum | awk '{print $1}')
 
     # update hash chain
-    last_hash=`grep synthesis_hash $ROOT/databox/$databox/hashchain | tail -1 | awk -F &quot;:&quot; '{print $2}'`
-    synthesis_hash=` echo ${last_hash}${hash} | sha256sum | awk '{print $1}'`
-    echo &quot;`date +%Y-%m-%d` `date +%T` id             :$id&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
-    echo &quot;`date +%Y-%m-%d` `date +%T` hash           :$hash&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
-    echo &quot;`date +%Y-%m-%d` `date +%T` synthesis_hash :$synthesis_hash&quot; &gt;&gt; $ROOT/databox/$databox/hashchain
+    last_hash=$(grep synthesis_hash ${ROOT}/databox/${databox}/hashchain | tail -1 | awk -F &quot;:&quot; '{print $2}')
+    synthesis_hash=$( echo ${last_hash}${hash} | sha256sum | awk '{print $1}')
+    echo &quot;$(date +%Y-%m-%d) $(date +%T) id             :$id&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
+    echo &quot;$(date +%Y-%m-%d) $(date +%T) hash           :$hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
+    echo &quot;$(date +%Y-%m-%d) $(date +%T) synthesis_hash :$synthesis_hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
 </code></pre>
 <h4 id="download-hashchain">Download hashchain</h4>
 <p>Base APP user can download hash chain and verificate data integrity by themselves.
@@ -473,7 +472,7 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
 # meta get.databox
 # meta get.server
 # meta get.attr:$user{$attribute_key}
-# meta get.attr:$app/$user{$attribute_key}
+# meta get.attr:${app}/${user}{$attribute_key}
 # meta get.key:$databox{primary}
 # meta get.key:$databox{all}
 # meta get.pdls:$databox{filter_word}
@@ -483,7 +482,6 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
 # meta get.tag:$databox
 # meta get.tag:$app{$databox}
 # meta get.command
-# meta get.IP #show whitelisted IPs
 # meta get.statistics:ls{html_tag}
 # meta get.statistics:ls.$filter_word1,$filter_word2{html_tag}
 # meta get.statistics:$statistics{graph}
@@ -575,7 +573,7 @@ sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
 <h4 id="import-through-batch">Import through batch</h4>
 <p>Instead of Web UI, you can also import data through bat_import script.</p>
 <pre><code>/usr/local/small-shell/util/scripts/bat_import $authkey $databox $file
-tail -f /usr/local/small-shell/tmp/log/$session.log
+tail -f /usr/local/small-shell/tmp/log/${session}.log
 </code></pre>
 <h4 id="export-data-through-app">Export data through APP</h4>
 <p>You can export datas with csv format on Base APP table.

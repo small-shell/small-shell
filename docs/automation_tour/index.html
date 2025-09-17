@@ -216,7 +216,7 @@ CLI  &lt;-&gt; wrapper.sh &lt;- script #result
 --code--
 #!/bin/bash
 
-echo &quot;`date` Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
+echo &quot;$(date) Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
 
 exit 0
 --------
@@ -305,7 +305,7 @@ This is an exmaple of job relationship. messae wil be exchanged in the host.</p>
 --code--
 #!/bin/bash
 
-echo &quot;`date` Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
+echo &quot;$(date) Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
 
 exit 0
 --------
@@ -316,7 +316,7 @@ sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
 --code--
 #!/bin/bash
 
-echo &quot;`date` World&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/world.log
+echo &quot;$(date) World&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/world.log
 
 exit 0
 --------
@@ -421,7 +421,7 @@ api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 --code--
 #!/bin/bash
 
-echo &quot;`date` Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
+echo &quot;$(date) Hello&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/hello.log
 
 exit 0
 --------
@@ -432,7 +432,7 @@ sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
 --code--
 #!/bin/bash
 
-echo &quot;`date` World&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/world.log
+echo &quot;$(date) World&quot; &gt;&gt; /usr/local/small-shell/util/scripts/log/world.log
 
 exit 0
 --------
@@ -619,21 +619,21 @@ script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfr
 </code></pre>
 <h6 id="push-mail-que">Push mail que</h6>
 <pre><code># send mail que to e-cron batch
-session=&quot;`date +%s`.$RANDOM&quot;
-mkdir /tmp/$session
-echo &quot;subject=\&quot;test1\&quot;&quot; &gt; /tmp/$session/mail
-echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail        
-echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail
-echo &quot;contents=\&quot;test1\&quot;&quot; &gt;&gt; /tmp/$session/mail
+session=&quot;$(date +%s).$RANDOM&quot;
+mkdir /tmp/${session}
+echo &quot;subject=\&quot;test1\&quot;&quot; &gt; /tmp/${session}/mail
+echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/${session}/mail        
+echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/${session}/mail
+echo &quot;contents=\&quot;test1\&quot;&quot; &gt;&gt; /tmp/${session}/mail
 
-echo &quot;subject=\&quot;test2\&quot;&quot; &gt; /tmp/$session/mail
-echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail        
-echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/$session/mail
-echo &quot;contents=\&quot;test2\&quot;&quot; &gt;&gt; /tmp/$session/mail
+echo &quot;subject=\&quot;test2\&quot;&quot; &gt; /tmp/${session}/mail
+echo &quot;mailto=\&quot;to@***.com\&quot;&quot; &gt;&gt; /tmp/${session}/mail        
+echo &quot;mailfrom=\&quot;from@***.com\&quot;&quot; &gt;&gt; /tmp/${session}/mail
+echo &quot;contents=\&quot;test2\&quot;&quot; &gt;&gt; /tmp/${session}/mail
 
-sudo -u small-shell /usr/local/small-shell/bin/e-cron push.que:/tmp/$session/mail
+sudo -u small-shell /usr/local/small-shell/bin/e-cron push.que:/tmp/${session}/mail
 #-&gt;&gt;pushed successfully
-rm -rf /tmp/$session
+rm -rf /tmp/${session}
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -678,7 +678,7 @@ Exec command or batch script: send_mail &quot;$mailto&quot; &quot;$mailfrom&quot
 sudo vi /usr/local/small-shell/util/e-cron/def/mailq.def
 --code--
 SCHEDULE:* * * * *
-exec_command=&quot;/usr/local/small-shell/util/scripts/send_mail \&quot;$mailto\&quot; \&quot;$mailfrom\&quot; \&quot;$subject\&quot; \&quot;$contents\&quot;&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/send_mail \&quot;${mailto}\&quot; \&quot;${mailfrom}\&quot; \&quot;${subject}\&quot; \&quot;${contents}\&quot;&quot;
 input_message=&quot;&quot;
 output_message=&quot;&quot;
 hub_api=&quot;&quot;
@@ -761,7 +761,6 @@ del_datasets.sh     # delete datasets as batch job
 del_log.sh          # delete log of e-cron
 del_job.sh          # delete job of e-cron
 del_session.sh      # delete session of DATA shell
-del_statistics.sh   # delete statistics of pyshell
 
 countup.sh          # please see detail at pyshell tour
 sumup.sh            # please see detail at pyshell tour

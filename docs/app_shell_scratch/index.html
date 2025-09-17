@@ -281,11 +281,10 @@ Key initializing &amp; generating URL for test_user on test APP is here
 https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
-<p>End user key that's generated above command will be stored to end user browser automatically using localstorage by javascript once connected to above url.
-And if you set "yes" for IP whitelisting for this APP in the dialog, you can set restricted IPs by using ops command. IP whitelisting detail is on <a href="../app_shell_tour/#ip-whitelisting">APP shell tour</a></p>
+<p>End user key that's generated above command will be stored to end user browser automatically using localstorage by javascript once connected to above url.</p>
 <h2 id="access-url-of-the-app">Access URL of the APP</h2>
-<p>If you are using default Web server, your application URL must be $FQDN/$app except "other" type APP. URL will be shown in the dialog of gen command.</p>
-<pre><code>e.g.) APP:test, URL:https://$FQDN/test
+<p>If you are using default Web server, your application URL must be ${FQDN}/${app} except "other" type APP. URL will be shown in the dialog of gen command.</p>
+<pre><code>e.g.) APP:test, URL:https://${FQDN}/test
 </code></pre>
 <p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
@@ -294,7 +293,7 @@ And if you set "yes" for IP whitelisting for this APP in the dialog, you can set
 </code></pre>
 <h3 id="update-pass-code">Update Pass code</h3>
 <p>If it's Shared Pass code APP, you can update pass code by updating file directly </p>
-<pre><code>sudo vi /usr/local/small-shell/web/$app.code
+<pre><code>sudo vi /usr/local/small-shell/web/${app}.code
 </code></pre>
 <h3 id="update-codes-optional">Update codes (optional)</h3>
 <p>Then APP will be generated to directory that you already defined in Base APP dialog. you can update codes freely.
@@ -378,10 +377,10 @@ Subapp databox: inventory.db
 </code></pre>
 <p>Once subAPP deployed, please check routing and menu that will be updaated automatically. and you can freely modify them.</p>
 <pre><code># routing
-# sudo cat /var/www/cgi-bin/$parent_app
+# sudo cat /var/www/cgi-bin/${parent_app}
 sudo cat /var/www/cgi-bin/test
 # menu
-# cat /var/www/desciption/common_parts/$parent_app_common_menu
+# cat /var/www/desciption/common_parts/${parent_app_common_menu}
 cat /var/www/desciption/common_parts/test_common_menu
 </code></pre>
 <p>Portal page link will be updated as well. please check on Base APP.</p>
@@ -531,16 +530,16 @@ vi ./descriptor/${provider}_oauth_form.html.def
 #------------------------------------------------ 
 
 # DEPLOY
-authkey=`grep authkey= /var/www/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;`
+authkey=$(grep authkey= /var/www/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;)
 echo $authkey
-cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/$authkey/g&quot; &gt; .auth.$app
+cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/${authkey}/g&quot; &gt; .auth.$app
 sudo cp .auth.$app /var/www/cgi-bin/auth.$app
 cat ./descriptor/${provider}_oauth_form.html.def &gt; .${app}_auth_form.html.def
 sudo cp .${app}_auth_form.html.def /var/www/descriptor/${app}_auth_form.html.def
 sudo chmod 755 /var/www/cgi-bin/auth.$app
 </code></pre>
 <p>Then you can try to connect APP through Oauth. <br />
-https://$fqdn/cgi-bin/auth.oauth_test</p>
+https://${fqdn}/cgi-bin/auth.oauth_test</p>
 <h2 id="delete-scratech-app">Delete Scratech APP</h2>
 <p>You can delete your scratch APP by using util script as following.</p>
 <pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_app.sh $app
@@ -552,14 +551,14 @@ https://$fqdn/cgi-bin/auth.oauth_test</p>
 <h6 id="action-script-shell">@action script (shell)</h6>
 <pre><code> # get name which will be issued
  DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
- book_name=`$DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F ":" '{print $2}'`
+ book_name=$($DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F ":" '{print $2}')
 </code></pre>
 <h4 id="2-id-search-by-using-name">2. ID search by using Name</h4>
 <p>You can also get ID using 100% matched text</p>
 <h6 id="action-script-shell_1">@action script (shell)</h6>
 <pre><code> # get book ID Based on the name 
  DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
- book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s "s/\"//g"`
+ book_id=$($DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s "s/\"//g")
 </code></pre>
 <h4 id="3-json-insert-to-javascript-instance">3. Json insert to javascript instance</h4>
 <p>In terms of integration with javascript frameworks, we would like to recommend to insert bulk of json datas to javascript directly using %% tag because ajax with small-shell will take 1 or 2 sec for getting data.</p>
@@ -587,22 +586,22 @@ $DATA_SHELL databox:$databox command:show_all[filter=sync{yes}] format:json \
 | $SED &quot;s/{%%%%%%}/,/g&quot;\
 | $SED &quot;s/{%%%%%}/\//g&quot;\
 | $SED &quot;s/{%%%%}/\&amp;/g&quot;\
-| $SED &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/$session/events
+| $SED &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/${session}/events
 
 ## then, just insert %%json to events
 cat ../descriptor/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 | $SED &quot;/%%common_menu/r ../descriptor/common_parts/pintest_common_menu&quot; \
 | $SED &quot;s/%%common_menu//g&quot;\
-| $SED &quot;s/%%user_name/$user_name/g&quot; \
-| $SED &quot;/%%json/r ../tmp/$session/events&quot;\
+| $SED &quot;s/%%user_name/${user_name}/g&quot; \
+| $SED &quot;/%%json/r ../tmp/${session}/events&quot;\
 | $SED &quot;s/%%json//g&quot;\
-| $SED &quot;s/%%params/session=$session\&amp;pin=$pin\&amp;databox=$databox/g&quot;
+| $SED &quot;s/%%params/session=${session}\&amp;pin=${pin}\&amp;databox=${databox}/g&quot;
 --------
 
 </code></pre>
 <h4 id="4-disable-portal">4. Disable portal</h4>
 <p>If your APP will not use portal, please change main request to table by adding these codes.</p>
-<pre><code>sudo vi /var/www/cgi-bin/$app
+<pre><code>sudo vi /var/www/cgi-bin/${app}
 --code--
 if [ &quot;$req&quot; = &quot;main&quot; ];then
   req=table

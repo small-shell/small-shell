@@ -127,40 +127,43 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#cook-book" class="nav-link">Cook book</a>
-              <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#cook-prototype-app" class="nav-link">Cook prototype APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#set-notification-mail" class="nav-link">Set notification mail</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#portal-page-cooking" class="nav-link">Portal page cooking</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#automate-ssl-cert-deployment" class="nav-link">Automate SSL cert deployment</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#make-replica-for-load-balancing" class="nav-link">Make replica for load balancing</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#backup-restore-example" class="nav-link">Backup &amp; Restore example</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#dictionary-create-lang-pack" class="nav-link">Dictionary (create lang pack)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#log-analyzer" class="nav-link">Log analyzer</a>
               <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -168,7 +171,6 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="cook-book">Cook book</h1>
 <p>In this course, you can learn how utilize APPs { Base APP, Scratch APP, Form } and also you can check utilitise such like ssl cert deployment automation, replication, backup and so on.</p>
 <h2 id="cook-prototype-app">Cook prototype APP</h2>
 <p>In this prototype APP construction work, these APPs in following chart will be created. </p>
@@ -293,7 +295,7 @@ DATA.new: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&am
 DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&amp;req=get&amp;id=$id&quot;&gt;link&lt;/a&gt;
 </code></pre>
 <p>then copy and paste to action link field with adding "table_command=%%book_name" for filtering table with book name.</p>
-<pre><code>$ sudo vi /var/www/descriptor/book_search_get_ro.html.def
+<pre><code>$ sudo vi /var/www/def/book_search_get_ro.html.def
 --code--
 &lt;div class=&quot;action_links&quot;&gt;
   &lt;!-- add following line --&gt;
@@ -311,23 +313,23 @@ DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;subapp=location_search&am
 --block1 code--
 DATA_SHELL=&quot;${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:book_search&quot;
 # add block1
-book_name=`$DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
+book_name=$($DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}')
 ---------------
 # update render HTML logic as block 2
 --block2 code--
 # render HTML
-cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
-| $SED &quot;/%%common_menu/r ../descriptor/common_parts/book_search_common_menu&quot; \
+cat ../def/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%common_menu/r ../def/common_parts/book_search_common_menu&quot; \
 | $SED &quot;/%%common_menu/d&quot; \
-| $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| $SED &quot;/%%dataset/r ../tmp/${session}/dataset&quot; \
 | $SED &quot;s/%%dataset//g&quot;\
-| $SED &quot;/%%history/r ../tmp/$session/history&quot; \
+| $SED &quot;/%%history/r ../tmp/${session}/history&quot; \
 | $SED &quot;s/%%history//g&quot;\
-| $SED &quot;s/%%id/$id/g&quot; \
-| $SED &quot;s/%%book_name/$book_name/g&quot; \
-| $SED &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
-| $SED &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
-| $SED &quot;s/%%params/session=$session\&amp;pin=$pin/g&quot;
+| $SED &quot;s/%%id/${id}/g&quot; \
+| $SED &quot;s/%%book_name/${book_name}/g&quot; \
+| $SED &quot;s/%%pdls/session=${session}\&amp;pin=${pin}\&amp;req=get/g&quot; \
+| $SED &quot;s/%%session/session=${session}\&amp;pin=${pin}/g&quot; \
+| $SED &quot;s/%%params/session=${session}\&amp;pin=${pin}/g&quot;
 ---------------
 </code></pre>
 <p><img alt="Screenshot" src="../img/book_search_location_link.png" /></p>
@@ -351,9 +353,9 @@ sudo chown small-shell:small-shell /var/www/bin/book_search_table.sh
 <p>Then let's modify line calculation logic as well. </p>
 <pre><code>$ sudo vi /var/www/bin/book_search_table.sh
 # comment out original line
-#line_num=`$META get.num:$databox`
+#line_num=$($META get.num:$databox)
 # insert new line
-line_num=`$DATA_SHELL databox:$databox command:show_all[match=available{yes}][sort=${sort_option},${sort_col}] format:none | wc -l | tr -d &quot; &quot;`
+line_num=$($DATA_SHELL databox:$databox command:show_all[match=available{yes}][sort=${sort_option},${sort_col}] format:none | wc -l | tr -d &quot; &quot;)
 </code></pre>
 <h5 id="restrict-key">Restrict key</h5>
 <p>To restrict accessable key, change "all" to specific keys.</p>
@@ -375,7 +377,7 @@ DATA.new: &lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=new&quot;&
 DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=$id&quot;&gt;link&lt;/a&gt;
 </code></pre>
 <p>then copy and past the link to action_link field.</p>
-<pre><code>$ sudo vi /var/www/descriptor/location_search_get_ro.html.def
+<pre><code>$ sudo vi /var/www/def/location_search_get_ro.html.def
 --code--
 &lt;div class=&quot;action_links&quot;&gt;
   &lt;!-- add following line --&gt;
@@ -388,21 +390,21 @@ DATA.$id: &lt;a href=&quot;./book_search?%%session&amp;req=get&amp;id=$id&quot;&
 --code--
 # render HTML
 resource_id=$id
-book_name=`$DATA_SHELL databox:book.res action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}'`
-book_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot;`
+book_name=$($DATA_SHELL databox:book.res action:get key:name id:$id format:none | $AWK -F &quot;:&quot; '{print $2}')
+book_id=$($DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot;)
 
-cat ../descriptor/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
-| $SED &quot;/%%common_menu/r ../descriptor/common_parts/book_search_common_menu&quot; \
+cat ../def/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%common_menu/r ../def/common_parts/book_search_common_menu&quot; \
 | $SED &quot;/%%common_menu/d&quot; \
-| $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+| $SED &quot;/%%dataset/r ../tmp/${session}/dataset&quot; \
 | $SED &quot;s/%%dataset//g&quot;\
-| $SED &quot;/%%history/r ../tmp/$session/history&quot; \
+| $SED &quot;/%%history/r ../tmp/${session}/history&quot; \
 | $SED &quot;s/%%history//g&quot;\
-| $SED &quot;s/%%id/$id/g&quot; \
-| $SED &quot;s/%%book_id/$book_id/g&quot; \
-| $SED &quot;s/%%pdls/session=$session\&amp;pin=$pin\&amp;req=get/g&quot; \
-| $SED &quot;s/%%session/session=$session\&amp;pin=$pin/g&quot; \
-| $SED &quot;s/%%params/subapp=location_search\&amp;session=$session\&amp;pin=$pin/g&quot;
+| $SED &quot;s/%%id/${id}/g&quot; \
+| $SED &quot;s/%%book_id/${book_id}/g&quot; \
+| $SED &quot;s/%%pdls/session=${session}\&amp;pin=${pin}\&amp;req=get/g&quot; \
+| $SED &quot;s/%%session/session=${session}\&amp;pin=${pin}/g&quot; \
+| $SED &quot;s/%%params/subapp=location_search\&amp;session=${session}\&amp;pin=${pin}/g&quot;
 
 --------
 </code></pre>
@@ -417,7 +419,6 @@ Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 2
 Form Name: booking_req
 Target Databox: request.db
 Description: This is request Form for booking library
-IP_whitelisting: no
 Included keys: requester,email,book_name
 Access URL: https://**-**-**/booking_req
 </code></pre>
@@ -446,11 +447,11 @@ Access URL: https://**-**-**/booking_req
 # block1 logic next line of id param loading.
 --code--
   if [[ $param == id:* ]]; then
-    id=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+    id=$(echo $param | $AWK -F&quot;:&quot; '{print $2}')
   fi
    # add block1
    if [[ $param == book_name:* ]]; then
-      book_name=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+      book_name=$(echo $param | $AWK -F&quot;:&quot; '{print $2}')
    fi
 --------
 
@@ -458,18 +459,18 @@ Access URL: https://**-**-**/booking_req
 --code--
 # gen reqd/write form #new
 # comment out original line
-#$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; /var/www/tmp/$session/dataset
+#$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; /var/www/tmp/${session}/dataset
 
 # insert line new lines
-$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; ../tmp/$session/dataset.0.1
-cat ../tmp/$session/dataset.0.1 \
-| $SED &quot;s/name=\&quot;book_name\&quot; value=\&quot;\&quot;/name=\&quot;book_name\&quot; value=\&quot;$book_name\&quot;/g&quot; &gt; ../tmp/$session/dataset
+$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:html_tag &gt; ../tmp/${session}/dataset.0.1
+cat ../tmp/${session}/dataset.0.1 \
+| $SED &quot;s/name=\&quot;book_name\&quot; value=\&quot;\&quot;/name=\&quot;book_name\&quot; value=\&quot;${book_name}\&quot;/g&quot; &gt; ../tmp/${session}/dataset
 --------
 
 </code></pre>
 <h4 id="add-reserve-button-for-book_search-app">Add reserve button for book_search APP</h4>
 <p>Add reserve button that will link to booking_req Form with book_name. the Query string in the URL will be handled by Form controller. </p>
-<pre><code>$ sudo vi /var/www/descriptor/book_search_get_ro.html.def
+<pre><code>$ sudo vi /var/www/def/book_search_get_ro.html.def
 --code--
 &lt;a href=&quot;./booking_req?book_name=%%book_name&quot;&gt;&lt;button class=&quot;button&quot;&gt;Reserve&lt;/button&gt;&lt;/a&gt;
 --------
@@ -484,40 +485,40 @@ cat ../tmp/$session/dataset.0.1 \
 <pre><code>$ sudo vi /var/www/bin/booking_req_set.sh
 --code--
 # push datas to databox
-#$DATA_SHELL databox:request.db action:set id:$id keys:$keys input_dir:/var/www/tmp/$session  &gt; /var/www/tmp/$session/result
+#$DATA_SHELL databox:request.db action:set id:$id keys:$keys input_dir:/var/www/tmp/${session}  &gt; /var/www/tmp/${session}/result
 
 # result check
-#updated_id=`cat /var/www/tmp/$session/result | grep &quot;^successfully set&quot; | $AWK -F &quot;id:&quot; '{print $2}' | $SED '/^$/d' | sort | uniq`
+#updated_id=$(cat /var/www/tmp/${session}/result | grep &quot;^successfully set&quot; | $AWK -F &quot;id:&quot; '{print $2}' | $SED '/^$/d' | sort | uniq)
 --------
 </code></pre>
 <p>2nd step is to insert new lines right after original logic that was comment out.</p>
 <pre><code>$ sudo vi /var/www/bin/booking_req_set.sh
 --code--
 # load book resource
-book_name=`cat ../tmp/$session/book_name`
-resource_id=`$DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:json \
-| jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot; | head -1`
+book_name=$(cat ../tmp/${session}/book_name)
+resource_id=$($DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:json \
+| jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot; | head -1)
 
 if [ &quot;$resource_id&quot; ];then
   # push datas to databox
-  echo &quot;$resource_id&quot; &gt; ../tmp/$session/book_resource_id
-  echo &quot;requested&quot; &gt; ../tmp/$session/status
+  echo &quot;$resource_id&quot; &gt; ../tmp/${session}/book_resource_id
+  echo &quot;requested&quot; &gt; ../tmp/${session}/status
   keys=&quot;book_resource_id,status,$keys&quot;
-  $DATA_SHELL databox:request.db action:set id:new keys:$keys input_dir:../tmp/$session  &gt; ../tmp/$session/result
+  $DATA_SHELL databox:request.db action:set id:new keys:$keys input_dir:../tmp/${session}  &gt; ../tmp/${session}/result
 
   # result check
-  updated_id=`cat ../tmp/$session/result | grep &quot;^successfully set&quot; | $AWK -F &quot;id:&quot; '{print $2}' | $SED '/^$/d' | sort | uniq`
-  avail_num=`$DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none | wc -l`
+  updated_id=$(cat ../tmp/${session}/result | grep &quot;^successfully set&quot; | $AWK -F &quot;id:&quot; '{print $2}' | $SED '/^$/d' | sort | uniq)
+  avail_num=$($DATA_SHELL databox:book.res command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none | wc -l)
 
   if [ &quot;$updated_id&quot; -a $avail_num -ge 1 ];then
     # update staus of resource.db
-    $DATA_SHELL databox:book.res action:set id:$resource_id key:status value:reserved  &gt;&gt; ../tmp/$session/result
+    $DATA_SHELL databox:book.res action:set id:$resource_id key:status value:reserved  &gt;&gt; ../tmp/${session}/result
 
     # update status of book.master
     (( avail_num -= 1 ))
     if [ $avail_num -eq 0 ];then
-      book_master_id=`$DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot;`
-      $DATA_SHELL databox:book.master action:set id:$book_master_id key:available value:-  &gt;&gt; ../tmp/$session/result
+      book_master_id=$($DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s &quot;s/\&quot;//g&quot;)
+      $DATA_SHELL databox:book.master action:set id:$book_master_id key:available value:-  &gt;&gt; ../tmp/${session}/result
     fi
   fi
 fi
@@ -532,14 +533,14 @@ fi
 --code--
 # gen read only contents
 # comment out original lines
-#$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:none &gt; /var/www/tmp/$session/dataset.0.1
-#cat /var/www/tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/1&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
-#| $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; /var/www/tmp/$session/dataset
+#$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name format:none &gt; /var/www/tmp/${session}/dataset.0.1
+#cat /var/www/tmp/${session}/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/1&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
+#| $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; /var/www/tmp/${session}/dataset
 
 # insert new lines 
-$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name,status,message format:none | grep -v hashid &gt; ../tmp/$session/dataset.0.1
-cat ../tmp/$session/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/g&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
-| $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/$session/dataset
+$DATA_SHELL databox:request.db action:get id:$id keys:requester,email,book_name,status,message format:none | grep -v hashid &gt; ../tmp/${session}/dataset.0.1
+cat ../tmp/${session}/dataset.0.1 | $SED &quot;s/^/&lt;li&gt;&lt;label&gt;/g&quot; | $SED &quot;s/:/&lt;\/label&gt;&lt;pre&gt;/g&quot; | $SED &quot;s/$/&lt;\/pre&gt;&lt;\/li&gt;/g&quot; \
+| $SED &quot;s/&lt;pre&gt;&lt;\/pre&gt;/&lt;pre&gt;-&lt;\/pre&gt;/g&quot; | $SED &quot;s/_%%enter_/\n/g&quot; &gt; ../tmp/${session}/dataset
 --------
 </code></pre>
 <h5 id="updated-image">updated image</h5>
@@ -559,20 +560,20 @@ By the way underbar is meta charactor of small-shell. you need to use {%%%%%%%} 
 #-------------------------------------------------------------
 
 # global.conf load
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../global.conf
 
 # load authkey
 . ${SCRIPT_DIR}/.authkey
 
-WHOAMI=`whoami`
+WHOAMI=$(whoami)
 if [ ! &quot;$WHOAMI&quot; = &quot;small-shell&quot; ];then
   echo &quot;error: user must be small-shell&quot;
   exit 1
 fi
 
 # dump non available books
-$ROOT/bin/DATA_shell authkey:$authkey databox:book.master command:show_all[keys=id,name][match=available{-}] format:csv \
+${ROOT}/bin/DATA_shell authkey:$authkey databox:book.master command:show_all[keys=id,name][match=available{-}] format:csv \
 &gt; ${SCRIPT_DIR}/tmp/book_master_dump.tmp
 
 # check latest resource status
@@ -581,17 +582,17 @@ while read line
 do
 
   if [ $count -gt 1  ];then
-    book_id=`echo $line | $AWK -F &quot;,&quot; '{print $1}'`
-    book_name=`echo $line | $AWK -F &quot;,&quot; '{print $2}'`
+    book_id=$(echo $line | $AWK -F &quot;,&quot; '{print $1}')
+    book_name=$(echo $line | $AWK -F &quot;,&quot; '{print $2}')
 
     # check on_the_shelve book
-    check_shelv=`$ROOT/bin/DATA_shell authkey:$authkey databox:book.res \
-    command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none`
+    check_shelv=$(${ROOT}/bin/DATA_shell authkey:$authkey databox:book.res \
+    command:show_all[match=name{$book_name}][filter=status{on{%%%%%%%}the{%%%%%%%}shelve}] format:none)
 
     if [ &quot;$check_shelv&quot; ];then
       # update available status
-      $ROOT/bin/DATA_shell authkey:$authkey databox:book.master action:set id:$book_id key:available value:yes
-      echo &quot;$ROOT/bin/DATA_shell authkey:$authkey databox:book.master action:set id:$book_id key:available value:yes&quot;
+      ${ROOT}/bin/DATA_shell authkey:$authkey databox:book.master action:set id:$book_id key:available value:yes
+      echo &quot;${ROOT}/bin/DATA_shell authkey:$authkey databox:book.master action:set id:$book_id key:available value:yes&quot;
     fi
   fi
 
@@ -673,7 +674,7 @@ echo &quot;inquiry url is here ${base_url}team?subapp=inquiries&amp;req=get&amp;
 # ---end of inserted code --
 
 if [ &quot;$session&quot; ];then
-  rm -rf /var/www/tmp/$session
+  rm -rf /var/www/tmp/${session}
 fi
 </code></pre>
 <p>Then you can get notification mail from inquiry APP when end user submit inquiry through Form. you can insert above code to any set action script of Form APPs or Scratch APPs.</p>
@@ -688,7 +689,6 @@ Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
 APP Name: static_site
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
 Primary Databox: none
-Do you want to enable IP whitelisting for this APP? (yes | no): no
 </code></pre>
 <h3 id="cook-portal-page">Cook portal page</h3>
 <p>You can edit portal page by 2 way. 1 is edit the page on Base APP {$APP_UI.md.def} like following.</p>
@@ -742,7 +742,7 @@ calendar events will be saved on $app.events databox that will be generated auto
 <img alt="Screenshot" src="../img/calendar.png" /></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
 <p>Another way of updating portal is just editting hml.def directly {$APP_main.html.def} </p>
-<pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
+<pre><code>sudo vi /var/www/def/static_site_main.html.def
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -794,14 +794,14 @@ calendar events will be saved on $app.events databox that will be generated auto
 </code></pre>
 <h5 id="update-even-menu">Update even menu</h5>
 <p>In this example, links in right header menu will be external links and mail addr.</p>
-<pre><code>sudo vi /var/www/descriptor/common_parts/static_site_common_menu
+<pre><code>sudo vi /var/www/def/common_parts/static_site_common_menu
 </code></pre>
 <pre><code>&lt;li&gt;&lt;a href=&quot;&quot;&gt;LINK 1&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;&quot;&gt;LINK 2&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;mailto:address&quot;&gt;MAIL&lt;/a&gt;&lt;/li&gt;
 </code></pre>
 <p>or If you don't need to use right header, just delete right header definition on $APP_main.html.def</p>
-<pre><code>sudo vi /var/www/descriptor/static_site_main.html.def
+<pre><code>sudo vi /var/www/def/static_site_main.html.def
 </code></pre>
 <h5 id="right-header-definition-on-mainhtmldef">right header definition on main.html.def</h5>
 <pre><code>&lt;div class=&quot;right-header&quot;&gt;
@@ -837,8 +837,8 @@ calendar events will be saved on $app.events databox that will be generated auto
 &lt;/div&gt;
 </code></pre>
 <h5 id="change-color">Change color</h5>
-<p>You can change color by updating $APP.css.def</p>
-<pre><code>sudo vi /var/www/descriptor/static_site.css.def
+<p>You can change color by updating $APP.css</p>
+<pre><code>sudo vi /var/www/html/static_site.css
 </code></pre>
 <pre><code>#----------------classes---------------#
 # Change header color

@@ -267,7 +267,7 @@ countup_record successfully completed
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>utilscripts should be executed small-shell priviledge.  <br />
-e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/$utilscript param1:$param1 param2:$param2</p>
+e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/${utilscript} param1:$param1 param2:$param2</p>
 </div>
 <h4 id="list-of-utilscripts">List of utilscripts</h4>
 <table>
@@ -383,7 +383,7 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/$utilscript param1
 <p class="admonition-title">Note</p>
 <ol>
 <li>If you want to put space in the title, please use {####}. it's changed to space internally in th pyshell.</li>
-<li>You can insert command result to the parameter, such like global_filter:`date +%Y-%m-%d`</li>
+<li>You can insert command result to the parameter, such like global_filter:$(date +%Y-%m-%d)</li>
 </ol>
 </div>
 <h4 id="usage">Usage</h4>
@@ -417,6 +417,7 @@ key:impression filters:Good,Average,Bad type:pie title:2024-11-28_survey_result 
 </code></pre>
 <p><img alt="Screenshot" src="../img/sumup_inventory_type.png" /></p>
 <h2 id="delete-rawdata-and-graph">Delete rawdata and graph</h2>
+<p>You can delete rawdata and graph manually as following.</p>
 <pre><code>cd /usr/local/small-shell/util/statistics
 cd rawdata or cd graph
 sudo rm $target

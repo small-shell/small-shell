@@ -173,10 +173,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#ip-whitelisting" class="nav-link">IP whitelisting</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-bs-level="2"><a href="#command-api" class="nav-link">Command API</a>
               <ul class="nav flex-column">
               </ul>
@@ -344,7 +340,7 @@ https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
 <h2 id="access-url-of-base-app">Access URL of Base APP</h2>
-<p>As you already checked, access URL is shown in the result of ops add command. if you are using small-shell default Web server, URL must be $FQDN/base.</p>
+<p>As you already checked, access URL is shown in the result of ops add command. if you are using small-shell default Web server, URL must be ${FQDN}/base.</p>
 <pre><code>e.g.) https://ec2-XX-XX-XX-XX.XXXX.com/base
 </code></pre>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
@@ -450,31 +446,28 @@ sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
 <h2 id="mvc-model">MVC model</h2>
 <p>You can customize small shell by understanding similar MVC model concept.</p>
 <h5 id="basic-structure">Basic structure</h5>
-<pre><code># Directory of small-shell core
-/usr/local/small-shell/bin
- |- auth # used for base64 encrypted key auth 
- |- extension_auth # used for Scratch APP user auth
- |- DATA_shell # CLI tool for accessing data shell
- |- meta # show meta data
-/usr/local/small-shell/adm
- |- ops
- |- gen #generate CGI, DATA, Automate shells
-
-# Directory for APP 
-$cgidir (/var/www/cgi-bin #default) 
+<pre><code># Controller 
+$cgi_dir (/var/www/cgi-bin #default) 
  |- base # Base APP controller
  |- auth.base # Base APP authenticator
  |- api
  |- e-cron
- |- ${app} # scratch APP controller
- |- auth.${app} # scratch APP authenticator
+ |- $app # scratch APP controller
+ |- auth.$app # scratch APP authenticator
 
+# Model
 $bin (/var/www/bin)
- |- action_scripts # work as Model
+ |- scripts # work as Model
  |- parse.sh #it will be used for parsing posted params
 
-$descriptor (/var/www/descriptor)
- |- html_definitions # work as definition of view
+# View
+$def (/var/www/def)
+ |- .html.def # store view definitions of html
+
+# Other 
+$static_dir (/var/www/html)
+ |- index.html 
+ |- libraries (css,js)
 
 $app (/var/www/app)
  |-index.js # small-shell default web server
@@ -495,12 +488,12 @@ These query string will be loaded as following value in the APP
 -&gt; id=1234
 </code></pre>
 <h5 id="routing-in-controller-base-app">Routing in controller # Base APP</h5>
-<p>Routings to the action scripts are defined in the controller script.</p>
+<p>Routings to the bin/scripts are defined in the controller script.</p>
 <pre><code>sudo vi $cgi-bin/base (e.g. /var/www/cgi-bin/base)
 
 --code--
 #----------------------------
-# routing to action scripts
+# routing to bin/scripts
 #----------------------------
 
 #e.g. get request
@@ -520,56 +513,56 @@ case &quot;$req&quot; in
 <li>Render pure HTML to client</li>
 </ol>
 <h6 id="load-query-string-eg-databoxidsession-that-will-be-passsed-from-controller-as-parameter">Load QUERY string (e.g. $databox,$id,$session) that will be passsed from controller as parameter</h6>
-<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+<pre><code>sudo vi ${bin}/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
-# load query string param @actionscripts
-for param in `echo $@`
+# load query string param
+for param in $(echo $@)
 do
 
   if [[ $param == databox:* ]]; then
-    databox=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+    databox=$(echo $param | $AWK -F&quot;:&quot; '{print $2}')
   fi  
 
   if [[ $param == id:* ]]; then
-    id=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+    id=$(echo $param | $AWK -F&quot;:&quot; '{print $2}')
   fi
 
   if [[ $param == session:* ]]; then
-    session=`echo $param | $AWK -F&quot;:&quot; '{print $2}'`
+    session=$(echo $param | $AWK -F&quot;:&quot; '{print $2}')
   fi
 
 done
 -------
 </code></pre>
-<h6 id="load-post-data-that-is-stored-by-controller-tmpsessionkey">Load POST data that is stored by controller ../tmp/$session/$key</h6>
+<h6 id="load-post-data-that-is-stored-by-controller-tmpsessionkey">Load POST data that is stored by controller ../tmp/${session}/${key}</h6>
 <p>(e.g. item_name)</p>
-<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+<pre><code>sudo vi ${bin}/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
-item_name=`cat ../tmp/$session/item_name`
+item_name=$(cat ../tmp/${session}/item_name)
 --------
 </code></pre>
 <h6 id="generate-data-by-calling-data_shell-with-html-format-eg-accesing-to-inventorydb">Generate data by calling DATA_shell with html format (e.g. accesing to inventory.db)</h6>
-<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+<pre><code>sudo vi ${bin}/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
 sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:inventory.db \
-action:get id:$id keys:all format:html_tag &gt; ../tmp/$session/dataset
+action:get id:$id keys:all format:html_tag &gt; ../tmp/${session}/dataset
 --------
 </code></pre>
 <h6 id="render-html-with-inserting-dynamic-contents-to-tags-eg-datasethtml_tag-from-inventorydb">Render HTML with inserting dynamic contents to %%tags (e.g. dataset{html_tag} from inventory.db)</h6>
-<pre><code>sudo vi $bin/get.sh (e.g. /var/www/bin/get.sh)
+<pre><code>sudo vi ${bin}/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
-cat ../descriptor/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
-| $SED &quot;/%%dataset/r ../tmp/$session/dataset&quot; \
+cat ../def/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%dataset/r ../tmp/${session}/dataset&quot; \
 | $SED &quot;s/%%dataset//g&quot;
 --------
 </code></pre>
 <h5 id="htmldef-view">html.def (view)</h5>
 <p>Just write down pure HTML. %%tag can be replaced to dynamic contents</p>
-<pre><code>sudo vi $descriptor/$htmldef (e.g. /var/www/descriptor/get.html.def)
+<pre><code>sudo vi ${def}/${htmldef} (e.g. /var/www/def/get.html.def)
 
 --code--
 &lt;h2&gt;Data.values&lt;/h2&gt;
@@ -584,7 +577,7 @@ cat ../descriptor/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 --------
 </code></pre>
 <h5 id="rendered-pure-html">Rendered Pure HTML</h5>
-<p>Once action script is executed by accessing the page, pure HTML will be rendered by inserting dynamic contents to %%dataset tag.</p>
+<p>Once bin/script is executed by accessing the page, pure HTML will be rendered by inserting dynamic contents to %%dataset tag.</p>
 <pre><code>&lt;h2&gt;Data.values&lt;/h2&gt;
 &lt;p&gt;&lt;b&gt;#ID &lt;/b&gt;81416a688e358d92b2a9f2ad412cb5fa60cae8e04f611335a14c6dafe2614f1e&lt;/p&gt;
 &lt;/div&gt;
@@ -620,13 +613,13 @@ cat ../descriptor/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 <h2 id="parse">Parse</h2>
 <p>parse.sh will be used for parsing posted data. posted data will be stored to files in output dir.</p>
 <h5 id="path">PATH</h5>
-<pre><code>$bin/parse.sh (e.g. /var/www/bin/parse.sh)
+<pre><code>${bin}/parse.sh (e.g. /var/www/bin/parse.sh)
 </code></pre>
 <h5 id="usage">Usage</h5>
 <pre><code>parse.sh $session $type
 </code></pre>
 <h5 id="input">input</h5>
-<pre><code>../tmp/$session/input (e.g. /var/www/tmp/$session/input)
+<pre><code>../tmp/${session}/input (e.g. /var/www/tmp/${session}/input)
 </code></pre>
 <h5 id="type">type</h5>
 <pre><code>urlenc # normal post
@@ -635,38 +628,38 @@ binary  # binary post
 json #json post
 </code></pre>
 <h5 id="output">output</h5>
-<p>Output will be dumped to ../tmp/$session directory</p>
+<p>Output will be dumped to ../tmp/${session} directory</p>
 <pre><code># parsed key value
-ls /var/www/tmp/$session/$key
+ls /var/www/tmp/${session}/${key}
 
 # get key's value
-cat /var/www/tmp/$session/$key
+cat /var/www/tmp/${session}/${key}
 
 # parsed file
-ls /var/www/tmp/$session/binary_file/file_name #contain file name
-ls /var/www/tmp/$session/binary_file/binary.data #binary data
+ls /var/www/tmp/${session}/binary_file/file_name #contain file name
+ls /var/www/tmp/${session}/binary_file/binary.data #binary data
 </code></pre>
 <h4 id="parse-usage-in-the-app">Parse usage in the APP</h4>
-<pre><code># sudo vi $cgidir/base
+<pre><code># sudo vi ${cgi_dir}/base
 sudo vi /var/www/cgi-bin/base
 
 --code--
 # dump POST data
-if [ &quot;`echo $REQUEST_METHOD | grep -i &quot;POST&quot;`&quot; ];then
+if [ &quot;$(echo $REQUEST_METHOD | grep -i &quot;POST&quot;)&quot; ];then
 
-  if [ &quot;`echo $CONTENT_TYPE | grep &quot;application/json&quot;`&quot; ];then
+  if [ &quot;$(echo $CONTENT_TYPE | grep &quot;application/json&quot;)&quot; ];then
     method=json
-  elif [ &quot;`echo $CONTENT_TYPE | grep &quot;multipart/form-data&quot;`&quot; ];then
+  elif [ &quot;$(echo $CONTENT_TYPE | grep &quot;multipart/form-data&quot;)&quot; ];then
     method=multipart
-  elif [ &quot;`echo $CONTENT_TYPE | grep &quot;application/octet-stream&quot;`&quot; ];then
+  elif [ &quot;$(echo $CONTENT_TYPE | grep &quot;application/octet-stream&quot;)&quot; ];then
     method=data-binary
   else
     method=urlenc
   fi
 
-  mkdir ../tmp/$session
+  mkdir ../tmp/${session}
   # dump posted data
-  dd bs=${CONTENT_LENGTH} of=../tmp/$session/input 2&gt;/dev/null
+  dd bs=${CONTENT_LENGTH} of=../tmp/${session}/input 2&gt;/dev/null
   ../bin/parse.sh $session $method
 
 fi
@@ -686,7 +679,7 @@ sudo tail -f /var/log/apache2/error_log
 
 --code--
 #if [ "$session" ];then
-#  rm -rf ../tmp/$session
+#  rm -rf ../tmp/${session}
 #fi
 --------
 </code></pre>
@@ -710,20 +703,20 @@ info: status value{available} is same as original value
 </code></pre>
 <h5 id="exec-command-check">Exec Command check</h5>
 <p>show exec command by echo "", then you can check command and parameters. it can be chcked on browser.</p>
-<pre><code>sudo vi $bin/$actionscript (e.g. /var/www/bin/set.sh)
+<pre><code>sudo vi ${bin}/${script} (e.g. /var/www/bin/set.sh)
 
 --code--
 # set and get %%result contents
 sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
-action:set id:$id keys:$keys input_dir:../tmp/$session format:html_tag &gt; ../tmp/$session/result
+action:set id:$id keys:$keys input_dir:../tmp/${session} format:html_tag &gt; ../tmp/${session}/result
 
 # add echo command &amp; sleep to show command
 echo "sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin databox:$databox \
-action:set id:$id keys:$keys input_dir:../tmp/$session format:html_tag &gt; ../tmp/$session/result"    
+action:set id:$id keys:$keys input_dir:../tmp/${session} format:html_tag &gt; ../tmp/${session}/result"    
 sleep 10
 --------
 </code></pre>
-<p>You could find specific command that will be executed by action script (e.g. set.sh), following is an example executing set.sh on Base APP.
+<p>You could find specific command that will be executed by bin/script (e.g. set.sh), following is an example executing set.sh on Base APP.
 <img alt="Screenshot" src="../img/command_debug.png" /></p>
 <h5 id="exec-command-with-debug-mode">Exec command with debug mode</h5>
 <pre><code># Exec command on bash directly
@@ -745,21 +738,6 @@ sudo /usr/local/small-shell/adm/ops del.tag:item.db{test}
 <p>This is example of tag of word{test},
 If you click the tag, search result will be shown.
 <img alt="Screenshot" src="../img/table_tag.png" /></p>
-<h2 id="ip-whitelisting">IP whitelisting</h2>
-<p>You can set IP whitelisting to restrict access to APP. it will be deployed to Base APP automatically. it can be deployed to Form and Scratch APPs, if it's enabled in the gen dialog.</p>
-<pre><code>sudo /usr/local/small-shell/adm/ops set.IP
-# vi will be launched
-#########################################################
-# please write down IP num which can be allowed
-#########################################################
-# Exmaple;
-
-# specific IP
-# 192.168.1.10
-
-# Range IPs
-# 10.10.*
-</code></pre>
 <h2 id="command-api">Command API</h2>
 <p>You can access command API from external systems. command API priviledge is read only as default. </p>
 <h4 id="confirm-api-key">confirm API key</h4>
