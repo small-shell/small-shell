@@ -346,7 +346,7 @@ a {
   }
 
 
-  .main .description {
+  .main .body {
     flex: none;
     width: 68%;
     text-align: left;
@@ -372,7 +372,7 @@ a {
    min-height: calc(86% - 50px);
   }
 
-  .main .description {
+  .main .body {
     padding: 12px 0px;
     flex: none;
   }

@@ -84,8 +84,12 @@ else
     sleep $index_update_time
   fi
 
-  # redirect to the table
-  echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=table\">"
+  # redirect to the table or main page
+  if [ "$databox" = "%%databox" ];then
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=table\">"
+  else
+    echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=main\">"
+  fi
 
 fi
 

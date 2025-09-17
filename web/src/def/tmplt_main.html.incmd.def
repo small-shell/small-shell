@@ -19,8 +19,8 @@
         <div class="left-nav">
           %%leftnav
         </div>
-        <div class="description">
-          %%description
+        <div class="body">
+          %%body
         </div>
       </div>
       <div class="footer">
@@ -47,21 +47,7 @@
         }
       });
 
-      // handle calendar
-      document.addEventListener('DOMContentLoaded', function() {
-        const calendar = new SimpleCalendar('#my-calendar', {
-          initialView: 'month',
-          initialDate: new Date(),
-          events: [
-            // %%events
-          ],
-          theme: 'default'
-        });
-        // Listen for events
-        calendar.on('eventClick', function(event) {
-          console.log('Event clicked:', event);
-        });
-      });
+      // %%extension_area
 
     </script>
   </body>

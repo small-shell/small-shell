@@ -229,6 +229,23 @@ do
    elif [[ "$line" == %%calendar ]];then
      echo "<div id=\"my-calendar\"></div>" >> ${tmp}/body.tmp
      echo "%%event_add_btn" >> ${tmp}/body.tmp
+     cat <<EOF > ${tmp}/calendar.js.tmp
+      document.addEventListener('DOMContentLoaded', function() {
+        const calendar = new SimpleCalendar('#my-calendar', {
+          initialView: 'month',
+          initialDate: new Date(),
+          events: [
+            // %%events
+          ],
+          theme: 'default'
+        });
+        // Listen for events
+        calendar.on('eventClick', function(event) {
+          console.log('Event clicked:', event);
+        });
+      });
+EOF
+
 
    # No tag
    else
@@ -332,11 +349,12 @@ fi
 
 # update main.html.def
 cat %%www/def/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
-| $SED "/%%description/r ${tmp}/body.tmp" | $SED "s/%%description//g" \
+| $SED "/%%body/r ${tmp}/body.tmp" | $SED "s/%%body//g" \
 | $SED "/%%leftnav/r ${tmp}/leftnav.tmp" | $SED "s/%%leftnav//g" \
 | $SED "/%%righth/r ${tmp}/righth.tmp" | $SED "s/%%righth//g" \
 | $SED "/%%lefth/r ${tmp}/lefth.tmp" | $SED "s/%%lefth//g" \
 | $SED "/%%footer/r ${tmp}/footer.tmp" | $SED "s/%%footer//g" \
+| $SED "/%%extension_area/r ${tmp}/calendar.js.tmp" | $SED "s/%%extension_area/handle calendar/g" \
 | $SED "s/?req=/?%%session\&req=/g"\
 > %%www/def/${app}_main.html.def
 
