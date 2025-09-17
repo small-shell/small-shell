@@ -12,13 +12,13 @@ User_agent_persistence="yes"
 input=$(dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -)
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load header
 if [ "$IP_persistence" = "yes" ];then
@@ -72,7 +72,7 @@ if [ "$initialize" ];then
     key_gen=$(ssh ${master} ${small_shell_path}/bin/auth initialize:${user_id}{${initialize_hash_key}} remote_addr:${remote_addr} logging_IP:${logging_IP})
     if [ $? -eq 255 ];then
       message="Master server failed. please contact to WEB admin"
-      cat %%www/descriptor/key_initialize_err.html.def \
+      cat %%www/def/key_initialize_err.html.def \
       | $SED "s/%%message/${message}/g"
       exit 1
     fi
@@ -90,8 +90,8 @@ if [ "$initialize" ];then
     if [ ! "$remote_addr" ];then
       remote_addr=$logging_IP
     fi
-    cat %%www/descriptor/auth_initialize.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+    cat %%www/def/auth_initialize.html.def | $SED -r "s/^( *)</</1" \
+    | $SED "/%%footer/r %%www/def/common_parts/footer" \
     | $SED "/%%footer/d"\
     | $SED "s/%%IP/${remote_addr}/g" \
     | $SED "s/%%user_name/${user_name}/g" \
@@ -100,7 +100,7 @@ if [ "$initialize" ];then
     exit 0
   else
     message="error: Your initialize URL should be wrong or expired"
-    cat %%www/descriptor/key_initialize_err.html.def \
+    cat %%www/def/key_initialize_err.html.def \
     | $SED "s/%%message/${message}/g"
     exit 1 
   fi
@@ -127,10 +127,10 @@ if [ ! "$received_authkey" ];then
   fi
 
   # render standard login form with queyr string and messge
-  cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
+  cat %%www/def/auth_form.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%auth_form_menu/r %%www/def/common_parts/auth_form_menu" \
   | $SED "s/%%auth_form_menu//g"\
-  | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+  | $SED "/%%footer/r %%www/def/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "s/%%params/${databox}${req}${id}/g"\
   | $SED "s/%%message/${message}/g" 
@@ -166,11 +166,11 @@ if [ "$received_authkey" ];then
     exit 0
   else
     # render standard login form with error message
-    cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
+    cat %%www/def/auth_form.html.def | $SED -r "s/^( *)</</1" \
     | $SED "s/%%message/<p id=\"message\"><b>! Key is wrong<\/b><\/p>/g" \
-    | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
+    | $SED "/%%auth_form_menu/r %%www/def/common_parts/auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
-    | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+    | $SED "/%%footer/r %%www/def/common_parts/footer" \
     | $SED "/%%footer/d"\
     | $SED "s/%%params//g"
     exit 1

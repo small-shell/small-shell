@@ -11,7 +11,7 @@ User_agent_persistence="yes"
 auth="%%auth"
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load header
 if [ "$IP_persistence" = "yes" ];then
@@ -153,7 +153,7 @@ case "$req" in
     %%www/bin/%%app_main.sh session:$session pin:$pin user_name:$user_name ;;
 
   "get")
-    # if its replica host, master definition will be in ./descriptor/.small-shell.conf
+    # if its replica host, master definition will be in ./def/.small-shell.conf
     if [ ! "$master" ];then
       %%www/bin/%%app_get.sh session:$session pin:$pin user_name:$user_name id:$id duplicate:$duplicate databox:$databox
     else

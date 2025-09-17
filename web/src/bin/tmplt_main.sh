@@ -2,7 +2,7 @@
 app=%%app
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -39,16 +39,16 @@ DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin app:$ap
 # -----------------
 num_of_md_def=$($META get.num:${app}.UI.md.def)
 if [ $num_of_md_def -ge 1 ];then
-  if [ -f %%www/descriptor/.${app}.UI.md.def.hash ];then
+  if [ -f %%www/def/.${app}.UI.md.def.hash ];then
     hash=$($META get.chain:${app}.UI.md.def | tail -1 | $AWK -F ":" '{print $4}')
-    org_hash="$(cat %%www/descriptor/.${app}.UI.md.def.hash)"
+    org_hash="$(cat %%www/def/.${app}.UI.md.def.hash)"
     if [ ! "$hash" = "$org_hash" ];then
-      echo "$hash" > %%www/descriptor/.${app}.UI.md.def.hash
+      echo "$hash" > %%www/def/.${app}.UI.md.def.hash
       %%www/bin/md_parse.sh $app $session $pin
     fi
   else
     hash=$($META get.chain:${app}.UI.md.def | tail -1 | $AWK -F ":" '{print $4}')
-    echo "$hash" > %%www/descriptor/.${app}.UI.md.def.hash
+    echo "$hash" > %%www/def/.${app}.UI.md.def.hash
     %%www/bin/md_parse.sh $app $session $pin
   fi
 fi
@@ -57,7 +57,7 @@ fi
 # Handle calendar
 # ----------------
 
-chk_calendar=$(grep "<div id=\"my-calendar\">"  %%www/descriptor/%%app_main.html.def)
+chk_calendar=$(grep "<div id=\"my-calendar\">"  %%www/def/%%app_main.html.def)
 
 if [ "$chk_calendar" ];then
 
@@ -101,8 +101,8 @@ fi
 # render HTML
 # -----------------
 
-cat %%www/descriptor/%%app_main.html.def | $SED -r "s/^( *)</</1" \
-| $SED "/%%common_menu/r %%www/descriptor/common_parts/%%app_common_menu" \
+cat %%www/def/%%app_main.html.def | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r %%www/def/common_parts/%%app_common_menu" \
 | $SED "s/%%common_menu//g"\
 | $SED "/%%events/r /var/www/tmp/${session}/events" \
 | $SED "/%%event_add_btn/r /var/www/tmp/${session}/event_add_btn" \

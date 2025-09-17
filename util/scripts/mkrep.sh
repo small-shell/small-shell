@@ -212,11 +212,11 @@ if [ "$param" = "reg.replica" ];then
     if [ "$cluster_flag" = "new" ];then
 
       # update menu for Base APP
-      for target in $(ls ${www}/descriptor/common_parts/common* | grep -v .org$ | xargs basename -a)
+      for target in $(ls ${www}/def/common_parts/common* | grep -v .org$ | xargs basename -a)
       do
-        cp ${www}/descriptor/common_parts/${target} ${www}/descriptor/common_parts/${target}.org
-        cat ${www}/descriptor/common_parts/${target} | $SED "s#./base#${cluster_base_url}base#g" > ${tmp_dir}/${target}
-        cat ${tmp_dir}/${target} > ${www}/descriptor/common_parts/${target}
+        cp ${www}/def/common_parts/${target} ${www}/def/common_parts/${target}.org
+        cat ${www}/def/common_parts/${target} | $SED "s#./base#${cluster_base_url}base#g" > ${tmp_dir}/${target}
+        cat ${tmp_dir}/${target} > ${www}/def/common_parts/${target}
         echo "updated $target"
       done
 
@@ -227,7 +227,7 @@ if [ "$param" = "reg.replica" ];then
         ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
       fi
 
-      for target in $(ls ${www}/descriptor/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a)
+      for target in $(ls ${www}/def/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a)
       do
         app=$(echo "${target}" | $AWK -F "_common_menu" '{print $1}')
         chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
@@ -248,20 +248,20 @@ if [ "$param" = "reg.replica" ];then
         fi
 
         # update desc/menu
-        cp ${www}/descriptor/common_parts/${target} ${www}/descriptor/common_parts/${target}.org
-        cat ${www}/descriptor/common_parts/${target}| $SED "s#./${app}#${cluster_base_url}${app}#g" > ${tmp_dir}/${target}
-        cat ${tmp_dir}/${target} > ${www}/descriptor/common_parts/${target}
+        cp ${www}/def/common_parts/${target} ${www}/def/common_parts/${target}.org
+        cat ${www}/def/common_parts/${target}| $SED "s#./${app}#${cluster_base_url}${app}#g" > ${tmp_dir}/${target}
+        cat ${tmp_dir}/${target} > ${www}/def/common_parts/${target}
         echo "updated $target"
 
         # update left menu
-        for descriptor in $(grep -l "./${app}?%%params&req=main" ${www}/descriptor/* 2>/dev/null | grep -v .org | sort | uniq | xargs basename -a)
+        for def in $(grep -l "./${app}?%%params&req=main" ${www}/def/* 2>/dev/null | grep -v .org | sort | uniq | xargs basename -a)
         do
-          if [ ! -f ${www}/descriptor/${descriptor}.org ];then
-            cp ${www}/descriptor/${descriptor} ${www}/descriptor/${descriptor}.org
-            cat ${www}/descriptor/${descriptor} \
-            | $SED "s#./${app}?%%params\&req=main#${cluster_base_url}${app}?%%params\&req=main#g" > ${tmp_dir}/${descriptor}
-            cat ${tmp_dir}/${descriptor} > ${www}/descriptor/${descriptor}
-            echo "updated $descriptor"
+          if [ ! -f ${www}/def/${def}.org ];then
+            cp ${www}/def/${def} ${www}/def/${def}.org
+            cat ${www}/def/${def} \
+            | $SED "s#./${app}?%%params\&req=main#${cluster_base_url}${app}?%%params\&req=main#g" > ${tmp_dir}/${def}
+            cat ${tmp_dir}/${def} > ${www}/def/${def}
+            echo "updated $def"
           fi
         done
 
@@ -284,7 +284,7 @@ if [ "$param" = "reg.replica" ];then
         fi
       done
 
-      chown -R small-shell:small-shell ${www}/descriptor
+      chown -R small-shell:small-shell ${www}/def
       chown -R small-shell:small-shell ${www}/html
 
       # update controller and auth
@@ -307,7 +307,7 @@ if [ "$param" = "reg.replica" ];then
 
       chown -R small-shell:small-shell ${www}/cgi-bin
 
-      # update descriptor for scratch APP
+      # update def for scratch APP
       for app in $(ls ${cgi_dir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
       | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null)
       do
@@ -315,28 +315,28 @@ if [ "$param" = "reg.replica" ];then
         if [ "$type3_chk" ];then
           subapps=$(cat ${cgi_dir}/${app} | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g")
     
-          for target in $(ls ${www}/descriptor/${app}_get* | grep -v .org$ | xargs basename -a)
+          for target in $(ls ${www}/def/${app}_get* | grep -v .org$ | xargs basename -a)
           do
-            if [ ! -f ${www}/descriptor/${target}.org ];then
-              cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org  
+            if [ ! -f ${www}/def/${target}.org ];then
+              cp ${www}/def/${target} ${www}/def/${target}.org  
             fi
-            cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
+            cat ${www}/def/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
             |$SED "s#./${app}?%%params\&req=del\&id=%%id#${base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
-            cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
+            cat ${tmp_dir}/${target} > ${www}/def/${target}
             echo "updated $target"
           done
        
           if [ "$subapps" ];then
             for subapp in $subapps
             do
-              for target in $(ls ${www}/descriptor/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null)
+              for target in $(ls ${www}/def/${subapp}_get* | grep -v .org$ | xargs basename -a 2>/dev/null)
               do
-                if [ ! -f ${www}/descriptor/${target}.org ];then
-                  cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+                if [ ! -f ${www}/def/${target}.org ];then
+                  cp ${www}/def/${target} ${www}/def/${target}.org
                 fi
-                cat ${www}/descriptor/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
+                cat ${www}/def/${target} | $SED "s#./${app}?%%params&req=set\&id=%%id#${base_url}${app}?%%params\&req=set\&id=%%id#g" \
                 |$SED "s#./${app}?%%params\&req=del\&id=%%id#${base_url}${app}?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
-                cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
+                cat ${tmp_dir}/${target} > ${www}/def/${target}
                 echo "updated $target"
               done
             done
@@ -345,21 +345,21 @@ if [ "$param" = "reg.replica" ];then
       done
     
       # update base APP
-      for target in $(ls ${www}/descriptor/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null) 
+      for target in $(ls ${www}/def/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null) 
       do
-        if [ ! -f ${www}/descriptor/${target}.org ];then
-          cp ${www}/descriptor/${target} ${www}/descriptor/${target}.org
+        if [ ! -f ${www}/def/${target}.org ];then
+          cp ${www}/def/${target} ${www}/def/${target}.org
         fi
-        cat ${www}/descriptor/${target} | $SED "s#./base?%%params&req=set\&id=%%id#${base_url}base?%%params\&req=set\&id=%%id#g" \
+        cat ${www}/def/${target} | $SED "s#./base?%%params&req=set\&id=%%id#${base_url}base?%%params\&req=set\&id=%%id#g" \
         |$SED "s#./base?%%params\&req=get\&id=%%id#${base_url}base?%%params\&req=get\&id=%%id#g" \
         |$SED "s#./base?%%params\&req=del\&id=%%id#${base_url}base?%%params\&req=del\&id=%%id#g" > ${tmp_dir}/${target}
-        cat ${tmp_dir}/${target} > ${www}/descriptor/${target}
+        cat ${tmp_dir}/${target} > ${www}/def/${target}
         echo "updated $target"
       done
     
-      cp ${www}/descriptor/import_form.html.def ${www}/descriptor/import_form.html.def.org
-      cat ${www}/descriptor/import_form.html.def | $SED "s#action=\"./base#action=\"${base_url}base#g" > ${tmp_dir}/import_form.html.def
-      cat ${tmp_dir}/import_form.html.def > ${www}/descriptor/import_form.html.def
+      cp ${www}/def/import_form.html.def ${www}/def/import_form.html.def.org
+      cat ${www}/def/import_form.html.def | $SED "s#action=\"./base#action=\"${base_url}base#g" > ${tmp_dir}/import_form.html.def
+      cat ${tmp_dir}/import_form.html.def > ${www}/def/import_form.html.def
       echo "updated import_form.html.def"
 
 
@@ -368,8 +368,8 @@ if [ "$param" = "reg.replica" ];then
       echo "cluster_base_url=\"${cluster_base_url}\"" >> ${ROOT}/web/base
       echo "cluster_static_url=\"${cluster_static_url}\"" >> ${ROOT}/web/base
       echo "replica_hosts=\"${replica}\"" >> ${ROOT}/web/base
-      echo "cluster_base_url=\"${cluster_base_url}\"" >> ${www}/descriptor/.small_shell_conf
-      echo "replica_hosts=\"${replica}\"" >> ${www}/descriptor/.small_shell_conf
+      echo "cluster_base_url=\"${cluster_base_url}\"" >> ${www}/def/.small_shell_conf
+      echo "replica_hosts=\"${replica}\"" >> ${www}/def/.small_shell_conf
 
       # initialiize .rep.def
       cat <<EOF > ${ROOT}/util/scripts/.rep.def 
@@ -399,9 +399,9 @@ EOF
       cat ${ROOT}/web/.base > ${ROOT}/web/base
     
       # update small_shell_conf
-      cat ${www}/descriptor/.small_shell_conf | grep -v replica_hosts=\" > ${www}/descriptor/.small_shell_conf.tmp
-      echo "replica_hosts=\"${new_replica_hosts}\"" >> ${www}/descriptor/.small_shell_conf.tmp
-      cat ${www}/descriptor/.small_shell_conf.tmp > ${www}/descriptor/.small_shell_conf
+      cat ${www}/def/.small_shell_conf | grep -v replica_hosts=\" > ${www}/def/.small_shell_conf.tmp
+      echo "replica_hosts=\"${new_replica_hosts}\"" >> ${www}/def/.small_shell_conf.tmp
+      cat ${www}/def/.small_shell_conf.tmp > ${www}/def/.small_shell_conf
 
     fi
 
@@ -570,16 +570,16 @@ if [ "$param" = "reg.master" ];then
   # remove local APP 
   rm -rf ${www}/html/base
   rm -f ${www}/bin/*.sh
-  rm -f ${www}/descriptor/*.html.def
-  rm -f ${www}/descriptor/*.css.def
-  rm -f ${www}/descriptor/common_parts/*
+  rm -f ${www}/def/*.html.def
+  rm -f ${www}/def/*.css.def
+  rm -f ${www}/def/common_parts/*
   rm -f ${www}/cgi-bin/*
 
   # backup small_shell_conf
-  mv ${www}/descriptor/.small_shell_conf ${www}/descriptor/small_shell_conf.org
+  mv ${www}/def/.small_shell_conf ${www}/def/small_shell_conf.org
 
   # get latest codes from master
-  sudo -u small-shell scp -r small-shell@${master}:${www}/descriptor ${www}
+  sudo -u small-shell scp -r small-shell@${master}:${www}/def ${www}
   sudo -u small-shell scp -r small-shell@${master}:${www}/html ${www}
   sudo -u small-shell scp -r small-shell@${master}:${cgi_dir}/* ${cgi_dir}
   sudo -u small-shell scp -r small-shell@${master}:${www}/bin ${www}
@@ -603,10 +603,10 @@ if [ "$param" = "reg.master" ];then
   done
 
   # update desc/.small-shell_conf
-  cat ${www}/descriptor/small_shell_conf.org | grep -v master=\" | grep -v replica=\" > ${tmp_dir}/small_shell_conf
+  cat ${www}/def/small_shell_conf.org | grep -v master=\" | grep -v replica=\" > ${tmp_dir}/small_shell_conf
   echo "master=\"${master}\"" >> ${tmp_dir}/small_shell_conf
-  cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
-  rm -f ${www}/descriptor/small_shell_conf.org 
+  cat ${tmp_dir}/small_shell_conf > ${www}/def/.small_shell_conf
+  rm -f ${www}/def/small_shell_conf.org 
 
   # update api authkey
   api_authkey=$(sudo -u small-shell ssh $master cat ${ROOT}/web/base | grep api_authkey \
@@ -623,7 +623,7 @@ if [ "$param" = "reg.master" ];then
   echo "authkey=\"${sys_authkey}\"" > ${ROOT}/util/scripts/.authkey
 
 
-  chown -R small-shell:small-shell ${www}/descriptor
+  chown -R small-shell:small-shell ${www}/def
   chown -R small-shell:small-shell ${www}/html
 
   echo "---------------------------------------------------------------"
@@ -666,8 +666,8 @@ EOF
     cat ${ROOT}/web/base | grep -v cluster_server=\" | grep -v cluster_static_url=\" \
     | grep -v cluster_base_url=\" | grep -v replica_hosts=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
-    cat ${www}/descriptor/.small_shell_conf | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/small_shell_conf
-    cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
+    cat ${www}/def/.small_shell_conf | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/small_shell_conf
+    cat ${tmp_dir}/small_shell_conf > ${www}/def/.small_shell_conf
 
 
     . ${ROOT}/util/scripts/.authkey
@@ -676,16 +676,16 @@ EOF
       ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
     fi
 
-    # restore descriptor
-    for bkup in $(ls ${www}/descriptor/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
+    # restore def
+    for bkup in $(ls ${www}/def/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
        target=$(echo "$bkup" | awk -F ".org" '{print $1}')
-       cat ${www}/descriptor/${bkup} > ${www}/descriptor/${target}
-       rm ${www}/descriptor/${bkup} 
+       cat ${www}/def/${bkup} > ${www}/def/${target}
+       rm ${www}/def/${bkup} 
     done
 
     # restore menu
-    for bkup in $(ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
+    for bkup in $(ls ${www}/def/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
 
       app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}')
@@ -706,7 +706,7 @@ EOF
       fi
 
        target=$(echo "$bkup" | $AWK -F ".org" '{print $1}')
-       cat ${www}/descriptor/common_parts/${bkup} > ${www}/descriptor/common_parts/${target}
+       cat ${www}/def/common_parts/${bkup} > ${www}/def/common_parts/${target}
     done
 
     if [ "$permission" = "ro" ];then
@@ -722,7 +722,7 @@ EOF
       fi
     done 
 
-    chown -R small-shell:small-shell ${www}/descriptor
+    chown -R small-shell:small-shell ${www}/def
     chown -R small-shell:small-shell ${www}/html
 
     # restore controller and auth
@@ -751,15 +751,15 @@ EOF
     # update web/base desc/.small_shell_conf
     cat ${ROOT}/web/base | grep -v master=\" | grep -v cluster_server=\" | grep -v cluster_base_url=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
-    cat ${www}/descriptor/.small_shell_conf | grep -v master=\" > ${tmp_dir}/small_shell_conf
-    cat ${tmp_dir}/small_shell_conf > ${www}/descriptor/.small_shell_conf
+    cat ${www}/def/.small_shell_conf | grep -v master=\" > ${tmp_dir}/small_shell_conf
+    cat ${tmp_dir}/small_shell_conf > ${www}/def/.small_shell_conf
 
-    # restore descriptor
-    for bkup in $(ls ${www}/descriptor/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
+    # restore def
+    for bkup in $(ls ${www}/def/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
        target=$(echo "$bkup" | awk -F ".org" '{print $1}')
-       cat ${www}/descriptor/${bkup} > ${www}/descriptor/${target}
-       rm ${www}/descriptor/${bkup}
+       cat ${www}/def/${bkup} > ${www}/def/${target}
+       rm ${www}/def/${bkup}
     done
 
     . ${ROOT}/util/scripts/.authkey
@@ -769,7 +769,7 @@ EOF
     fi
 
     # restore menu
-    for bkup in $(ls ${www}/descriptor/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
+    for bkup in $(ls ${www}/def/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
       app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}')
       chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
@@ -789,8 +789,8 @@ EOF
       fi
 
        target=$(echo "$bkup" | $AWK -F ".org" '{print $1}')
-       cat ${www}/descriptor/common_parts/${target} | $SED "s#${cluster_base_url}${app}#./${app}#g" > ${tmp_dir}/${target}.menu
-       cat ${tmp_dir}/${target}.menu > ${www}/descriptor/common_parts/${target}
+       cat ${www}/def/common_parts/${target} | $SED "s#${cluster_base_url}${app}#./${app}#g" > ${tmp_dir}/${target}.menu
+       cat ${tmp_dir}/${target}.menu > ${www}/def/common_parts/${target}
     done
 
 
@@ -801,13 +801,13 @@ EOF
         cat ${www}/html/${target}/index.html | $SED "s#${cluster_base_url}#${base_url}#g" > ${tmp_dir}/${target}.index.html
         cat ${tmp_dir}/${target}.index.html > ${www}/html/${target}/index.html
         if [ -f ${cgi_dir}/_${target} ];then
-          cat ${ROOT}/web/src/descriptor/redirect.html.def | $SED "s#%%APPURL#${base_url}${target}#g" > ${www}/html/${target}/index.html
+          cat ${ROOT}/web/src/def/redirect.html.def | $SED "s#%%APPURL#${base_url}${target}#g" > ${www}/html/${target}/index.html
           mv ${cgi_dir}/_${target} ${cgi_dir}/${target}
         fi
       fi
     done 
 
-    chown -R small-shell:small-shell ${www}/descriptor
+    chown -R small-shell:small-shell ${www}/def
     chown -R small-shell:small-shell ${www}/html
 
     # restore controller and auth

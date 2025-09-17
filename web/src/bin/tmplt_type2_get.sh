@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -79,7 +79,7 @@ elif [ "$form_chk" = "multipart" ];then
 fi
 
 # render HTML
-cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
+cat %%www/def/${view} | $SED -r "s/^( *)</</1" \
 | $SED "/%%dataset/r %%www/tmp/${session}/dataset" \
 | $SED "s/%%dataset//g"\
 | $SED "/%%history/r %%www/tmp/${session}/history" \

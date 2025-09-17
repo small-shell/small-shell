@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -47,7 +47,7 @@ if [ "$type" = "rawdata" ];then
   > %%www/tmp/${session}_statistics/result
 
   # render HTML
-  cat %%www/descriptor/statistics_viewer.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/def/statistics_viewer.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%statistics/r %%www/tmp/${session}_statistics/result" \
   | $SED "s/%%statistics//g"\
   | $SED "s/%%target/${target}/g"

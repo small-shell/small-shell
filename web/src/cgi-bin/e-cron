@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load remote addr
 remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")

@@ -35,9 +35,9 @@ tmp_dir="${ROOT}/util/scripts/tmp/${random}"
 # load base 
 . ${ROOT}/web/base
 
-main="${cgi_dir}/../descriptor/${app}_main.html.def"
+main="${cgi_dir}/../def/${app}_main.html.def"
 css="${static_dir}/${app}.css"
-descriptor="${cgi_dir}/../descriptor"
+def="${cgi_dir}/../def"
 
 if [ ! "$app" ];then
   echo "error: please input APP for exporting as static site # dist.sh \$APP \$EXPORT_DIR"
@@ -61,7 +61,7 @@ fi
 
 # dist main
 cat $main | $SED "s/^ *</</g" \
-| $SED "/%%common_menu/r ${descriptor}/common_parts/${app}_common_menu" \
+| $SED "/%%common_menu/r ${def}/common_parts/${app}_common_menu" \
 | $SED "s/%%common_menu//g" | $SED "s#${static_url}${app}.css#./${app}.css#g" > ${tmp_dir}/index.html
 
 # replace images

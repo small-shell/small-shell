@@ -5,7 +5,7 @@ type=$2
 input=%%www/tmp/${session}/input
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 
 if [ "$type" = "urlenc" ];then

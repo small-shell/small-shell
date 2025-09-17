@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell params
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 echo "Content-Type: text/html"
 echo ""
@@ -13,7 +13,7 @@ if [ "$master_chk" ];then
   echo "<meta http-equiv=\"refresh\" content=\"0; url=%%master_base_url%%app\">"
 else
   message="error: it seems master server failed, please contact to webadmin"
-  cat %%www/descriptor/key_initialize_err.html.def \
+  cat %%www/def/key_initialize_err.html.def \
   | $SED "s/%%message/${message}/g"
   exit 1
 fi

@@ -44,11 +44,11 @@ fi
 # rm actionscript
 rm ${www}/bin/${app}_*
 
-# rm descriptor and index
-rm ${www}/descriptor/${app}_*
+# rm def and index
+rm ${www}/def/${app}_*
 
-if [ -f ${www}/descriptor/common_parts/${app}_common_menu ];then
-  rm ${www}/descriptor/common_parts/${app}_common_menu
+if [ -f ${www}/def/common_parts/${app}_common_menu ];then
+  rm ${www}/def/common_parts/${app}_common_menu
 fi
 
 if [ -f ${www}/html/${app}/index.html ];then

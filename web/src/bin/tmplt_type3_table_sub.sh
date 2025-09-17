@@ -8,7 +8,7 @@ keys=all
 num_of_line_per_page=12
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -268,10 +268,10 @@ else
   table=%%www/tmp/${session}/table
 fi
 
-cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
-| $SED "/%%common_menu/r %%www/descriptor/common_parts/%%parent_app_common_menu" \
+cat %%www/def/${view} | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r %%www/def/common_parts/%%parent_app_common_menu" \
 | $SED "/%%common_menu/d"\
-| $SED "/%%table_menu/r %%www/descriptor/common_parts/%%app_table_menu_${permission}" \
+| $SED "/%%table_menu/r %%www/def/common_parts/%%app_table_menu_${permission}" \
 | $SED "/%%table_menu/d"\
 | $SED "/%%table/r $table" \
 | $SED "s/%%table//g"\

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -178,10 +178,10 @@ else
    text_area_row=10
 fi
 
-cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
+cat %%www/def/${view} | $SED -r "s/^( *)</</1" \
 | $SED "s/%%form-class/${form_class}/g" \
 | $SED "s/%%text_area_row/${text_area_row}/g" \
-| $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
+| $SED "/%%common_menu/r %%www/def/common_parts/common_menu" \
 | $SED "/%%common_menu/d" \
 | $SED "s/%%user/${user_name}/g"\
 | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \

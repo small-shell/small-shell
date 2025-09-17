@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -49,7 +49,7 @@ if [ ! "$data_import_session" ];then
   action:get id:$id type:log format:html_tag > %%www/tmp/${session}_log/log
 
   # render HTML
-  cat %%www/descriptor/log_viewer.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/def/log_viewer.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%log/r %%www/tmp/${session}_log/log" \
   | $SED "s/%%log//g"\
   | $SED "s/%%id/${id}/g"
@@ -60,7 +60,7 @@ else
   ${small_shell_path}/bin/meta get.progress:$data_import_session > %%www/tmp/${session}_log/log
 
   # render HTML
-  cat %%www/descriptor/import_log_viewer.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/def/import_log_viewer.html.def | $SED -r "s/^( *)</</1" \
   | $SED "s/%%data_import_session/${data_immport_session}/g"\
   | $SED "/%%log/r %%www/tmp/${session}_log/log" \
   | $SED "s/%%log/-----------------------\n<b>#DATA IMPORT SESSION<\/b>\n------------------------\n/g"

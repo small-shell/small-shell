@@ -4,10 +4,10 @@ echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load remote addr and user_agent
 remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")

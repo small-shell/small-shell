@@ -5,7 +5,7 @@ databox=%%databox
 keys=all
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -55,7 +55,7 @@ else
 fi
 
 # render HTML
-cat %%www/descriptor/%%app_log_viewer.html.def | $SED -r "s/^( *)</</1" \
+cat %%www/def/%%app_log_viewer.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%log/r %%www/tmp/${session}_log/log" \
 | $SED "s/%%log//g"\
 | $SED "s/%%id/${id}/g"

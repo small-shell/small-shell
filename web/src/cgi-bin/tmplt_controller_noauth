@@ -7,7 +7,7 @@
 authkey="%%authkey"
 
 # load small-shell params
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load header
 remote_addr=$(echo "$REMOTE_ADDR" | $SED "s/:/-/g")

@@ -6,7 +6,7 @@ session=$2
 pin=$3
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # set basic params
 tmp=%%www/tmp/${session}
@@ -278,7 +278,7 @@ if [ $righth -eq 1 ];then
 
   if [ "$export_key" = "yes" ];then
     rand=$($META get.rand)
-    cat ${small_shell_path}/web/src/descriptor/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
+    cat ${small_shell_path}/web/src/def/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
     | ${SED} "s/%%rand/${rand}/g" | ${SED} "s/%%app/${app}/g" >> ${tmp}/righth.tmp
 
   fi
@@ -331,23 +331,23 @@ else
 fi
 
 # update main.html.def
-cat %%www/descriptor/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
+cat %%www/def/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%description/r ${tmp}/body.tmp" | $SED "s/%%description//g" \
 | $SED "/%%leftnav/r ${tmp}/leftnav.tmp" | $SED "s/%%leftnav//g" \
 | $SED "/%%righth/r ${tmp}/righth.tmp" | $SED "s/%%righth//g" \
 | $SED "/%%lefth/r ${tmp}/lefth.tmp" | $SED "s/%%lefth//g" \
 | $SED "/%%footer/r ${tmp}/footer.tmp" | $SED "s/%%footer//g" \
 | $SED "s/?req=/?%%session\&req=/g"\
-> %%www/descriptor/${app}_main.html.def
+> %%www/def/${app}_main.html.def
 
 # update common menu
 cat ${tmp}/righth.tmp | grep \<li\> | $SED "s/?req=/?%%session\&req=/g" \
-> %%www/descriptor/common_parts/${app}_common_menu
+> %%www/def/common_parts/${app}_common_menu
 
 if [ "$export_key" = "yes" ];then
-  cat ${small_shell_path}/web/src/descriptor/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
+  cat ${small_shell_path}/web/src/def/common_parts/tmplt_common_menu_button | grep -v "^<li>" \
   | ${SED} "s/%%rand/${rand}/g" | ${SED} "s/%%app/${app}/g" \
-  >> %%www/descriptor/common_parts/${app}_common_menu
+  >> %%www/def/common_parts/${app}_common_menu
 fi
 
 exit 0

@@ -9,7 +9,7 @@ IP_persistence="no"
 User_agent_persistence="yes"
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load header
 if [ "$IP_persistence" = "yes" ];then
@@ -166,7 +166,7 @@ case "$req" in
     %%www/bin/table.sh databox:$databox session:$session user_name:$user_name pin:$pin page:$page table_command:$table_command line:$line;;
 
   "get")
-    # if its replica host, master definition will be in ./descriptor/.small-shell.conf
+    # if its replica host, master definition will be in ./def/.small-shell.conf
     if [ ! "$master" ];then
       %%www/bin/get.sh databox:$databox session:$session user_name:$user_name pin:$pin id:$id duplicate:$duplicate
     else
@@ -190,7 +190,7 @@ case "$req" in
     %%www/bin/log_viewer.sh databox:$databox session:$session pin:$pin id:$id data_import_session:$data_import_session ;;
 
   "import")
-    # master param must be loaded on ./descriptor/.small-shell.conf
+    # master param must be loaded on ./def/.small-shell.conf
     if [ ! "$master" ];then
       %%www/bin/import.sh databox:$databox session:$session pin:$pin user_name:$user_name \
       remote_addr:${remote_addr} user_agent:${user_agent}

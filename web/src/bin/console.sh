@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -106,16 +106,16 @@ if [ "$command" ];then
   databox:$databox type:$type command:$command > %%www/tmp/${session}/exec
   commands=$(${small_shell_path}/bin/meta get.command | $SED "s/ /, /g")
 
-  cat %%www/descriptor/console.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/def/console.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%result/r %%www/tmp/${session}/exec" \
   | $SED "/%%result/d"\
   | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
   | $SED "s/%%databox_list//g"\
   | $SED "s/%%commands/${commands}/g" \
-  | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu_${permission}" \
+  | $SED "/%%common_menu/r %%www/def/common_parts/common_menu_${permission}" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+  | $SED "/%%footer/r %%www/def/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
@@ -149,17 +149,17 @@ elif [ "$statistics" ];then
   fi
 
   commands=$(${small_shell_path}/bin/meta get.command | $SED "s/ /, /g")
-  cat %%www/descriptor/console_statistics.html.def | $SED -r "s/^( *)</</1" \
+  cat %%www/def/console_statistics.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%statistics/r %%www/tmp/${session}/statistics" \
   | $SED "/%%statistics/d"\
   | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
   | $SED "s/%%databox_list//g"\
   | $SED "s/%%commands/${commands}/g" \
   | $SED "s/%%filters/${filters}/g" \
-  | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu_${permission}" \
+  | $SED "/%%common_menu/r %%www/def/common_parts/common_menu_${permission}" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+  | $SED "/%%footer/r %%www/def/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -78,11 +78,11 @@ if [ ! -d %%www/tmp/${session}/binary_file  ];then
   fi
 
   # render form HTML
-  cat %%www/descriptor/${view} | $SED -r "s/^( *)</</1" \
-  | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
+  cat %%www/def/${view} | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r %%www/def/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+  | $SED "/%%footer/r %%www/def/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
   | $SED "s/%%databox_list//g"\
@@ -106,11 +106,11 @@ else
   fi
 
   # render HTML
-  cat %%www/descriptor/import.html.def | $SED -r "s/^( *)</</1" \
-  | $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu" \
+  cat %%www/def/import.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%common_menu/r %%www/def/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+  | $SED "/%%footer/r %%www/def/common_parts/footer" \
   | $SED "/%%footer/d"\
   | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
   | $SED "s/%%databox_list//g"\

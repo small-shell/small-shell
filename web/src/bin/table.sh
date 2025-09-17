@@ -4,7 +4,7 @@
 num_of_line_per_page=12
 
 # load small-shell conf
-. %%www/descriptor/.small_shell_conf
+. %%www/def/.small_shell_conf
 
 # load query string param
 for param in $(echo $@)
@@ -274,12 +274,12 @@ else
   table=%%www/tmp/${session}/table
 fi  
 
-cat %%www/descriptor/table.html.def | $SED -r "s/^( *)</</1" \
-| $SED "/%%common_menu/r %%www/descriptor/common_parts/common_menu_${permission}" \
+cat %%www/def/table.html.def | $SED -r "s/^( *)</</1" \
+| $SED "/%%common_menu/r %%www/def/common_parts/common_menu_${permission}" \
 | $SED "/%%common_menu/d"\
-| $SED "/%%table_menu/r %%www/descriptor/common_parts/table_menu_${permission}" \
+| $SED "/%%table_menu/r %%www/def/common_parts/table_menu_${permission}" \
 | $SED "/%%table_menu/d"\
-| $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
+| $SED "/%%footer/r %%www/def/common_parts/footer" \
 | $SED "/%%footer/d"\
 | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
 | $SED "s/%%databox_list//g"\
