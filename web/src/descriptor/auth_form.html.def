@@ -27,15 +27,20 @@
 
     <script>
 
-      // handle key
-      const dummyValue = '***************************'
+     // handle key
+      const dummyValue = '***************************';
       const storedKey = localStorage.getItem("small_shell_authkey_%%rand");
+      let initValue = 'no';
+
+      if ( storedKey !== null ){
+        initValue = 'yes';
+      }
 
       window.onload = function() {
         if (storedKey !== null) {
           document.getElementById("dummy").value = dummyValue;
           document.getElementById("small_shell_authkey_%%rand").value = storedKey;
-        }
+         }
       }
 
       function dummyFormatChk(str) {
@@ -46,14 +51,24 @@
         return /^[^:]+:[^:]+$/.test(str);
       }
 
-      function keyAlert(str) {
-        alert('key value is changed, please reload this page');
-        document.getElementById("dummy").value = '';
+      function keyAlert() {
+        if ( initValue == 'yes' ) {
+          let errMessage = document.getElementById("message"); 
+          if ( errMessage == null ){
+            alert('key value is changed, please reload this page');
+            document.getElementById("dummy").value = '';
+          } else {
+            alert('key format is wrong');
+            document.getElementById("dummy").value = '';
+          }
+        } else {
+          alert('key format is wrong');
+        }
       }   
           
       function setKey() {
         let newValue = document.getElementById("dummy").value;
-        if (newValue !== dummyValue) {
+        if (newValue !== dummyValue ) {
           let dummyChkresult = dummyFormatChk(newValue);
           if (dummyChkresult === false){ 
             let newKey = newValue.replace(/^[^:]+:/, '');

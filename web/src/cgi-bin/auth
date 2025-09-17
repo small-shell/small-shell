@@ -167,7 +167,7 @@ if [ "$received_authkey" ];then
   else
     # render standard login form with error message
     cat %%www/descriptor/auth_form.html.def | $SED -r "s/^( *)</</1" \
-    | $SED "s/%%message/<p><b>! Key is wrong<\/b><\/p>/g" \
+    | $SED "s/%%message/<p id=\"message\"><b>! Key is wrong<\/b><\/p>/g" \
     | $SED "/%%auth_form_menu/r %%www/descriptor/common_parts/auth_form_menu" \
     | $SED "s/%%auth_form_menu//g"\
     | $SED "/%%footer/r %%www/descriptor/common_parts/footer" \
