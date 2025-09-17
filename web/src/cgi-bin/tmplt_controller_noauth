@@ -5,7 +5,6 @@
 ##########################################
 
 authkey="%%authkey"
-IP_whitelisting=%%IP_whitelisting
 
 # load small-shell params
 . %%www/descriptor/.small_shell_conf

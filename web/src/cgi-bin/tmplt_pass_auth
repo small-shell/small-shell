@@ -3,7 +3,6 @@
 ###############################
 # auth for PassCode APP
 ###############################
-IP_whitelisting=%%IP_whitelisting
 
 # set persistence option
 IP_persistence="no"
