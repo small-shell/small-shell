@@ -2847,8 +2847,8 @@ if [ "$param" = "-app" ];then
 
         for src in $(ls ${ROOT}/web/src/def | grep tmplt | grep -v type2 | grep -v auth | xargs basename -a)
         do
-          html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3//g")
-          cat ${ROOT}/web/src/def/${src} | $SED "s/.\/%%app/.\/${parent_app}/g" | $SED "s#%%static_url/#${static_url}#g" \
+          html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
+          cat ${ROOT}/web/src/def/${src} | $SED "s/\".\/%%app/\".\/${parent_app}/g" | $SED "s#%%static_url/#${static_url}#g" \
           | $SED "s/%%app/${parent_app}/g" | $SED "s/%%databox/${databox}/g" > ${www}/def/${app}_${html_def}
         done
 
