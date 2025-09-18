@@ -2522,7 +2522,7 @@ if [ "$param" = "-app" ];then
           chmod 755 ${www}/bin/${app}*
 
           . ${ROOT}/web/.rand
-          for src in $(ls ${ROOT}/web/src/def | grep tmplt | grep -v type2 | grep -v pass_auth | xargs basename -a)
+          for src in $(ls ${ROOT}/web/src/def | grep tmplt | grep -v type2 | grep -v pass_auth | grep -v other_auth | xargs basename -a)
           do
             html_def=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
             cat ${ROOT}/web/src/def/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%rand/${rand}/g" \
