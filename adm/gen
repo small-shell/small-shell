@@ -3352,7 +3352,7 @@ if [ "$param" = "-job" ];then
     echo "test" > ${file_que}/e-cron_test
     chown small-shell:small-shell ${file_que}/e-cron_test
     push_file=e-cron_test
-    result=$($CURL -X POST "${hub_api}?req=push&filename=${push_file}" \
+    push_result=$($CURL -X POST "${hub_api}?req=push&filename=${push_file}" \
     -H "Content-Type:application/octet-stream" -H "X-small-shell-authkey:${authkey}" \
     --data-binary @${file_que}/${push_file})
 
