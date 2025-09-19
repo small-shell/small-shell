@@ -62,7 +62,8 @@ fi
 # dist main
 cat $main | $SED "s/^ *</</g" \
 | $SED "/%%common_menu/r ${def}/common_parts/${app}_common_menu" \
-| $SED "s/%%common_menu//g" | $SED "s#${static_url}${app}.css#./${app}.css#g" > ${tmp_dir}/index.html
+| $SED "s/%%common_menu//g" | $SED "s#${static_url}${app}.css#./${app}.css#g" \
+| grep -v ${static_url}simple-calendar > ${tmp_dir}/index.html
 
 # replace images
 grep "<img src=" ${tmp_dir}/index.html | grep images > ${tmp_dir}/.images
