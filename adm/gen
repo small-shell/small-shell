@@ -3322,6 +3322,7 @@ if [ "$param" = "-job" ];then
     
     echo -n "HUB API URL: "
     read hub_api
+    hub_api=$(echo $hub_api | sed "s/\"//g")
     while [ ! "$hub_api" ]
     do
       echo "seems input is null, please try again"
@@ -3331,6 +3332,7 @@ if [ "$param" = "-job" ];then
 
     echo -n "API authkey: "
     read authkey
+    authkey=$(echo $authkey | sed "s/\"//g")
     while [ ! "$authkey" ]
     do
       echo "seems input is null, please try again"
