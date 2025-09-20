@@ -227,6 +227,7 @@ do
 
    # Add Calendar
    elif [[ "$line" == %%calendar ]];then
+     calendar_flg=yes
      echo "<div id=\"my-calendar\"></div>" >> ${tmp}/body.tmp
      echo "%%event_add_btn" >> ${tmp}/body.tmp
      cat <<EOF > ${tmp}/calendar.js.tmp
@@ -357,6 +358,13 @@ cat %%www/def/${app}_main.html.incmd.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%extension_area/r ${tmp}/calendar.js.tmp" | $SED "s/%%extension_area/handle calendar/g" \
 | $SED "s/?req=/?%%session\&req=/g"\
 > %%www/def/${app}_main.html.def
+
+if [ "$calendar_flg" = "yes" ];then
+  cat %%www/def/${app}_main.html.def \
+  | $SED "s/<\!-- %%extension-lib //g" | $SED "s/ for simple-calendar -->//g" > %%www/def/.${app}_main.html.def.tmp
+  cp %%www/def/.${app}_main.html.def.tmp %%www/def/${app}_main.html.def
+  rm -f %%www/def/.${app}_main.html.def.tmp
+fi
 
 # update common menu
 cat ${tmp}/righth.tmp | grep \<li\> | $SED "s/?req=/?%%session\&req=/g" \
