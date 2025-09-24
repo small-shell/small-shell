@@ -18,8 +18,23 @@ if [ ! "$WHOAMI" = "small-shell" ];then
   exit 1
 fi
 
-if [ ! $import_file ];then
-  echo "error: import file does not exist"
+if [ ! "$authkey" ];then
+  echo "error: please input authkey #bat_import.sh \$authkey \$databox \$import_file"
+  exit 1
+fi
+
+if [ ! "$databox" ];then
+  echo "error: please input databox #bat_import.sh \$authkey \$databox \$import_file"
+  exit 1
+fi
+
+if [ ! "$import_file" ];then
+  echo "error: please input import file #bat_import.sh \$authkey \$databox \$import_file"
+  exit 1
+fi
+
+if [ ! -f $import_file ];then
+  echo "error: file does not exist"
   exit 1
 fi
 

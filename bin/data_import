@@ -2,7 +2,7 @@
 
 #------------------------------------------------------------------------------------
 # usage: ./data_import importfile:$import_file databox:$databox \
-  session:$session pin:$pin remote_addr:$remote_addr user_agent:$user_agent
+#        session:$session pin:$pin remote_addr:$remote_addr user_agent:$user_agent
 #------------------------------------------------------------------------------------
 
 # global conf load
