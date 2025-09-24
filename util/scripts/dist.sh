@@ -62,7 +62,8 @@ fi
 # dist main
 cat $main | $SED "s/^ *</</g" \
 | $SED "/%%common_menu/r ${def}/common_parts/${app}_common_menu" \
-| $SED "s/%%common_menu//g" | $SED "s#${static_url}${app}.css#./${app}.css#g" > ${tmp_dir}/index.html
+| $SED "s/%%common_menu//g" | $SED "s#${static_url}#./#g" \
+| $SED "s#./$app?%%session&req=main##g" > ${tmp_dir}/index.html
 
 # replace images
 grep "<img src=" ${tmp_dir}/index.html | grep images > ${tmp_dir}/.images
@@ -105,6 +106,7 @@ if [ "$calendar_chk" ];then
   | $SED "s/%%event_add_btn//g" > ${tmp_dir}/.index.html.tmp
   cat ${tmp_dir}/.index.html.tmp > ${tmp_dir}/index.html
   rm -f ${tmp_dir}/events
+  cp ${static_dir}/simple-calendar* ${tmp_dir}/
 fi
 
 # dist css
