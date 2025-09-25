@@ -55,7 +55,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shell tour</a>
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shells</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
 </li>
                                     
 <li>
@@ -193,7 +193,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="app-shell">APP Shell</h1>
-<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so it's recommended to generate scratch APP for editting codes freely without any impact to base layer. as for portal page you can edit it very easily by using both markdown and HTML, please check <a href="../cook_book/#portal-page-cooking">cookbook</a></p>
+<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so it's recommended to generate custom APP for editting codes freely without any impact to base layer. as for portal page you can edit it very easily by using both markdown and HTML, please check <a href="../cook_book/#portal-page-cooking">cookbook</a></p>
 <h6 id="types-of-small-shell-app">Types of small-shell APP</h6>
 <table>
 <thead>
@@ -224,7 +224,7 @@
 <td>Just push new data through dedicated Form</td>
 </tr>
 <tr>
-<td><a href="../app_shell_scratch/">Shared Pass APP</a></td>
+<td><a href="../app_shell_custom/">Shared Pass APP</a></td>
 <td>Shared Pass Code</td>
 <td>portal,table,form,log</td>
 <td>Specific Databox</td>
@@ -232,7 +232,7 @@
 <td>Limitted &amp; controllable</td>
 </tr>
 <tr>
-<td><a href="../app_shell_scratch/">Key APP</a></td>
+<td><a href="../app_shell_custom/">Key APP</a></td>
 <td>Base64 encrypted Key</td>
 <td>portal,table,form,log</td>
 <td>Specific Databox</td>
@@ -240,7 +240,7 @@
 <td>Limitted &amp; controllable</td>
 </tr>
 <tr>
-<td><a href="../app_shell_scratch/">Other</a></td>
+<td><a href="../app_shell_custom/">Other</a></td>
 <td>Any #Oauth other</td>
 <td>portal,table,form,log</td>
 <td>Specific Databox</td>
@@ -248,7 +248,7 @@
 <td>Limitted &amp; controllable</td>
 </tr>
 <tr>
-<td><a href="../app_shell_scratch/">No auth APP</a></td>
+<td><a href="../app_shell_custom/">No auth APP</a></td>
 <td>No authentication</td>
 <td>portal,table,form</td>
 <td>Specific Databox</td>
@@ -268,7 +268,7 @@ then start dialog by gen command.</p>
 <pre><code># Dialog
 -----------------------------------------------------------------
 sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1
 Type of Server (1.small-shell Web srv | 2.other Web srv): 1
 Protocol (http | https): https
 Web Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.XXXX.com
@@ -452,8 +452,8 @@ $cgi_dir (/var/www/cgi-bin #default)
  |- auth.base # Base APP authenticator
  |- api
  |- e-cron
- |- $app # scratch APP controller
- |- auth.$app # scratch APP authenticator
+ |- $app # custom APP controller
+ |- auth.$app # custom APP authenticator
 
 # Model
 $bin (/var/www/bin)
@@ -476,7 +476,7 @@ $app (/var/www/app)
 $tmp (/var/www/tmp)
 </code></pre>
 <h5 id="data-flow">Data flow</h5>
-<p>Following is a data flow of APP shell it will be used as Base APP or Scratch APP
+<p>Following is a data flow of APP shell it will be used as Base APP or Custome APP
 <img alt="Screenshot" src="../img/standard_flow.png" /></p>
 <h5 id="url-design">URL design</h5>
 <p>Query string will be loaded same name of valiables in the APP</p>
@@ -786,7 +786,7 @@ curl.exe -X GET "${command_api}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-
 <p>When you upgrade SSL cert and key for small-shell default Web server, you need to re-generate Base APP by gen command. all service will be down during this upgrade.</p>
 <pre><code>/usr/local/small-shell/gen -app
 -----------------------------------------------
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1
 ------------------------------------------------
 -&gt; dialog will be started
 </code></pre>

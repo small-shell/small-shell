@@ -55,7 +55,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shell tour</a>
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shells</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
 </li>
                                     
 <li>
@@ -100,7 +100,7 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../app_shell_scratch/" class="nav-link">
+                                <a rel="prev" href="../app_shell_custom/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -127,43 +127,40 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
+            <li class="nav-item" data-bs-level="1"><a href="#cook-book" class="nav-link">Cook book</a>
+              <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#cook-prototype-app" class="nav-link">Cook prototype APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#set-notification-mail" class="nav-link">Set notification mail</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#portal-page-cooking" class="nav-link">Portal page cooking</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#automate-ssl-cert-deployment" class="nav-link">Automate SSL cert deployment</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#make-replica-for-load-balancing" class="nav-link">Make replica for load balancing</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#backup-restore-example" class="nav-link">Backup &amp; Restore example</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#dictionary-create-lang-pack" class="nav-link">Dictionary (create lang pack)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
             <li class="nav-item" data-bs-level="2"><a href="#log-analyzer" class="nav-link">Log analyzer</a>
               <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -171,7 +168,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<p>In this course, you can learn how utilize APPs { Base APP, Scratch APP, Form } and also you can check utilitise such like ssl cert deployment automation, replication, backup and so on.</p>
+<h1 id="cook-book">Cook book</h1>
+<p>In this page, you can learn how utilize APPs { Base APP, Custom APP, Form } and also you can check add-on tools for ssl cert deployment automation, replication, backup and so on.</p>
 <h2 id="cook-prototype-app">Cook prototype APP</h2>
 <p>In this prototype APP construction work, these APPs in following chart will be created. </p>
 <table>
@@ -194,7 +192,7 @@
 </tr>
 <tr>
 <td>book_search</td>
-<td>Scratch APP</td>
+<td>Custom APP</td>
 <td>book.master</td>
 <td>End user</td>
 <td>Allow limitted access to the master data</td>
@@ -239,14 +237,14 @@ sudo /usr/local/small-shell/util/scripts/bat_gen.sh ./request.db.def
 <h3 id="launch-base-app">Launch Base APP</h3>
 <p>Launch Base APP by refering to <a href="../quick_start_linux/">Quick start</a></p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1  
 #-&gt; Dialog will be started, for making Base APP
 </code></pre>
-<h3 id="create-scratch-app">Create scratch APP</h3>
+<h3 id="create-custom-app">Create custom APP</h3>
 <p>Once databoxes and Base APP is created, let's move on to create APPs. </p>
 <h4 id="create-main-app">Create Main APP</h4>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app 
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3
 APP Name: book_search
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
 Primary Databox: book.master
@@ -254,7 +252,7 @@ Primary Databox: book.master
 <h4 id="add-sub-app">Add sub APP</h4>
 <p>Add databox to Main APP by utilizing sub APP. this sub APP is used for searching book resource and location.</p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app 
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3
 APP Name: location_search@book_search
 Subapp databox: book.res
 </code></pre>
@@ -412,7 +410,7 @@ cat ../def/${view} | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 <h3 id="generate-form">Generate form</h3>
 <p>Form for requesting book exmpale is as following. </p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 2
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 2
 </code></pre>
 <h5 id="result-of-dialog">result of dialog</h5>
 <pre><code>APP Type: 2.FORM
@@ -611,7 +609,7 @@ sudo chown small-shell:small-shell /usr/local/small-shell/util/scripts/status_up
 <pre><code>sudo /usr/local/small-shell/adm/ops set.attr:sys{rw}
 </code></pre>
 <h4 id="push-job-to-small-shell">Push job to small-shell</h4>
-<p>Once script are created, make e-cron job as following. as for detail e-cron, please check <a href="../automation_tour/">here</a> tour.</p>
+<p>Once script are created, make e-cron job as following. as for detail e-cron, please check <a href="../automation_tour/">here</a>.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>Dialog will be started.</p>
@@ -653,7 +651,7 @@ LATEST STATUS OF JOB
 </code></pre>
 <p>Once job is implemented, your prototype APP deployment is completed. please use it and have a fun!</p>
 <h2 id="set-notification-mail">Set notification mail</h2>
-<p>In this section, you can learn how to add notification mail to inquiry Form of <a href="../app_shell_scratch/#team-app">Team APP</a>
+<p>In this section, you can learn how to add notification mail to inquiry Form of <a href="../app_shell_custom/#team-app">Team APP</a>
 . you can add same code to any Form APP.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -677,7 +675,7 @@ if [ &quot;$session&quot; ];then
   rm -rf /var/www/tmp/${session}
 fi
 </code></pre>
-<p>Then you can get notification mail from inquiry APP when end user submit inquiry through Form. you can insert above code to any set action script of Form APPs or Scratch APPs.</p>
+<p>Then you can get notification mail from inquiry APP when end user submit inquiry through Form. you can insert above code to any set action script of Form APPs or Custom APPs.</p>
 <h2 id="portal-page-cooking">Portal page cooking</h2>
 <p>In this section, you can learn how you can change design of portal page of your APP. </p>
 <div class="admonition note">
@@ -685,7 +683,7 @@ fi
 <p>This is exmaple of creating kind of static portal page with no authentication and with no databox. of course any type of authentication can be selected and any databox can be attached.   </p>
 </div>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3
 APP Name: static_site
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 4
 Primary Databox: none
@@ -735,10 +733,10 @@ also you can update "menu" "logo" and "footer" on the same admin page.    </p>
 </table>
 <h3 id="insert-image">Insert image</h3>
 <p>You can upload logo or images to images.db. and then you can get link of img tag that can be utilized on body or logo field on $app.UI.md.def page.</p>
-<p><img alt="Screenshot" src="../img/scratch_app_logo.png" /></p>
+<p><img alt="Screenshot" src="../img/custom_app_logo.png" /></p>
 <h3 id="use-calendar">Use calendar</h3>
-<p>if you write down %%calendar in "Body", you can insert calendar to the Scratch APP.
-calendar events will be saved on $app.events databox that will be generated automatically when you create Scratch APP.
+<p>if you write down %%calendar in "Body", you can insert calendar to the Custom APP.
+calendar events will be saved on $app.events databox that will be generated automatically when you create Custom APP.
 <img alt="Screenshot" src="../img/calendar.png" /></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
 <p>Another way of updating portal is just editting hml.def directly {$APP_main.html.def} </p>
@@ -886,7 +884,7 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 <h4 id="generate-base-app">Generate Base APP</h4>
 <p>Base APP that will use small-shell Web srv should be launched as http server not https so far. FQDN must be same as A record that you set beforehand on your DNS server. </p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1
 Type of Server (1.small-shell Web srv | 2.other Web srv): 1
 protocol (http | https): http
 Web Server FQDN or IP addr (e.g. 192.168.10.1): $FQDN
@@ -961,7 +959,7 @@ sudo apt install lsyncd
 sudo mkdir /etc/lsyncd
 sudo apt install nginx
 sudo /usr/local/small-shell/adm/gen -databox # need to create dsataStore first
-sudo /usr/local/small-shell/adm/gen -app #Base APP (required), Scratch APP (optional)
+sudo /usr/local/small-shell/adm/gen -app #Base APP (required), Custom APP (optional)
 
 @replica
 sudo apt install rsync
@@ -1020,7 +1018,7 @@ sudo ./deploy.sh
 <h4 id="create-users-for-apps">Create users for APPs</h4>
 <p>Once replication and SSL is ready, please create users for APPs.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$user #Base APP 
-sudo /usr/local/small-shell/adm/ops add.usr:$user app:$app #Scratch APP
+sudo /usr/local/small-shell/adm/ops add.usr:$user app:$app #Custom APP
 </code></pre>
 <h4 id="add-new-app-or-rebuild-replication">Add new APP or rebuild replication.</h4>
 <p>If you will add new APP after starting replication or rebuild replication for adding new host, please remove all replication setting with purge option.</p>
@@ -1109,9 +1107,9 @@ vi keywords
 ##########################################################
 # usage: original_word{%%%%%%}translated_word
 ##########################################################
-ScratchAPP:APP Portal{%%%%%%}
-ScratchAPP:Table{%%%%%%}
-ScratchAPP:Log Out{%%%%%%}
+CustomAPP:APP Portal{%%%%%%}
+CustomAPP:Table{%%%%%%}
+CustomAPP:Log Out{%%%%%%}
 Your Key is successfully generated.{%%%%%%}
 ----
 </code></pre>

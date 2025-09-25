@@ -55,7 +55,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shell tour</a>
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shells</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
 </li>
                                     
 <li>
@@ -194,7 +194,7 @@ sudo chmod 755 /usr/local/small-shell/adm/gen
 </code></pre>
 <h2 id="generate-databox">Generate Databox</h2>
 <p>Then Let's generate databox as the data store of Web APP.
-DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
+DATA shell details are in <a href="../data_shell_tour/">DATA shell</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; dialog will be started
 </code></pre>
@@ -234,7 +234,7 @@ option=&quot;required&quot;
 Is it OK? (yes | no): yes
 </code></pre>
 <h2 id="generate-base-app">Generate Base APP</h2>
-<p>Once databox is ready, let's generate  Base APP, detail of this APP is in <a href="../app_shell_tour/">APP shell tour</a></p>
+<p>Once databox is ready, let's generate  Base APP, detail of this APP is in <a href="../app_shell_tour/">APP shell</a></p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 </code></pre>
 <p>In the dialog, if you will use https, please input path of cert and key of ssl. these cert and key will be copied to /var/www/app during dialog and https Web server will be started automatically.</p>
@@ -242,7 +242,7 @@ Is it OK? (yes | no): yes
 <p class="admonition-title">Note</p>
 <p>If you don't have any ssl certificate, ofcourse you can choose http as potocol. and if you want,  you can generate ssl certificate by using Let's encrypt. please check <a href="../cook_book/#automate-ssl-cert-deployment">cook book</a></p>
 </div>
-<pre><code>Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+<pre><code>Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1
 Type of Server (1.small-shell Web srv | 2.other Web srv): 1
 protocol (http | https): https
 Web Server FQDN or IP addr (e.g. 192.168.10.1): ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com
@@ -267,7 +267,7 @@ https://${server}/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6c
 key will be inserted automatically if it's stored in local storage. </p>
 <p><img alt="Screenshot" src="../img/key_auth.png" /></p>
 <p>Then end user can use following APP features as default. ofcourse you can make your own APP, 
-please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
+please see detail on <a href="../app_shell_custom/">Create Custom APP</a></p>
 <h4 id="base-app-features">Base APP FEATURES</h4>
 <ul>
 <li>Push or Get datas thorough simplest UI</li>
@@ -311,7 +311,7 @@ sudo rm -rf small-shell
 # re-generate Base APP
 sudo /usr/local/small-shell/adm/gen -app
 -----------------------------------------------
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1
 ------------------------------------------------
 -&gt; dialog will be started
 </code></pre></div>

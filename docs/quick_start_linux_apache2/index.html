@@ -55,7 +55,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shell tour</a>
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shells</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_scratch/" class="dropdown-item">Create Scratch APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
 </li>
                                     
 <li>
@@ -199,7 +199,7 @@ www-data   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/loc
 </code></pre>
 <h2 id="generate-databox">Generate Databox</h2>
 <p>Then Let's generate databox as the data store of Web APP.
-DATA shell details are in <a href="../data_shell_tour/">DATA shell tour</a> </p>
+DATA shell details are in <a href="../data_shell_tour/">DATA shell</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; dialog will be started
 </code></pre>
@@ -240,10 +240,10 @@ Is it OK? (yes | no): yes
 </code></pre>
 <h2 id="generate-base-app">Generate Base APP</h2>
 <p>Once at least 1 databox is ready, please generate APP shell <br />
-APP shell details are in <a href="../app_shell_tour/">APP shell tour</a> </p>
+APP shell details are in <a href="../app_shell_tour/">APP shell</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 </code></pre>
-<pre><code>Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 1  
+<pre><code>Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1  
 Type of Server (1.small-shell Web srv | 2.other Web srv): 2
 #-&gt; Dialog will be started, for making Base APP
 </code></pre>
@@ -289,7 +289,7 @@ https://${server}/cgi-bin/auth.base?initialize=*****26fd2,4c5a2ae68d20e530b4ce45
 key will be inserted automatically if it's stored in local storage. </p>
 <p><img alt="Screenshot" src="../img/key_auth.png" /></p>
 <p>Then end user can use following APP features as default. ofcourse you can make your own APP,  <br />
-please see detail on <a href="../app_shell_scratch/">Create Scratch APP</a></p>
+please see detail on <a href="../app_shell_custom/">Create Custom APP</a></p>
 <h4 id="base-app-features">Base APP FEATURES</h4>
 <ul>
 <li>Push or Get datas thorough simplest UI</li>

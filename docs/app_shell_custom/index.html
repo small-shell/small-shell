@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Create Scratch APP - small-shell.org</title>
+        <title>Create Custom APP - small-shell.org</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -55,7 +55,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shell tour</a>
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Shells</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Create Scratch APP</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Create Custom APP</a>
 </li>
                                     
 <li>
@@ -127,7 +127,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#create-scratch-app" class="nav-link">Create Scratch APP</a>
+            <li class="nav-item" data-bs-level="1"><a href="#create-custom-app" class="nav-link">Create Custom APP</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#common-step" class="nav-link">Common STEP</a>
               <ul class="nav flex-column">
@@ -145,7 +145,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#tagging-on-scratch-app" class="nav-link">Tagging on Scratch APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#tagging-on-custom-app" class="nav-link">Tagging on Custom APP</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -188,8 +188,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="create-scratch-app">Create Scratch APP</h1>
-<p>In this tour, you can learn how to make scratch APP and how to edit codes or portal page very quiickly. there are 4 types of Scratch APP as following chart. </p>
+<h1 id="create-custom-app">Create Custom APP</h1>
+<p>In this page, you can learn how to make custom APP and how to edit codes or portal page very quiickly. there are 4 types of Custom APP as following chart. </p>
 <table>
 <thead>
 <tr>
@@ -239,25 +239,25 @@
 <h4 id="required">Required</h4>
 <p>Please setup Base APP beorehand refering to <a href="../quick_start_linux/">Quick Start</a></p>
 <h2 id="common-step">Common STEP</h2>
-<p>Each types of scratch APP have common STEP for launching APP, difference is mainly authentication method.</p>
+<p>Each types of custom APP have common STEP for launching APP, difference is mainly authentication method.</p>
 <ol>
 <li>Generate DataBox for datastore #gen -databox</li>
-<li>Generate Scratch APP #gen -app</li>
+<li>Generate Custom APP #gen -app</li>
 <li>Update portal with Markdown or HTML tag #on BaseAPP</li>
 <li>Add user #key APP, other</li>
 <li>Update action scripts #optional</li>
 <li>Add subAPP #connect additional databox if needed</li>
 </ol>
-<p>Let's create scratch APP by following above steps.</p>
+<p>Let's create custom APP by following above steps.</p>
 <h4 id="generate-databox">Generate DataBox</h4>
-<p>Please generate databox that will be used for Scratch APP. </p>
+<p>Please generate databox that will be used for Custom APP. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
 <h3 id="generate-app">Generate APP</h3>
-<p>Let's start to generate scratch APP named as just test with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just test but of course you can set any prefer name you want.</p>
+<p>Let's start to generate custom APP named as just test with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just test but of course you can set any prefer name you want.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3
 APP Name: test                                                              
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):  2
 Primary databox: item.db
@@ -286,7 +286,7 @@ https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=
 <p>If you are using default Web server, your application URL must be ${FQDN}/${app} except "other" type APP. URL will be shown in the dialog of gen command.</p>
 <pre><code>e.g.) APP:test, URL:https://${FQDN}/test
 </code></pre>
-<p><img alt="Screenshot" src="../img/scratch_login.png" /></p>
+<p><img alt="Screenshot" src="../img/custom_login.png" /></p>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
 <p>If end user lost their key, you can generate URL for re-generating key.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops initialize.usr:test app:test
@@ -307,7 +307,7 @@ $descriptor(/var/www/descriptor)
 </code></pre>
 <h4 id="parameter-change-bin">Parameter change ($bin)</h4>
 <p>In this example, accesible key of databox is changed. 
-In the default permission, end user can access all keys of databox from the Scratch APP.</p>
+In the default permission, end user can access all keys of databox from the Custom APP.</p>
 <pre><code>e.g) restrict data keys
 sudo vi /var/www/bin/test_get.sh
 
@@ -323,12 +323,12 @@ keys=item_name,description
 sudo vi /var/www/descriptor/test_table.html.def
 </code></pre>
 <h2 id="use-member-list">Use member list</h2>
-<p>If you want to import user list on your APP Form. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your scratch APP. following is just example.</p>
+<p>If you want to import user list on your APP Form. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your custom APP. following is just example.</p>
 <pre><code>key(col2) name: assignee
 key(col2) label: Assignee
 data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): mls
 </code></pre>
-<h2 id="tagging-on-scratch-app">Tagging on Scratch APP</h2>
+<h2 id="tagging-on-custom-app">Tagging on Custom APP</h2>
 <p>You can add search tag to the table by ops command</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.tag:$databox{key{word}} app:$app_name
 
@@ -365,13 +365,13 @@ sudo vi /var/www/descriptor/test_get.html.def
 --------
 </code></pre>
 <h2 id="sub-app">Sub APP</h2>
-<p>Basically scratch APP connect to only 1 databox. and Sub APP is the way to add databox to your scratch APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to scratch APP that name is test. </p>
+<p>Basically custom APP connect to only 1 databox. and Sub APP is the way to add databox to your custom APP additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to custom APP that name is test. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>subAPP must be belong to parent APP, please define subapp as $subAPP_name@$parentAPP_name    </p>
 </div>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3
 APP Name: inventory@test
 Subapp databox: inventory.db
 </code></pre>
@@ -470,7 +470,7 @@ https://${FQDN}/inquiry
 <h2 id="oauth-integration">Oauth integration</h2>
 <p>If you want to use Oauth, it's recommended to select other type APP.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
-Type of APP (1.BASE | 2.FORM | 3.SCRATCH): 3  
+Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3  
 app_name: oauth_test
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 3
 </code></pre>
@@ -541,11 +541,11 @@ sudo chmod 755 /var/www/cgi-bin/auth.$app
 <p>Then you can try to connect APP through Oauth. <br />
 https://${fqdn}/cgi-bin/auth.oauth_test</p>
 <h2 id="delete-scratech-app">Delete Scratech APP</h2>
-<p>You can delete your scratch APP by using util script as following.</p>
+<p>You can delete your custom APP by using util script as following.</p>
 <pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_app.sh $app
 </code></pre>
 <h2 id="technical-tips">Technical Tips</h2>
-<p>This is a random technical Tips. It could be hint for making your own scratch APP.</p>
+<p>This is a random technical Tips. It could be hint for making your own custom APP.</p>
 <h4 id="1-get-id-keys-value">1. Get ID &amp; key's value</h4>
 <p>You can get text name using ID and key using "none" format</p>
 <h6 id="action-script-shell">@action script (shell)</h6>
