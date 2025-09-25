@@ -836,7 +836,7 @@ if [ "$command" ];then
     fi
 
     if [[ $databox == *.events ]];then
-      # handle events json for Custome APP
+      # handle events json for Custom APP
       # load base URL
       . ${ROOT}/web/base
 

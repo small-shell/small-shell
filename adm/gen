@@ -1234,11 +1234,11 @@ if [ "$param" = "-app" ];then
   fi
 
   # start dialog
-  echo -n "Type of APP (1.BASE | 2.FORM | 3.CUSTOME): "
+  echo -n "Type of APP (1.BASE | 2.FORM | 3.CUSTOM): "
   read apptype 
   while [ ! "$apptype" = "1"  -a  ! "$apptype" = "2" -a ! "$apptype" = "3" ]
   do
-    echo -n "please input number (1.BASE | 2.FORM | 3.CUSTOME) : "
+    echo -n "please input number (1.BASE | 2.FORM | 3.CUSTOM) : "
     read apptype
   done
 
@@ -2225,7 +2225,7 @@ if [ "$param" = "-app" ];then
     # load base info
     . ${ROOT}/web/base
 
-    apptype="3.CUSTOME"
+    apptype="3.CUSTOM"
     echo -n "APP Name: "
     read app
 
@@ -2789,7 +2789,7 @@ if [ "$param" = "-app" ];then
 
         clear
         echo "------------------------------------------------------------"
-        echo "Custome APP is successfully generated"
+        echo "Custom APP is successfully generated"
 
         if [ ! "$auth_method" = "other" ];then
           echo "Access URL: ${static_url}${app}"
