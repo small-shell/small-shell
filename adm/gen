@@ -2789,7 +2789,7 @@ if [ "$param" = "-app" ];then
 
         clear
         echo "------------------------------------------------------------"
-        echo "Custom APP is successfully generated"
+        echo "$app has been successfully generated"
 
         if [ ! "$auth_method" = "other" ];then
           echo "Access URL: ${static_url}${app}"
