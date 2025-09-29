@@ -62,6 +62,6 @@ if [ -d "/home/small-shell/.ssh" ];then
   (cd /home/small-shell && tar -Jcf ${bkup_dir}/${server}.ssh.tar.xz .ssh)
 fi
 
-echo "backup completed, please check $bkup_dir"
+echo "Backup has been completed, please check $bkup_dir"
 
 exit 0
