@@ -998,13 +998,12 @@ sudo snap refresh core
 sudo snap install --classic certbot 
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
-# deploy ssl atuo
+# configure ssl atuo
 cd $HOME
 git clone https://github.com/naruoken/small-shell-apps
 cd ./small-shell-apps/ssl_auto
 chmod 755 *.sh
 sudo ./configure.sh
-sudo ./deploy.sh
 
 @replica
 cd $HOME
@@ -1012,6 +1011,12 @@ git clone https://github.com/naruoken/small-shell-apps
 cd ./small-shell-apps/ssl_auto
 chmod 755 *.sh
 sudo ./configure.sh
+
+# deploy ssl auto (please execute after configuration both master and replica)
+@mastser
+sudo ./deploy.sh
+
+@replica
 sudo ./deploy.sh
 </code></pre>
 <p>If everything is no problem, https will be enabled automatically by deploy.sh. by the way configure.sh will set up reverse proxy using nginx package for flexible certification management in clustering environment. small-shell default web srv port will be changed to 8080 port.</p>
