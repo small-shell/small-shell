@@ -227,9 +227,9 @@ if [ "$param" = "reg.replica" ];then
         ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
       fi
 
-      for target in $(ls ${www}/def/common_parts/*_common_menu* | grep -v .org$ | xargs basename -a)
+      for target in $(ls ${www}/def/common_parts/*_common_menu* 2>/dev/null | grep -v .org$ | xargs basename -a 2>/dev/null)
       do
-        app=$(echo "${target}" | $AWK -F "_common_menu" '{print $1}')
+        app=$(echo "${target}" | $AWK -F "_common_menu" '{print $1}' 2>/dev/null)
         chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
 
         if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
@@ -688,7 +688,7 @@ EOF
     for bkup in $(ls ${www}/def/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
 
-      app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}')
+      app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}' 2>/dev/null)
       chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
 
       if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
@@ -771,7 +771,7 @@ EOF
     # restore menu
     for bkup in $(ls ${www}/def/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
-      app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}')
+      app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}' 2>/dev/null)
       chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
 
       if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
