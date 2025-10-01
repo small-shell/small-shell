@@ -116,7 +116,7 @@ if [ ! "$databox" ];then
 fi
 
 if [ ! -d ${ROOT}/databox/${databox} ];then
-  echo "error: databox:$databox is wrong"
+  echo "error: there is no databox:$databox"
   exit 1
 fi
 
