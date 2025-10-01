@@ -302,8 +302,8 @@ As for small-shell framework please check <a href="../app_shell_tour/#mvc-model"
 <pre><code># actionscripts
 $bin (/var/www/bin)
 
-# HTML descriptors
-$descriptor(/var/www/descriptor)
+# HTML defs
+$def(/var/www/def)
 </code></pre>
 <h4 id="parameter-change-bin">Parameter change ($bin)</h4>
 <p>In this example, accesible key of databox is changed. 
@@ -317,10 +317,10 @@ sudo vi /var/www/bin/test_get.sh
 keys=item_name,description
 --------
 </code></pre>
-<h4 id="html-descriptor-descriptor">HTML descriptor ($descriptor)</h4>
+<h4 id="html-def-def">HTML def ($def)</h4>
 <p>Draft design of HTML is already generated, and you could customize them freely.</p>
-<pre><code>sudo vi /var/www/descriptor/test_main.html.def
-sudo vi /var/www/descriptor/test_table.html.def
+<pre><code>sudo vi /var/www/def/test_main.html.def
+sudo vi /var/www/def/test_table.html.def
 </code></pre>
 <h2 id="use-member-list">Use member list</h2>
 <p>If you want to import user list on your APP Form. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your custom APP. following is just example.</p>
@@ -353,11 +353,11 @@ sudo /usr/local/small-shell/adm/ops set.attr:ken{admin=yes} app:management
 sudo -u small-shell /usr/local/small-shell/bin/meta get.attr:management/ken{admin} 
 &gt;yes
 </code></pre>
-<h6 id="update-descriptor">update descriptor</h6>
+<h6 id="update-def">update def</h6>
 <p>If you delete or put of actionlink please update get.html.def directly</p>
 <pre><code># e.g ) add delete function to test APP
-# sudo vi /var/www/descriptor/sapp_get.html.def
-sudo vi /var/www/descriptor/test_get.html.def
+# sudo vi /var/www/def/sapp_get.html.def
+sudo vi /var/www/def/test_get.html.def
 --code--
        &lt;div class=&quot;action_links&quot;&gt;
         &lt;span&gt;&lt;p style=&quot;cursor: pointer&quot; onclick=&quot;window.open('./test?%%params&amp;req=log_viewer&amp;id=%%id', 'log_viewer', 'width=820,height=280')&quot;&gt;Show data update history&lt;/p&gt;&lt;/span&gt;
@@ -385,7 +385,7 @@ cat /var/www/desciption/common_parts/test_common_menu
 </code></pre>
 <p>Portal page link will be updated as well. please check on Base APP.</p>
 <h2 id="meta-link">Meta link</h2>
-<p>You can generate links that can be used in the APP. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html descriptor of your APP and it can connect table of primary databox of your APP or it can connect action links such like new or get data in the APP.</p>
+<p>You can generate links that can be used in the APP. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html def of your APP and it can connect table of primary databox of your APP or it can connect action links such like new or get data in the APP.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
 </code></pre>
 <p>for subapp   </p>
@@ -485,7 +485,6 @@ git clone https://github.com/naruoken/small-shell-apps
 
 # select provider
 provider=&quot;gcp&quot;
-#provider=&quot;okta&quot;
 
 cd small-shell-apps/oauth_sample/authorization_code
 
@@ -510,7 +509,7 @@ target_claim=&quot;&quot;
 #client_secret=&quot;XXXX&quot;
 #target_claim=&quot;email&quot;
 
-vi ./descriptor/${provider}_oauth_form.html.def
+vi ./def/${provider}_oauth_form.html.def
 #------------------------------------------------
 # target params
   var CLIENT_ID = '';
@@ -532,10 +531,11 @@ vi ./descriptor/${provider}_oauth_form.html.def
 # DEPLOY
 authkey=$(grep authkey= /var/www/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;)
 echo $authkey
-cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/${authkey}/g&quot; &gt; .auth.$app
+cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/${authkey}/g&quot; | sed &quot;s/%%app/${app}/g&quot; &gt; .auth.$app
 sudo cp .auth.$app /var/www/cgi-bin/auth.$app
-cat ./descriptor/${provider}_oauth_form.html.def &gt; .${app}_auth_form.html.def
-sudo cp .${app}_auth_form.html.def /var/www/descriptor/${app}_auth_form.html.def
+. /usr/local/small-shell/web/base 
+cat ./def/${provider}_oauth_form.html.def | sed &quot;s#%%static_url/#$static_url#g&quot; | sed &quot;s/%%app/${app}/g&quot; &gt; .${app}_auth_form.html.def
+sudo cp .${app}_auth_form.html.def /var/www/def/${app}_auth_form.html.def
 sudo chmod 755 /var/www/cgi-bin/auth.$app
 </code></pre>
 <p>Then you can try to connect APP through Oauth. <br />
@@ -589,8 +589,8 @@ $DATA_SHELL databox:$databox command:show_all[filter=sync{yes}] format:json \
 | $SED &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/${session}/events
 
 ## then, just insert %%json to events
-cat ../descriptor/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
-| $SED &quot;/%%common_menu/r ../descriptor/common_parts/pintest_common_menu&quot; \
+cat ../def/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
+| $SED &quot;/%%common_menu/r ../def/common_parts/pintest_common_menu&quot; \
 | $SED &quot;s/%%common_menu//g&quot;\
 | $SED &quot;s/%%user_name/${user_name}/g&quot; \
 | $SED &quot;/%%json/r ../tmp/${session}/events&quot;\
