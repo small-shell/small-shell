@@ -245,7 +245,7 @@
 <li>Generate Custom APP #gen -app</li>
 <li>Update portal with Markdown or HTML tag #on BaseAPP</li>
 <li>Add user #key APP, other</li>
-<li>Update action scripts #optional</li>
+<li>Update bin/scripts #optional</li>
 <li>Add subAPP #connect additional databox if needed</li>
 </ol>
 <p>Let's create custom APP by following above steps.</p>
@@ -545,17 +545,17 @@ https://${fqdn}/cgi-bin/auth.oauth_test</p>
 <pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_app.sh $app
 </code></pre>
 <h2 id="technical-tips">Technical Tips</h2>
-<p>This is a random technical Tips. It could be hint for making your own custom APP.</p>
+<p>This is technical Tips. It could be hint for making your own custom APP.</p>
 <h4 id="1-get-id-keys-value">1. Get ID &amp; key's value</h4>
 <p>You can get text name using ID and key using "none" format</p>
-<h6 id="action-script-shell">@action script (shell)</h6>
+<h6 id="binscript-shell">@bin/script (shell)</h6>
 <pre><code> # get name which will be issued
  DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
  book_name=$($DATA_SHELL databox:book.master action:get key:name id:$id format:none | $AWK -F ":" '{print $2}')
 </code></pre>
 <h4 id="2-id-search-by-using-name">2. ID search by using Name</h4>
 <p>You can also get ID using 100% matched text</p>
-<h6 id="action-script-shell_1">@action script (shell)</h6>
+<h6 id="binscript-shell_1">@bin/script (shell)</h6>
 <pre><code> # get book ID Based on the name 
  DATA_SHELL="sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
  book_id=$($DATA_SHELL databox:book.master command:show_all[match=name{$book_name}] format:json | jq '.[] | .id'| $SED -s "s/\"//g")
