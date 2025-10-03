@@ -575,23 +575,22 @@ https://${fqdn}/cgi-bin/auth.oauth_test</p>
 # generate json
 # -----------------
 
-  $DATA_SHELL databox:${app}.events command:show_all format:json \
-  | $SED &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
-  | $SED &quot;s/{%%%%%%%%%%}/\[/g&quot;\ 
-  | $SED &quot;s/{%%%%%%%%%}/)/g&quot;\
-  | $SED &quot;s/{%%%%%%%%}/(/g&quot;\
-  | $SED &quot;s/{%%%%%%%}/_/g&quot;\
-  | $SED &quot;s/{%%%%%%}/,/g&quot;\
-  | $SED &quot;s/{%%%%%}/\//g&quot;\
-  | $SED &quot;s/{%%%%}/\&amp;/g&quot;\
-  | $SED &quot;s/{%%%}/:/g&quot; &gt; /var/www/tmp/${session}/events
-fi
+$DATA_SHELL databox:${app}.events command:show_all format:json \
+| $SED &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
+| $SED &quot;s/{%%%%%%%%%%}/\[/g&quot;\ 
+| $SED &quot;s/{%%%%%%%%%}/)/g&quot;\
+| $SED &quot;s/{%%%%%%%%}/(/g&quot;\
+| $SED &quot;s/{%%%%%%%}/_/g&quot;\
+| $SED &quot;s/{%%%%%%}/,/g&quot;\
+| $SED &quot;s/{%%%%%}/\//g&quot;\
+| $SED &quot;s/{%%%%}/\&amp;/g&quot;\
+| $SED &quot;s/{%%%}/:/g&quot; &gt; /var/www/tmp/${session}/events
 
 # -----------------
 # render HTML
@@ -606,6 +605,7 @@ cat /var/www/def/gentest_main.html.def | $SED -r &quot;s/^( *)&lt;/&lt;/1&quot; 
 | $SED &quot;s/%%user/${user_name}/g&quot; \
 | $SED &quot;s/%%session/session=${session}\&amp;pin=${pin}/g&quot; \
 | $SED &quot;s/%%params/session=${session}\&amp;pin=${pin}/g&quot;
+
 --------
 
 </code></pre>
