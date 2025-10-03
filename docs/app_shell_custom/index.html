@@ -563,39 +563,49 @@ https://${fqdn}/cgi-bin/auth.oauth_test</p>
 <h4 id="3-json-insert-to-javascript-instance">3. Json insert to javascript instance</h4>
 <p>In terms of integration with javascript frameworks, we would like to recommend to insert bulk of json datas to javascript directly using %% tag because ajax with small-shell will take 1 or 2 sec for getting data.</p>
 <h5 id="json-technique-javascript-in-html-def">Json technique (javascript in html def)</h5>
-<pre><code>const events =
-%%json
+<pre><code>events: [
+  // %%events
+],
 </code></pre>
-<h5 id="generator-in-binteam_mainsh">generator in bin/team_main.sh</h5>
-<pre><code>sudo vi /var/www/bin/team_main.sh
+<h5 id="generator-in-binapp_mainsh">generator in bin/${app}_main.sh</h5>
+<pre><code>sudo vi /var/www/bin/${app}_main.sh
 
 --code--
-## generate json
-$DATA_SHELL databox:$databox command:show_all[filter=sync{yes}] format:json \
-| $SED &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
-| $SED &quot;s/{%%%%%%%%%%}/\[/g&quot;\
-| $SED &quot;s/{%%%%%%%%%}/)/g&quot;\
-| $SED &quot;s/{%%%%%%%%}/(/g&quot;\
-| $SED &quot;s/{%%%%%%%}/_/g&quot;\
-| $SED &quot;s/{%%%%%%}/,/g&quot;\
-| $SED &quot;s/{%%%%%}/\//g&quot;\
-| $SED &quot;s/{%%%%}/\&amp;/g&quot;\
-| $SED &quot;s/{%%%}/:/g&quot;  &gt; ../tmp/${session}/events
+# -----------------
+# generate json
+# -----------------
 
-## then, just insert %%json to events
-cat ../def/team_main.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
-| $SED &quot;/%%common_menu/r ../def/common_parts/pintest_common_menu&quot; \
+  $DATA_SHELL databox:${app}.events command:show_all format:json \
+  | $SED &quot;s/{%%%%%%%%%%%%%%%%%}/'/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%%%%%%%}/%/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%%%%%%}/*/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%%%%%}/$/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%%%%}/\#/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%%%}/|/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%%}/\]/g&quot;\
+  | $SED &quot;s/{%%%%%%%%%%}/\[/g&quot;\ 
+  | $SED &quot;s/{%%%%%%%%%}/)/g&quot;\
+  | $SED &quot;s/{%%%%%%%%}/(/g&quot;\
+  | $SED &quot;s/{%%%%%%%}/_/g&quot;\
+  | $SED &quot;s/{%%%%%%}/,/g&quot;\
+  | $SED &quot;s/{%%%%%}/\//g&quot;\
+  | $SED &quot;s/{%%%%}/\&amp;/g&quot;\
+  | $SED &quot;s/{%%%}/:/g&quot; &gt; /var/www/tmp/${session}/events
+fi
+
+# -----------------
+# render HTML
+# -----------------
+
+cat /var/www/def/gentest_main.html.def | $SED -r &quot;s/^( *)&lt;/&lt;/1&quot; \
+| $SED &quot;/%%common_menu/r /var/www/def/common_parts/gentest_common_menu&quot; \
 | $SED &quot;s/%%common_menu//g&quot;\
-| $SED &quot;s/%%user_name/${user_name}/g&quot; \
-| $SED &quot;/%%json/r ../tmp/${session}/events&quot;\
-| $SED &quot;s/%%json//g&quot;\
-| $SED &quot;s/%%params/session=${session}\&amp;pin=${pin}\&amp;databox=${databox}/g&quot;
+| $SED &quot;/%%events/r /var/www/tmp/${session}/events&quot; \
+| $SED &quot;/%%event_add_btn/r /var/www/tmp/${session}/event_add_btn&quot; \
+| $SED &quot;s/%%event_add_btn//g&quot;\
+| $SED &quot;s/%%user/${user_name}/g&quot; \
+| $SED &quot;s/%%session/session=${session}\&amp;pin=${pin}/g&quot; \
+| $SED &quot;s/%%params/session=${session}\&amp;pin=${pin}/g&quot;
 --------
 
 </code></pre>
