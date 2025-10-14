@@ -2798,7 +2798,7 @@ if [ "$param" = "-app" ];then
           echo "Access URL: ${base_url}auth.${app}"
         fi
         echo "------------------------------------------------------------"
-        echo "Following is generated codes that you can update."
+        echo "Here is the generated code that you can modify."
         echo "You can also update portal page on Base APP #${app}.UI.md.def using markdown."
 
         if [ ! "$auth_method" = "none" ];then
@@ -2913,7 +2913,7 @@ if [ "$param" = "-app" ];then
 	fi
 
         echo "subAPP is successfully generated, parent app is updated -> ${cgi_dir}/${parent_app},${www}/def/common_parts/${parent_app}_common_menu"
-        echo "Following is generated codes that you can update."
+        echo "Here is the generated code that you can modify."
         ls  ${www}/bin/${app}_*
         ls  ${www}/def/${app}_*
 
