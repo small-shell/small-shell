@@ -980,10 +980,12 @@ if [ "$param" = "-addcol" ];then
   done
 
   clear
-  echo "Column will be added to the dataset, please check it"
+  echo "Databox will be updated, please check it"
   echo "-----------------------------------------------------------------"
   echo ""
   echo "Databox Name:$databox"
+  echo "+addcol"
+  echo ""
 
   count=$(ls ${ROOT}/databox/${databox}/def/col* | wc -l | tr -d " ")
   ((count += 1))
@@ -1146,14 +1148,16 @@ if [ "$param" = "-delcol" ];then
   done
 
   clear
-  echo "Column will be deleted, please check it"
+  echo "Databox will be updated, please check it"
   echo "-----------------------------------------------------------------"
   echo ""
   echo "Databox Name:$databox"
+  echo "-delcol"
+  echo ""
 
   for key in $(ls ${tmp_dir}/* | xargs basename -a)
   do
-    echo "key of delete target column:$key"
+    echo "Key name:$key"
   done
 
   echo ""
