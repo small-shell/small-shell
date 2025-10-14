@@ -86,7 +86,7 @@ if [ "$(echo "$REQUEST_METHOD" | grep -i "POST")" ];then
 fi
 
 #----------------------------
-# routing to action scripts
+# routing to bin scripts
 #----------------------------
 
 case "$req" in
