@@ -2133,7 +2133,7 @@ if [ "$param" = "-app" ];then
     echo "Access URL: ${static_url}${form_name}"
     echo ""
     echo "-----------------------------------------------------------------"
-    echo -n "Is it OK? (yes | no): "
+    echo -n "Is that OK? (yes | no): "
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
@@ -2366,7 +2366,7 @@ if [ "$param" = "-app" ];then
 
     echo ""
     echo "-----------------------------------------------------------------"
-    echo -n "Is it OK? (yes | no): "
+    echo -n "Is that OK? (yes | no): "
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
@@ -3194,7 +3194,7 @@ if [ "$param" = "-job" ];then
     cat ${tmp_dir}/confirm
     echo ""
     echo "-----------------------------------------------------------------"
-    echo -n "Is it OK? (yes | no): "
+    echo -n "Is that OK? (yes | no): "
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
@@ -3404,7 +3404,7 @@ if [ "$param" = "-job" ];then
     cat ${tmp_dir}/confirm
     echo ""
     echo "-----------------------------------------------------------------"
-    echo -n "Is it OK? (yes | no): "
+    echo -n "Is that OK? (yes | no): "
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
