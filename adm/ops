@@ -173,9 +173,9 @@ function initialize_url(){
     fi
 
     clear
-    echo "-------------------------------------------------------------------"
-    echo "Key initializing & generating URL for $user_name on $t_app is here"
-    echo "-------------------------------------------------------------------"
+    echo "-------------------------------------------------------------------------------"
+    echo "This is the URL for key initialization and generation for $user_name on $t_app"
+    echo "-------------------------------------------------------------------------------"
     echo "$initialize_url"
   else
     echo "error: failed to create initialize key"
