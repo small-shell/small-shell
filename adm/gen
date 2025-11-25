@@ -716,8 +716,7 @@ if [ "$param" = "-databox" ];then
     chmod 755 ${ROOT}/databox/${databox}/def/*
     chown -R small-shell:small-shell ${ROOT}/databox/${databox}/def
 
-    echo "databox:$databox created"
-    echo "databox definition is here :${ROOT}/databox/${databox}/def"
+    echo "databox:$databox has been successfully created"
   else
     echo "Plese try again from beginning, #gen -databox"
     rm -rf $tmp_dir
@@ -1015,7 +1014,7 @@ if [ "$param" = "-addcol" ];then
     chmod 755 ${ROOT}/databox/${databox}/def/*
     chown -R small-shell:small-shell ${ROOT}/databox/${databox}/def
     
-    echo "databox definition is here :${ROOT}/databox/${databox}/def"
+    echo "The databox definition has been successfully updated"
 
     # rebuild index
     keys=$(grep "name=" ${tmp_dir}/col* | sort -V | xargs basename -a | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED -z "s/\n/,/g" | $SED "s/,$//g")
@@ -1204,7 +1203,7 @@ if [ "$param" = "-delcol" ];then
     
     chmod 755 ${ROOT}/databox/${databox}/def/*
     chown -R small-shell:small-shell ${ROOT}/databox/${databox}/def
-    echo "databox definition is here :${ROOT}/databox/${databox}/def"
+    echo "The databox definition has been successfully updated"
 
     # rebuild index
     keys=$(ls $tmp_dir | sort -V | xargs basename -a | $SED "s/ /,/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g")
