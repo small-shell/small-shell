@@ -3213,8 +3213,7 @@ if [ "$param" = "-job" ];then
 
 
       if [ $? -eq 0 ];then
-        echo "Succesfully generated. job definition is here"
-        echo "def: ${ROOT}/util/e-cron/def/${job}.def" 
+        echo "Job:${job} has been successfully generated"
         echo "Please enable job \"sudo -u small-shell ${ROOT}/bin/e-cron enable.${job}\""
         cat ${tmp_dir}/confirm | grep -v "Exec_command:" | grep -v "Job_name:" > ${ROOT}/util/e-cron/def/.${job}.dump
       else
@@ -3362,7 +3361,7 @@ if [ "$param" = "-job" ];then
     --data-binary @${file_que}/${push_file})
 
     if [ "$(echo $push_result | grep "file pushed successfully")" ];then
-      echo "File push test has been succesfully done" 
+      echo "File push test has been successfully done" 
     else
       echo "Something wrong for file push test"
       echo "please set correct URL and authkey, and try again"
@@ -3379,7 +3378,7 @@ if [ "$param" = "-job" ];then
     (cd ${file_que}/.e-cron_test && $CURL -OLJ "${hub_api}?req=get&filename=e-cron_test" -H "X-small-shell-authkey:$authkey")
 
     if [ "$(cat ${file_que}/.e-cron_test/e-cron_test 2>/dev/null | grep test)" ];then
-      echo "File get test has been succesfully done" 
+      echo "File get test has been successfully done" 
       rm -rf ${file_que}/.e-cron_test
     else
       echo "Something wrong for file get test"
@@ -3423,8 +3422,7 @@ if [ "$param" = "-job" ];then
       chmod 755 ${ROOT}/util/e-cron/def/${job}.def
 
       if [ $? -eq 0 ];then
-        echo "Succesfully generated. job definition is here"
-        echo "def: ${ROOT}/util/e-cron/def/${job}.def"
+        echo "Job:${job} has been successfully generated"
         echo "Please enable job \"sudo -u small-shell ${ROOT}/bin/e-cron enable.${job}\""
 
         cat ${tmp_dir}/confirm | grep -v "HUB API URL:" | grep -v "API authkey:" \
