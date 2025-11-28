@@ -275,10 +275,10 @@ Primary databox: item.db
 
 e.g.) add &quot;test_user&quot; user for key APP name &quot;test&quot;
 sudo /usr/local/small-shell/adm/ops app:test add.usr:test_user 
---------------------------------------------------------------------
-Key initializing &amp; generating URL for test_user on test APP is here
---------------------------------------------------------------------
-https://ec2-XX-XX-XX-XX.us-west-2.compute.XXXX.com/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
+-------------------------------------------------------------------------------
+This is the URL for key initialization and generation for test on Base APP
+-------------------------------------------------------------------------------
+https://${server}/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the APP</h4>
 <p>End user key that's generated above command will be stored to end user browser automatically using localstorage by javascript once connected to above url.</p>
