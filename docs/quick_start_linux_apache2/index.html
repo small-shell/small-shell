@@ -161,9 +161,9 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="use-apapche2">Use apapche2</h1>
-<p>This is quick start to use apache2 as Web server instead of default Web server. </p>
+<p>This is a quick start to use apache2 as Web server instead of default Web server. </p>
 <h2 id="setup-env">Setup Env</h2>
-<p>First of all, please add small-shell user to the OS and then please install required commands and libraries. required commands and libraries are "curl, bc, cron, npm, php, jq". in this example, will use apt command on Ubuntu or debian for intallation.</p>
+<p>First of all, please add small-shell user to the OS and then please install required commands and libraries. required commands and libraries are "curl, bc, cron, php, jq". In this example, will use apt command on Ubuntu for intallation.</p>
 <pre><code># addd user
 sudo useradd -s /sbin/nologin small-shell
 
@@ -171,10 +171,13 @@ sudo useradd -s /sbin/nologin small-shell
 sudo apt update
 sudo apt install curl
 
-# install httpd (e.g. apache)
+# install bc and crontab if its not installed
+sudo apt install bc
+sudo apt install cron
+
+# install apache2
 sudo apt install apache2
 sudo a2enmod cgid
-#sudo systemctl start apache2
 sudo service apache2 restart
 sudo update-rc.d apache2 defaults
 
@@ -185,7 +188,7 @@ sudo apt install php
 sudo apt install jq
 </code></pre>
 <h2 id="installation">Installation</h2>
-<p>Once installed required commands and libraries, let's install small-shell from git HUB.</p>
+<p>Once installed required commands and libraries, let's install small-shell from git HUB. and then you need to edit sudoers file.</p>
 <pre><code># install
 cd /usr/local
 sudo git clone https://github.com/small-shell/small-shell.git
