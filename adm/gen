@@ -1305,6 +1305,7 @@ if [ "$param" = "-app" ];then
 
       if [ -f /etc/redhat-release ];then
         cgi_candidate=/var/www/cgi-bin
+        static_candidate=/var/www/html
       else
         if [ ! "$mac_chk" ];then
           cgi_candidate=/usr/lib/cgi-bin
