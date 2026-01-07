@@ -1613,10 +1613,12 @@ if [ "$param" = "-app" ];then
       
       if [ "$srv_type" = "default" ];then
 
-        if [ ! -d $cgi_dir ];then
-          mkdir -p $cgi_dir
-          mkdir ${www}/log
+        if [ ! -d ${www}/app ];then
           mkdir ${www}/app
+          mkdir ${www}/log
+          if [ ! -d $cgi_dir ];then
+            mkdir -p $cgi_dir
+          fi
           if [ ! -d ${www}/html ];then
             mkdir ${www}/html
           fi
