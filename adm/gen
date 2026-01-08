@@ -1304,13 +1304,16 @@ if [ "$param" = "-app" ];then
       www=$(echo "$www" | $SED "s/\/$//g")
 
       if [ -f /etc/redhat-release ];then
+        # load directory for almalinux, centOS stream, RHEL 
         cgi_candidate=/var/www/cgi-bin
         static_candidate=/var/www/html
       else
         if [ ! "$mac_chk" ];then
+          # load directory for MacOS
           cgi_candidate=/usr/lib/cgi-bin
           static_candidate=/var/www/html
         else
+          # load directory mainly for Ubuntu 
           cgi_candidate=/Library/WebServer/CGI-Executables
           static_candidate=/Library/WebServer/Documents
         fi
