@@ -189,7 +189,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="create-custom-app">Create Custom APP</h1>
-<p>In this page, you can learn how to make custom APP and how to edit codes or portal page very quiickly. there are 4 types of Custom APP as following chart. </p>
+<p>In this page, you can learn how to make custom APP and how to edit codes and portal page very quiickly. there are 4 types of Custom APP as following chart. </p>
 <table>
 <thead>
 <tr>
@@ -248,14 +248,14 @@
 <li>Update bin/scripts #optional</li>
 <li>Add subAPP #connect additional databox if needed</li>
 </ol>
-<p>Let's create custom APP by following above steps.</p>
+<p>Following is example of generating custom APP.</p>
 <h4 id="generate-databox">Generate Databox</h4>
-<p>Please generate databox that will be used for Custom APP. </p>
+<p>Please generate databox that will be used for Custom APP first. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
 <h3 id="generate-app">Generate APP</h3>
-<p>Let's start to generate custom APP named as just test with base64 key authentiaction. by the way you can use any other name as app_name. In this sample, we would like to use the name just test but of course you can set any prefer name you want.</p>
+<p>Once databox is ready let's generate custom APP. In this example APP name is test and it will use base64 key for authentiaction. by the way you can use any other name as app_name. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 3
 APP Name: test                                                              
