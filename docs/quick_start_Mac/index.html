@@ -127,7 +127,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#use-mac-os" class="nav-link">Use Mac OS</a>
+            <li class="nav-item" data-bs-level="1"><a href="#use-macos" class="nav-link">Use macOS</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#setup-env-on-mac-terminal" class="nav-link">Setup Env on Mac terminal</a>
               <ul class="nav flex-column">
@@ -160,8 +160,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="use-mac-os">Use Mac OS</h1>
-<p>You can deploy small-shell to Mac OS as well. We are thinking that Mac mini could be a mini server for working with small team.</p>
+<h1 id="use-macos">Use macOS</h1>
+<p>You can deploy small-shell to macOS as well. Mac mini is good for using as server on local network.</p>
 <h2 id="setup-env-on-mac-terminal">Setup Env on Mac terminal</h2>
 <p>First of all, please add small-shell user to the OS and then please install required commands and libraries.</p>
 <pre><code># addd user
@@ -186,16 +186,9 @@ brew install jq
 brew install php
 brew install gnu-sed
 brew install gawk
-#brew install sha3sum
 brew install flock
 brew install node
 </code></pre>
-<h4 id="change-sleep-setting">Change sleep setting</h4>
-<p>Also you need to change sleep setting on GUI to avoid service down when display is off. setting should be done from System preference &gt; Security &amp; Privacy &gt; Power Adaptor</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Please check "Prevent your Mac from automatically sleeping when the display is off"</p>
-</div>
 <h4 id="installation">Installation</h4>
 <p>Once installed required commands and libraries, let's install small-shell from git HUB.</p>
 <pre><code># install
@@ -305,12 +298,14 @@ ps -ef | grep app.sh
 # check log
 ls /var/www/log
 </code></pre>
-<h4 id="enable-cron-access">Enable cron access</h4>
-<p>If you want to use e-cron, you need to allow cron to access data by changing privacy setting. setting should be done on GUI from System preference &gt; Security &amp; Privacy &gt; FUll Disk Access.</p>
+<h4 id="change-sleep-setting">Change sleep setting</h4>
+<p>If you are using Mac book, you need to change sleep setting on GUI to avoid service down when display is off. setting should be done from System preference &gt; Security &amp; Privacy &gt; Power Adaptor</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Please add /usr/sbin/cron by using command+shift+G shortcut on FUll disk Access setting.</p>
+<p>Please check "Prevent your Mac from automatically sleeping when the display is off"</p>
 </div>
+<h4 id="enable-cron-access-optional">Enable cron access (optional)</h4>
+<p>It's not required for Web service but if you want to use e-cron for automation, you need to allow cron to access data by changing privacy setting. setting should be done on GUI from System preference &gt; Security &amp; Privacy &gt; FUll Disk Access.</p>
 <h2 id="update-to-latest-version">Update to latest version</h2>
 <p>You can updsate small-shell very easily. this is exmaples of update procedure. <br />
 Once you clone the latest code, it's recommended to re-generate Base APP. <br />
