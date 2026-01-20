@@ -1618,8 +1618,8 @@ if [ "$param" = "-app" ];then
       if [ "$srv_type" = "default" ];then
 
         if [ ! -d ${www}/app ];then
-          mkdir ${www}/app
-          mkdir ${www}/log
+          mkdir -p ${www}/app
+          mkdir -p ${www}/log
           if [ ! -d $cgi_dir ];then
             mkdir -p $cgi_dir
           fi
