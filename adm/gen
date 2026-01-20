@@ -1619,7 +1619,7 @@ if [ "$param" = "-app" ];then
 
         if [ ! -d ${www}/app ];then
           mkdir -p ${www}/app
-          mkdir -p ${www}/log
+          mkdir ${www}/log
           if [ ! -d $cgi_dir ];then
             mkdir -p $cgi_dir
           fi
