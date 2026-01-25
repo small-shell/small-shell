@@ -36,7 +36,6 @@ do
      # dump image
      if [[ "$line" == *"<img src=\"../images"* ]];then
 
-       echo "aaa" > /var/tmp/md_parse
        img_id=$(echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g")
        file_type=$($DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
        | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g")
