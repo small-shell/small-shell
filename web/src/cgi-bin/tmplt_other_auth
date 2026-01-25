@@ -77,8 +77,6 @@ if [ ! "$received_token" ];then
   cat %%www/def/%%app_auth_form.html.def | $SED -r "s/^( *)</</1" \
   | $SED "/%%auth_form_menu/r %%www/def/common_parts/%%app_auth_form_menu" \
   | $SED "s/%%auth_form_menu//g"\
-  | $SED "/%%footer/r %%www/def/common_parts/%%app_footer" \
-  | $SED "/%%footer/d"\
   | $SED "s/%%message/${message}/g" \
   | $SED "s/?%%params/${req}${id}/g"
   exit 0
