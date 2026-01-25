@@ -447,6 +447,7 @@ a {
 
 .main .flex-table li {
   display: flex;
+  align-items: center;
   flex-wrap: nowrap;
 }
 
