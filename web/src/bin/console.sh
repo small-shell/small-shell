@@ -115,8 +115,6 @@ if [ "$command" ];then
   | $SED "/%%common_menu/r %%www/def/common_parts/common_menu_${permission}" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/def/common_parts/footer" \
-  | $SED "/%%footer/d"\
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
   | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
@@ -159,8 +157,6 @@ elif [ "$statistics" ];then
   | $SED "/%%common_menu/r %%www/def/common_parts/common_menu_${permission}" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/def/common_parts/footer" \
-  | $SED "/%%footer/d"\
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
   | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\

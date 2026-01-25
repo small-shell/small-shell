@@ -82,8 +82,6 @@ if [ ! -d %%www/tmp/${session}/binary_file  ];then
   | $SED "/%%common_menu/r %%www/def/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/def/common_parts/footer" \
-  | $SED "/%%footer/d"\
   | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
   | $SED "s/%%databox_list//g"\
   | $SED "s/%%databox/${databox}/g"\
@@ -110,8 +108,6 @@ else
   | $SED "/%%common_menu/r %%www/def/common_parts/common_menu" \
   | $SED "/%%common_menu/d"\
   | $SED "s/%%user/${user_name}/g"\
-  | $SED "/%%footer/r %%www/def/common_parts/footer" \
-  | $SED "/%%footer/d"\
   | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
   | $SED "s/%%databox_list//g"\
   | $SED "s/%%databox/${databox}/g"\

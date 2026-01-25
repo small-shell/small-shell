@@ -279,8 +279,6 @@ cat %%www/def/table.html.def | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/d"\
 | $SED "/%%table_menu/r %%www/def/common_parts/table_menu_${permission}" \
 | $SED "/%%table_menu/d"\
-| $SED "/%%footer/r %%www/def/common_parts/footer" \
-| $SED "/%%footer/d"\
 | $SED "/%%databox_list/r %%www/tmp/${session}/databox_list" \
 | $SED "s/%%databox_list//g"\
 | $SED "/%%table/r $table" \
