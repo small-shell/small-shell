@@ -71,7 +71,7 @@ if [ "$chk_calendar" ];then
   if [ "$permission" = "rw" ];then
     echo "
     <div class=\"calendar-btn-fd\">
-    <a href=\"./%%app?%%params&databox=%%app.events&req=get&id=new\"><div class=\"custome-add-btn\"><p>+ADD</p></div></a>
+    <a href=\"./%%app?%%params&databox=%%app.events&req=get&id=new\"><div class=\"custom-add-btn\"><p>+ADD</p></div></a>
     </div>
     " > /var/www/tmp/${session}/event_add_btn
   else
