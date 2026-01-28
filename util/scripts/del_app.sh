@@ -26,7 +26,7 @@ if [ ! "$app" ];then
 fi
 
 if [ "$app" = "base" -o "$app" = "api" -o "$app" = "e-cron" ];then
-  echo "error: $app is part of Base APP"
+  echo "error: $app is part of Base App"
   exit 1
 fi
 
@@ -62,14 +62,14 @@ if [ "$parent_app" ];then
     # load routing
     routing=$(cat ${www}/cgi-bin/${parent_app} | grep ${app}_)
     # show meesage
-    echo "APP{${app}} has been deleted, please edit parebnt APP controller"
+    echo "App{${app}} has been deleted, please edit parebnt App controller"
     echo "target file: ${www}/cgi-bin/${parent_app}"
     echo "---------------------------------------------------------------------"
     echo "$routing"
     echo "---------------------------------------------------------------------"
-    echo "also it's recommended to update portal menu in ${parent_app}.UI.md.def on Base APP"
+    echo "also it's recommended to update portal menu in ${parent_app}.UI.md.def on Base App"
   else
-    echo "APP{${app}} has been deleted"
+    echo "App{${app}} has been deleted"
   fi
   
 else
@@ -88,7 +88,7 @@ else
   rm ${static_dir}/${app}.css
 
   # show meesage
-  echo "APP{${app}} has been deleted"
+  echo "App{${app}} has been deleted"
 
 fi
 

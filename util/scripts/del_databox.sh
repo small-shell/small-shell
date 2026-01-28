@@ -34,7 +34,7 @@ chk_app=$(grep "databox=${databox}" ${www}/bin/*_get.sh  | xargs basename -a  2>
 | $SED -z "s/\n/,/g" | $SED "s/,$//g")
 
 if [ "$chk_app" ];then
-  echo "warn: ${databox} is used by Scratch APP {$chk_app}, please delete APP first by using del_app.sh"
+  echo "warn: ${databox} is used by Custom App {$chk_app}, please delete app first by using del_app.sh"
   exit 1
 fi
 

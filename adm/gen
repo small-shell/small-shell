@@ -1215,13 +1215,13 @@ if [ "$param" = "-delcol" ];then
   fi
 fi
 
-# GENERATE APP
+# GENERATE App
 if [ "$param" = "-app" ];then
 
   # env check
   selinux_chk=$(sestatus 2>/dev/null | grep enforcing) 
   if [ "$selinux_chk" ];then
-    echo "warn: SE Linux is enforcing, you can't use APP shell"
+    echo "warn: SE Linux is enforcing, you can't use app shell"
     echo "please change SE linux from enforcing to permissive or disabled"
     rm -rf $tmp_dir
     exit 1
@@ -1237,7 +1237,7 @@ if [ "$param" = "-app" ];then
   fi
 
   # start dialog
-  echo -n "Type of APP (1.BASE | 2.FORM | 3.CUSTOM): "
+  echo -n "Type of Apo (1.BASE | 2.FORM | 3.CUSTOM): "
   read apptype 
   while [ ! "$apptype" = "1"  -a  ! "$apptype" = "2" -a ! "$apptype" = "3" ]
   do
@@ -1292,7 +1292,7 @@ if [ "$param" = "-app" ];then
 
       while [ ! -d $www ]
       do
-        echo "error: $www is not existing, please set root directory for web APP"
+        echo "error: $www is not existing, please set root directory for Web App"
         echo -n "www directory: "
         read www
         if [ ! "$www" ];then
@@ -1362,12 +1362,12 @@ if [ "$param" = "-app" ];then
       done
 
 
-      echo -n "APP exec user (e.g. www-data or _www or apache): "
+      echo -n "Web Server Process Owner (e.g. www-data): "
       read cgi_usr
 
       while [ ! "$cgi_usr" ]
       do
-        echo -n "please set APP exec user: "
+        echo -n "please set web server process owner: "
         read cgi_usr
       done
 
@@ -1376,8 +1376,12 @@ if [ "$param" = "-app" ];then
 
       while [ ! "$usr_chk_result" -o ! "$sudo_chk_result" ]
       do
-        echo "error: APP exec user seems wrong, please define cgi user which used by web server and please add sudoer setting"
-        echo -n "APP exec user: "
+        if [ ! "$usr_chk_result" ];then
+          echo "error: it seems user name is wrong"
+        else
+          echo "error: please add sudoer setting for $cgi_usr"
+        fi
+        echo -n "Web Server Process Owner: "
         read cgi_usr
         usr_chk_result=$(grep $cgi_usr /etc/passwd)
         sudo_chk_result=$(grep $cgi_usr /etc/sudoers | grep small-shell | grep NOPASSWD)
@@ -1425,14 +1429,14 @@ if [ "$param" = "-app" ];then
       fi
       
       if [ "$use_existing_cert" = "yes" ];then
-        echo "Base APP will be upgraded and restarted using exising cert & key, please be aware."
+        echo "Base App will be upgraded and restarted using exising cert & key, please be aware."
         server=$(cat ${ROOT}/web/base | grep server= | $SED "s/server=//g" | $SED "s/\"//g")  
         sleep 2
       fi
 
       if [ "$use_existing_cert" = "no" -o ! "$use_existing_cert" ];then
         if [ "$use_existing_cert" = "no" ];then
-          echo "ok, let's update cert and key. Base APP will be upgraded and restarted, please be aware."
+          echo "ok, let's update cert and key. Base App will be upgraded and restarted, please be aware."
         fi
         echo -n "ssl cert path : "
         read ssl_cert
@@ -1516,13 +1520,13 @@ if [ "$param" = "-app" ];then
     static_url="${protocol}://${server}/"
 
     if [ "$srv_type" = "other" ];then
-      echo -n "CGI base URL for Web APP is ${base_url}, is it OK? (yes | no): "
+      echo -n "CGI base URL for Web App is ${base_url}, is it OK? (yes | no): "
       read base_url_answer
 
       while [ ! "$base_url_answer" = "yes" -a ! "$base_url_answer" = "no" ]
       do
         echo "please input yes or no"
-        echo -n "Is it OK to use $base_url as CGI base URL for Web APP? (yes | no): "
+        echo -n "Is it OK to use $base_url as CGI base URL for Web App? (yes | no): "
         read base_url_answer
       done
 
@@ -1559,12 +1563,12 @@ if [ "$param" = "-app" ];then
     clear
 
     echo "-----------------------------------------------------------------"
-    echo "APP Type: $apptype"
+    echo "App Type: $apptype"
     echo "Srv Type: $srv_type"
     echo "Protocol: $protocol"
 
     if [ "$srv_type" = "other" ];then
-      echo "APP Exec User: $cgi_usr"
+      echo "Web Server Process Owner: $cgi_usr"
       echo "Root Directory: $www"
       echo "CGI Directory: $cgi_dir"
       echo "CGI base URL: $base_url"
@@ -1580,7 +1584,7 @@ if [ "$param" = "-app" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Is it OK to generate the APP? (yes | no): "
+      echo -n "Is it OK to generate the app? (yes | no): "
       read fin_answer
     done
 
@@ -1802,21 +1806,21 @@ if [ "$param" = "-app" ];then
 
       chown $cgi_usr:$cgi_usr $bindir
       if [ ! $? -eq 0 ];then
-        echo "error: failed to create directory for small-shell APP bin"
+        echo "error: failed to create directory for small-shell bin"
       fi
   
       if [ ! -d $def_dir ];then
         mkdir $def_dir
         mkdir ${def_dir}/common_parts
         if [ ! $? -eq 0 ];then
-          echo "error: failed to create directory for small-shell APP html def"
+          echo "error: failed to create directory for small-shell def"
         fi
       fi
       chown $cgi_usr:$cgi_usr $def_dir
       chown $cgi_usr:$cgi_usr ${def_dir}/common_parts
 
       if [ ! $? -eq 0 ];then
-        echo "error: failed to create directory for small-shell APP html def"
+        echo "error: failed to create directory for small-shell def"
       fi
 
       if [ ! -d $cgitmp ];then
@@ -1824,7 +1828,7 @@ if [ "$param" = "-app" ];then
       fi
       chown $cgi_usr:$cgi_usr $cgitmp
       if [ ! $? -eq 0 ];then
-        echo "error: failed to create directory for small-shell APP tmpfile"
+        echo "error: failed to create directory for small-shell tmp"
       fi
 
       # gen command API key and URL  
@@ -1910,7 +1914,7 @@ if [ "$param" = "-app" ];then
       cat ${ROOT}/web/src/def/common_parts/common_menu_button \
       | $SED "s/%%rand/${rand}/g"  >> ${def_dir}/common_parts/common_menu_rw
 
-      # standadaize owner of Base APP
+      # standadaize owner of Base App
       chown -R ${cgi_usr}:${cgi_usr} ${cgi_dir}/*
       chown -R ${cgi_usr}:${cgi_usr} ${www}/def/*
       chown -R ${cgi_usr}:${cgi_usr} ${www}/bin/*
@@ -2004,13 +2008,13 @@ if [ "$param" = "-app" ];then
         clear
         if [ ! "$upgrade" = "yes" ];then
           echo "-----------------------------------------------------------------"
-          echo "Base APP has been successfully generated"
+          echo "Base App has been successfully generated"
           echo "Access URL: ${static_url}base"
           echo "-----------------------------------------------------------------"
           echo "Please add user using ops command."
           echo "-> sudo ${ROOT}/adm/ops add.usr:\$user"
         else
-          echo "Base APP has been upgraded. please access to the APP using existing key"
+          echo "Base App has been upgraded. please access to the App using existing key"
         fi
       else
         if [ "$srv_type" = "default" ];then
@@ -2034,7 +2038,7 @@ if [ "$param" = "-app" ];then
   if [ "$apptype" = "2" ];then
 
     if [ ! -f ${ROOT}/web/base ];then
-      echo "error: please generate BASE APP first"
+      echo "error: please generate Base App first"
       rm -rf $tmp_dir
       exit 1
     else
@@ -2048,7 +2052,7 @@ if [ "$param" = "-app" ];then
 
     while [ "$form_name" = "base" -o "$form_name" = "api" -o "$form_name" = "e-cron" ]
     do
-      echo "error: the name $form_name is conflicted with Base APP, please try again"
+      echo "error: the name $form_name is conflicted with Base App, please try again"
       echo -n "Form Name: "
       read form_name
     done
@@ -2154,7 +2158,7 @@ if [ "$param" = "-app" ];then
     echo "The Form will be generated in the following order. Please check it."
     echo "-----------------------------------------------------------------"
     echo ""
-    echo "APP Type: $apptype"
+    echo "App Type: $apptype"
     echo "Form Name: $form_name"
     echo "Target Databox: $databox"
     echo "Description: $description"
@@ -2167,14 +2171,14 @@ if [ "$param" = "-app" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Is it OK to generate the APP? (yes | no): "
+      echo -n "Is it OK to generate the app? (yes | no): "
       read fin_answer
     done
 
     if [ "$fin_answer" = "yes" ];then
 
       app=$form_name
-      # careate APP user and authkey
+      # careate App user and authkey
       app_user_name=${app}.app
       app_user_id=$(echo "$app_user_name" | $SHASUM | $AWK '{print $1}')
 
@@ -2199,7 +2203,7 @@ if [ "$param" = "-app" ];then
       chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
       authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
-      # deploy form APP
+      # deploy form App
       cat ${ROOT}/web/src/cgi-bin/tmplt_controller_form | $SED "s#%%www#${www}#g" | $SED "s/%%authkey/${authkey}/g" \
       | $SED "s/%%app/${form_name}/g" > ${cgi_dir}/${form_name}
       cp ${ROOT}/web/src/lib/tmplt_type2.css  ${static_dir}/${form_name}.css
@@ -2247,7 +2251,7 @@ if [ "$param" = "-app" ];then
   if [ "$apptype" = "3" ];then
 
     if [ ! -f ${ROOT}/web/base ];then
-      echo "error: please generate BASE APP first"
+      echo "error: please generate Base App first"
       rm -rf $tmp_dir
       exit 1
     else
@@ -2259,13 +2263,13 @@ if [ "$param" = "-app" ];then
     . ${ROOT}/web/base
 
     apptype="3.CUSTOM"
-    echo -n "APP Name: "
+    echo -n "App Name: "
     read app
 
     while [ "$app" = "base" -o "$app" = "api" -o "$app" = "e-cron" ]
     do
-      echo "error: the name $app is conflicted with Base APP, please try again"
-      echo -n "APP Name: "
+      echo "error: the name $app is conflicted with Base App, please try again"
+      echo -n "App Name: "
       read app
     done
 
@@ -2273,11 +2277,11 @@ if [ "$param" = "-app" ];then
     if [ "$parent_app" ];then
        app=$(echo "$app" | $AWK -F "@" '{print $1}')
       if [ ! -f ${cgi_dir}/${parent_app} ];then
-        echo "error: there is no parement APP $parent_app"
+        echo "error: there is no parent app $parent_app"
         exit 1
       fi
       if [ -f ${cgi_dir}/${app} ];then
-        echo "error: there is same name APP as parent"
+        echo "error: there is same name app"
         exit 1
       fi
     fi
@@ -2288,19 +2292,19 @@ if [ "$param" = "-app" ];then
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
     do
-      echo "error: APP name must be ascii text and you can't use meta charactor including space, please try again"
-      echo -n "APP Name: "
+      echo "error: App name must be ascii text and you can't use meta charactor including space, please try again"
+      echo -n "App Name: "
       read app
 
       parent_app=$(echo "$app" | $AWK -F "@" '{print $2}')
       if [ "$parent_app" ];then
        app=$(echo "$app" | $AWK -F "@" '{print $1}')
         if [ ! -f ${cgi_dir}/${parent_app} ];then
-          echo "error: there is no parement APP $parent_app"
+          echo "error: there is no parent app $parent_app"
           exit 1
         fi
         if [ -f ${cgi_dir}/${app} ];then
-          echo "error: there is same name APP as parent"
+          echo "error: there is same name app"
           exit 1
         fi
       fi
@@ -2363,11 +2367,11 @@ if [ "$param" = "-app" ];then
     fi
 
     clear
-    echo "The APP will be generated in the following order. Please check it."
+    echo "The App will be generated in the following order. Please check it."
     echo "-----------------------------------------------------------------"
     echo ""
-    echo "APP Type: $apptype"
-    echo "APP Name: $app"
+    echo "App Type: $apptype"
+    echo "App Name: $app"
    
     if [ ! "$parent_app" ];then
 
@@ -2388,8 +2392,8 @@ if [ "$param" = "-app" ];then
 
     else
 
-      echo "Parent APP: $parent_app"
-      echo "Sub APP Databox: $databox"
+      echo "Parent App: $parent_app"
+      echo "Sub App Databox: $databox"
 
     fi
 
@@ -2400,7 +2404,7 @@ if [ "$param" = "-app" ];then
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
       echo "please input yes or no"
-      echo -n "Is it OK to generate the APP? (yes | no): "
+      echo -n "Is it OK to generate the app? (yes | no): "
       read fin_answer
     done
   
@@ -2439,10 +2443,10 @@ if [ "$param" = "-app" ];then
           authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
 
-          # store passcode of shared pass APP
+          # store passcode of shared pass App
           echo "$shared_pass" > ${ROOT}/web/${app}.code
 
-          # deploy psscode APP
+          # deploy psscode App
           cat ${ROOT}/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" | $SED "s/%%app/${app}/g" \
           | $SED "s/%%auth/required/g" > ${cgi_dir}/${app}
           chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
@@ -2517,7 +2521,7 @@ if [ "$param" = "-app" ];then
 
         if [ "$auth_method" = "key" ];then
 
-          # deploy key auth APP
+          # deploy key auth App
           cat ${ROOT}/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" \
           | $SED "s/%%app/${app}/g" | $SED "s/%%auth/required/g" > ${cgi_dir}/${app}
           chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
@@ -2615,7 +2619,7 @@ if [ "$param" = "-app" ];then
           chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
           authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
-          # deploy other APP
+          # deploy other App
           cat ${ROOT}/web/src/cgi-bin/tmplt_controller | $SED "s#%%www#${www}#g" \
           | $SED "s/%%app/${app}/g" | $SED "s/%%auth/required/g" > ${cgi_dir}/${app}
           chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
@@ -2712,7 +2716,7 @@ if [ "$param" = "-app" ];then
           chmod 700 ${ROOT}/users/${app}.${app_user_id}/hash
           authkey=$(echo "${app_user_name}:${hash_gen_key}" | $BASE64_ENC)
 
-          # deploy none auth APP
+          # deploy none auth App
           cat ${ROOT}/web/src/cgi-bin/tmplt_controller_noauth | $SED "s#%%www#${www}#g" | $SED "s/%%authkey/${authkey}/g" \
           | $SED "s/%%app/${app}/g" | $SED "s/%%auth//g" > ${cgi_dir}/${app}
           chown $cgi_usr:$cgi_usr ${cgi_dir}/${app}
@@ -2832,7 +2836,7 @@ if [ "$param" = "-app" ];then
         fi
         echo "------------------------------------------------------------"
         echo "Here is the generated code that you can modify."
-        echo "You can also update portal page on Base APP #${app}.UI.md.def using markdown."
+        echo "You can also update portal page on Base App #${app}.UI.md.def using markdown."
 
         if [ ! "$auth_method" = "none" ];then
           ls  ${cgi_dir}/auth.${app}
@@ -2845,7 +2849,7 @@ if [ "$param" = "-app" ];then
 
         if [ "$auth_method" = "key" ];then
           echo "------------------------------------------------------------"
-          echo "please create user for the APP by following command"
+          echo "please create user for the app by following command"
           echo "------------------------------------------------------------"
           echo "sudo ${ROOT}/adm/ops app:${app} add.usr:\$user"
         fi
@@ -2945,7 +2949,7 @@ if [ "$param" = "-app" ];then
 
 	fi
 
-        echo "subAPP is successfully generated, parent app is updated -> ${cgi_dir}/${parent_app},${www}/def/common_parts/${parent_app}_common_menu"
+        echo "subapp is successfully generated, parent app is updated -> ${cgi_dir}/${parent_app},${www}/def/common_parts/${parent_app}_common_menu"
         echo "Here is the generated code that you can modify."
         ls  ${www}/bin/${app}_*
         ls  ${www}/def/${app}_*

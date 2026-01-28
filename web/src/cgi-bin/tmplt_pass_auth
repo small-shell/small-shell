@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################
-# auth for PassCode APP
+# auth for PassCode App
 ###############################
 
 # set persistence option
@@ -99,7 +99,7 @@ if [ "$received_pass" ];then
         req=main
       fi
 
-      # redirect to APP if auth is OK
+      # redirect to app if auth is OK
       if [[ $req == *table ]];then
         echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=${req}\">"
       elif [[ $req == *get || $req == *log_viewer ]];then

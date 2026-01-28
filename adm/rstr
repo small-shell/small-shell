@@ -18,7 +18,7 @@ SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../global.conf
 
 if [ ! -f ${ROOT}/web/base ];then
-  echo "please genterate Base APP before restore"
+  echo "please genterate Base App before restore"
   exit 1
 else
   . ${ROOT}/web/base
@@ -96,7 +96,7 @@ echo "sudo -u small-shell ${ROOT}/bin/e-cron ls"
 if [ "$ssl_flg" = "yes" ];then
   echo ""
   echo "!! importtant !!"
-  echo "Please regenerate Base APP using cert and key that is restored in ${www}/app/"
+  echo "Please regenerate Base App using cert and key that is restored in ${www}/app/"
   echo "sudo ${ROOT}/adm/gen -app"
 fi
 

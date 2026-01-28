@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################
-# key auth for CustomAPP
+# key auth for Custom App
 ###############################
 
 # set persistence option
@@ -140,7 +140,7 @@ if [ "$received_key" ];then
       req=main
     fi
 
-    # redirect to APP if key auth is OK
+    # redirect to app if key auth is OK
     if [[ $req == *table ]];then
       echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=${req}\">"
     elif [[ $req == *get || $req == *log_viewer ]];then

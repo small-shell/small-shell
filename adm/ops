@@ -11,41 +11,41 @@
 # ls.usr
 
 #-----------------------------------
-# User management for Base APP
+# User management for Base App
 #-----------------------------------
 # add.usr:$user
 # initialize.usr:$user
 # del.usr:$user
 
 #-----------------------------------
-# User management for Scratch APP
+# User management for Custom App
 #-----------------------------------
 # add.usr:$user app:$app
 # del.usr:$user app:$app
 # initialize.usr:$user app:$app
 
 #-----------------------------------
-# Set permission/attribute to Base APP user
+# Set permission/attribute to Base App user
 #-----------------------------------
 # set.attr:$user{ro} 
 # set.attr:$user{rw} 
 # set.attr:$user{$attribute_key=$param}
 
 #-----------------------------------
-# Set permission/attribute to Scratch APP user
+# Set permission/attribute to Custom App user
 #-----------------------------------
 # set.attr:$user{ro} app:$app
 # set.attr:$user{rw} app:$app
 # set.attr:$user{$attribute_key=$param} app:$app
 
 #-----------------------------------
-# Add tag for Base APP table
+# Add tag for Base App table
 #-----------------------------------
 # add.tag:$databox{$filter}
 # del.tag:$databox{$filter}
 
 #-----------------------------------
-# Add tag for Scratch APP table
+# Add tag for Custom App table
 #-----------------------------------
 # ops add.tag:$databox{$filter} app:$app
 # ops del.tag:$databox{$filter} app:$app
@@ -122,7 +122,7 @@ do
 done
 
 if [ ! -f ${ROOT}/web/base ];then
-  echo "error: please generate Base APP first #gen -app"
+  echo "error: please generate Base App first #gen -app"
   rm -rf $user_dir
   exit 1
 fi
@@ -148,13 +148,13 @@ function initialize_url(){
 
   if [ ! "$t_app" ];then
     user_dir="${ROOT}/users/${user_id}"
-    t_app="Base APP"
+    t_app="Base App"
   else
     user_dir="${ROOT}/users/${t_app}.${user_id}"
   fi
 
   if [ ! -f ${cgi_dir}/${auth} ];then
-    echo "error: please generate APP first #gen -app" 
+    echo "error: please generate app first #gen -app" 
     rm -rf $user_dir
     exit 1
   fi
@@ -259,7 +259,7 @@ if [ "$action" = "add.usr" ];then
   fi
 
   if [ -d $user_dir ];then 
-    echo "warn: $user_name is already existing. if you want to initialize key of the use, please execute following command"
+    echo "warn: $user_name is already existing. if you want to initialize key of the user, please execute following command"
     if [ "$app" ];then
       echo "sudo ${ROOT}/adm/ops initialize.usr:$user_name app:$app"
     else
@@ -458,11 +458,11 @@ if [ ! "$action" ];then
  set.attr:\$user{\$attribute_key=\$param}
  get.attr:\$user
 
-# Tagging for Base APP table
+# Tagging for Base App table
  add.tag:\$databox{\$filter}
  del.tag:\$databox{\$filter}
 
-# for Scratch APP
+# for Custom App
  add.usr:\$user app:\$app
  initialize.usr:\$user app:\$app
  del.usr:\$user app:\$app

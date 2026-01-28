@@ -1,2 +1,2 @@
-APP Portal: ./%%app?req=main
+App Portal: ./%%app?req=main
 %%databox Table: ./%%app?req=table

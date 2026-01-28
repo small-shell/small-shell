@@ -92,7 +92,7 @@
       </div>
       <div class="auth-container">
         <div class="auth-message">
-          <h2> Your APP Key is successfully generated.</h2>
+          <h2> Your Key is successfully generated.</h2>
           <p> <b>%%user_name_key:%%user_key</b></p>
           <div class="note">
             <p><b>| NOTE |</b></p>

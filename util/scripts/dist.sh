@@ -40,7 +40,7 @@ css="${static_dir}/${app}.css"
 def="${cgi_dir}/../def"
 
 if [ ! "$app" ];then
-  echo "error: please input APP for exporting as static site # dist.sh \$APP \$EXPORT_DIR"
+  echo "error: please input app for exporting as static site # dist.sh \$APP \$EXPORT_DIR"
   exit 1
 fi
 
@@ -122,7 +122,7 @@ if [ -f ${tmp_dir}/.index.html.tmp ];then
 fi
 
 echo "============================================================"
-echo "APP is successfully exported to your directory,"
+echo "App is successfully exported to your directory,"
 echo "PATH: ${export_dir}/${app}.tar.gz"
 echo "============================================================"
 

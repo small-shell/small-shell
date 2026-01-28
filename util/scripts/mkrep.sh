@@ -25,7 +25,7 @@ fi
 
 # load base 
 if [ ! -f ${ROOT}/web/base ];then
-  echo "error: please generate Base APP first"
+  echo "error: please generate Base App first"
   exit 1
 else
   . ${ROOT}/web/base
@@ -211,7 +211,7 @@ if [ "$param" = "reg.replica" ];then
     # update env files
     if [ "$cluster_flag" = "new" ];then
 
-      # update menu for Base APP
+      # update menu for Base App
       for target in $(ls ${www}/def/common_parts/common* | grep -v .org$ | xargs basename -a)
       do
         cp ${www}/def/common_parts/${target} ${www}/def/common_parts/${target}.org
@@ -220,7 +220,7 @@ if [ "$param" = "reg.replica" ];then
         echo "updated $target"
       done
 
-      # update menu for Scratch APP
+      # update menu for Custom App
       . ${ROOT}/util/scripts/.authkey
       permission=$(${ROOT}/bin/meta get.attr:sys)
       if [ "$permission" = "ro" ];then
@@ -230,7 +230,7 @@ if [ "$param" = "reg.replica" ];then
       for target in $(ls ${www}/def/common_parts/*_common_menu* 2>/dev/null | grep -v .org$ | xargs basename -a 2>/dev/null)
       do
         app=$(echo "${target}" | $AWK -F "_common_menu" '{print $1}' 2>/dev/null)
-        chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
+        chk_team=$(grep "# controller for Custom App #team" ${cgi_dir}/${app} 2>/dev/null)
 
         if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then       
           # update UI.md.def
@@ -307,11 +307,11 @@ if [ "$param" = "reg.replica" ];then
 
       chown -R small-shell:small-shell ${www}/cgi-bin
 
-      # update def for scratch APP
+      # update def for Custom App
       for app in $(ls ${cgi_dir} | grep -v base | grep -v api | grep -v e-cron | grep -v css \
       | grep -v ^_ | grep -v shelltest.cgi | grep -v "auth." | xargs basename -a  2>/dev/null)
       do
-        type3_chk=$(grep "# controller for Scratch APP" ${cgi_dir}/${app})
+        type3_chk=$(grep "# controller for Custom App" ${cgi_dir}/${app})
         if [ "$type3_chk" ];then
           subapps=$(cat ${cgi_dir}/${app} | grep ".get\")" | grep -v "\"get\")" | $SED -z "s/\n/ /g" | $SED "s/\"//g" | $SED "s/.get)//g")
     
@@ -344,7 +344,7 @@ if [ "$param" = "reg.replica" ];then
         fi
       done
     
-      # update base APP
+      # update Base App
       for target in $(ls ${www}/def/get_* | grep -v _master_failed | grep -v .org$ | xargs basename -a 2>/dev/null) 
       do
         if [ ! -f ${www}/def/${target}.org ];then
@@ -567,7 +567,7 @@ if [ "$param" = "reg.master" ];then
   echo "cluster_base_url=\"${cluster_base_url}\"" >>  ${tmp_dir}/base
   cat ${tmp_dir}/base > ${ROOT}/web/base
 
-  # remove local APP 
+  # remove local app
   rm -rf ${www}/html/base
   rm -f ${www}/bin/*.sh
   rm -f ${www}/def/*.html.def
@@ -689,7 +689,7 @@ EOF
     do
 
       app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}' 2>/dev/null)
-      chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
+      chk_team=$(grep "# controller for Custom App #team" ${cgi_dir}/${app} 2>/dev/null)
 
       if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
@@ -772,7 +772,7 @@ EOF
     for bkup in $(ls ${www}/def/common_parts/*.org 2>/dev/null | xargs basename -a 2>/dev/null)
     do
       app=$(echo "${bkup}" | $AWK -F "_common_menu" '{print $1}' 2>/dev/null)
-      chk_team=$(grep "# controller for Scratch APP #team" ${cgi_dir}/${app} 2>/dev/null)
+      chk_team=$(grep "# controller for Custom App #team" ${cgi_dir}/${app} 2>/dev/null)
 
       if [ -f ${cgi_dir}/${app} -a ! -d ${tmp_dir}/${app} -a ! "${chk_team}" ];then
         # update UI.md.def
