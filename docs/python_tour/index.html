@@ -59,11 +59,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+    <a href="../app_shell_tour/" class="dropdown-item">App Shell</a>
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+    <a href="../data_shell_tour/" class="dropdown-item">Data Shell</a>
 </li>
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
 </li>
                                     
 <li>
@@ -231,7 +231,7 @@ PYTHON="/usr/local/bin/python3.12"
 <h2 id="make-statistics-job">Make statistics job</h2>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
-<p>It' required to complete OS setup and setup of small-shell Base APP, see detail at <a href="../quick_start_linux/">Quickstart</a>.
+<p>It' required to complete OS setup and setup of small-shell Base App, see detail at <a href="../quick_start_linux/">Quickstart</a>.
 Following is an expamle that count up number of record of inventory.db</p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -job
 Job Name: countup_num_of_record
@@ -256,7 +256,7 @@ $ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_record
 countup_record successfully completed
 </code></pre>
 <h2 id="view-statistics">View statistics</h2>
-<p>You can view statistics on console of Base APP. pyshell could make graph using pandas and matplotlib librarise. please exec #stats at console, then you can access to graph.</p>
+<p>You can view statistics on console of Base App. pyshell could make graph using pandas and matplotlib librarise. please exec #stats at console, then you can access to graph.</p>
 <p><img alt="Screenshot" src="../img/statistics.png" /></p>
 <p>Pop up graph is here.
 <img alt="Screenshot" src="../img/countup_item.png" /></p>
@@ -388,7 +388,7 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/${utilscript} para
 </div>
 <h4 id="usage">Usage</h4>
 <p>please set following commands as exec_command in "#sudo gen -job" dialog. <br />
-or you can execute the script manually. then you can confirm result on console box of Standard APP.</p>
+or you can execute the script manually. then you can confirm result on console box of Standard App.</p>
 <h5 id="countup">Countup</h5>
 <pre><code>e.g.) just countup survey result that is stored at suvery.box   
 sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box type:bar frequency:daily

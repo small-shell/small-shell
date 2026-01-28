@@ -59,11 +59,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+    <a href="../app_shell_tour/" class="dropdown-item">App Shell</a>
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+    <a href="../data_shell_tour/" class="dropdown-item">Data Shell</a>
 </li>
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
 </li>
                                     
 <li>
@@ -149,11 +149,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#add-user-for-base-app" class="nav-link">Add User for Base APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#add-user-for-base-app" class="nav-link">Add User for Base App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#add-user-for-custom-app" class="nav-link">Add User for custom APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#add-user-for-custom-app" class="nav-link">Add User for custom App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -173,7 +173,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="auth-shell-iam">Auth Shell (IAM)</h1>
-<p>Auth shell is designed to be used for key based authentication and session management for Web APPs.</p>
+<p>Auth shell is designed to be used for key based authentication and session management for Web Apps.</p>
 <h2 id="base-64-key-auth">Base 64 key auth</h2>
 <p>Base64 key will be generated with accessing intialize URL. it will contain user_name and randome string with enough length.</p>
 <h6 id="flow-of-standard-auth">FLow of Standard Auth</h6>
@@ -192,9 +192,9 @@
 <p>Base64 key will be sotred at localstorage on browser using random name per instance in the personal key initializing process.</p>
 </div>
 <h2 id="pin-and-session-token">PIN and Session Token</h2>
-<p>Session itself is temporary hash that will be generated using randome PIN (not stored anywhere) and user name. and session file will contain user name, client remote address and user-agent. Besides session hash will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key. also Web APP will check change of IP address and user-agent.</p>
+<p>Session itself is temporary hash that will be generated using randome PIN (not stored anywhere) and user name. and session file will contain user name, client remote address and user-agent. Besides session hash will be changed when accessing new pages. Fraud access could be eliminated based on enough length of session key. also Web App will check change of IP address and user-agent.</p>
 <h2 id="basic-authentication-binauth">Basic Authentication (bin/auth)</h2>
-<p>Basic authentication will be done bin/auth script. it will be used by Base APP mainly.</p>
+<p>Basic authentication will be done bin/auth script. it will be used by Base App mainly.</p>
 <pre><code># CLI 
 sudo /usr/local/small-shell/bin/auth action:target{param}
 </code></pre>
@@ -220,7 +220,7 @@ sudo /usr/local/small-shell/bin/auth action:target{param}
 #  logout:$session_token
 </code></pre>
 <h2 id="extension-auth">Extension auth</h2>
-<p>Extension auth is used for authentication of custom APP.</p>
+<p>Extension auth is used for authentication of custom App.</p>
 <pre><code># for Custom App
 sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 </code></pre>
@@ -235,7 +235,7 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 #-----------------------------------------------------------------------
 #  initialize:user_id{initialize_key} -&gt; get user_name and user_key
 #  key_auth:$base64_enc_key #user_key -&gt; get user_name and session_token with pin
-#  force_user:$external_auth_user -&gt; overwrite APP user name, disabled this option as default
+#  force_user:$external_auth_user -&gt; overwrite App user name, disabled this option as default
 
 #-----------------------------------------------------------------------
 #  SESSION REQUEST
@@ -257,21 +257,21 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 # ops ls.usr
 
 #-----------------------------------
-# User management for Base APP
+# User management for Base App
 #-----------------------------------
 # ops add.usr:$user
 # ops initialize.usr:$user
 # ops del.usr:$user
 
 #-----------------------------------
-# User management for Custom APP
+# User management for Custom App
 #-----------------------------------
 # ops add.usr:$user app:$app
 # ops del.usr:$user app:$app
 # ops initialize.usr:$user app:$app
 
 #-----------------------------------
-# Set or Get permission/attribute to Base APP user
+# Set or Get permission/attribute to Base App user
 #-----------------------------------
 # ops set.attr:$user{ro} 
 # ops set.attr:$user{rw} 
@@ -279,7 +279,7 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 # ops get.attr:$user
 
 #-----------------------------------
-# Set or Get permission/attribute to Custom APP user
+# Set or Get permission/attribute to Custom App user
 #-----------------------------------
 # ops set.attr:$user{ro} app:$app
 # ops set.attr:$user{rw} app:$app
@@ -287,13 +287,13 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 # ops get.attr:$user app:$app
 
 #-----------------------------------
-# Add tag for Base APP table
+# Add tag for Base App table
 #-----------------------------------
 # ops add.tag:$databox{$filter}
 # ops del.tag:$databox{$filter}
 
 #-----------------------------------
-# Add tag for Custom APP table
+# Add tag for Custom App table
 #-----------------------------------
 # ops add.tag:$databox{$filter} app:$app
 # ops del.tag:$databox{$filter} app:$app
@@ -321,7 +321,7 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 </tr>
 <tr>
 <td>initialize.usr</td>
-<td>initialize user key of Base APP, it could generate URL for initialization</td>
+<td>initialize user key of Base App, it could generate URL for initialization</td>
 </tr>
 <tr>
 <td>set.attr:$user{rw}, set.attr:$user{ro}</td>
@@ -337,28 +337,28 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 </tr>
 <tr>
 <td>add.tag</td>
-<td>add tag (#search_word) to Base APP table</td>
+<td>add tag (#search_word) to Base App table</td>
 </tr>
 <tr>
 <td>del.tag</td>
-<td>delet tag (#search_word) from Base APP table</td>
+<td>delet tag (#search_word) from Base App table</td>
 </tr>
 <tr>
 <td>app:$app</td>
-<td>change target from Base APP to Dedicated Custom APP</td>
+<td>change target from Base App to Dedicated Custom App</td>
 </tr>
 </tbody>
 </table>
-<h2 id="add-user-for-base-app">Add User for Base APP</h2>
+<h2 id="add-user-for-base-app">Add User for Base App</h2>
 <p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test
 test successfully created
 -------------------------------------------------------------------------------
-This is the URL for key initialization and generation for test on Base APP
+This is the URL for key initialization and generation for test on Base App
 -------------------------------------------------------------------------------
 https://${server}/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
-<h2 id="add-user-for-custom-app">Add User for custom APP</h2>
+<h2 id="add-user-for-custom-app">Add User for custom App</h2>
 <p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test app:${app}
 test successfully created
@@ -378,7 +378,7 @@ https://${FAQDN}/cgi-bin/auth?initialize=$hashtoken
 <li>IP_persistence: If this parameter set as "yes" and client IP address is changed, session will be gone.</li>
 <li>User_agent_persistence: If this parameter set as "yes" and client browser is changed, session will be gone.</li>
 </ul>
-<h4 id="base-app">Base APP</h4>
+<h4 id="base-app">Base App</h4>
 <p>Need to update base and auth.base</p>
 <pre><code>$ sudo vi /var/www/base
 --change option--
@@ -392,7 +392,7 @@ IP_persistence=&quot;no&quot;
 User_agent_persistence=&quot;yes&quot;
 ----------------
 </code></pre>
-<h4 id="custom-app">Custom APP</h4>
+<h4 id="custom-app">Custom App</h4>
 <p>Need to update $app and auth.$app</p>
 <pre><code>$ sudo vi /var/www/${app}
 --change option--

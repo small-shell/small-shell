@@ -59,11 +59,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+    <a href="../app_shell_tour/" class="dropdown-item">App Shell</a>
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+    <a href="../data_shell_tour/" class="dropdown-item">Data Shell</a>
 </li>
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
 </li>
                                     
 <li>
@@ -145,7 +145,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#data-file-exchange" class="nav-link">DATA (file) exchange</a>
+            <li class="nav-item" data-bs-level="2"><a href="#data-file-exchange" class="nav-link">Data (file) exchange</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -173,7 +173,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="extended-cron">Extended cron</h1>
-<p>small-shell can provide Job automation &amp; data Exchagne function by extending cron function (e-cron). you can define job relationship between several hosts. you can also exchange DATA between several hosts. </p>
+<p>small-shell can provide Job automation &amp; data Exchagne function by extending cron function (e-cron). you can define job relationship between several hosts. you can also exchange data between several hosts. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
@@ -394,7 +394,7 @@ cat /usr/local/small-shell/util/scripts/log/world.log
 Mon Jan  3 04:38:47 UTC 2022 World
 </code></pre>
 <h2 id="job-relationship-between-hosts">Job relationship between hosts</h2>
-<p>If you will define relation ship between serveral hosts, you need to generate Base APP first on HUB server. #see <a href="../app_shell_tour/">APP shell</a> for further details for Base APP.
+<p>If you will define relation ship between serveral hosts, you need to generate Base App first on HUB server. #see <a href="../app_shell_tour/">App shell</a> for further details for Base App.
 Once API HUB is ready, you can define job relationship using message.</p>
 <pre><code> -----------------------------------------------
  | API Server #MessageExchange                 |
@@ -506,8 +506,8 @@ filter: job2
 --------------------------------------------------------    
 2022-01-07 14:19:12 job2 successfully completed
 </code></pre>
-<h2 id="data-file-exchange">DATA (file) exchange</h2>
-<p>e-cron can be dataExchange platform between several hosets. dataExchange also needs Base APP, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">APP shell</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
+<h2 id="data-file-exchange">Data (file) exchange</h2>
+<p>e-cron can be dataExchange platform between several hosets. dataExchange also needs Base App, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">App shell</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
 <pre><code> ---------------------------------
  |   API Server #DataExchange     |  
  ---------------------------------
@@ -760,7 +760,7 @@ que=&quot;mail&quot;
 del_datasets.sh     # delete datasets as batch job
 del_log.sh          # delete log of e-cron
 del_job.sh          # delete job of e-cron
-del_session.sh      # delete session of DATA shell
+del_session.sh      # delete session of data shell
 
 countup.sh          # please see detail at pyshell
 sumup.sh            # please see detail at pyshell

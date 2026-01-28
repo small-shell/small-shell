@@ -59,11 +59,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+    <a href="../app_shell_tour/" class="dropdown-item">App Shell</a>
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+    <a href="../data_shell_tour/" class="dropdown-item">Data Shell</a>
 </li>
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
 </li>
                                     
 <li>
@@ -141,11 +141,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#generate-base-app" class="nav-link">Generate Base APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#generate-base-app" class="nav-link">Generate Base App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#connect-to-the-base-app" class="nav-link">Connect to the Base APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#connect-to-the-base-app" class="nav-link">Connect to the Base App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -204,7 +204,7 @@ sudo visudo
 www-data   ALL=(small-shell)    NOPASSWD: /usr/local/small-shell/bin/*, /usr/local/small-shell/sbin/*
 </code></pre>
 <h2 id="generate-databox">Generate Databox</h2>
-<p>Then Let's generate databox as the data store of Web APP.
+<p>Then Let's generate databox as the data store of Web App.
 DATA shell details are in <a href="../data_shell_tour/">DATA shell</a> </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 #-&gt; dialog will be started
@@ -243,13 +243,13 @@ option=&quot;required&quot;
 -----------------------------------------------------------------
 Is that OK? (yes | no): yes
 </code></pre>
-<h2 id="generate-base-app">Generate Base APP</h2>
-<p>Once databox is ready, let's generate  Base APP, detail of this APP is in <a href="../app_shell_tour/">APP shell</a></p>
+<h2 id="generate-base-app">Generate Base App</h2>
+<p>Once databox is ready, let's generate  Base App, detail of this App is in <a href="../app_shell_tour/">App shell</a></p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 </code></pre>
-<pre><code>Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1  
+<pre><code>Type of App (1.BASE | 2.FORM | 3.CUSTOM): 1  
 Type of Server (1.small-shell Web srv | 2.other Web srv): 2
-#-&gt; Dialog will be started, for making Base APP
+#-&gt; Dialog will be started, for making Base App
 </code></pre>
 <p>Following is result of dialog, in this example http is used as protocol. if you want to use https, please create cert and key for the web server and deploy to your apache server.</p>
 <pre><code># Dialog result
@@ -257,7 +257,7 @@ Type of Server (1.small-shell Web srv | 2.other Web srv): 2
 APP Type: 1.BASE
 Srv Type: other
 Protocol: http
-APP Exec User: www-data
+Web Server Process Owner: www-data
 Root Directory: /var/www
 CGI Directory: /usr/lib/cgi-bin
 CGI base URL: http://${server}/
@@ -283,19 +283,19 @@ ln -s /var/www/tmp /usr/lib/tmp
 </code></pre>
 <p>URL can be accessed only 1 time, please inform to the user</p>
 <pre><code>-------------------------------------------------------------------------------
-This is the URL for key initialization and generation for test on Base APP
+This is the URL for key initialization and generation for test on Base App
 -------------------------------------------------------------------------------
 http://${server}/cgi-bin/auth.base?initialize=*****26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
-<p>End user can access to the Base APP by click the button and key will be stored to local storage of browser.
+<p>End user can access to the Base App by click the button and key will be stored to local storage of browser.
 <img alt="Screenshot" src="../img/initialize_key.png" /></p>
-<h2 id="connect-to-the-base-app">Connect to the Base APP</h2>
-<p>Image of authentication page of Base APP is as following. the access URL will be shown in the end of the gen dialog but basically it will be "http://${FQDN}/base".
+<h2 id="connect-to-the-base-app">Connect to the Base App</h2>
+<p>Image of authentication page of Base App is as following. the access URL will be shown in the end of the gen dialog but basically it will be "http://${FQDN}/base".
 key will be inserted automatically if it's stored in local storage. </p>
 <p><img alt="Screenshot" src="../img/key_auth.png" /></p>
-<p>Then end user can use following APP features as default. ofcourse you can make your own APP,  <br />
-please see detail on <a href="../app_shell_custom/">Create Custom APP</a></p>
-<h4 id="base-app-features">Base APP FEATURES</h4>
+<p>Then end user can use following App features as default. ofcourse you can make your own App,  <br />
+please see detail on <a href="../app_shell_custom/">Create Custom App</a></p>
+<h4 id="base-app-features">Base App Features</h4>
 <ul>
 <li>Push or Get datas thorough simplest UI</li>
 <li>Can use "And" search using space [e.g. word1 word2]</li>
@@ -328,14 +328,13 @@ SELINUX=permissive
 sudo reboot
 </code></pre>
 <h2 id="update-to-latest-version">Update to latest version</h2>
-<p>You can update small-shell very easily. this is exmaples of update procedure.</p>
+<p>You can update small-shell very easily. this is an exmaple of update procedure.</p>
 <pre><code>cd /var/tmp
 sudo git clone https://github.com/small-shell/small-shell.git
 sudo \cp -Rf small-shell/* /usr/local/small-shell/
 sudo rm -rf small-shell
 sudo /usr/local/small-shell/adm/gen #renew global.conf
-</code></pre>
-<p>Then please re-generate Web app using gen command if needed.</p></div>
+</code></pre></div>
             </div>
         </div>
 

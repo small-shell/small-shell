@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>APP Shell - small-shell.org</title>
+        <title>App Shell - small-shell.org</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -59,11 +59,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">APP Shell</a>
+    <a href="./" class="dropdown-item active" aria-current="page">App Shell</a>
 </li>
                                     
 <li>
-    <a href="../data_shell_tour/" class="dropdown-item">DATA Shell</a>
+    <a href="../data_shell_tour/" class="dropdown-item">Data Shell</a>
 </li>
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
 </li>
                                     
 <li>
@@ -127,9 +127,9 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#app-shell" class="nav-link">APP Shell</a>
+            <li class="nav-item" data-bs-level="1"><a href="#app-shell" class="nav-link">App Shell</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#generate-base-app" class="nav-link">Generate Base APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#generate-base-app" class="nav-link">Generate Base App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -141,7 +141,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#access-url-of-base-app" class="nav-link">Access URL of Base APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#access-url-of-base-app" class="nav-link">Access URL of Base App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -169,7 +169,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#tagging-on-base-app" class="nav-link">Tagging on Base APP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#tagging-on-base-app" class="nav-link">Tagging on Base App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -192,9 +192,9 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="app-shell">APP Shell</h1>
-<p>You can generate Web application with standard css design very easily. Basically each types of APP is customizable but Base APP is base layer of each application, so it's recommended to generate custom APP for editting codes freely without any impact to base layer. as for portal page you can edit it very easily by using both markdown and HTML, please check <a href="../cook_book/">cookbook</a></p>
-<h6 id="types-of-small-shell-app">Types of small-shell APP</h6>
+<h1 id="app-shell">App Shell</h1>
+<p>You can generate Web application with standard css design very easily. Basically each types of App is customizable but Base App is base layer of each application, so it's recommended to generate custom App for editting codes freely without any impact to base layer. as for portal page you can edit it very easily by using both markdown and HTML, please check <a href="../cook_book/">cookbook</a></p>
+<h6 id="types-of-small-shell-app">Types of small-shell App</h6>
 <table>
 <thead>
 <tr>
@@ -208,7 +208,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="#generate-base-app">Base APP</a></td>
+<td><a href="#generate-base-app">Base App</a></td>
 <td>Base64 encrypted Key</td>
 <td>table,form,console,log,graph</td>
 <td>All Databox</td>
@@ -224,7 +224,7 @@
 <td>Just push new data through dedicated Form</td>
 </tr>
 <tr>
-<td><a href="../app_shell_custom/">Shared Pass APP</a></td>
+<td><a href="../app_shell_custom/">Shared Pass App</a></td>
 <td>Shared Pass Code</td>
 <td>portal,table,form,log</td>
 <td>Specific Databox</td>
@@ -232,7 +232,7 @@
 <td>Limitted &amp; controllable</td>
 </tr>
 <tr>
-<td><a href="../app_shell_custom/">Key APP</a></td>
+<td><a href="../app_shell_custom/">Key App</a></td>
 <td>Base64 encrypted Key</td>
 <td>portal,table,form,log</td>
 <td>Specific Databox</td>
@@ -248,7 +248,7 @@
 <td>Limitted &amp; controllable</td>
 </tr>
 <tr>
-<td><a href="../app_shell_custom/">No auth APP</a></td>
+<td><a href="../app_shell_custom/">No auth App</a></td>
 <td>No authentication</td>
 <td>portal,table,form</td>
 <td>Specific Databox</td>
@@ -260,15 +260,15 @@
 <h4 id="required">required</h4>
 <p>Please setup OS Env beorehand refering to <a href="../quick_start_linux/">Quick start</a>,
 then start dialog by gen command.</p>
-<h2 id="generate-base-app">Generate Base APP</h2>
-<p>Once OS setup has been done, let's tart to generate Base APP through gen dialog.</p>
+<h2 id="generate-base-app">Generate Base App</h2>
+<p>Once OS setup has been done, let's tart to generate Base App through gen dialog.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app 
 #-&gt; dialog will be started
 </code></pre>
 <h2 id="default-web-server">Default Web Server</h2>
 <p>small-shell contains default Web server that is written by javascipt using Node.js. it can be managed by systemctl command. ofcourse you can use your favorite Web server as well, in that case please select "other Web srv" and input detail to the dialog. we verified that small-shell can be worked without any problem on Apache and Nginx.</p>
-<h3 id="define-dataset-for-web-app">Define dataset for Web APP</h3>
-<p>For the first step, it's required to define dataset that will be refered from APP. "label" will be shown in the table and Form of APP.
+<h3 id="define-dataset-for-web-app">Define dataset for Web App</h3>
+<p>For the first step, it's required to define dataset that will be refered from App. "label" will be shown in the table and Form of App.
 you can also define parameters of select, radio or checkbox in the dialog. by the way, there is 2 type of primary key. please check detail on <a href="../data_shell_tour/#feature">databox feature</a></p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 </code></pre>
@@ -314,7 +314,7 @@ You can define parameters in the dialog. and change them anytime later.</p>
 <p><b>type: mls</b> <br />
 "mls" means member list. if you want to import user who already created in small-shell, please use mls.</p>
 </div>
-<p>This is image of dataset inserted to the APP. 
+<p>This is image of dataset inserted to the App. 
 <img alt="Screenshot" src="../img/created_form.png" /></p>
 <p>Parameters that is defined in the dialog will be inserted like below.
 <img alt="Screenshot" src="../img/select_image.png" /></p>
@@ -322,12 +322,12 @@ You can define parameters in the dialog. and change them anytime later.</p>
 <p>Following example is adding user name "test", "test" can initialize and get base64 key by accessing the URL that is generated by ops command. the key will be stored to end user browser automatically using localstorage.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:test
 -------------------------------------------------------------------------------
-This is the URL for key initialization and generation for test on Base APP
+This is the URL for key initialization and generation for test on Base App
 -------------------------------------------------------------------------------
 https://${server}/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
-<h2 id="access-url-of-base-app">Access URL of Base APP</h2>
+<h2 id="access-url-of-base-app">Access URL of Base App</h2>
 <p>As you already checked, access URL is shown in the result of ops add command. if you are using small-shell default Web server, URL must be ${FQDN}/base.</p>
 <pre><code>e.g.) https://ec2-XX-XX-XX-XX.XXXX.com/base
 </code></pre>
@@ -335,7 +335,7 @@ https://${server}/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6c
 <p>If end user lost their key, you can generate URL for re-generating key.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops initialize.usr:test
 -------------------------------------------------------------------------------
-This is the URL for key initialization and generation for test on Base APP
+This is the URL for key initialization and generation for test on Base App
 -------------------------------------------------------------------------------
 https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
@@ -436,12 +436,12 @@ sudo /usr/local/small-shell/adm/ops set.attr:test{ro}
 <h5 id="basic-structure">Basic structure</h5>
 <pre><code># Controller 
 $cgi_dir (/var/www/cgi-bin #default) 
- |- base # Base APP controller
- |- auth.base # Base APP authenticator
+ |- base # Base App controller
+ |- auth.base # Base App authenticator
  |- api
  |- e-cron
- |- $app # custom APP controller
- |- auth.$app # custom APP authenticator
+ |- $app # custom App controller
+ |- auth.$app # custom App authenticator
 
 # Model
 $bin (/var/www/bin)
@@ -464,18 +464,18 @@ $app (/var/www/app)
 $tmp (/var/www/tmp)
 </code></pre>
 <h5 id="data-flow">Data flow</h5>
-<p>Following is a data flow of APP shell it will be used as Base APP or Custome APP
+<p>Following is a data flow of App shell it will be used as Base App or Custome App
 <img alt="Screenshot" src="../img/standard_flow.png" /></p>
 <h5 id="url-design">URL design</h5>
-<p>Query string will be loaded same name of valiables in the APP</p>
+<p>Query string will be loaded same name of valiables in the App</p>
 <pre><code>https://$[server]/cgi-bin/${app}?req=get&amp;databox=inventory.db&amp;id=1234 ..
 
-These query string will be loaded as following value in the APP
+These query string will be loaded as following value in the App
 -&gt; req=get
 -&gt; databox=inventory.db
 -&gt; id=1234
 </code></pre>
-<h5 id="routing-in-controller-base-app">Routing in controller # Base APP</h5>
+<h5 id="routing-in-controller-base-app">Routing in controller # Base App</h5>
 <p>Routings to the bin/scripts are defined in the controller script.</p>
 <pre><code>sudo vi $cgi-bin/base (e.g. /var/www/cgi-bin/base)
 
@@ -627,7 +627,7 @@ cat /var/www/tmp/${session}/${key}
 ls /var/www/tmp/${session}/binary_file/file_name #contain file name
 ls /var/www/tmp/${session}/binary_file/binary.data #binary data
 </code></pre>
-<h4 id="parse-usage-in-the-app">Parse usage in the APP</h4>
+<h4 id="parse-usage-in-the-app">Parse usage in the App</h4>
 <pre><code># sudo vi ${cgi_dir}/base
 sudo vi /var/www/cgi-bin/base
 
@@ -704,14 +704,14 @@ action:set id:$id keys:$keys input_dir:../tmp/${session} format:html_tag &gt; ..
 sleep 10
 --------
 </code></pre>
-<p>You could find specific command that will be executed by bin/script (e.g. set.sh), following is an example executing set.sh on Base APP.
+<p>You could find specific command that will be executed by bin/script (e.g. set.sh), following is an example executing set.sh on Base App.
 <img alt="Screenshot" src="../img/command_debug.png" /></p>
 <h5 id="exec-command-with-debug-mode">Exec command with debug mode</h5>
 <pre><code># Exec command on bash directly
 authkey="XXXX" please input your authkey
 sudo -u small-shell bash -x /usr/local/small-shell/bin/DATA_shell authkey:$authkey + "parameters that shown on the page"
 </code></pre>
-<h2 id="tagging-on-base-app">Tagging on Base APP</h2>
+<h2 id="tagging-on-base-app">Tagging on Base App</h2>
 <p>You can add tag to the table. the tag can be used for searching with specific word.</p>
 <h5 id="add-tag-thoroug-small-shell-command">Add tag thoroug small-shell command</h5>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.tag:$databox{word}
@@ -771,10 +771,10 @@ $id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #please i
 curl.exe -X GET "${command_api}?keys=all&amp;id=$id&amp;databox=$databox" -H "X-small-shell-authkey:$api_authkey" -H "X-small-shell-databox:$databox"
 </code></pre>
 <h2 id="update-ssl-cert-and-key">Update SSL cert and key</h2>
-<p>When you update SSL cert and key for small-shell default Web server, you need to re-generate Base APP by gen command. all service will be down during this upgrade. by the way, if you deployed automated cert with <a href="../cook_book/#automate-ssl-cert-deployment">cookbook</a>, you don't need to do anything manually.</p>
+<p>When you update SSL cert and key for small-shell default Web server, you need to re-generate Base App by gen command. all service will be down during this upgrade. by the way, if you deployed automated cert with <a href="../cook_book/#automate-ssl-cert-deployment">cookbook</a>, you don't need to do anything manually.</p>
 <pre><code>/usr/local/small-shell/gen -app
 -----------------------------------------------
-Type of APP (1.BASE | 2.FORM | 3.CUSTOM): 1
+Type of App (1.BASE | 2.FORM | 3.CUSTOM): 1
 ------------------------------------------------
 -&gt; dialog will be started
 </code></pre>

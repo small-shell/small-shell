@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>DATA Shell - small-shell.org</title>
+        <title>Data Shell - small-shell.org</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -59,11 +59,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../app_shell_tour/" class="dropdown-item">APP Shell</a>
+    <a href="../app_shell_tour/" class="dropdown-item">App Shell</a>
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">DATA Shell</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Data Shell</a>
 </li>
                                     
 <li>
@@ -71,7 +71,7 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom APP</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
 </li>
                                     
 <li>
@@ -127,7 +127,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#data-shell" class="nav-link">DATA Shell</a>
+            <li class="nav-item" data-bs-level="1"><a href="#data-shell" class="nav-link">Data Shell</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#key-value-store" class="nav-link">Key value store</a>
               <ul class="nav flex-column">
@@ -157,7 +157,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#batch-for-data-shell" class="nav-link">Batch for DATA shell</a>
+            <li class="nav-item" data-bs-level="2"><a href="#batch-for-data-shell" class="nav-link">Batch for data shell</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -184,10 +184,10 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="data-shell">DATA Shell</h1>
-<p>"DATA shell" manage "databox" that is mainly designed to be used by APP shell. DATA shell is interface of manage databox and it can ensure data integrity utilizing hash chain.</p>
+<h1 id="data-shell">Data Shell</h1>
+<p>"Data shell" manage "databox" that is mainly designed to be used by App shell. Data shell is interface of manage databox and it can ensure data integrity utilizing hash chain.</p>
 <h2 id="key-value-store">Key value store</h2>
-<p>Data will be saved in databox as key value type of data sets like this. view of databox will be table on Web APP.</p>
+<p>Data will be saved in databox as key value type of data sets like this. view of databox will be table on Web App.</p>
 <pre><code># DataboxA
 ---------------------------------------------------------------------------------------------
 dataset1:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(colX):value }
@@ -335,7 +335,7 @@ pin="****"
 databox="item.db"    
 sudo -u small-shell /usr/local/small-shell/bin/DATA_shell session:$session pin:$pin databox:$databox type:data command:show_all format:json
 </code></pre>
-<h3 id="data-handler-params">DATA Handler params</h3>
+<h3 id="data-handler-params">Data Handler params</h3>
 <p>You can set or show datas using data handler</p>
 <table>
 <thead>
@@ -456,7 +456,7 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
     echo &quot;$(date +%Y-%m-%d) $(date +%T) synthesis_hash :$synthesis_hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
 </code></pre>
 <h4 id="download-hashchain">Download hashchain</h4>
-<p>Base APP user can download hash chain and verificate data integrity by themselves.
+<p>Base App user can download hash chain and verificate data integrity by themselves.
 <img alt="Screenshot" src="../img/hash_chain.png" /></p>
 <h2 id="meta-command">Meta command</h2>
 <p>"meta" command can be used for gathering meta data.</p>
@@ -493,7 +493,7 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
 # meta chk.form:$databox
 #----------------------------------------------------------
 </code></pre>
-<h2 id="batch-for-data-shell">Batch for DATA shell</h2>
+<h2 id="batch-for-data-shell">Batch for data shell</h2>
 <p>You can import or delete datas using batch scripts.</p>
 <pre><code>/usr/local/small-shell/util/scripts
 </code></pre>
@@ -562,21 +562,21 @@ col3_required=&quot;&quot;
 sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
 </code></pre>
 <h2 id="import-export-data">Import / Export data</h2>
-<p>You can import datas through Web APP or batch command. csv format can be downloaded from Base APP table #csv tag or import form.</p>
+<p>You can import datas through Web App or batch command. csv format can be downloaded from Base App table #csv tag or import form.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you are using hashid for primary key, please input value as "new". if you are not use hashid as primary key, you can input any value to the key.</p>
 </div>
-<h4 id="import-throgh-base-app">Import throgh Base APP</h4>
-<p>You can import datas from Base APP "Data Import" menu. Import format can be download on the page.
+<h4 id="import-throgh-base-app">Import throgh Base App</h4>
+<p>You can import datas from Base App "Data Import" menu. Import format can be download on the page.
 <img alt="Screenshot" src="../img/import.png" /></p>
 <h4 id="import-through-batch">Import through batch</h4>
 <p>Instead of Web UI, you can also import data through bat_import script.</p>
 <pre><code>/usr/local/small-shell/util/scripts/bat_import $authkey $databox $file
 tail -f /usr/local/small-shell/tmp/log/${session}.log
 </code></pre>
-<h4 id="export-data-through-app">Export data through APP</h4>
-<p>You can export datas with csv format on Base APP table.
+<h4 id="export-data-through-app">Export data through App</h4>
+<p>You can export datas with csv format on Base App table.
 <img alt="Screenshot" src="../img/export.png" /></p>
 <h2 id="delete-databox">Delete databox</h2>
 <p>There is util script for deleting databox.</p>
