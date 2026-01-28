@@ -129,7 +129,7 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#create-custom-app" class="nav-link">Create Custom App</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#common-step" class="nav-link">Common STEP</a>
+            <li class="nav-item" data-bs-level="2"><a href="#common-step" class="nav-link">Common Step</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -138,10 +138,6 @@
               </ul>
             </li>
             <li class="nav-item" data-bs-level="2"><a href="#access-url-of-the-app" class="nav-link">Access URL of the App</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#use-member-list" class="nav-link">Use member list</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -238,8 +234,8 @@
 </table>
 <h4 id="required">Required</h4>
 <p>Please setup Base App beorehand refering to <a href="../quick_start_linux/">Quick Start</a></p>
-<h2 id="common-step">Common STEP</h2>
-<p>Each types of custom App have common STEP for launching App, difference is mainly authentication method.</p>
+<h2 id="common-step">Common Step</h2>
+<p>Each types of custom App have common step for launching App, difference is mainly authentication method.</p>
 <ol>
 <li>Generate Databox for datastore #gen -databox</li>
 <li>Generate Custom App #gen -app</li>
@@ -318,12 +314,12 @@ keys=item_name,description
 --------
 </code></pre>
 <h4 id="html-def-def">HTML def ($def)</h4>
-<p>Draft design of HTML is already generated, and you could customize them freely.</p>
+<p>You can edit HTML difectly.</p>
 <pre><code>sudo vi /var/www/def/test_main.html.def
 sudo vi /var/www/def/test_table.html.def
 </code></pre>
-<h2 id="use-member-list">Use member list</h2>
-<p>If you want to import user list on your App Form. you can select "mls" as data type in the gen dialog of data box creation. mls can import user list of your custom App. following is just example.</p>
+<h4 id="use-member-list">Use member list</h4>
+<p>If you want to import user list on your App's form. please select "mls" as data type in the gen dialog of data box creation. mls can import user list of your Custom App. following is an example.</p>
 <pre><code>key(col2) name: assignee
 key(col2) label: Assignee
 data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): mls
@@ -337,7 +333,7 @@ sudo /usr/local/small-shell/adm/ops add.tag:tasks{status{on-going}} app:tasks
 </code></pre>
 <p><img alt="Screenshot" src="../img/app_tag.png" /></p>
 <h2 id="change-user-permission">Change user permission</h2>
-<p>User permission could be changed ops command with app option. </p>
+<p>User permission can be changed by ops command. </p>
 <pre><code># change to read only 
 sudo /usr/local/small-shell/adm/ops set.attr:$user{ro} app:$app
 
@@ -345,7 +341,7 @@ sudo /usr/local/small-shell/adm/ops set.attr:$user{ro} app:$app
 sudo /usr/local/small-shell/adm/ops set.attr:$user{rw} app:$app
 </code></pre>
 <p>You can add any extension information to user attribute.
-following is exmaple to set attribute to ken as admin for management App.</p>
+following is an exmaple to set attribute to ken as admin for management App.</p>
 <pre><code># user=ken app=management
 sudo /usr/local/small-shell/adm/ops set.attr:ken{admin=yes} app:management
 
@@ -365,17 +361,13 @@ sudo vi /var/www/def/test_get.html.def
 --------
 </code></pre>
 <h2 id="sub-app">Sub App</h2>
-<p>Basically custom App connect to only 1 databox. and Sub App is the way to add databox to your custom App additionally. In this following exmapmle, databox:inventory.db subapp:inventory will be added to custom App that name is test. </p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>subApp must be belong to parent App, please define subapp as $subapp_name@$parentApp_name    </p>
-</div>
+<p>Basically Custom App connect to only 1 databox. Sub App is the way to add databox to your Custom App additionally. This is an example to add databox "inventory.db" to Custom App "test". </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3
 App Name: inventory@test
 Subapp databox: inventory.db
 </code></pre>
-<p>Once subApp deployed, please check routing and menu that will be updaated automatically. and you can freely modify them.</p>
+<p>Once sub app deployed, please check routing and menu that will be updaated automatically. you can freely modify them.</p>
 <pre><code># routing
 # sudo cat /var/www/cgi-bin/${parent_app}
 sudo cat /var/www/cgi-bin/test
@@ -385,16 +377,16 @@ cat /var/www/desciption/common_parts/test_common_menu
 </code></pre>
 <p>Portal page link will be updated as well. please check on Base App.</p>
 <h2 id="meta-link">Meta link</h2>
-<p>You can generate links that can be used in the App. please do not delete %%session in the link. then it will be replaced to a dynamic session and pin code. These links could be used in html def of your App and it can connect table of primary databox of your App or it can connect action links such like new or get data in the App.</p>
+<p>You can generate links that can be used in the App. </p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$app
 </code></pre>
 <p>for subapp   </p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$subapp@$parent_app
 </code></pre>
 <h2 id="import-app-from-template">Import App from template</h2>
-<p>Creating App template is sub project of small-shell. you can import App template from git sub projects.</p>
+<p>Creating App template is sub project of small-shell. you can import App template from git hub.</p>
 <h2 id="team-app">Team App</h2>
-<p>This App template could manage not only Team events, but also tasks, shared drive, bookmarks and inquiries as easy ticketing system. </p>
+<p>This App template could manage not only Team events, but also tasks, shared drive, bookmarks and inquiries. </p>
 <h6 id="team-app-funcions">Team App funcions</h6>
 <table>
 <thead>
@@ -459,7 +451,7 @@ sudo ./deploy.sh
 <pre><code>sudo /usr/local/small-shell/adm/ops app:team add.usr:test
 </code></pre>
 <p><img alt="Screenshot" src="../img/team.png" /></p>
-<h5 id="access-ulr-of-team-app">Access ULR of Team App</h5>
+<h5 id="access-url-of-team-app">Access URL of Team App</h5>
 <p>There is 2 URL for using Team App, 1 is for App user, 1 is external user for inquiry. please try to use.</p>
 <pre><code># Team App 
 https://${FQND}/team

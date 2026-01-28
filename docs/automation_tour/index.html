@@ -173,7 +173,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="extended-cron">Extended cron</h1>
-<p>small-shell can provide Job automation &amp; data Exchagne function by extending cron function (e-cron). you can define job relationship between several hosts. you can also exchange data between several hosts. </p>
+<p>small-shell can provide job automation &amp; data Exchagne function by extending cron function (e-cron). you can define job relationship with several hosts. Also you can use e-cron for data exchange HUB. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
@@ -193,7 +193,7 @@ Exec command or batch script: XXXX
 <li>Provide CLI status check tool</li>
 <li>Prevent double start of same job</li>
 <li>Logging job result and command dump</li>
-<li>Make relationship between jobs or hosts using messaing function</li>
+<li>Make relationship between jobs/hosts using messaing function</li>
 <li>Provide dataExchange platform between small-shell hosts</li>
 </ol>
 <h4 id="basic-concept">Basic concept</h4>
@@ -210,7 +210,7 @@ CLI  &lt;-&gt; wrapper.sh &lt;- script #result
 <pre><code>/usr/local/small-shell/util/scripts
 </code></pre>
 <h2 id="add-job-through-e-cron">Add Job through e-cron</h2>
-<p>This is an example of adding job through e-cron. also you can learn how to confirm reulst of the Job and dumped output of the Job or command.</p>
+<p>This is an example of adding job through e-cron. also you can learn how to confirm reulst of the job and dumped output of the job or command.</p>
 <h5 id="sample-job">sample job</h5>
 <pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job1.sh
 --code--
