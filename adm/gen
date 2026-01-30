@@ -2836,7 +2836,7 @@ if [ "$param" = "-app" ];then
         fi
         echo "------------------------------------------------------------"
         echo "Here is the generated code that you can modify."
-        echo "You can also update portal page on Base App #${app}.UI.md.def using markdown."
+        echo "You can also update main page on Base App #${app}.UI.md.def using markdown."
 
         if [ ! "$auth_method" = "none" ];then
           ls  ${cgi_dir}/auth.${app}
