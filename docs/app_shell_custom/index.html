@@ -185,13 +185,13 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="create-custom-app">Create Custom App</h1>
-<p>In this page, you can learn how to make custom App and how to edit codes and portal page very quiickly. there are 4 types of Custom App as following chart. </p>
+<p>In this page, you can learn how to make custom App and how to edit codes and main page very quiickly. there are 4 types of Custom App as following chart. </p>
 <table>
 <thead>
 <tr>
 <th>Type</th>
 <th>Auth</th>
-<th>View</th>
+<th>Function</th>
 <th>Data  src</th>
 <th>Code</th>
 <th>Data Access</th>
@@ -201,7 +201,7 @@
 <tr>
 <td>Shared Pass App</td>
 <td>Shared Pass Code</td>
-<td>Markdown portal,table,form,log</td>
+<td>main-page,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Controllable per group</td>
@@ -209,7 +209,7 @@
 <tr>
 <td>Key App</td>
 <td>Base64 Encrypted Key</td>
-<td>Markdown portal,table,form,log</td>
+<td>main-page,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Controllable per user</td>
@@ -217,7 +217,7 @@
 <tr>
 <td>Other</td>
 <td>Any</td>
-<td>Markdown portal,table,form,log</td>
+<td>main-page,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Customize everything</td>
@@ -225,7 +225,7 @@
 <tr>
 <td>No auth App</td>
 <td>No Authentication</td>
-<td>Markdown portal,table,form</td>
+<td>main-page,table,form</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Read only</td>
@@ -239,7 +239,7 @@
 <ol>
 <li>Generate Databox for datastore #gen -databox</li>
 <li>Generate Custom App #gen -app</li>
-<li>Update portal with Markdown or HTML tag #on BaseApp</li>
+<li>Update main page with Markdown or HTML tag #on BaseApp</li>
 <li>Add user #key App, other</li>
 <li>Update bin/scripts #optional</li>
 <li>Add subApp #connect additional databox if needed</li>
@@ -262,8 +262,8 @@ Primary databox: item.db
 <p class="admonition-title">Note</p>
 <p>If you don't need to use any databox, please input none or null as primary databox</p>
 </div>
-<h3 id="update-portal">Update portal</h3>
-<p>You can update portal page by updating markdown description of $app.UI.md.def on Base App or edit code directly please check detail on <a href="../cook_book/">cookbook</a>. default portal image is here.</p>
+<h3 id="update-main-page">Update main page</h3>
+<p>You can update main page by updating markdown description of $app.UI.md.def on Base App or edit code directly please check detail on <a href="../cook_book/">cookbook</a>. default main page image is here.</p>
 <p><img alt="Screenshot" src="../img/default_portal.png" /></p>
 <h2 id="add-user-to-the-app">Add user to the App</h2>
 <p>If you select Key App, please add user for the App. then you can get URL that can generate key for each end user.</p>
@@ -399,8 +399,8 @@ cat /var/www/desciption/common_parts/test_common_menu
 <tbody>
 <tr>
 <td>Calendar</td>
-<td>portal</td>
-<td>Manage team events in portal page</td>
+<td>main</td>
+<td>Manage team events in main page</td>
 </tr>
 <tr>
 <td>Announcements</td>
@@ -447,7 +447,7 @@ cd small-shell-apps/team_app
 sudo ./deploy.sh
 </code></pre>
 <h6 id="add-user-to-team-app">Add user to Team App</h6>
-<p>Please add user to the App, Then you can get key to access team portal.</p>
+<p>Please add user to the App, Then you can get key to access team main.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops app:team add.usr:test
 </code></pre>
 <p><img alt="Screenshot" src="../img/team.png" /></p>
@@ -601,8 +601,8 @@ cat /var/www/def/gentest_main.html.def | $SED -r &quot;s/^( *)&lt;/&lt;/1&quot; 
 --------
 
 </code></pre>
-<h4 id="4-disable-portal">4. Disable portal</h4>
-<p>If your App will not use portal, please change main request to table by adding these codes.</p>
+<h4 id="4-disable-main-page">4. Disable main page</h4>
+<p>If your App will not use main page, please change main request to table by adding these codes.</p>
 <pre><code>sudo vi /var/www/cgi-bin/${app}
 --code--
 if [ &quot;$req&quot; = &quot;main&quot; ];then
