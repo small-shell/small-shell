@@ -214,10 +214,9 @@ do
      echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
 
    elif [[ "$line" == \#* ]];then
-     if [ ! "$home_flg" ];then
-       home_flg=yes
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"HOME\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
-       echo "<a href=\"#HOME\"><p>HOME</p></a>" >> ${tmp}/leftnav.tmp
+     if [ ! "$top_flg" ];then
+       top_flg=yes
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1>/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
      else
        hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
        echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
@@ -326,15 +325,9 @@ if [ "$logo_img" ];then
   | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g")
 
   $DL databox:images.db id:${logo_id} remote_addr:localhost > %%www/html/images/${logo_id}.${file_type}
-  cat ${tmp}/leftnav.tmp | grep -v "<p>HOME</p>" > ${tmp}/leftnav.tmp.1
-  echo "<a href=\"#HOME\"><img src=\"../images/${logo_id}.${file_type}\" width=\"75%\"></a>" > ${tmp}/logo.tmp
-
-  if [ ! -s ${tmp}/leftnav.tmp.1 ];then
-    cat ${tmp}/logo.tmp > ${tmp}/leftnav.tmp.2
-  else
-    $SED -e "1i $(cat ${tmp}/logo.tmp)" ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp.2
-  fi
-  cat ${tmp}/leftnav.tmp.2 > ${tmp}/leftnav.tmp
+  echo "<a href=\"./${app}?%%params\"><img src=\"../images/${logo_id}.${file_type}\" width=\"75%\"></a>" > ${tmp}/logo.tmp
+  $SED -e "1i $(cat ${tmp}/logo.tmp)" ${tmp}/leftnav.tmp > ${tmp}/leftnav.tmp.1
+  cat ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp
 fi 
 
 # handle footer
