@@ -214,14 +214,9 @@ do
      echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
 
    elif [[ "$line" == \#* ]];then
-     if [ ! "$top_flg" ];then
-       top_flg=yes
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1>/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
-     else
-       hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
-     fi
+     hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
+     echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
 
    # Add Calendar
    elif [[ "$line" == %%calendar ]];then
