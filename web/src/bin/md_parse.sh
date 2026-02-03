@@ -212,7 +212,7 @@ do
      if [ ! "$top_flg" ];then
        top_flg=yes
        echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"top\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
-       echo "<a href=\"#top\"><p>PageTop</p></a>" >> ${tmp}/leftnav.tmp
+       echo "<a href=\"#top\"><p>Top</p></a>" >> ${tmp}/leftnav.tmp
      else
        hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
        echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"${hashlink}\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
