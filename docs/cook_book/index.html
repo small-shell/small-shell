@@ -331,7 +331,8 @@ calendar events will be saved on $app.events databox that will be generated auto
 </code></pre>
 <h3 id="distribute-app-as-static-site">Distribute App as static site</h3>
 <p>You can export main page as static site. </p>
-<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $App $EXPORT_DIR
+<pre><code>cd /usr/local/small-shell/util/scripts
+sudo ./dist.sh $App $EXPORT_DIR
 </code></pre>
 <h2 id="automate-ssl-cert-deployment">Automate SSL cert deployment</h2>
 <p>In this cook, you can learn how to automate cert deployment by using Let's Encrypt as ssl certificate provider. please install certbot first.</p>
@@ -436,22 +437,26 @@ sudo apt install rsync
 sudo apt install nginx
 sudo /usr/local/small-shell/adm/gen -app #Base App (required)
 </code></pre>
+<h4 id="work-directory">work directory</h4>
+<p>For making replication, please chnage directory to /usr/local/util/scripts</p>
+<pre><code>cd /usr/local/small-shell/util/scripts
+</code></pre>
 <h4 id="get-key">Get key</h4>
 <p>Then let's get key to communicate between master and replica. "show.pub" option will show the key. please copy the key. it must be paste next STEP.
 When you execute mkrep.sh with the option first time, PATH of the key will be confirmed. it must be /home/small-shell/.ssh/id_rsa.</p>
 <pre><code>@master @replica 
-sudo /usr/local/small-shell/util/scripts/mkrep.sh show.pub
+sudo ./mkrep.sh show.pub
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/small-shell/.ssh/id_rsa): &lt;Enter&gt;
 </code></pre>
 <h4 id="build-replication">Build Replication</h4>
 <p>Once key is ready, replication can be built by "reg" option. you must answer the dialog and paste public key that you get beorehand.</p>
 <pre><code>@master 
-sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.replica
+sudo ./mkrep.sh reg.replica
 &gt; dialog will be started
 
 @replica
-sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.master
+sudo ./mkrep.sh reg.master
 &gt; dialog will be started
 </code></pre>
 <h4 id="automated-deployment-of-ssl-cert-for-load-balancing">Automated deployment of SSL cert for load balancing</h4>
@@ -498,15 +503,15 @@ sudo /usr/local/small-shell/adm/ops add.usr:$user app:$app #Custom App
 <h4 id="add-new-app-or-rebuild-replication">Add new App or rebuild replication.</h4>
 <p>If you will add new App after starting replication or rebuild replication for adding new host, please remove all replication setting with purge option.</p>
 <pre><code>@master @replica_hosts
-sudo /usr/local/small-shell/util/scripts/mkrep.sh purge
-sudo /usr/local/small-shell/util/scripts/mkrep.sh show.pub
+sudo ./mkrep.sh purge
+sudo ./mkrep.sh show.pub
 
 @master 
 sudo /usr/local/small-shell/adm/gen -app #create new App
-sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.replica
+sudo ./mkrep.sh reg.replica
 
 @replica_hosts
-sudo /usr/local/small-shell/util/scripts/mkrep.sh reg.master
+sudo ./mkrep.sh reg.master
 </code></pre>
 <h2 id="backup-restore-example">Backup &amp; Restore example</h2>
 <p>In this cook, 1 production node will send backup to backuo node through e-cron HUB API</p>
@@ -582,7 +587,7 @@ vi keywords
 ##########################################################
 # usage: original_word{%%%%%%}translated_word
 ##########################################################
-CustomApp:App Portal{%%%%%%}
+CustomApp:App Home{%%%%%%}
 CustomApp:Table{%%%%%%}
 CustomApp:Log Out{%%%%%%}
 Your Key is successfully generated.{%%%%%%}
