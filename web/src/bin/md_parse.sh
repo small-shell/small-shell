@@ -209,14 +209,26 @@ do
      echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#* ]];then
-     hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
-     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"${hashlink}\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
-     echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
+     if [ ! "$top_flg" ];then
+       top_flg=yes
+       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"top\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
+       echo "<a href=\"#top\"><p>Top</p></a>" >> ${tmp}/leftnav.tmp
+     else
+       hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
+       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"${hashlink}\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
+     fi
 
    elif [[ "$line" == \#* ]];then
-     hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
-     echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
-     echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
+     if [ ! "$top_flg" ];then
+       top_flg=yes
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"top\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
+       echo "<a href=\"#top\"><p>Top</p></a>" >> ${tmp}/leftnav.tmp
+     else
+       hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
+     fi
 
    # Add Calendar
    elif [[ "$line" == %%calendar ]];then
