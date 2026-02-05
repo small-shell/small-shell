@@ -9,6 +9,7 @@
 # purge		#purge all replication setting
 #------------------------------------
 
+
 # load param
 param=$1
 small_shell_home=/home/small-shell
@@ -20,6 +21,12 @@ SCRIPT_DIR=$(dirname $0)
 WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
   echo "error: user must be root"
+  exit 1
+fi
+
+pwd_chk=$(pwd)
+if [ ! $pwd_chk = ${ROOT}/util/scripts ];then
+  echo "error: please change directory to ${ROOT}/util/scripts and try again"
   exit 1
 fi
 

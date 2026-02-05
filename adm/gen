@@ -278,14 +278,14 @@ if [ "$param" = "-databox" ];then
   fi
 
   # command check for databox 
-  sudo -u small-shell echo "\n" | $SED -z "s/\n//g" >/dev/null 2>&1
+  (cd ${ROOT}/tmp && sudo -u small-shell echo "\n" | $SED -z "s/\n//g" >/dev/null 2>&1)
   if [ ! $? -eq 0 ];then
     echo "error: please install $SED command which can use -z option #above version 4.2.2"
     rm -rf $tmp_dir
     exit 1
   fi
 
-  sudo -u small-shell echo "Create" | $AWK 'IGNORECASE = 1;/^create/;' >/dev/null 2>&1
+  (cd ${ROOT}/tmp && sudo -u small-shell echo "Create" | $AWK 'IGNORECASE = 1;/^create/;' >/dev/null 2>&1)
   if [ ! $? -eq 0 ];then
     echo "error: please install $AWK command which can use INNORECASE option"
     rm -rf $tmp_dir
@@ -1481,7 +1481,7 @@ if [ "$param" = "-app" ];then
     fi
 
     # command check for cgi
-    sudo -u small-shell echo "$HOME" >/dev/null 2>&1
+    (cd ${ROOT}/tmp && sudo -u small-shell echo "$HOME" >/dev/null 2>&1)
     if [ ! $? -eq 0 ];then
       echo "error: please add small-shell as linux user"
       rm -rf $tmp_dir
@@ -1672,7 +1672,7 @@ if [ "$param" = "-app" ];then
           systemctl stop nginx
           systemctl disable nginx
           reverse_proxy=""
-          sudo -u small-shell ${ROOT}/bin/e-cron disable.ssl_auto
+          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/e-cron disable.ssl_auto)
         else
           nginx_chk=$(ps -ef | grep nginx | grep -v grep)
           if [ "$nginx_chk" ];then
@@ -1940,27 +1940,27 @@ if [ "$param" = "-app" ];then
       if [ ! "$mac_chk" ];then
         # enable standard jobs
         if [ ! -f ${ROOT}/util/e-cron/def/del_session.def ];then
-          sudo -u small-shell echo "SCHEDULE:* * * * *" > ${ROOT}/util/e-cron/def/del_session.def
-          sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/del_session.sh\"" >> ${ROOT}/util/e-cron/def/del_session.def
+          (cd $tmp_dir && sudo -u small-shell echo "SCHEDULE:* * * * *" > ${ROOT}/util/e-cron/def/del_session.def)
+          (cd $tmp_dir && sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/del_session.sh\"" >> ${ROOT}/util/e-cron/def/del_session.def)
           chown small-shell:small-shell ${ROOT}/util/e-cron/def/del_session.def
         fi
 
         if [ ! -f ${ROOT}/util/e-cron/def/del_util_log.def ];then
-          sudo -u small-shell echo "SCHEDULE:5 0 * * *" > ${ROOT}/util/e-cron/def/del_util_log.def
-          sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/del_log.sh\"" >> ${ROOT}/util/e-cron/def/del_util_log.def
+          (cd $tmp_dir && sudo -u small-shell echo "SCHEDULE:5 0 * * *" > ${ROOT}/util/e-cron/def/del_util_log.def)
+          (cd $tmp_dir && sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/del_log.sh\"" >> ${ROOT}/util/e-cron/def/del_util_log.def)
           chown small-shell:small-shell ${ROOT}/util/e-cron/def/del_util_log.def
         fi
  
-        sudo -u small-shell ${ROOT}/bin/e-cron enable.del_session
-        sudo -u small-shell ${ROOT}/bin/e-cron enable.del_util_log
+        (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/e-cron enable.del_session)
+        (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/e-cron enable.del_util_log)
 
         if [ "$srv_type" = "default" ];then
           if [ ! -f ${ROOT}/util/e-cron/def/rotate_srv_log.def ];then
-            sudo -u small-shell echo "SCHEDULE:0 0 * * *" > ${ROOT}/util/e-cron/def/rotate_srv_log.def
-            sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/rotate_srvlog.sh\"" >> ${ROOT}/util/e-cron/def/rotate_srv_log.def
+            (cd $tmp_dir && sudo -u small-shell echo "SCHEDULE:0 0 * * *" > ${ROOT}/util/e-cron/def/rotate_srv_log.def)
+            (cd $tmp_dir && sudo -u small-shell echo "exec_command=\"${ROOT}/util/scripts/rotate_srvlog.sh\"" >> ${ROOT}/util/e-cron/def/rotate_srv_log.def)
             chown small-shell:small-shell ${ROOT}/util/e-cron/def/rotate_srv_log.def
           fi
-          sudo -u small-shell ${ROOT}/bin/e-cron enable.rotate_srv_log
+          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/e-cron enable.rotate_srv_log)
         fi
       fi
 
@@ -2816,12 +2816,12 @@ if [ "$param" = "-app" ];then
         permission=$(${ROOT}/bin/meta get.attr:sys)
         if [ "$permission" = "ro" ];then
           ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
-          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data
+          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
           ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
         else
-          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data
+          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
         fi
 
         clear
@@ -2922,9 +2922,11 @@ if [ "$param" = "-app" ];then
         permission=$(${ROOT}/bin/meta get.attr:sys)
 	chk_md_def=$(${ROOT}/bin/meta get.databox | grep ${parent_app}.UI.md.def)
 	if [ "$chk_md_def" ];then
-          id=$(sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')
-          sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
-          | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu
+          id=`(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey \
+          databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')`
+
+          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
+          | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu)
           mkdir ${tmp_dir}/data
 
           if [ "$permission" = "ro" ];then
@@ -2934,13 +2936,13 @@ if [ "$param" = "-app" ];then
 
           if [ -f ${cgi_dir}/auth.${parent_app} ];then
             cat ${tmp_dir}/UI_md_def_menu | $SED -e "/Log Out/i ${databox} Table: ./${parent_app}?req=table&subapp=${app}" > ${tmp_dir}/data/righth
-            sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-            action:set id:$id key:righth input_dir:${tmp_dir}/data
+            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+            action:set id:$id key:righth input_dir:${tmp_dir}/data)
           else
             cat ${tmp_dir}/UI_md_def_menu > ${tmp_dir}/data/righth
             echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> ${tmp_dir}/data/righth
-            sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-            action:set id:$id key:righth input_dir:${tmp_dir}/data
+            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+            action:set id:$id key:righth input_dir:${tmp_dir}/data)
           fi
 
           if [ "$tmp_permission_flg" = "yes" ];then
@@ -3189,7 +3191,7 @@ if [ "$param" = "-job" ];then
           exec_command="$(pwd)/${exec_command}"
         fi
 
-        exec_chk=$(sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)
+        exec_chk=`(cd $tmp_dir && sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)`
       fi
 
       if [ ! "$exec_command" ];then
@@ -3239,7 +3241,7 @@ if [ "$param" = "-job" ];then
     if [ "$fin_answer" = "yes" ];then
 
       if [ "$existing_chk_result" = "existing" ];then
-        sudo -u small-shell ${ROOT}/bin/e-cron disable.${job}
+        (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/e-cron disable.${job})
       fi
       cat ${tmp_dir}/${job}.def > ${ROOT}/util/e-cron/def/${job}.def
       chown small-shell:small-shell ${ROOT}/util/e-cron/def/${job}.def
@@ -3282,7 +3284,7 @@ if [ "$param" = "-job" ];then
       echo -n "Local directory: "
       read local_dir
       if [ -d $local_dir ];then
-        sudo -u small-shell echo "test" > ${local_dir}/.gentest
+        (cd $tmp_dir && sudo -u small-shell echo "test" > ${local_dir}/.gentest)
 	if [ $? -eq 0 ];then
 	  gen_test=success
         else
@@ -3295,7 +3297,7 @@ if [ "$param" = "-job" ];then
         echo -n "Local directory: "
         read local_dir
         if [ -d $local_dir ];then
-          sudo -u small-shell echo "test" > ${local_dir}/.gentest
+          (cd $tmp_dir && sudo -u small-shell echo "test" > ${local_dir}/.gentest)
           if [ $? -eq 0 ];then
             gen_test=success
           else
@@ -3311,7 +3313,7 @@ if [ "$param" = "-job" ];then
       read local_dir
       if [ -d $local_dir ];then
         echo "test" > ${local_dir}/.gentest
-        sudo -u small-shell ls ${local_dir}/.gentest > /dev/null 2>&1
+        (cd $tmp_dir && sudo -u small-shell ls ${local_dir}/.gentest > /dev/null 2>&1)
         if [ $? -eq 0 ];then
           gen_test=success
         else
@@ -3325,7 +3327,7 @@ if [ "$param" = "-job" ];then
         read local_dir
         if [ -d $local_dir ];then
           echo "test" > ${local_dir}/.gentest
-          sudo -u small-shell ls  ${local_dir}/.gentest > /dev/null 2>&1
+          (cd $tmp_dir && sudo -u small-shell ls  ${local_dir}/.gentest > /dev/null 2>&1)
           if [ $? -eq 0 ];then
             gen_test=success
           else
@@ -3448,7 +3450,7 @@ if [ "$param" = "-job" ];then
     if [ "$fin_answer" = "yes" ];then
 
       if [ "$existing_chk_result" = "existing" ];then
-        sudo -u small-shell ${ROOT}/bin/e-cron disable.${job}
+        (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/e-cron disable.${job})
       fi
 
       cat ${tmp_dir}/${job}.def > ${ROOT}/util/e-cron/def/${job}.def

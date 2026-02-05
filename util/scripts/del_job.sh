@@ -27,7 +27,7 @@ if [ ! -f ${ROOT}/util/e-cron/def/${job}.def ];then
   exit 1
 fi
 
-chk_job=$(sudo -u small-shell ${ROOT}/bin/e-cron ls | grep ^${job}.enabled)
+chk_job=`(cd ${ROOT}/tmp && sudo -u small-shell ${ROOT}/bin/e-cron ls | grep ^${job}.enabled)`
 if [ "$chk_job" ];then
   echo "error: ${job} is enabled job, please disable job first by executing \"sudo -u small-shell ${ROOT}/bin/e-cron disable.${job}\""
   exit 1

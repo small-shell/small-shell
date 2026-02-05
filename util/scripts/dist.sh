@@ -17,6 +17,12 @@ if [ ! "$WHOAMI" = "root" ];then
   exit 1
 fi
 
+pwd_chk=$(pwd)
+if [ ! $pwd_chk = ${ROOT}/util/scripts ];then
+  echo "error: please change directory to ${ROOT}/util/scripts and try again"
+  exit 1
+fi
+
 # gen tmpdir
 random=$RANDOM
 while [ -d ${ROOT}/tmp/gen/${random} ]
