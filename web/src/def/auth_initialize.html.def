@@ -86,7 +86,7 @@
     <div class="container">
       <div class="navbar">
         <div class="navbar-left-links">
-          <h2>DataBox@%%server</h2>
+          <h2>BaseApp@%%server</h2>
         </div>
       </div>
       <div class="auth-container">
