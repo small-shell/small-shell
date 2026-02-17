@@ -17,12 +17,6 @@ if [ ! "$WHOAMI" = "root" ];then
   exit 1
 fi
 
-pwd_chk=$(pwd)
-if [ ! $pwd_chk = ${ROOT}/util/scripts ];then
-  echo "error: please change directory to ${ROOT}/util/scripts and try again"
-  exit 1
-fi
-
 # gen tmpdir
 random=$RANDOM
 while [ -d ${ROOT}/tmp/gen/${random} ]
@@ -78,9 +72,9 @@ grep "<img src=" ${tmp_dir}/index.html | grep images > ${tmp_dir}/.images
 while read line
 do
   id=$(echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F "." '{print $1}')
-  file_name=$(sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} \
+  file_name=(`cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} \
   databox:images.db id:${id} remote_addr:localhost key:image action:get format:none \
-  | $SED "s/image://g" | $AWK -F " #" '{print $1}')
+  | $SED "s/image://g" | $AWK -F " #" '{print $1}'`)
   file_type=$(echo "$file_name" | awk -F "." '{print $NF}')
 
   (cd ${tmp_dir} && sudo -u small-shell ${ROOT}/bin/dl authkey:${authkey} databox:images.db id:${id} remote_addr:localhost > ${file_name})
@@ -92,7 +86,7 @@ done < ${tmp_dir}/.images
 # calendar check
 calendar_chk=$(grep "<div id=\"my-calendar\">" ${tmp_dir}/index.html)
 if [ "$calendar_chk" ];then 
-  sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.events command:show_all format:json \
+  (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.events command:show_all format:json \
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
   | $SED "s/{%%%%%%%%%%%%%%%%}/%/g"\
   | $SED "s/{%%%%%%%%%%%%%%%}/*/g"\
@@ -107,7 +101,7 @@ if [ "$calendar_chk" ];then
   | $SED "s/{%%%%%%}/,/g"\
   | $SED "s/{%%%%%}/\//g"\
   | $SED "s/{%%%%}/\&/g"\
-  | $SED "s/{%%%}/:/g" > ${tmp_dir}/events
+  | $SED "s/{%%%}/:/g" > ${tmp_dir}/events)
   cat ${tmp_dir}/index.html | $SED "/%%events/r ${tmp_dir}/events" \
   | $SED "s/%%event_add_btn//g" > ${tmp_dir}/.index.html.tmp
   cat ${tmp_dir}/.index.html.tmp > ${tmp_dir}/index.html
