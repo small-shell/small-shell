@@ -72,9 +72,9 @@ grep "<img src=" ${tmp_dir}/index.html | grep images > ${tmp_dir}/.images
 while read line
 do
   id=$(echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F "." '{print $1}')
-  file_name=(`cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} \
+  file_name=$(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} \
   databox:images.db id:${id} remote_addr:localhost key:image action:get format:none \
-  | $SED "s/image://g" | $AWK -F " #" '{print $1}'`)
+  | $SED "s/image://g" | $AWK -F " #" '{print $1}')
   file_type=$(echo "$file_name" | awk -F "." '{print $NF}')
 
   (cd ${tmp_dir} && sudo -u small-shell ${ROOT}/bin/dl authkey:${authkey} databox:images.db id:${id} remote_addr:localhost > ${file_name})
@@ -122,7 +122,7 @@ if [ -f ${tmp_dir}/.index.html.tmp ];then
 fi
 
 echo "============================================================"
-echo "App is successfully exported to your directory,"
+echo "App is successfully exported to your directory"
 echo "PATH: ${export_dir}/${app}.tar.gz"
 echo "============================================================"
 

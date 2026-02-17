@@ -2922,8 +2922,8 @@ if [ "$param" = "-app" ];then
         permission=$(${ROOT}/bin/meta get.attr:sys)
 	chk_md_def=$(${ROOT}/bin/meta get.databox | grep ${parent_app}.UI.md.def)
 	if [ "$chk_md_def" ];then
-          id=`(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey \
-          databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')`
+          id=$(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey \
+          databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')
 
           (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
           | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu)
@@ -3191,7 +3191,7 @@ if [ "$param" = "-job" ];then
           exec_command="$(pwd)/${exec_command}"
         fi
 
-        exec_chk=`(cd $tmp_dir && sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)`
+        exec_chk=$(cd $tmp_dir && sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)
       fi
 
       if [ ! "$exec_command" ];then
