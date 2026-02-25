@@ -12,9 +12,9 @@ if [ ! "$WHOAMI" = "root" ];then
   exit 1
 fi
 
-# global.conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 
 if [ ! "$db_def" ];then
   echo "error: please input db.def for making databox #./bat_gen.sh $db.def"
