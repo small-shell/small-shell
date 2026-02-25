@@ -4,7 +4,7 @@ pages=$2
 table_command=$3
 num_of_line_per_page=$4
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 if [ "$table_command" ];then

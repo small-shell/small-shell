@@ -17,7 +17,7 @@ authkey="%%authkey"
 echo "Content-Type: text/html"
 echo ""
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 # load header

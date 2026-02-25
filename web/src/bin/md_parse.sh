@@ -5,7 +5,7 @@ app=$1
 session=$2
 pin=$3
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 # set basic params

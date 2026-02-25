@@ -1,7 +1,7 @@
 #!/bin/bash
 app=%%app
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 # load query string param

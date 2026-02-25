@@ -6,7 +6,7 @@
 
 authkey="%%authkey"
 
-# load small-shell params
+# load env
 . %%www/def/.env
 
 # load header

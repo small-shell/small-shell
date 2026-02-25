@@ -11,14 +11,11 @@ User_agent_persistence="yes"
 #read posted param 
 input=$(dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -)
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 echo "Content-Type: text/html"
 echo ""
-
-# load small-shell conf
-. %%www/def/.env
 
 # load header
 if [ "$IP_persistence" = "yes" ];then

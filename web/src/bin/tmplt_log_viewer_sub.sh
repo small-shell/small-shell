@@ -4,7 +4,7 @@
 databox=%%databox
 key=all
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 

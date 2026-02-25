@@ -4,7 +4,7 @@ session=$1
 type=$2
 input=%%www/tmp/${session}/input
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 

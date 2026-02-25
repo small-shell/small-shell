@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# load small-shell params
+# load env
 . %%www/def/.env
 
 echo "Content-Type: text/html"

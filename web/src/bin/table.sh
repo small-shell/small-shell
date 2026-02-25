@@ -3,7 +3,7 @@
 # define default num of line per page
 num_of_line_per_page=12
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 # load query string param

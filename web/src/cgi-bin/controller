@@ -8,7 +8,7 @@ session_update="required"
 IP_persistence="no"
 User_agent_persistence="yes"
 
-# load small-shell conf
+# load env
 . %%www/def/.env
 
 # load header
