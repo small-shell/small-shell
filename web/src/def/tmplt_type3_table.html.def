@@ -42,7 +42,7 @@
           <p>sort -nr %%key #reverse sort with numetric sort</p>
           </span>
           </div>
-          <p class="datanum">Data.Num:%%num</p>
+          <p class="datanum">Total:%%num</p>
         </div>
         %%table
         <div class="pagelink">
