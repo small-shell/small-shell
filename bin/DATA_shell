@@ -31,9 +31,9 @@
 # input_dir (input_dir:/tmp/yyyymmdd) ##you can use any directory for input
 # value (value:$value)
 
-## global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../global.conf
+ . ${SCRIPT_DIR}/../.env
 
 # define allowed commands
 ALLOWED_COMMANDS="wc,grep,sort,uniq,tail,head,nl,awk,cut"

@@ -2,9 +2,9 @@
 
 job=$1
 
-# global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../../../global.conf
+ . ${SCRIPT_DIR}/../../../.env
 
 # user check
 WHOAMI=$(whoami)

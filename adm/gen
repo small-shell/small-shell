@@ -27,15 +27,15 @@ if [ ! $? -eq 0 ];then
   fi
 fi
 
-# update global.conf
+# create .env
 SCRIPT_DIR=$(dirname $0)
-line_chk=$(cat ${SCRIPT_DIR}/../global.conf | wc -l | tr -d " ")
 
-if [ $line_chk -eq 1 ];then
+if [ ! -f ${SCRIPT_DIR}/../.env ];then
 
   # set permissions
-  chmod 755 ${SCRIPT_DIR}/../global.conf
-  . ${SCRIPT_DIR}/../global.conf
+  cp ${SCRIPT_DIR}/../global.conf ${SCRIPT_DIR}/../.env
+  chmod 755 ${SCRIPT_DIR}/../.env
+  . ${SCRIPT_DIR}/../.env
   sudo chown -R small-shell:small-shell $ROOT
   chmod 755 ${ROOT}/util/scripts/*
   chmod 755 ${ROOT}/util/e-cron/bin/*
@@ -95,16 +95,16 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi
 
-    echo "SHASUM=\"$(which sha256sum)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_ENC=\"$(which base64) -w 0\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_DEC=\"$(which base64) -d\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "SED=\"$(which sed)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "AWK=\"$(which awk)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BC=\"$(which bc)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "SHASUM=\"$(which sha256sum)\"" >> ${SCRIPT_DIR}/../.env
+    echo "BASE64_ENC=\"$(which base64) -w 0\"" >> ${SCRIPT_DIR}/../.env
+    echo "BASE64_DEC=\"$(which base64) -d\"" >> ${SCRIPT_DIR}/../.env
+    echo "SED=\"$(which sed)\"" >> ${SCRIPT_DIR}/../.env
+    echo "AWK=\"$(which awk)\"" >> ${SCRIPT_DIR}/../.env
+    echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../.env
+    echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../.env
+    echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../.env
+    echo "BC=\"$(which bc)\"" >> ${SCRIPT_DIR}/../.env
+    echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../.env
 
   else
 
@@ -150,30 +150,30 @@ if [ $line_chk -eq 1 ];then
       exit 1
     fi
 
-    echo "SHASUM=\"$(which shasum) -a 256\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_ENC=\"$(which base64)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "BASE64_DEC=\"$(which base64) -D\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "SED=\"$(which gsed)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "AWK=\"$(which gawk)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../global.conf
-    echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../global.conf
+    echo "SHASUM=\"$(which shasum) -a 256\"" >> ${SCRIPT_DIR}/../.env
+    echo "BASE64_ENC=\"$(which base64)\"" >> ${SCRIPT_DIR}/../.env
+    echo "BASE64_DEC=\"$(which base64) -D\"" >> ${SCRIPT_DIR}/../.env
+    echo "SED=\"$(which gsed)\"" >> ${SCRIPT_DIR}/../.env
+    echo "AWK=\"$(which gawk)\"" >> ${SCRIPT_DIR}/../.env
+    echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../.env
+    echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../.env
+    echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../.env
 
     which jq >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "warn: please install jq command, if you want to use Web API "
     else
-      echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../global.conf
+      echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../.env
     fi
 
   fi
 fi
 
-# load global conf
-if [ ! -x ${SCRIPT_DIR}/../global.conf ];then
-  chmod 755 ${SCRIPT_DIR}/../global.conf
+# load .env 
+if [ ! -x ${SCRIPT_DIR}/../.env ];then
+  chmod 755 ${SCRIPT_DIR}/../.env
 fi
- . ${SCRIPT_DIR}/../global.conf
+ . ${SCRIPT_DIR}/../.env
 
 # owner check
 shell_owner=$(ls -ld $ROOT | $AWK '{print $3}')
@@ -1920,10 +1920,10 @@ if [ "$param" = "-app" ];then
       chown -R ${cgi_usr}:${cgi_usr} ${www}/bin/*
 
       if [ "$srv_type" = "default" ];then
-        echo "small_shell_path=$ROOT" > ${def_dir}/.small_shell_conf
-        echo "server=\"default\"" >>  ${def_dir}/.small_shell_conf
+        echo "small_shell_path=$ROOT" > ${def_dir}/.env
+        echo "server=\"default\"" >>  ${def_dir}/.env
       else
-        echo "small_shell_path=\"sudo -u small-shell ${ROOT}\"" > ${def_dir}/.small_shell_conf
+        echo "small_shell_path=\"sudo -u small-shell ${ROOT}\"" > ${def_dir}/.env
       fi
 
       if [ ! -d $static_dir ];then
@@ -1934,8 +1934,8 @@ if [ "$param" = "-app" ];then
       fi
       cat ${ROOT}/web/src/def/redirect.html.def | $SED "s#%%APPURL#${base_url}auth.base#g" > ${static_dir}/base/index.html
       chmod 755 ${static_dir}/base/index.html
-      cat ${ROOT}/global.conf | grep -v ROOT >> ${def_dir}/.small_shell_conf
-      chmod 755 ${def_dir}/.small_shell_conf
+      cat ${ROOT}/.env | grep -v ROOT >> ${def_dir}/.env
+      chmod 755 ${def_dir}/.env
 
       if [ ! "$mac_chk" ];then
         # enable standard jobs

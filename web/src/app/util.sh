@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load small-shell conf
-. %%www/def/.small_shell_conf
+. %%www/def/.env
 
 while true
 do

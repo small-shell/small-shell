@@ -8,9 +8,9 @@ authkey=$1
 databox=$2
 import_file=$3
 
-# global.conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 
 WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "small-shell" ];then
@@ -38,9 +38,9 @@ if [ ! -f $import_file ];then
   exit 1
 fi
 
-# global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../../global.conf
+ . ${SCRIPT_DIR}/../../.env
 
 # authentication
 if [ "$authkey" ];then

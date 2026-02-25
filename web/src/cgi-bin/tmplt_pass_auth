@@ -18,7 +18,7 @@ echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
-. %%www/def/.small_shell_conf
+. %%www/def/.env
 
 # load header
 if [ "$IP_persistence" = "yes" ];then

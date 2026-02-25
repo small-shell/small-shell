@@ -6,7 +6,7 @@ session=$2
 pin=$3
 
 # load small-shell conf
-. %%www/def/.small_shell_conf
+. %%www/def/.env
 
 # set basic params
 tmp=%%www/tmp/${session}

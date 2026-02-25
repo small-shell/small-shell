@@ -5,7 +5,7 @@ table_command=$3
 num_of_line_per_page=$4
 
 # load small-shell conf
-. %%www/def/.small_shell_conf
+. %%www/def/.env
 
 if [ "$table_command" ];then
   table_command="&table_command=$table_command"

@@ -5,9 +5,9 @@
 #        session:$session pin:$pin remote_addr:$remote_addr user_agent:$user_agent
 #------------------------------------------------------------------------------------
 
-# global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../global.conf
+ . ${SCRIPT_DIR}/../.env
 
 WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "small-shell" ];then

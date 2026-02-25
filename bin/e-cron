@@ -35,9 +35,9 @@
 #-----------------------------------
 # push data to common que (e-cron push.que:$que{$file_path})
 
-## global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../global.conf
+ . ${SCRIPT_DIR}/../.env
 
 # exec user check
 WHOAMI=$(whoami)

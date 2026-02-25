@@ -17,15 +17,16 @@
 # type:bar,snapshot{yyyy-mm-dd HH:MM}
 #--------------------------------------------------------------
 
-# global.conf load
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
 
-# load env
-. ${SCRIPT_DIR}/env
+# load gloibal env
+. ${SCRIPT_DIR}/../../.env
+
+# load pyshel env
+. ${SCRIPT_DIR}/pyenv
 
 if [  ! -x $PYTHON ];then
-  echo "please define executable path of python on ${SCRIPT_DIR}/env if you want to gen graph"
+  echo "please define executable path of python on ${SCRIPT_DIR}/pyenv if you want to gen graph"
   exit 1
 fi
 

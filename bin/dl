@@ -5,9 +5,9 @@
 # usage: dl databox:$databox remote_addr:$remote_addr id:$id session:$session pin:$pin
 #--------------------------------------------------------------------------------------
 
-## global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../global.conf
+ . ${SCRIPT_DIR}/../.env
 
 # set audit log
 access_log=${ROOT}/users/audit/access_log_$(date +%Y%m%d)

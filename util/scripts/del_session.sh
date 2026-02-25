@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# global.conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 
 session_dir=${ROOT}/tmp/session
 que_session_dir=${ROOT}/tmp/que

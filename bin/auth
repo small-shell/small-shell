@@ -24,9 +24,9 @@
 #  sync:$session_token@remote_host
 
 
-## global conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../global.conf
+ . ${SCRIPT_DIR}/../.env
 
 # set audit log
 access_log=${ROOT}/users/audit/access_log_$(date +%Y%m%d)

@@ -4,9 +4,9 @@
 # usage: dist.sh $APP $EXPORT_DIR
 #----------------------------------------------------------------------
 
-# global.conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 
 app=$1
 export_dir=$2

@@ -12,7 +12,7 @@ echo "Content-Type: text/html"
 echo ""
 
 # load small-shell conf
-. %%www/def/.small_shell_conf
+. %%www/def/.env
 
 #read posted param 
 input=$(dd bs=${CONTENT_LENGTH} 2>/dev/null | cat -)

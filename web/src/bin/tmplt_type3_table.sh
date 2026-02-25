@@ -8,7 +8,7 @@ keys=all
 num_of_line_per_page=12
 
 # load small-shell conf
-. %%www/def/.small_shell_conf
+. %%www/def/.env
 
 # load query string param
 for param in $(echo $@)

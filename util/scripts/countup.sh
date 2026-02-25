@@ -10,9 +10,9 @@
 # https://small-shell.org/python_tour/#utilscripts
 #----------------------------------------------------------------------------------------------------
 
-# global.conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 
 
 # load param

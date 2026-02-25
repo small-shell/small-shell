@@ -14,9 +14,9 @@
 param=$1
 small_shell_home=/home/small-shell
 
-# global.conf load
+# load env
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 
 WHOAMI=$(whoami)
 if [ ! "$WHOAMI" = "root" ];then
@@ -180,8 +180,8 @@ if [ "$param" = "reg.replica" ];then
     sleep 2
     clear
     echo "trying to connect ${replica}"
-    ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls ${ROOT}/global.conf)
-    if [ ! "$ls_chk" = "${ROOT}/global.conf" ];then
+    ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls ${ROOT}/.env)
+    if [ ! "$ls_chk" = "${ROOT}/.env" ];then
       echo "--------------------------------------------Action required---------------------------------------------------"
       echo "Master public key seems not copied to $replica yet."
       echo "Please put public key by executing \"sudo ${ROOT}/util/scripts/mkrep.sh reg.master\" on replica server for success of connection test."
@@ -192,10 +192,10 @@ if [ "$param" = "reg.replica" ];then
       cat /home/small-shell/.ssh/id_rsa.pub
       echo "---------------------------------------------------------------------------------------------------------------"
       count=0
-      while [ ! "$ls_chk" = "${ROOT}/global.conf" ]
+      while [ ! "$ls_chk" = "${ROOT}/.env" ]
       do
         sleep 30
-        ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls ${ROOT}/global.conf)
+        ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $replica ls ${ROOT}/.env)
         ((count += 1))
         if [ $count -gt 120 ];then
            echo "warn: retry count has been over threthhold(120 time), script will be gone. please try again."
@@ -215,7 +215,7 @@ if [ "$param" = "reg.replica" ];then
     fi
 
 
-    # update env files
+    # update menu
     if [ "$cluster_flag" = "new" ];then
 
       # update menu for Base App
@@ -254,7 +254,7 @@ if [ "$param" = "reg.replica" ];then
 
         fi
 
-        # update desc/menu
+        # update menu
         cp ${www}/def/common_parts/${target} ${www}/def/common_parts/${target}.org
         cat ${www}/def/common_parts/${target}| $SED "s#./${app}#${cluster_base_url}${app}#g" > ${tmp_dir}/${target}
         cat ${tmp_dir}/${target} > ${www}/def/common_parts/${target}
@@ -375,8 +375,8 @@ if [ "$param" = "reg.replica" ];then
       echo "cluster_base_url=\"${cluster_base_url}\"" >> ${ROOT}/web/base
       echo "cluster_static_url=\"${cluster_static_url}\"" >> ${ROOT}/web/base
       echo "replica_hosts=\"${replica}\"" >> ${ROOT}/web/base
-      echo "cluster_base_url=\"${cluster_base_url}\"" >> ${www}/def/.small_shell_conf
-      echo "replica_hosts=\"${replica}\"" >> ${www}/def/.small_shell_conf
+      echo "cluster_base_url=\"${cluster_base_url}\"" >> ${www}/def/.env
+      echo "replica_hosts=\"${replica}\"" >> ${www}/def/.env
 
       # initialiize .rep.def
       cat <<EOF > ${ROOT}/util/scripts/.rep.def 
@@ -405,10 +405,10 @@ EOF
       echo "replica_hosts=\"${new_replica_hosts}\"" >> ${ROOT}/web/.base
       cat ${ROOT}/web/.base > ${ROOT}/web/base
     
-      # update small_shell_conf
-      cat ${www}/def/.small_shell_conf | grep -v replica_hosts=\" > ${www}/def/.small_shell_conf.tmp
-      echo "replica_hosts=\"${new_replica_hosts}\"" >> ${www}/def/.small_shell_conf.tmp
-      cat ${www}/def/.small_shell_conf.tmp > ${www}/def/.small_shell_conf
+      # update def/env
+      cat ${www}/def/.env | grep -v replica_hosts=\" > ${www}/def/.env.tmp
+      echo "replica_hosts=\"${new_replica_hosts}\"" >> ${www}/def/.env.tmp
+      cat ${www}/def/.env.tmp > ${www}/def/.env
 
     fi
 
@@ -501,8 +501,8 @@ if [ "$param" = "reg.master" ];then
     sleep 2
     clear
     echo "trying to connect $new_master"
-    ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls ${ROOT}/global.conf)
-    if [ ! "$ls_chk" = "/usr/local/small-shell/global.conf" ];then
+    ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls ${ROOT}/.env)
+    if [ ! "$ls_chk" = "/usr/local/small-shell/.env" ];then
       echo "--------------------------------------------Action required---------------------------------------------------"
       echo "Replica server key seems not copied to $new_master yet." 
       echo "Please execute \"sudo ${ROOT}/util/scripts/mkrep.sh reg.replica\" on master server for success of connection test."
@@ -513,10 +513,10 @@ if [ "$param" = "reg.master" ];then
       cat /home/small-shell/.ssh/id_rsa.pub
       echo "---------------------------------------------------------------------------------------------------------------"
       count=0
-      while [ ! "$ls_chk" = "${ROOT}/global.conf" ]
+      while [ ! "$ls_chk" = "${ROOT}/.env" ]
       do
         sleep 30
-        ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls ${ROOT}/global.conf)
+        ls_chk=$(sudo -u small-shell ssh -oStrictHostKeyChecking=no $new_master ls ${ROOT}/.env)
         ((count += 1))
         if [ $count -gt 120 ];then
            echo "warn: retry count has been over threthhold(120 time), script will be gone. please try again."
@@ -566,7 +566,7 @@ if [ "$param" = "reg.master" ];then
        fi
   done
 
-  # update env
+  # update web/base
   cluster_server=$(echo "$cluster_base_url" | $SED -r "s#http(.*)://##g" | $AWK -F "/" '{print $1}' | $SED "s/\"//g")
   cat ${ROOT}/web/base | grep -v "master=\"" | grep -v "cluster_server=\"" | grep -v "cluster_base_url=\"" > ${tmp_dir}/base
   echo "master=\"${master}\"" >>  ${tmp_dir}/base
@@ -582,8 +582,8 @@ if [ "$param" = "reg.master" ];then
   rm -f ${www}/def/common_parts/*
   rm -f ${www}/cgi-bin/*
 
-  # backup small_shell_conf
-  mv ${www}/def/.small_shell_conf ${www}/def/small_shell_conf.org
+  # backup def/env
+  mv ${www}/def/.env ${www}/def/env.org
 
   # get latest codes from master
   sudo -u small-shell scp -r small-shell@${master}:${www}/def ${www}
@@ -609,11 +609,11 @@ if [ "$param" = "reg.master" ];then
     fi
   done
 
-  # update desc/.small-shell_conf
-  cat ${www}/def/small_shell_conf.org | grep -v master=\" | grep -v replica=\" > ${tmp_dir}/small_shell_conf
-  echo "master=\"${master}\"" >> ${tmp_dir}/small_shell_conf
-  cat ${tmp_dir}/small_shell_conf > ${www}/def/.small_shell_conf
-  rm -f ${www}/def/small_shell_conf.org 
+  # update def/env
+  cat ${www}/def/env.org | grep -v master=\" | grep -v replica=\" > ${tmp_dir}/env
+  echo "master=\"${master}\"" >> ${tmp_dir}/env
+  cat ${tmp_dir}/env > ${www}/def/.env
+  rm -f ${www}/def/env.org 
 
   # update api authkey
   api_authkey=$(sudo -u small-shell ssh $master cat ${ROOT}/web/base | grep api_authkey \
@@ -669,12 +669,12 @@ ssync = {
 EOF
     mv /etc/lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua.org
 
-    # update web/base desc/.small_shell_conf
+    # update web/base def/.env
     cat ${ROOT}/web/base | grep -v cluster_server=\" | grep -v cluster_static_url=\" \
     | grep -v cluster_base_url=\" | grep -v replica_hosts=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
-    cat ${www}/def/.small_shell_conf | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/small_shell_conf
-    cat ${tmp_dir}/small_shell_conf > ${www}/def/.small_shell_conf
+    cat ${www}/def/.env | grep -v replica_hosts=\" | grep -v cluster_base_url=\" > ${tmp_dir}/env
+    cat ${tmp_dir}/env > ${www}/def/.env
 
 
     . ${ROOT}/util/scripts/.authkey
@@ -755,11 +755,11 @@ EOF
 
   else
      
-    # update web/base desc/.small_shell_conf
+    # update web/base def/.env
     cat ${ROOT}/web/base | grep -v master=\" | grep -v cluster_server=\" | grep -v cluster_base_url=\" > ${tmp_dir}/base
     cat ${tmp_dir}/base > ${ROOT}/web/base
-    cat ${www}/def/.small_shell_conf | grep -v master=\" > ${tmp_dir}/small_shell_conf
-    cat ${tmp_dir}/small_shell_conf > ${www}/def/.small_shell_conf
+    cat ${www}/def/.env | grep -v master=\" > ${tmp_dir}/env
+    cat ${tmp_dir}/env > ${www}/def/.env
 
     # restore def
     for bkup in $(ls ${www}/def/*.org 2>/dev/null | xargs basename -a 2>/dev/null)

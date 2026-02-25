@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# global.conf load
+# .env load
 SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/../../global.conf
+. ${SCRIPT_DIR}/../../.env
 . ${ROOT}/web/base
 
 count=8
