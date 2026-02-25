@@ -26,10 +26,6 @@ if [ ! -f $db_def ];then
   exit 1
 fi
 
-# global conf load
-SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../../global.conf
-
 # gen tmp/db.def.load
 cat $db_def | grep "^databox="  | $SED "s/databox=//g" | $SED "s/\"//g"  > ${ROOT}/util/scripts/tmp/db.def.load
 
