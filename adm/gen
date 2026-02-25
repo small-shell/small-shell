@@ -40,7 +40,7 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
   chmod 755 ${ROOT}/util/scripts/*
   chmod 755 ${ROOT}/util/e-cron/bin/*
   chmod 755 ${ROOT}/util/pyshell/pygraph.sh
-  chmod 755 ${ROOT}/util/pyshell/env
+  chmod 755 ${ROOT}/util/pyshell/pyenv
   chmod 755 ${ROOT}/bin/*
   chmod 755 ${ROOT}/adm/*
   chmod 755 ${ROOT}/sbin/*
