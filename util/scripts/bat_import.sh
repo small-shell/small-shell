@@ -38,10 +38,6 @@ if [ ! -f $import_file ];then
   exit 1
 fi
 
-# load env
-SCRIPT_DIR=$(dirname $0)
- . ${SCRIPT_DIR}/../../.env
-
 # authentication
 if [ "$authkey" ];then
   auth_req=$(${ROOT}/bin/auth key_auth:${authkey} remote_addr:localhost user_agent:bat_import)
