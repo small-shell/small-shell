@@ -10,7 +10,7 @@
 # https://small-shell.org/python_tour/#utilscripts
 #----------------------------------------------------------------------------------------------------
 
-# .env load
+# load env
 SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/../../.env
 
