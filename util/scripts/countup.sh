@@ -273,9 +273,9 @@ else
   fi
   
   if [ ! -f ${output}.csv ];then
-    echo "Time,total" > $output.csv
+    echo "Time,Total" > $output.csv
   elif [ ! $type = line ];then
-    echo "Time,$filters" > $output.csv
+    echo "Time,Total" > $output.csv
   fi
   echo "$timestamp,$countup" >> $output.csv
 
