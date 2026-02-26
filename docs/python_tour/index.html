@@ -153,7 +153,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#pyshell_1" class="nav-link">pyshell</a>
+            <li class="nav-item" data-bs-level="2"><a href="#pygraphsh" class="nav-link">pygraph.sh</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -245,15 +245,15 @@ Week  [ any | mon - sun ]: any
 Exec command or batch script: countup.sh databox:inventory.db type:line frequency:daily   
 
 # enable job
-$ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_record
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.countup_num_of_record
 
-# execute manually, please execute several time because line graph needs at least 2 teims execution.
-$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_record
-countup_record successfully completed
+# execute manually.
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_num_of_record
+countup_num_of_record successfully completed
 
-# re-execute manually. because line graph need to have at least 2 line.
-$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_record
-countup_record successfully completed
+# re-execute manually, because line graph need to have at least 2 data.
+$ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.countup_num_of_record
+countup_num_of_record successfully completed
 </code></pre>
 <h2 id="view-statistics">View statistics</h2>
 <p>You can view statistics on console of Base App. pyshell could make graph using pandas and matplotlib librarise. please exec #stats at console, then you can access to graph.</p>
@@ -434,8 +434,8 @@ sudo rm $target
 2021-01-01 01:00:00,1,2
 2021-01-01 02:00:00,1,2
 </code></pre>
-<h2 id="pyshell_1">pyshell</h2>
-<p>Pyshell is a intermediate generation tool for python programs. it will generate python program which contain Pandas , matplotlib and numpy. You can generate graph through pygraph.sh</p>
+<h2 id="pygraphsh">pygraph.sh</h2>
+<p>You can generate graph through pygraph.sh instead of using util scripts.</p>
 <pre><code>ls /usr/local/small-shell/util/pyshell/pygraph.sh
 </code></pre>
 <pre><code>#--------------------------------------------------------------
