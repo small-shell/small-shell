@@ -55,11 +55,11 @@ if [ ! $num_chk -eq 1 ];then
 else
   cp ${www}/app/index.js ${www}/app/index.js.org
   cp ${www}/app/app.sh ${www}/app/app.sh.org
-  cp ${www}/def/.small_shell_conf ${www}/def/.small_shell_conf.org
+  cp ${www}/def/.env ${www}/def/.env.org
   (cd ${bkuped_dir} && tar -xf *www*.xz && \cp -Rf www/* ${www}/ )
   cp ${www}/app/index.js.org ${www}/app/index.js
   cp ${www}/app/app.sh.org ${www}/app/app.sh
-  cp ${www}/def/.small_shell_conf.org ${www}/def/.small_shell_conf
+  cp ${www}/def/.env.org ${www}/def/.env
   chmod 755 ${www}/app/index.js
   chmod 755 ${www}/app/app.sh
   chown -R small-shell:small-shell $www
