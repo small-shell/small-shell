@@ -161,7 +161,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#gen-databox-using-dbdef-template" class="nav-link">Gen databox using db.def template</a>
+            <li class="nav-item" data-bs-level="2"><a href="#gen-databox-by-batch" class="nav-link">Gen databox by batch</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -455,9 +455,17 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
     echo &quot;$(date +%Y-%m-%d) $(date +%T) hash           :$hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
     echo &quot;$(date +%Y-%m-%d) $(date +%T) synthesis_hash :$synthesis_hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
 </code></pre>
+<h4 id="show-hashchain">Show hashchain</h4>
+<p>End user can check hashchain on Base App console by using "#hash_chain" tag.</p>
+<p><img alt="Screenshot" src="../img/hash_console.png" /></p>
 <h4 id="download-hashchain">Download hashchain</h4>
-<p>Base App user can download hash chain and verificate data integrity by themselves.
-<img alt="Screenshot" src="../img/hash_chain.png" /></p>
+<p>If you want to allow to download hashchain from Base App table, please add following line to table menu.</p>
+<pre><code>vi /var/www/def/common_parts/table_menu_rw
+
+# insert line
+&lt;a href=&quot;./base?%%params&amp;req=hash&quot; download=&quot;%%databox_hash_chain.txt&quot;&gt;&lt;p&gt;#Hash&lt;/p&gt;&lt;/a&gt;
+</code></pre>
+<p><img alt="Screenshot" src="../img/hash_table.png" /></p>
 <h2 id="meta-command">Meta command</h2>
 <p>"meta" command can be used for gathering meta data.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta
@@ -505,7 +513,7 @@ usage: sudo -u small-shell bat_import.sh $authkey $databox $import_file
 ## list file should just contain IDs of target datasets
 usage: sudo -u small-shell del_datasets.sh $authkey $databox $list_file
 </code></pre>
-<h2 id="gen-databox-using-dbdef-template">Gen databox using db.def template</h2>
+<h2 id="gen-databox-by-batch">Gen databox by batch</h2>
 <p>You can define data structure using db.def template, util/scripts/bat_gen.sh can generate databox without dialog if you use db.def. template sample is here.</p>
 <h4 id="dbdef-template">db.def Template</h4>
 <p>please freely add column by using "+addcol" declaration.</p>
