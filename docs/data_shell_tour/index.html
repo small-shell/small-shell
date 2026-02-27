@@ -462,8 +462,9 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
 <p>If you want to allow to download hashchain from Base App table, please add following line to table menu.</p>
 <pre><code>vi /var/www/def/common_parts/table_menu_rw
 
-# insert line
+--code--
 &lt;a href=&quot;./base?%%params&amp;req=hash&quot; download=&quot;%%databox_hash_chain.txt&quot;&gt;&lt;p&gt;#Hash&lt;/p&gt;&lt;/a&gt;
+--------
 </code></pre>
 <p><img alt="Screenshot" src="../img/hash_table.png" /></p>
 <h2 id="meta-command">Meta command</h2>
