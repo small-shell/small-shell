@@ -83,6 +83,12 @@ if [ "$statistics_chk" ];then
   command=""
 fi
 
+hash_chk=$(echo "$command" | grep "{%%%%%%%%%%%%%}hash{%%%%%%%}chain")
+if [ "$hash_chk" ];then
+  hash_chain="yes"
+  command=""
+fi
+
 # load permission
 permission=$(${small_shell_path}/bin/meta get.attr:$user_name{permission})
 
@@ -174,6 +180,25 @@ elif [ "$statistics" ];then
   | $SED "s/{%%%}/:/g"\
   | $SED "s/%%remote_addr/${remote_addr}/g"\
   | $SED "s/%%params/session=${session}\&pin=${pin}\&databox=${databox}/g"
+
+
+elif [ "$hash_chain" ];then
+
+  # render hashchain
+  ${small_shell_path}/bin/meta get.chain:$databox > %%www/tmp/${session}/hash_chain
+  cat %%www/def/console_hash.html.def | $SED -r "s/^( *)</</1" \
+  | $SED "/%%hash_chain/r /var/www/tmp/${session}/hash_chain" \
+  | $SED "/%%hash_chain/d"\
+  | $SED "/%%databox_list/r /var/www/tmp/${session}/databox_list" \
+  | $SED "s/%%databox_list//g"\
+  | $SED "s/%%commands/${commands}/g" \
+  | $SED "s/%%filters/${filters}/g" \
+  | $SED "/%%common_menu/r /var/www/def/common_parts/common_menu_${permission}" \
+  | $SED "/%%common_menu/d"\
+  | $SED "s/%%user/${user_name}/g"\
+  | $SED "s/%%remote_addr/${remote_addr}/g"\
+  | $SED "s/%%params/session=${session}\&pin=${pin}\&databox=${databox}/g"
+
 fi
 
 if [ "$session" ];then
