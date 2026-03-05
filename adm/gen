@@ -187,7 +187,7 @@ fi
 
 line_chk=$(cat ${SCRIPT_DIR}/../.env | wc -l | tr -d " ")
 if [ $line_chk -eq 1 ];then
-  echo "error: failed to check env file. please re-execute gen command"
+  echo "error: it seems env file is not generated properly. please re-execute gen command"
   rm -f ${SCRIPT_DIR}/../.env
   exit 1
 fi
