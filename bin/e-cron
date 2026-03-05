@@ -183,12 +183,12 @@ fi
 if [[ "$action" == stat* ]];then
   if [ ! "$filter" ];then
     echo "--------------------------------------------------------"
-    echo "LATEST STATUS OF JOB"
+    echo "LATEST STATUS OF JOBS"
     echo "--------------------------------------------------------"
     cat ${ROOT}/util/e-cron/que/status/*  2> /dev/null | sort -V
   else
     echo "--------------------------------------------------------"
-    echo "LATEST STATUS OF JOB"
+    echo "LATEST STATUS OF JOBS"
     echo "filter: $filter"
     echo "--------------------------------------------------------"
     cat ${ROOT}/util/e-cron/que/status/*  2> /dev/null | grep $filter | sort -V
