@@ -50,48 +50,56 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
     which sha256sum > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install sha256sum command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which base64 > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install base64 command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which flock > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install flock command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which php > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install php command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which curl > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install curl command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which bc > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install bc command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which jq >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install jq command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi 
 
     which crontab >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install cron first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
@@ -111,44 +119,58 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
     which shasum > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install shasum command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which base64 > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install base64 command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which gsed > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install gsed first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which gawk > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install gawk first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which flock > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install flock first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which php > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install php command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
 
     which curl > /dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install curl command first"
+      rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi
+
+    which jq >/dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install jq command first"
+      rm -f ${SCRIPT_DIR}/../.env
+      exit 1
+    fi 
 
     echo "SHASUM=\"$(which shasum) -a 256\"" >> ${SCRIPT_DIR}/../.env
     echo "BASE64_ENC=\"$(which base64)\"" >> ${SCRIPT_DIR}/../.env
@@ -158,15 +180,16 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
     echo "FLOCK=\"$(which flock)\"" >> ${SCRIPT_DIR}/../.env
     echo "PHP=\"$(which php)\"" >> ${SCRIPT_DIR}/../.env
     echo "CURL=\"$(which curl)\"" >> ${SCRIPT_DIR}/../.env
-
-    which jq >/dev/null 2>&1
-    if [ ! $? -eq 0 ];then
-      echo "warn: please install jq command, if you want to use Web API "
-    else
-      echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../.env
-    fi
+    echo "JQ=\"$(which jq)\"" >> ${SCRIPT_DIR}/../.env
 
   fi
+fi
+
+line_chk=$(cat ${SCRIPT_DIR}/../.env | wc -l | tr -d " ")
+if [ $line_chk -eq 1 ];then
+  echo "error: failed to check env file. please re-execute gen command"
+  rm ${SCRIPT_DIR}/../.env
+  exit 1
 fi
 
 # load .env 
