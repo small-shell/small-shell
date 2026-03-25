@@ -1686,6 +1686,10 @@ if [ "$param" = "-app" ];then
           (cd ${www}/app;npm init -y;npm install express@4) 
 	fi
 
+        if [ "$mac_chk" ];then
+          chown -R $SUDO_USER:$SUDO_GID ~/.npm 
+        fi
+
         # handle reverse proxy setting
         if [ "$reverse_proxy" = "yes" -a "$retain_ssl_auto" = "yes" ];then
           # overwrite params
