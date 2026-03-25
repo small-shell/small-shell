@@ -145,11 +145,19 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#base-app-features" class="nav-link">Base App Features</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-bs-level="2"><a href="#re-start-web-server" class="nav-link">Re-start Web Server</a>
               <ul class="nav flex-column">
               </ul>
             </li>
             <li class="nav-item" data-bs-level="2"><a href="#update-to-latest-version" class="nav-link">Update to latest version</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#create-custom-app" class="nav-link">Create Custom App</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -263,9 +271,8 @@ http://${server}/cgi-bin/auth.base?initialize=*****26fd2,4c5a2ae68d20e530b4ce457
 <p>Image of authentication page of Base App is as following. the access URL will be shown in the end of the gen dialog but basically it will be "https://${FQDN}/base".
 key will be inserted automatically if it's stored in local storage. 
 <img alt="Screenshot" src="../img/key_auth.png" /></p>
-<p>Then end user can use following App features as default. ofcourse you can make your own App,
-please see detail on <a href="../app_shell_custom/">Create Custom App</a></p>
-<h4 id="base-app-features">Base App Features</h4>
+<h2 id="base-app-features">Base App Features</h2>
+<p>$nd user can use following App features on Base App.</p>
 <ul>
 <li>Push or Get datas thorough simplest UI</li>
 <li>Use spaces to perform an and search [e.g. word1 word2]</li>
@@ -276,7 +283,6 @@ please see detail on <a href="../app_shell_custom/">Create Custom App</a></p>
 <li>Define number of line per page [e.g #line:20] [e.g word #line:20]</li>
 </ul>
 <p><img alt="Screenshot" src="../img/databox.png" /></p>
-<h4 id="command-console">+ Command Console</h4>
 <ul>
 <li>Analyze data using linux commands [grep, wc, awk, uniq, sed, tail, head, nl, sort, cut ..]</li>
 <li>Search log with freewords by adding tag [e.g. word1 word2 #log]</li>
@@ -320,7 +326,9 @@ sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 1
 ------------------------------------------------
 -&gt; dialog will be started
-</code></pre></div>
+</code></pre>
+<h2 id="create-custom-app">Create Custom App</h2>
+<p>Custom App is editable app that you can add many functions to the app. see detail in <a href="../app_shell_custom/">here</a>.</p></div>
             </div>
         </div>
 
