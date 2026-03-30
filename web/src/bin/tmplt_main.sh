@@ -57,7 +57,7 @@ fi
 # Handle calendar
 # ----------------
 
-chk_calendar=$(grep "<div id=\"my-calendar\">"  %%www/def/%%app_main.html.def)
+chk_calendar=$(grep "<div id=\"simple-calendar\">"  %%www/def/%%app_main.html.def)
 
 if [ "$chk_calendar" ];then
 

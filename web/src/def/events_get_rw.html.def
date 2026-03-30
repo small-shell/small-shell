@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DATA: %%id</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="%%static_url/%%type3_app.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="navbar">
+        <div class="navbar-left-links">
+          <h3><a href="./%%type3_app?%%params&req=main">%%type3_app</a></h3>
+        </div>
+        <div class="navbar-right-menu">
+          <button class="even-btn">=</button>
+          <nav>
+          <ul>
+            %%common_menu
+          </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="form-box">
+        <div class="description">
+          <h1>#events.data</h1>
+          <p>id:%%id</p>
+        </div>
+        <form id="one-time-form" method="post" action="./%%type3_app?%%params&req=set&id=%%id" autocomplete="off" onclick="document.charset='utf-8';">
+        <ul>
+         %%dataset
+        </ul>
+        <button class="button" id="one-time-button" type="submit">SET</button>
+        </form>
+        <div class="action_links">
+          <span><a href="./%%type3_app?%%session&req=main#simple-calendar">Back to Calendar</a></span>
+          <span><p style="cursor: pointer" onclick="window.open('./%%type3_app?%%params&req=log_viewer&id=%%id', 'log_viewer', 'width=820,height=280')">Show data update history</p></span>
+          <span><a href="./%%type3_app?%%params&req=get&id=%%id&duplicate=yes">Copy</a></span>
+          <span><p style="cursor: pointer" onclick="delConfirmation()">Delete</p></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // handle menu
+      const btn = document.querySelector('.even-btn');
+      const nav = document.querySelector('nav');
+
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      });
+
+      // handle delete request
+      function delConfirmation(){
+        ret = confirm("Are you OK to delete this data ?");
+         if (ret == true){
+           location.href = "./%%type3_app?%%params&req=del&id=%%id";
+         }
+      }
+
+      // handle one time button
+      document.getElementById('one-time-form').addEventListener('submit', function() {
+        document.getElementById('one-time-button').disabled = true;
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+     <title>DATA: %%id</title>
+     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+     <link rel="stylesheet" href="%%static_url/%%type3_app.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="navbar">
+        <div class="navbar-left-links">
+          <h3><a href="./%%type3_app?%%params&req=main">%%type3_app</a></h3>
+        </div>
+        <div class="navbar-right-menu">
+          <button class="even-btn">=</button>
+          <nav>
+          <ul>
+            %%common_menu
+          </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="form-box">
+        <div class="description">
+          <h1>#events.data</h1>
+          <p>id:%%id</p>
+        </div>
+        <ul>
+         %%dataset
+        </ul>
+        <div class="action_links">
+          <span><a href="./%%type3_app?%%session&req=main#simple-calendar">Back to Calendar</a></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // handle menu
+      const btn = document.querySelector('.even-btn');
+      const nav = document.querySelector('nav');
+
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      });
+    </script>
+  </body>
+</html>

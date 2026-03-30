@@ -137,6 +137,15 @@ elif [ "$form_chk" = "multipart" ];then
   fi
 fi
 
+# replace view for specific databox
+if [ "$databox" = "%%app.events" -a ! "$id" = "new" -a ! "$error_chk"  ];then
+  if [ "$permission"  = "ro" ];then
+    view="events_get_ro.html.def"
+  else
+    view="events_get_rw.html.def"
+  fi
+fi
+
 # overwritten by clustering logic
 if [ "$master" -a "$permission" = "rw" ];then
   if [ "$redirect" = "no" ];then
@@ -153,6 +162,7 @@ cat %%www/def/${view} | $SED -r "s/^( *)</</1" \
 | $SED "/%%common_menu/r %%www/def/common_parts/%%app_common_menu" \
 | $SED "/%%common_menu/d" \
 | $SED "s/%%user/${user_name}/g"\
+| $SED "s/%%type3_app/%%app/g"\
 | $SED "/%%dataset/r %%www/tmp/${session}/dataset" \
 | $SED "s/%%dataset//g"\
 | $SED "/%%history/r %%www/tmp/${session}/history" \

@@ -86,9 +86,16 @@ else
 
   # redirect to the table or main page
   if [ "$databox" = "%%databox" ];then
+    # redirect to table
     echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=table\">"
   else
-    echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=main\">"
+    if [ "$databox" = "%%app.events" ];then
+      # redirect to simple calendar
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=main#simple-calendar\">"
+    else
+      # redirect to main page
+      echo "<meta http-equiv=\"refresh\" content=\"0; url=./%%app?session=$session&pin=$pin&req=main\">"
+    fi
   fi
 
 fi

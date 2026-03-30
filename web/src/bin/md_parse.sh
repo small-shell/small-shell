@@ -233,11 +233,11 @@ do
    # Add Calendar
    elif [[ "$line" == %%calendar ]];then
      calendar_flg=yes
-     echo "<div id=\"my-calendar\"></div>" >> ${tmp}/body.tmp
+     echo "<div id=\"simple-calendar\"></div>" >> ${tmp}/body.tmp
      echo "%%event_add_btn" >> ${tmp}/body.tmp
      cat <<EOF > ${tmp}/calendar.js.tmp
       document.addEventListener('DOMContentLoaded', function() {
-        const calendar = new SimpleCalendar('#my-calendar', {
+        const calendar = new SimpleCalendar('#simple-calendar', {
           initialView: 'month',
           initialDate: new Date(),
           events: [

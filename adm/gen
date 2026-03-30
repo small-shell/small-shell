@@ -2807,6 +2807,13 @@ if [ "$param" = "-app" ];then
 
         fi
 
+        # deploy latest html.def for events
+        for src in $(ls ${ROOT}/web/src/def/events* | xargs basename -a)
+        do 
+          cat ${ROOT}/web/src/def/${src} | $SED "s#%%static_url/#${static_url}#g" > ${www}/def/${src}
+          chmod 755 ${www}/def/${src}
+        done
+
         # create databox for images, UI.md.def and claendar
         if [ ! -d ${ROOT}/databox/images.db ];then
           ${ROOT}/util/scripts/bat_gen.sh ${ROOT}/tmp/gen/.images.db/databox.def
@@ -2837,6 +2844,9 @@ if [ "$param" = "-app" ];then
 
         cat ${ROOT}/tmp/gen/.calendar.events/databox.def | $SED "s/%%app/${app}/g" > ${tmp_dir}/${app}.events.def
         ${ROOT}/util/scripts/bat_gen.sh ${tmp_dir}/${app}.events.def
+
+        cat ${ROOT}/databox/${app}.events/def/col5 | $SED "s/option=\"required\"/option=\"\"/g" > ${tmp_dir}/col5.tmp
+        cat ${tmp_dir}/col5.tmp > ${ROOT}/databox/${app}.events/def/col5
 
         # push template datas
         . ${ROOT}/util/scripts/.authkey

@@ -76,7 +76,7 @@ col5_key_params="blue,green,purple,black"
 col5_primary_databox=""
 
 # required option
-col5_required="no"
+col5_required=""
 #-------------------------------------------
 
 +addcol
