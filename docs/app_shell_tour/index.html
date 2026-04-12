@@ -289,7 +289,7 @@ label=&quot;Description&quot;
 type=&quot;text&quot;
 option=&quot;&quot;
 
-#key(col3)
+#key(col3) 
 name=&quot;category&quot;
 label=&quot;Category&quot;
 type=&quot;select&quot;
@@ -308,7 +308,7 @@ option=&quot;required&quot;
 <p class="admonition-title">Note</p>
 <p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
 <p><b>type: select and radio</b>  <br />
-You can define parameters in the dialog. and change them anytime later.</p>
+You can define parameters in the dialog. it will be required option as default. parameters and required definition can be changed anytime later manually.</p>
 <p><b>type: pdls</b><br />
 "pdls" means primary data list. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog. please see detail <a href="./#insert-data-list-to-form">pdls</a></p>
 <p><b>type: mls</b> <br />
@@ -347,7 +347,7 @@ https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93
 sudo /usr/local/small-shell/adm/gen -delcol
 </code></pre>
 <h5 id="change-label">Change label</h5>
-<p>Label definition can be modified directly</p>
+<p>Label definition can be modified directly.</p>
 <pre><code>(e.g.) change inventory.db col2 label
 sudo vi /usr/local/small-shell/databox/inventory.db/def/col2
 
@@ -358,8 +358,8 @@ type="text"
 option=""
 --------
 </code></pre>
-<h5 id="change-params-of-select-type-or-radio">Change params of select type or radio</h5>
-<p>Params can be also modified directly</p>
+<h5 id="change-other-defenitions">Change other defenitions</h5>
+<p>You can change other definitions such like params, option. following example is updating params and option of select type col definition.</p>
 <pre><code>(e.g.) change inventory.db col3
 sudo vi /usr/local/small-shell/databox/inventory.db/def/col3
 
@@ -367,8 +367,8 @@ sudo vi /usr/local/small-shell/databox/inventory.db/def/col3
 name="item_type"
 label="item_type"
 type="select"
-params="PC,network_device,audio_visual,furniture,other"
-option="required"
+params="PC,network_device,audio_visual,other"
+option=""
 --------
 </code></pre>
 <h2 id="insert-data-list-to-form">Insert data list to Form</h2>
