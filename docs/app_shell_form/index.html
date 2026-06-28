@@ -162,7 +162,7 @@
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 2    
 # Dialog will be started, You can define keys which will be inserted to the Form in the dialog.
 </code></pre>
-<h4 id="seceinario">Seceinario</h4>
+<h4 id="scenario">Scenario</h4>
 <p>This is an example of creating survey Form and analyzing result.</p>
 <ol>
 <li>Create Databox for survey </li>
@@ -170,7 +170,7 @@ Type of App (1.BASE | 2.FORM | 3.CUSTOM): 2
 <li>Analyze survey result with graph</li>
 </ol>
 <h4 id="required">Required</h4>
-<p>Please setup Base App beorehand refering to <a href="../app_shell_tour/">Base App</a></p>
+<p>Please setup Base App beforehand refering to <a href="../app_shell_tour/">Base App</a></p>
 <h2 id="create-databox">Create Databox</h2>
 <p>For the first step, need to create survey databox to push data through Form.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
@@ -178,7 +178,7 @@ Databox Name: survey.box
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For using Form, primary key of the databox must be "hashid". please set hashhid in the dialog as following.  <br />
+<p>For using Form, primary key of the databox must be "hashid". please set hashid in the dialog as following.  <br />
 primary_key(col1): hashid</p>
 </div>
 <h6 id="result-of-dialog">Result of dialog</h6>
@@ -218,17 +218,17 @@ Form Name: survey
 Target Databox: survey.box
 Description: This is a internal survey of product A
 Included keys: impression,comment
-Access URL: https://$[server}/survey
+Access URL: https://${FQDN}/survey
 
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="access-to-the-form">Access to the Form</h2>
-<p>As you already checked, access URL is shown in the gen dialog. the URL must be ${FQDN}/${app}</p>
+<p>As you already checked, access URL is shown in the gen dialog. The URL must be ${FQDN}/${app}</p>
 <pre><code> e.g.) https://ec2-XX-XX-XX-XX.compute.XXXX.com/survey
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_form.png" /></p>
 <h4 id="check-databox-via-base-app">Check databox via Base App</h4>
-<p>Data will be pushed to the databox through the survey Form. admin can check survey results thorough Base App. then you can analyze result on table view or console box.</p>
+<p>Data will be pushed to the databox through the survey Form. Admin can check survey results thorough Base App. Then you can analyze result on table view or console box.</p>
 <p><img alt="Screenshot" src="../img/survey_table.png" /> </p>
 <h2 id="make-snapshot-graph">Make snapshot graph</h2>
 <p>You can viruslize survey results to the graph. </p>
@@ -238,7 +238,7 @@ Access URL: https://$[server}/survey
 </div>
 <h6 id="example-executed-on-apr-3rd-2022-as-snapshot">example executed on Apr 3rd 2022 as snapshot.</h6>
 <pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box \
-key:impression filters:Good,Average,Bad type:pie title:2024-11-28_survey_result frequency:snapshot
+key:impression filters:Good,Average,Bad type:pie title:2022-04-03_survey_result frequency:snapshot
 </code></pre>
 <p>please input #stats to console box on Base App.</p>
 <blockquote>

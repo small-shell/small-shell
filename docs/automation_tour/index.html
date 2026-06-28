@@ -173,7 +173,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="extended-cron">Extended cron</h1>
-<p>small-shell can provide job automation &amp; data Exchagne function by extending cron function (e-cron). you can define job relationship with several hosts. Also you can use e-cron for data exchange HUB. </p>
+<p>Small-Shell can provide job automation &amp; data Exchange function by extending cron function (e-cron). You can define job relationship with several hosts. Also you can use e-cron for data exchange HUB. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
@@ -193,11 +193,11 @@ Exec command or batch script: XXXX
 <li>Provide CLI status check tool</li>
 <li>Prevent double start of same job</li>
 <li>Logging job result and command dump</li>
-<li>Make relationship between jobs/hosts using messaing function</li>
+<li>Make relationship between jobs/hosts using messaging function</li>
 <li>Provide dataExchange platform between small-shell hosts</li>
 </ol>
 <h4 id="basic-concept">Basic concept</h4>
-<p>Basically e-cron extends cron function by providing utility scripts. and wrapper script will work as job management framework. following ideas are basic functions of e-cron.</p>
+<p>Basically e-cron extends cron function by providing utility scripts. and wrapper script will work as job management framework. Following ideas are basic functions of e-cron.</p>
 <h6 id="dialog">Dialog</h6>
 <pre><code>gen dialog -&gt; generate cron entry
 </code></pre>
@@ -210,7 +210,7 @@ CLI  &lt;-&gt; wrapper.sh &lt;- script #result
 <pre><code>/usr/local/small-shell/util/scripts
 </code></pre>
 <h2 id="add-job-through-e-cron">Add Job through e-cron</h2>
-<p>This is an example of adding job through e-cron. also you can learn how to confirm reulst of the job and dumped output of the job or command.</p>
+<p>This is an example of adding job through e-cron. Also you can learn how to confirm result of the job and dumped output of the job or command.</p>
 <h5 id="sample-job">sample job</h5>
 <pre><code>sudo -u small-shell vi /usr/local/small-shell/util/scripts/job1.sh
 --code--
@@ -227,7 +227,7 @@ sudo -u small-shell chmod 755 /usr/local/small-shell/util/scripts/job1.sh
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 # -&gt; dialog will be started
 </code></pre>
-<p>Following is an example of making job that will execuete script. it's just an examplem, you can execute any unix commands or any scripts.</p>
+<p>Following is an example of making job that will execuete script. It's just an example, you can execute any unix commands or any scripts.</p>
 <h6 id="dialog_1">Dialog</h6>
 <pre><code>Job Name: job1
 Type of job (1.job automation | 2.file exchange) : 1
@@ -239,7 +239,7 @@ Min   [ any | 0-59 ]: 1
 Week  [ any | mon - sun ]: any
 Exec command or batch script: job1.sh
 </code></pre>
-<h5 id="enabeldisable-job">enabel/disable Job</h5>
+<h5 id="enabledisable-job">enable/disable Job</h5>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.$job
 sudo -u small-shell /usr/local/small-shell/bin/e-cron disable.$job    
 (e.g.)
@@ -256,11 +256,11 @@ date: any
 month: any
 week: any
 -------------DEFINITION----------------
-exec_command=&quot;/home/ubuntu/job1.sh&quot;
+exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;&quot;
 hub_api=&quot;&quot;
-authkey=&quot;&quot;
+api_authkey=&quot;&quot;
 </code></pre>
 <h5 id="confirm-job-list">confirm job list</h5>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/e-cron ls
@@ -335,7 +335,7 @@ exec_command=&quot;/usr/local/small-shell/util/scripts/job1.sh&quot;
 input_message=&quot;&quot;
 output_message=&quot;done.1&quot;
 hub_api=&quot;&quot;
-authkey=&quot;&quot;                     
+api_authkey=&quot;&quot;                     
 -----------------------------------------------------------
 
 # enable job1
@@ -353,7 +353,7 @@ exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
 input_message=&quot;done.1&quot;
 output_message=&quot;&quot;
 hub_api=&quot;&quot;
-authkey=&quot;&quot;
+api_authkey=&quot;&quot;
 -----------------------------------------------------------
 
 # enable job2
@@ -383,7 +383,7 @@ sudo -u small-shell /usr/local/small-shell/bin/e-cron stats.job
 LATEST STATUS OF JOB
 filter: job
 --------------------------------------------------------
-2022-01-03 04:38:38 job1 INFO ouput_message_done.1_pushed
+2022-01-03 04:38:38 job1 INFO output_message_done.1_pushed
 2022-01-03 04:38:38 job1 successfully completed
 2022-01-03 04:38:47 job2 successfully completed
 </code></pre>
@@ -464,15 +464,15 @@ sudo -u small-shell /usr/local/small-shell/bin/e-cron enable.job1
 sudo /usr/local/small-shell/adm/gen -job
  #-&gt; dialog will be started
 
-# add message to the definintion file
+# add message to the definition file
 sudo vi /usr/local/small-shell/util/e-cron/def/job2.def
 -----------------------------------------------------------
-CHEDULE:2 * * * *
+SCHEDULE:2 * * * *
 exec_command=&quot;/usr/local/small-shell/util/scripts/job2.sh&quot;
 input_message=&quot;done.1&quot;
 output_message=&quot;&quot;
 hub_api=&quot;https://ec2-**-**-**-**.com/cgi-bin/e-cron&quot; #modify
-authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
+api_authkey=&quot;YXBpOmQ1NmZmYzEwZDI4NDVlN2EyZGFjZjcwYTRhOGRjM2QzMWM1YWE1NDQK&quot; #modify
 -----------------------------------------------------------
 
 # enable job2
@@ -507,7 +507,7 @@ filter: job2
 2022-01-07 14:19:12 job2 successfully completed
 </code></pre>
 <h2 id="data-file-exchange">Data (file) exchange</h2>
-<p>e-cron can be dataExchange platform between several hosets. dataExchange also needs Base App, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">App shell</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
+<p>e-cron can be dataExchange platform between several hosts. dataExchange also needs Base App, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">App shell</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
 <pre><code> ---------------------------------
  |   API Server #DataExchange     |  
  ---------------------------------
@@ -526,11 +526,11 @@ sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
 <h4 id="dataexchange-job">DataExchange Job</h4>
-<p>This is an example of exchange dummy file from host1 to host2 through HUB API. by the way, file will not be removed from HUB when remote host get the file.</p>
+<p>This is an example of exchange dummy file from host1 to host2 through HUB API. By the way, file will not be removed from HUB when remote host get the file.</p>
 <h5 id="job-for-pushing-file">Job for pushing file</h5>
 <p>This is exmaple of generating job that will push dummy.log to HUB API server.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
-# -&gt; diarlog will be started
+# -&gt; dialog will be started
 </code></pre>
 <h6 id="generate-file-exchange-job">generate file exchange job</h6>
 <div class="admonition note">
@@ -603,10 +603,6 @@ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_get
 ls /tmp/dummy*
 dummy1 dummy2 dummy3 #data is synced to local dir
 </code></pre>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Once it's downloaded, file will be gone.</p>
-</div>
 <h2 id="general-queing">General queing</h2>
 <p>You can pass parameters using general que to the script that will be executed by e-cron. This function is useful for such like sending mails.</p>
 <h5 id="queing-dir">queing dir</h5>
@@ -614,8 +610,8 @@ dummy1 dummy2 dummy3 #data is synced to local dir
 </code></pre>
 <h5 id="function">function</h5>
 <p>Script can load parameters that is in the que file. For examaple mailque contain subjects, mailto, mailfrom, contents. </p>
-<pre><code>push   -&gt; que: mail           -&gt; mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID    
-script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contetns="XXX" ].randomID.load
+<pre><code>push   -&gt; que: mail           -&gt; mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contents="XXX" ].randomID    
+script &lt;- wrapper {que: mail} &lt;- mail[ subject="XXX", mailto="XXX", mailfrom="XXX", contents="XXX" ].randomID.load
 </code></pre>
 <h6 id="push-mail-que">Push mail que</h6>
 <pre><code># send mail que to e-cron batch
@@ -682,7 +678,7 @@ exec_command=&quot;/usr/local/small-shell/util/scripts/send_mail \&quot;${mailto
 input_message=&quot;&quot;
 output_message=&quot;&quot;
 hub_api=&quot;&quot;
-authkey=&quot;&quot;
+api_authkey=&quot;&quot;
 
 # add manually
 que=&quot;mail&quot;
@@ -767,7 +763,7 @@ sumup.sh            # please see detail at pyshell
 </code></pre>
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>API server
-OS: Ubuntu 2X (recommnded), Debian 1X, Almalinux 9.X, CentOS 7, RHEL 8
+OS: Ubuntu 2X (recommended), Debian 1X, Almalinux 9.X, CentOS 7, RHEL 8
 bash: 4.X
 curl: 7.X
 
