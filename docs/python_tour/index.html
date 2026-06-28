@@ -232,7 +232,7 @@ PYTHON="/usr/local/bin/python3.12"
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 </code></pre>
 <p>It's required to complete OS setup and setup of small-shell Base App, see detail at <a href="../quick_start_linux/">Quickstart</a>.
-Following is an exapmle that count up number of record of inventory.db</p>
+Following is an exapmle that count up number of record of inventory.db.</p>
 <pre><code>$ sudo /usr/local/small-shell/adm/gen -job
 Job Name: countup_num_of_record
 Type of job (1.job automation | 2.file exchange) : 1
@@ -388,7 +388,7 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/${utilscript} para
 </div>
 <h4 id="usage">Usage</h4>
 <p>Please set following commands as exec_command in "#sudo gen -job" dialog. <br />
-Or you can execute the script manually. then you can confirm result on console box of Standard App.</p>
+Or you can execute the script manually. then you can confirm result on console of Base App.</p>
 <h5 id="countup">Countup</h5>
 <pre><code>e.g.) just countup survey result that is stored at survey.box   
 sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box type:bar frequency:daily
@@ -408,7 +408,7 @@ key:impression filters:Good,Average,Bad type:pie title:2024-11-28_survey_result 
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
 <h5 id="sumup-scenario">Sumup Scenario</h5>
-<p>Create monthly graph of inventory.db by sumup each type of inventory </p>
+<p>Create monthly graph of inventory.db by sumup each type of inventory.</p>
 <h6 id="target-databox-for-analytics_1">Target Databox for analytics]</h6>
 <pre><code>inventory.db {item_name:text, category:select, num:num}
 </code></pre>

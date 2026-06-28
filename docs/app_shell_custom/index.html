@@ -279,8 +279,8 @@ https://${server}/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c
 <h4 id="connect-to-the-app">Connect to the App</h4>
 <p>End user key that's generated above command will be stored to end user browser automatically using localstorage by javascript once connected to above url.</p>
 <h2 id="access-url-of-the-app">Access URL of the App</h2>
-<p>If you are using default Web server, your application URL must be ${FQDN}/${app} except "other" type App. URL will be shown in the dialog of gen command.</p>
-<pre><code>e.g.) App:test, URL:https://${FQDN}/test
+<p>If you are using default Web server, your application URL must be ${your_server_FQDN}/${your_app_name} except "other" type App. URL will be shown in the dialog of gen command.</p>
+<pre><code>e.g.) App:test, URL:https://${your_server_FQDN}/test
 </code></pre>
 <p><img alt="Screenshot" src="../img/custom_login.png" /></p>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
@@ -289,7 +289,7 @@ https://${server}/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c
 </code></pre>
 <h3 id="update-pass-code">Update Pass code</h3>
 <p>If it's Shared Pass code App, you can update pass code by updating file directly </p>
-<pre><code>sudo vi /usr/local/small-shell/web/${app}.code
+<pre><code>sudo vi /usr/local/small-shell/web/${your_app_name}.code
 </code></pre>
 <h3 id="update-codes-optional">Update codes (optional)</h3>
 <p>Then App will be generated to directory that you already defined in Base App dialog. you can update codes freely.
@@ -301,7 +301,7 @@ $bin (/var/www/bin)
 # HTML defs
 $def(/var/www/def)
 </code></pre>
-<h4 id="parameter-change-bin">Parameter change ($bin)</h4>
+<h4 id="parameter-change-of-binscripts">Parameter change of bin/scripts</h4>
 <p>In this example, accesible key of databox is changed. 
 In the default permission, end user can access all keys of databox from the Custom App.</p>
 <pre><code>e.g) restrict data keys
@@ -313,7 +313,7 @@ sudo vi /var/www/bin/test_get.sh
 keys=item_name,description
 --------
 </code></pre>
-<h4 id="html-def-def">HTML def ($def)</h4>
+<h4 id="html-def">HTML def</h4>
 <p>You can edit HTML directly.</p>
 <pre><code>sudo vi /var/www/def/test_main.html.def
 sudo vi /var/www/def/test_table.html.def
@@ -556,7 +556,8 @@ https://${fqdn}/cgi-bin/auth.oauth_test</p>
 ],
 </code></pre>
 <h5 id="generator-in-binapp_mainsh">generator in bin/${app}_main.sh</h5>
-<pre><code>sudo vi /var/www/bin/${app}_main.sh
+<pre><code># app parameter will be your app name
+sudo vi /var/www/bin/${app}_main.sh
 
 --code--
 # -----------------

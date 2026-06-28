@@ -300,11 +300,11 @@ You can define parameters in the dialog. It will be required option as default. 
 -------------------------------------------------------------------------------
 This is the URL for key initialization and generation for test on Base App
 -------------------------------------------------------------------------------
-https://${FQDN}/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
+https://${your_server_FQDN}/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
 <p><img alt="Screenshot" src="../img/initialize_key.png" /></p>
 <h2 id="access-url-of-base-app">Access URL of Base App</h2>
-<p>Access URL is shown in the result of ops command. If you are using small-shell default Web server, URL must be ${FQDN}/base.</p>
+<p>Access URL is shown in the result of ops command. If you are using small-shell default Web server, URL must be ${your_server_FQDN}/base.</p>
 <pre><code>e.g.) https://ec2-XX-XX-XX-XX.XXXX.com/base
 </code></pre>
 <h4 id="re-generate-user-key">Re-generate User key</h4>
@@ -444,7 +444,7 @@ $tmp (/var/www/tmp)
 <img alt="Screenshot" src="../img/standard_flow.png" /></p>
 <h5 id="url-design">URL design</h5>
 <p>Query string will be loaded same name of variables in the App.</p>
-<pre><code>https://${FQDN}/cgi-bin/${app}?req=get&amp;databox=inventory.db&amp;id=1234 ..
+<pre><code>https://${your_server_FQDN}/cgi-bin/${your_app_name}?req=get&amp;databox=inventory.db&amp;id=1234 ..
 
 These query string will be loaded as following value in the App
 -&gt; req=get
@@ -452,7 +452,7 @@ These query string will be loaded as following value in the App
 -&gt; id=1234
 </code></pre>
 <h5 id="routing-in-controller">Routing in controller</h5>
-<p>Routings to the bin/scripts are defined in the controller script. Following is example of checking Base App controller. If its's Custome App, controller will be /var/www/cgi-bin/${app}.</p>
+<p>Routings to the bin/scripts are defined in the controller script. Following is example of checking Base App controller. If its's Custome App, controller will be /var/www/cgi-bin/${your_app_name}.</p>
 <pre><code>sudo vi $cgi-bin/base (e.g. /var/www/cgi-bin/base)
 
 --code--
@@ -476,7 +476,7 @@ case &quot;$req&quot; in
 <li>Insert dynamic contents to %%tags</li>
 <li>Render pure HTML to client</li>
 </ol>
-<h6 id="load-query-string-eg-databoxidsession-that-will-be-passsed-from-controller-as-parameter-following-is-example-of-checking-get-script-of-base-app-if-its-custome-app-get-script-will-be-app_getsh">Load QUERY string (e.g. $databox,$id,$session) that will be passsed from controller as parameter. Following is example of checking get script of Base App. If it's Custome App, get script will be ${app}_get.sh.</h6>
+<h6 id="load-query-string-eg-databoxidsession-that-will-be-passsed-from-controller-as-parameter-following-is-example-of-checking-get-script-of-base-app-if-its-custome-app-get-script-name-will-be-your_app_name_getsh">Load QUERY string (e.g. $databox,$id,$session) that will be passsed from controller as parameter. Following is example of checking get script of Base App. If it's Custome App, get script name will be ${your_app_name}_get.sh.</h6>
 <pre><code>sudo vi ${bin}/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
@@ -525,7 +525,7 @@ cat ../def/get.html.def | $SED &quot;s/^ *&lt;/&lt;/g&quot; \
 --------
 </code></pre>
 <h5 id="htmldef-view">html.def (view)</h5>
-<p>Just write down pure HTML. %%tag can be replaced to dynamic contents. Following is example of checking get HTML def of Base APP. If it's Custome App, HTML def will be ${app}_*.html.def.</p>
+<p>Just write down pure HTML. %%tag can be replaced to dynamic contents. Following is example of checking get HTML def of Base APP. If it's Custome App, HTML def will be ${your_app_name}_*.html.def.</p>
 <pre><code>sudo vi ${def}/${htmldef} (e.g. /var/www/def/get.html.def)
 
 --code--

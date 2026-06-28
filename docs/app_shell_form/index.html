@@ -218,12 +218,12 @@ Form Name: survey
 Target Databox: survey.box
 Description: This is a internal survey of product A
 Included keys: impression,comment
-Access URL: https://${FQDN}/survey
+Access URL: https://${your_server_FQDN}/survey
 
 -----------------------------------------------------------------
 </code></pre>
 <h2 id="access-to-the-form">Access to the Form</h2>
-<p>As you already checked, access URL is shown in the gen dialog. The URL must be ${FQDN}/${app}</p>
+<p>As you already checked, access URL is shown in the gen dialog. The URL must be ${your_server_FQDN}/${your_Form_name}</p>
 <pre><code> e.g.) https://ec2-XX-XX-XX-XX.compute.XXXX.com/survey
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_form.png" /></p>
@@ -236,19 +236,19 @@ Access URL: https://${FQDN}/survey
 <p class="admonition-title">Note</p>
 <p>please setup pyshell env beforehand, see detail at <a href="../python_tour/">pyshell</a></p>
 </div>
-<h6 id="example-executed-on-apr-3rd-2022-as-snapshot">example executed on Apr 3rd 2022 as snapshot.</h6>
+<h6 id="example-executed-on-november-28th-2022-as-snapshot">example executed on November 28th 2022 as snapshot.</h6>
 <pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box \
-key:impression filters:Good,Average,Bad type:pie title:2022-04-03_survey_result frequency:snapshot
+key:impression filters:Good,Average,Bad type:pie title:2022-11-28_survey_result frequency:snapshot
 </code></pre>
 <p>please input #stats to console box on Base App.</p>
 <blockquote>
-<p>Base App &gt; Console Box [#stats]</p>
+<p>Base App &gt; Console [#stats]</p>
 </blockquote>
 <p><img alt="Screenshot" src="../img/stats_graph.png" /></p>
 <p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
 <h2 id="change-form-view">Change Form view</h2>
 <p>You can modify html def directly.</p>
-<pre><code>sudo vi /var/www/def/${Form}_get_new.html.def
+<pre><code>sudo vi /var/www/def/${your_Form_name}_get_new.html.def
 </code></pre>
 <pre><code>e.g.) sudo vi /var/www/def/survey_get_new.html.def
 
@@ -282,7 +282,7 @@ key:impression filters:Good,Average,Bad type:pie title:2022-04-03_survey_result 
 -------
 </code></pre>
 <h4 id="change-row-size-for-textarea">Change row size for textarea</h4>
-<p>You can change row size by inserting code to ${Form}_new.html.def.</p>
+<p>You can change row size by inserting code to ${your_Form_name}_new.html.def.</p>
 <pre><code>e.g) 
 sudo vi /var/www/def/survey_new.html.def
 
