@@ -127,7 +127,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#extended-cron" class="nav-link">Extended cron</a>
+            <li class="nav-item" data-bs-level="1"><a href="#extended-cron-function" class="nav-link">Extended Cron Function</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#features" class="nav-link">Features</a>
               <ul class="nav flex-column">
@@ -137,7 +137,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#job-relation-ship-in-same-host" class="nav-link">Job relation ship in same host</a>
+            <li class="nav-item" data-bs-level="2"><a href="#job-relationship-in-same-host" class="nav-link">Job relationship in same host</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -149,7 +149,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#general-queing" class="nav-link">General queing</a>
+            <li class="nav-item" data-bs-level="2"><a href="#general-queuing" class="nav-link">General queuing</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -172,8 +172,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="extended-cron">Extended cron</h1>
-<p>Small-Shell can provide job automation &amp; data Exchange function by extending cron function (e-cron). You can define job relationship with several hosts. Also you can use e-cron for data exchange HUB. </p>
+<h1 id="extended-cron-function">Extended Cron Function</h1>
+<p>Small-Shell provides job automation and data exchange capabilities by extending the standard cron utility (e-cron). You can define job relationships across multiple hosts or use e-cron as a centralized data exchange hub.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 Type of job (1.job automation | 2.file exchange) : 1
 --Define schedule--
@@ -294,9 +294,9 @@ Mon Jan  3 04:10:23 UTC 2022 Hello
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 &gt; then input existing job name in the dialog
 </code></pre>
-<h2 id="job-relation-ship-in-same-host">Job relation ship in same host</h2>
+<h2 id="job-relationship-in-same-host">Job relationship in same host</h2>
 <p>If you want to define job relationship in same same host, please modify job definition directly. 
-This is an exmaple of job relationship. Messae wil be exchanged in the host.</p>
+This is an example of job relationship. Messae wil be exchanged in the host.</p>
 <pre><code>job1.success@host1 --&gt; message (done.1) --&gt; job2@host1 #if message is raedy, kicked
 </code></pre>
 <h5 id="sample-job_1">sample job</h5>
@@ -394,7 +394,7 @@ cat /usr/local/small-shell/util/scripts/log/world.log
 Mon Jan  3 04:38:47 UTC 2022 World
 </code></pre>
 <h2 id="job-relationship-between-hosts">Job relationship between hosts</h2>
-<p>If you will define relation ship between serveral hosts, you need to generate Base App first on HUB server. #see <a href="../app_shell_tour/">App shell</a> for further details for Base App.
+<p>If you will define relationship between serveral hosts, you need to generate Base App first on HUB server. #see <a href="../app_shell_tour/">App shell</a> for further details for Base App.
 Once API HUB is ready, you can define job relationship using message.</p>
 <pre><code> -----------------------------------------------
  | API Server #MessageExchange                 |
@@ -412,7 +412,7 @@ sudo cat /usr/local/small-shell/web/base | grep auth
 api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 </code></pre>
 <h5 id="update-job-definition-at-each-hosts">Update job definition at each hosts</h5>
-<p>In this exmaple, hostB job2 will be kicked, once got message from hostA job1 through API HUB.</p>
+<p>In this example, hostB job2 will be kicked, once got message from hostA job1 through API HUB.</p>
 <pre><code>job1.success@hostA ---&gt; message (done.1) --&gt; job2@hostB #if message is raedy, kicked
 </code></pre>
 <h5 id="sample-job_2">sample job</h5>
@@ -507,7 +507,7 @@ filter: job2
 2022-01-07 14:19:12 job2 successfully completed
 </code></pre>
 <h2 id="data-file-exchange">Data (file) exchange</h2>
-<p>e-cron can be dataExchange platform between several hosts. dataExchange also needs Base App, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">App shell</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
+<p>E-cron can be dataExchange platform between several hosts. dataExchange also needs Base App, please genenerate it on HUB server beforehand. #see <a href="../app_shell_tour/">App shell</a> for further details. Once API HUB is ready, you can push or get the data through the HUB. File will be push to local directory of API server (/usr/local/small-shell/util/e-cron/que/file) so you can put or check the file directly on the API server.</p>
 <pre><code> ---------------------------------
  |   API Server #DataExchange     |  
  ---------------------------------
@@ -528,7 +528,7 @@ api_authkey=&quot;YXBpOmE2ODcyODI2MGZlOGRmOTEzZjNlMmUyYjM2YzlmZD****&quot;
 <h4 id="dataexchange-job">DataExchange Job</h4>
 <p>This is an example of exchange dummy file from host1 to host2 through HUB API. By the way, file will be removed from HUB when remote host get the file and you can check audit log.</p>
 <h5 id="job-for-pushing-file">Job for pushing file</h5>
-<p>This is exmaple of generating job that will push dummy.log to HUB API server.</p>
+<p>This is example of generating job that will push dummy.log to HUB API server.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -job
 # -&gt; dialog will be started
 </code></pre>
@@ -603,9 +603,9 @@ sudo -u small-shell /usr/local/small-shell/bin/e-cron exec.data_get
 ls /tmp/dummy*
 dummy1 dummy2 dummy3 #data is synced to local dir
 </code></pre>
-<h2 id="general-queing">General queing</h2>
+<h2 id="general-queuing">General queuing</h2>
 <p>You can pass parameters using general que to the script that will be executed by e-cron. This function is useful for such like sending mails.</p>
-<h5 id="queing-dir">queing dir</h5>
+<h5 id="queuing-dir">queuing dir</h5>
 <pre><code>dir: /usr/local/small-shell/util/que/common
 </code></pre>
 <h5 id="function">function</h5>
@@ -657,7 +657,7 @@ chmod 755 /usr/local/small-shell/util/scripts/send_mail
 # ADD AUTOMATION JOB
 sudo /usr/local/small-shell/adm/gen -job
 
-#-&gt; diaglog start
+#-&gt; dialog start
 job name: mailq
 Type of job (1.job automation | 2.file exchange) : 1
 

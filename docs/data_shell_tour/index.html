@@ -185,7 +185,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="data-shell">Data Shell</h1>
-<p>"Data shell" manage "databox" that is mainly designed to be used by App shell. Data shell is interface of manage databox and it can ensure data integrity utilizing hash chain.</p>
+<p>Data Shell manages databoxes, which are primarily designed for use by App Shell. It acts as the management interface and ensures data integrity utilizing a hash chain.</p>
 <h2 id="key-value-store">Key value store</h2>
 <p>Data will be saved in databox as key value type of data sets like this. View of databox will be table on Web App.</p>
 <pre><code># DataboxA
@@ -199,7 +199,7 @@ datasetX:{ primary_key(col1):value, key(col2):value, key(col3):value, ... key(co
 ----------------------------------------------------------------------------------------------
 </code></pre>
 <h2 id="feature">Feature</h2>
-<p>Small-Shell databox could have both feature of relational database and key value storage. If you want to use databox as master database, please set specific name to primary key. If it's just used as flat data store, please set hashid to primary key. See detail as below. </p>
+<p>Small-Shell databoxes combine the features of both relational databases and key-value storage.</p>
 <h3 id="pattern1-generate-databox-as-master-database">Pattern1) Generate Databox as master database</h3>
 <p>Use databox as master database. In this example, item_name is set as specific primary key name.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
@@ -228,13 +228,13 @@ Set this as required? (yes | no):
  data  def  file  hashchain  index  log  log.dump
 </code></pre>
 <h2 id="command-reference">Command reference</h2>
-<p>You can access datas through DATA_shell command.</p>
+<p>You can access data through DATA_shell command.</p>
 <pre><code>/usr/local/small-shell/bin/DATA_shell
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>DATA_shell has CLI, you can use these commands with sudo small-shell</p>
-<p>e.g.) sudo -u small-shell /usr/local/small-shell/bin/DATA_shell parama1:$param1 param2:$param2</p>
+<p>e.g.) sudo -u small-shell /usr/local/small-shell/bin/DATA_shell param1:$param1 param2:$param2</p>
 </div>
 <h3 id="base-params">Base params</h3>
 <table>
@@ -336,7 +336,7 @@ databox="item.db"
 sudo -u small-shell /usr/local/small-shell/bin/DATA_shell session:$session pin:$pin databox:$databox type:data command:show_all format:json
 </code></pre>
 <h3 id="data-handler-params">Data Handler params</h3>
-<p>You can set or show datas using data handler.</p>
+<p>You can set or show data using data handler.</p>
 <table>
 <thead>
 <tr>
@@ -420,8 +420,8 @@ echo "test2" &gt; /tmp/description
 sudo -u small-shell /usr/local/small-shell/bin/DATA_shell authkey:$authkey databox:$databox action:set key:description input_dir:/tmp id:$id
 </code></pre>
 <h2 id="meta-characters-in-index">Meta characters in index</h2>
-<p>Some meta charactors are removed or changed to specific tags in the index to be searchable. Index is just an index, data itself will not be impacted.
-It's required to use Meta charactors {%*%} when accessing index by executing DATA_shell with command: option.</p>
+<p>Some meta characters are removed or changed to specific tags in the index to be searchable. Index is just an index, data itself will not be impacted.
+It's required to use Meta characters {%*%} when accessing index by executing DATA_shell with command: option.</p>
 <pre><code>:  - {%%%}
 &amp;  - {%%%%}
 /  - {%%%%%}
@@ -442,18 +442,18 @@ null - -
 <h2 id="hashchain">Hashchain</h2>
 <p>Hashchain is created by que.sh for providing proof of data integrity to end user. User can verify hash by calculating it based on following algorithm please check the code.
 log.dump data will be hashed and it will be integrated to synthesis hash with previous updated keys. Following is code of que.sh</p>
-<pre><code>#view /usr/local/small-shell/sbin/que.sh
-    log_dump=&quot;${timestamp} user:${user} primary_key:$primary_key_value updated_key:${updated_key} value:${value} #id:$id&quot;
+<pre><code># view /usr/local/small-shell/sbin/que.sh
+log_dump=&quot;${timestamp} user:${user} primary_key:$primary_key_value updated_key:${updated_key} value:${value} #id:$id&quot;
 
-    # gen hash
-    hash=$(echo &quot;$log_dump&quot; | sha256sum | awk '{print $1}')
+# gen hash
+hash=$(echo &quot;$log_dump&quot; | sha256sum | awk '{print $1}')
 
-    # update hash chain
-    last_hash=$(grep synthesis_hash ${ROOT}/databox/${databox}/hashchain | tail -1 | awk -F &quot;:&quot; '{print $2}')
-    synthesis_hash=$( echo ${last_hash}${hash} | sha256sum | awk '{print $1}')
-    echo &quot;$(date +%Y-%m-%d) $(date +%T) id             :$id&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
-    echo &quot;$(date +%Y-%m-%d) $(date +%T) hash           :$hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
-    echo &quot;$(date +%Y-%m-%d) $(date +%T) synthesis_hash :$synthesis_hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
+# update hash chain
+last_hash=$(grep synthesis_hash ${ROOT}/databox/${databox}/hashchain | tail -1 | awk -F &quot;:&quot; '{print $2}')
+synthesis_hash=$( echo ${last_hash}${hash} | sha256sum | awk '{print $1}')
+echo &quot;$(date +%Y-%m-%d) $(date +%T) id             :$id&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
+echo &quot;$(date +%Y-%m-%d) $(date +%T) hash           :$hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
+echo &quot;$(date +%Y-%m-%d) $(date +%T) synthesis_hash :$synthesis_hash&quot; &gt;&gt; ${ROOT}/databox/${databox}/hashchain
 </code></pre>
 <h4 id="show-hashchain">Show hashchain</h4>
 <p>End user can check hashchain on Base App console by using "#hash_chain" tag.</p>
@@ -503,7 +503,7 @@ log.dump data will be hashed and it will be integrated to synthesis hash with pr
 #----------------------------------------------------------
 </code></pre>
 <h2 id="batch-for-data-shell">Batch for data shell</h2>
-<p>You can import or delete datas using batch scripts.</p>
+<p>You can import or delete data using batch scripts.</p>
 <pre><code>/usr/local/small-shell/util/scripts
 </code></pre>
 <pre><code># bat_import.sh
@@ -571,13 +571,13 @@ col3_required=&quot;&quot;
 sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
 </code></pre>
 <h2 id="import-export-data">Import / Export data</h2>
-<p>You can import datas through Web App or batch command. csv format can be downloaded from Base App table #csv tag or import form.</p>
+<p>You can import data through Web App or batch command. csv format can be downloaded from Base App table #csv tag or import form.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you are using hashid for primary key, please input value as "new". if you are not use hashid as primary key, you can input any value to the key.</p>
 </div>
 <h4 id="import-through-base-app">Import through Base App</h4>
-<p>You can import datas from Base App "Data Import" menu. Import format can be download on the page.
+<p>You can import data from Base App "Data Import" menu. Import format can be download on the page.
 <img alt="Screenshot" src="../img/import.png" /></p>
 <h4 id="import-through-batch">Import through batch</h4>
 <p>Instead of Web UI, you can also import data through bat_import script.</p>
@@ -585,11 +585,11 @@ sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
 tail -f /usr/local/small-shell/tmp/log/${session}.log
 </code></pre>
 <h4 id="export-data-through-app">Export data through App</h4>
-<p>You can export datas with csv format on Base App table.
+<p>You can export data with csv format on Base App table.
 <img alt="Screenshot" src="../img/export.png" /></p>
 <h2 id="delete-databox">Delete databox</h2>
 <p>There is util script for deleting databox.</p>
-<pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_databox $databox
+<pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_databox $your_databox
 </code></pre>
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Ubuntu 2X (recommnded), Debian 1X, macOS Tahoe, Almalinux 9.X, CentOS 7, RHEL 8
