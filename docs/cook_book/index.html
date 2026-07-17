@@ -67,11 +67,11 @@
 </li>
                                     
 <li>
-    <a href="../app_shell_form/" class="dropdown-item">Create Form</a>
+    <a href="../app_shell_form/" class="dropdown-item">Form</a>
 </li>
                                     
 <li>
-    <a href="../app_shell_custom/" class="dropdown-item">Create Custom App</a>
+    <a href="../app_shell_custom/" class="dropdown-item">Custom App</a>
 </li>
                                     
 <li>
@@ -129,7 +129,7 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#cook-book" class="nav-link">Cook book</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#create-static-site" class="nav-link">Create Static Site</a>
+            <li class="nav-item" data-bs-level="2"><a href="#create-a-static-site" class="nav-link">Create a Static Site</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -166,8 +166,8 @@
 
 <h1 id="cook-book">Cook book</h1>
 <p>In this page, you can learn how to update main page of Custom App and how to utilize add-on tools.</p>
-<h2 id="create-static-site">Create Static Site</h2>
-<p>If you want to generate a static site, please select auth type "none" and input "none" to primary databox. Following is an example generating App Name "static_site". </p>
+<h2 id="create-a-static-site">Create a Static Site</h2>
+<p>If you want to generate a static site, please select auth type "none" and input "none" to primary databox in the gen dialog. The following example shows how to generate App Name "static_site". </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of Apo (1.BASE | 2.FORM | 3.CUSTOM): 3
 App Name: static_site
@@ -513,7 +513,7 @@ sudo ./deploy.sh
 @replica
 sudo ./deploy.sh
 </code></pre>
-<p>If everything is no problem, https will be enabled automatically by deploy.sh. By the way configure.sh will set up reverse proxy using nginx package for flexible certification management in clustering environment. Small-Shell default web srv port will be changed to 8080 port.</p>
+<p>If everything is no problem, https will be enabled automatically by deploy.sh. Note that configure.sh will set up reverse proxy using nginx package for flexible certification management in clustering environment. Small-Shell default web srv port will be changed to 8080 port.</p>
 <h4 id="create-users-for-apps">Create users for Apps</h4>
 <p>Once replication and SSL is ready, please create users for Apps.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops add.usr:$user_name #Base App 
