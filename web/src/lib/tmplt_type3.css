@@ -971,7 +971,7 @@ a {
 .form-box input[type="datetime-local"] {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 8px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
@@ -1320,7 +1320,7 @@ media screen and (min-width: 641px){
 .app-form input[type="datetime-local"] {
   letter-spacing: .09em;
   font-size: 12px;
-  padding: 6px 8px;
+  padding: 8px 8px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   flex: auto;
