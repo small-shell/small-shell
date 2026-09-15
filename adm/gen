@@ -89,6 +89,13 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
       exit 1
     fi
 
+    which file > /dev/null 2>&1
+    if [ ! $? -eq 0 ];then
+      echo "error: please install file command first"
+      rm -f ${SCRIPT_DIR}/../.env
+      exit 1
+    fi
+
     which jq >/dev/null 2>&1
     if [ ! $? -eq 0 ];then
       echo "error: please install jq command first"
@@ -226,12 +233,12 @@ trap 'clear_dialog' SIGINT
 function clear_dialog(){
   if [ -d "$tmp_dir" ];then
     echo ""
-    echo "tmp file will be deleted, please try again from beginning"
+    echo "tmp file will be deleted, please try again from the beginning"
     rm -rf $tmp_dir
     exit 1
   else
     echo ""
-    echo "dialog will be ended, please try again from beginning"
+    echo "dialog will be ended, please try again from the beginning"
     exit 1
   fi
 }
@@ -741,7 +748,7 @@ if [ "$param" = "-databox" ];then
 
     echo "databox:$databox has been successfully created"
   else
-    echo "Plese try again from beginning, #gen -databox"
+    echo "Plese try again from the beginning, #gen -databox"
     rm -rf $tmp_dir
     exit 1
   fi
@@ -1043,7 +1050,7 @@ if [ "$param" = "-addcol" ];then
     keys=$(grep "name=" ${tmp_dir}/col* | sort -V | xargs basename -a | $AWK -F "=" '{print $2}' | $SED "s/\"//g" | $SED -z "s/\n/,/g" | $SED "s/,$//g")
     ${ROOT}/adm/rebuild $databox $keys addcol
   else
-    echo "Plese try again from beginning, #gen -addcol"
+    echo "Plese try again from the beginning, #gen -addcol"
     rm -rf $tmp_dir
     exit 1
   fi
@@ -1232,7 +1239,7 @@ if [ "$param" = "-delcol" ];then
     keys=$(ls $tmp_dir | sort -V | xargs basename -a | $SED "s/ /,/g" | $SED -z "s/\n/,/g" | $SED "s/,$//g")
     ${ROOT}/adm/rebuild $databox $keys delcol
   else
-    echo "Plese try again from beginning, #gen -delcol"
+    echo "Plese try again from the beginning, #gen -delcol"
     rm -rf $tmp_dir
     exit 1
   fi
@@ -1679,6 +1686,13 @@ if [ "$param" = "-app" ];then
            port=443
         fi
 
+	# adjust parameter for chromeos and wsl
+	if [ -d /mnt/chromeos -o -d /mnt/wsl ];then
+	 $SED -i '/process.setuid/d' $ROOT/web/src/app/index.js 
+	 sudo_flag=yes
+	fi
+
+	# node version chek
         node_version=$(node --version | $SED "s/v//g" | $AWK -F "." '{print $1}')
         if [ "$node_version" -ge 18 ];then
           (cd ${www}/app;npm init -y;npm install express@5) 
@@ -1946,8 +1960,8 @@ if [ "$param" = "-app" ];then
       chown -R ${cgi_usr}:${cgi_usr} ${www}/def/*
       chown -R ${cgi_usr}:${cgi_usr} ${www}/bin/*
 
-      if [ "$srv_type" = "default" ];then
-        echo "small_shell_path=$ROOT" > ${def_dir}/.env
+      if [ "$srv_type" = "default" -a ! "$sudo_flag" ];then
+        echo "small_shell_path=\"$ROOT\"" >  ${def_dir}/.env
         echo "server=\"default\"" >>  ${def_dir}/.env
       else
         echo "small_shell_path=\"sudo -u small-shell ${ROOT}\"" > ${def_dir}/.env
@@ -2056,7 +2070,7 @@ if [ "$param" = "-app" ];then
         fi
       fi
     else
-      echo "please try again from begining #gen -app"
+      echo "please try again from the begining #gen -app"
       rm -rf $tmp_dir
       exit 1
     fi
@@ -2112,7 +2126,7 @@ if [ "$param" = "-app" ];then
     primary_key=$(cat ${ROOT}/databox/${databox}/def/col1 | grep name= | $SED "s/name=//g"  | $SED "s/\"//g")
     if [ ! "$primary_key" = "hashid" ];then
       echo "error: $databox is not suitable, primary key must be \"hashid\" if you want to use the databox for Form"
-      echo "please try again from beginning."
+      echo "please try again from the beginning."
       exit 1
     fi
 
@@ -2268,7 +2282,7 @@ if [ "$param" = "-app" ];then
       ls  ${www}/bin/${form_name}_*
       ls  ${www}/def/${form_name}_*
     else
-      echo "Plese try again from beginning, #gen -app" 
+      echo "Plese try again from the beginning, #gen -app" 
       rm -rf $tmp_dir
       exit 1
     fi
@@ -2996,7 +3010,7 @@ if [ "$param" = "-app" ];then
       fi
 
     else
-      echo "Plese try again from beginning, #gen -app"
+      echo "Plese try again from the beginning, #gen -app"
       rm -rf $tmp_dir
       exit 1
     fi
@@ -3293,7 +3307,7 @@ if [ "$param" = "-job" ];then
         echo "error: something wrong"
       fi
     else
-      echo "Plese try again from beginning, #gen -job"
+      echo "Plese try again from the beginning, #gen -job"
       rm -rf $tmp_dir
       exit 1
     fi
@@ -3505,7 +3519,7 @@ if [ "$param" = "-job" ];then
         echo "error: something is wrong"
       fi
     else
-      echo "Plese try again from beginning, #gen -job"
+      echo "Plese try again from the beginning, #gen -job"
       rm -rf $tmp_dir
       exit 1
     fi
