@@ -276,7 +276,8 @@ option=&quot;required&quot;
 <p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
 <p><b>type: select and radio</b>  <br />
 You can define parameters in the dialog. It will be required option as default. parameters and required definition can be changed anytime later manually.</p>
-<p><b>type: pdls</b><br />
+<p>! Also you can use these custom type that is defined by small-shell.  <br />
+<b>type: pdls</b><br />
 "pdls" means data list of primary key value. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog. see detail on <a href="./#insert-data-list-to-form">pdls</a></p>
 <p><b>type: mls</b> <br />
 "mls" means member list. If you want to import user who already created in small-shell, please use mls.</p>
@@ -347,10 +348,8 @@ option=""
 </code></pre>
 <h2 id="insert-data-list-to-form">Insert data list to Form</h2>
 <p>You can import primary data list from other databox to the Form using "pdls".
-Following is an example that can show how you can utilize pdls.</p>
-<h4 id="typepdls">type=pdls</h4>
-<p>Import target: inventory.db 
-New databox : request.db &lt;- import item list</p>
+Following is an example that can show how you can utilize pdls.
+In this example, primary datalist of inventory.db will be imported.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 
 # result of dialog
