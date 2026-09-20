@@ -535,7 +535,7 @@ if [ "$param" = "-databox" ];then
     # escape meta character
     add_key_label=$(echo "$add_key_label" | $SED "s/\"//g")
 
-    echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+    echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
     read type
     data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
     -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
@@ -562,7 +562,7 @@ if [ "$param" = "-databox" ];then
         exit 1
       fi
 
-      echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+      echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
       read type
       data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
       -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
@@ -870,7 +870,7 @@ if [ "$param" = "-addcol" ];then
     # escape meta character
     add_key_label=$(echo "$add_key_label" | $SED "s/\"//g")
 
-    echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+    echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
     read type
     data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
      -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
@@ -895,7 +895,7 @@ if [ "$param" = "-addcol" ];then
         echo "1 dataset could have only 1 file, please do not add file again"
       fi
 
-      echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file | pdls | mls): "
+      echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
       read type
       data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
        -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
