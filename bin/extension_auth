@@ -261,6 +261,13 @@ if [ "$action" = "session_refresh" -o "$action" = "data_import_session" -o "$act
         session_token=$(echo "${app}:${user_name}:${pin}" | $SHASUM | $AWK '{print $1}')
         echo "user_name:${user_name},new_token:${session_token},pin:${pin}"
 
+        while [ -f ${ROOT}/tmp/session/${session_token} ]
+        do
+          pin=$RANDOM
+          session_token=$(echo "${user_name}:${pin}" | $SHASUM | $AWK '{print $1}')
+        done
+
+
         if [ "$action" = "session_persist" ];then
           ln -s ${ROOT}/tmp/session/${session_token} ${ROOT}/tmp/session/${org_session}
           echo "${user_name}:${remote_addr}:${user_agent}:${org_session}" > ${ROOT}/tmp/session/${session_token}
