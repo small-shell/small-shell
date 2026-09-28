@@ -145,7 +145,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#modify-dataset" class="nav-link">Modify dataset</a>
+            <li class="nav-item" data-bs-level="2"><a href="#modify-data-structure" class="nav-link">Modify data structure</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -213,12 +213,12 @@
 <td>table,form,console,log,graph</td>
 <td>All Databox</td>
 <td>Basically Uneditable</td>
-<td>Full &amp; Flat but control rw/ro permission</td>
+<td>Full data access with managed rw/ro permissions.</td>
 </tr>
 <tr>
 <td><a href="../app_shell_form/">Form</a></td>
 <td>No auth</td>
-<td>Web form</td>
+<td>form</td>
 <td>Specific Databox</td>
 <td>Editable</td>
 <td>Just push new data through dedicated Form</td>
@@ -235,8 +235,8 @@
 </table>
 <h4 id="required">Required</h4>
 <p>Please set up your OS environment beforehand by referring to the Quick start guide, then run the gen command to start the setup dialog.</p>
-<h3 id="define-dataset-for-web-app">Define dataset for Web App</h3>
-<p>Before generating Base App, you must define the dataset that will be referred to by the app. Please use the gen command to create a databox.</p>
+<h3 id="define-data-structure-for-web-app">Define data structure for Web App</h3>
+<p>Before generating Base App, you must define the data structure that will be referred to by the app. Please use the gen command to create a databox.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 </code></pre>
 <p>Here is an example of dialog result.</p>
@@ -276,13 +276,12 @@ option=&quot;required&quot;
 <p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
 <p><b>type: select and radio</b>  <br />
 You can define parameters in the dialog. It will be required option as default. parameters and required definition can be changed anytime later manually.</p>
-<p>! Also you can use these custom type that is defined by small-shell.  <br />
-<b>type: pdls</b><br />
+<p><b>type: pdls #hidden option</b><br />
 "pdls" means data list of primary key value. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog. see detail on <a href="./#insert-data-list-to-form">pdls</a></p>
-<p><b>type: mls</b> <br />
+<p><b>type: mls #hidden option</b> <br />
 "mls" means member list. If you want to import user who already created in small-shell, please use mls.</p>
 </div>
-<p>Here is the image of dataset inserted to the App. 
+<p>Here is the image of the form for the databox. 
 <img alt="Screenshot" src="../img/created_form.png" /></p>
 <p>Parameters that defined in the dialog will be inserted like below.
 <img alt="Screenshot" src="../img/select_image.png" /></p>
@@ -314,8 +313,8 @@ This is the URL for key initialization and generation for test on Base App
 -------------------------------------------------------------------------------
 https://ec2-XX-XX-XX-XX.XXXX.com/cgi-bin/auth.base?initialize=*****fce76b37e4e93b7605022da52e6ccc26fd2,4c5a2ae68d20e530b4ce457c71eae42590135268e1fb933a945f7e188678ccf4
 </code></pre>
-<h2 id="modify-dataset">Modify dataset</h2>
-<p>You can modify dataset anytime.</p>
+<h2 id="modify-data-structure">Modify data structure</h2>
+<p>You can modify data structure anytime.</p>
 <h5 id="add-del-column">Add | Del Column</h5>
 <p>Column can be added or deleted by gen command</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -addcol
@@ -512,7 +511,7 @@ sudo -u small-shell ${small_shell_path}/bin/DATA_shell session:$session pin:$pin
 action:get id:$id keys:all format:html_tag &gt; ../tmp/${session}/dataset
 --------
 </code></pre>
-<h6 id="render-html-with-inserting-dynamic-contents-to-tags-eg-datasethtml_tag-from-inventorydb">Render HTML with inserting dynamic contents to %%tags (e.g. dataset{html_tag} from inventory.db)</h6>
+<h6 id="render-html-with-inserting-dynamic-contents-to-tags-in-this-example-dataset-will-be-inserted-to-dataset-tag">Render HTML with inserting dynamic contents to %%tags. In this example, dataset will be inserted to %%dataset tag.</h6>
 <pre><code>sudo vi ${bin}/get.sh (e.g. /var/www/bin/get.sh)
 
 --code--
