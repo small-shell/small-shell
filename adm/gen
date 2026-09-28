@@ -553,7 +553,7 @@ if [ "$param" = "-databox" ];then
       echo "Data type is wrong, please try again"
 
       if [ "$data_chk_flg" = "file" ];then
-        echo "1 dataset could have only 1 file, please do not add file again"
+        echo "1 record could have only 1 file, please do not add file again"
       fi
 
       if [ "$bat_flag" = "yes" ];then
@@ -892,7 +892,7 @@ if [ "$param" = "-addcol" ];then
     do
       echo "data type must be wrong, please try again"
       if [ "$data_chk_flg" = "file" ];then
-        echo "1 dataset could have only 1 file, please do not add file again"
+        echo "1 record could have only 1 file, please do not add file again"
       fi
 
       echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
