@@ -26,7 +26,7 @@
 
       <div class="%%form-class">
         <div class="description">
-          <h1>#new</h1>
+          <h1>New record</h1>
         </div>
         <form id="one-time-form" method="post" action="./base?%%params&req=set&id=%%id" autocomplete="off" onclick="document.charset='utf-8';">
         <ul>

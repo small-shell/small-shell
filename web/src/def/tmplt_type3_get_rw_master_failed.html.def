@@ -23,7 +23,7 @@
 
       <div class="form-box">
         <div class="description">
-          <h1>#values</h1>
+          <h1>Record details</h1>
           <p><b>#ID </b>%%id</p>
         </div>
         <ul>

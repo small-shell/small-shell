@@ -26,7 +26,7 @@
 
       <div class="%%form-class">
         <div class="description">
-          <h1>#values</h1>
+          <h1>Record details</h1>
           <p><b>#ID </b>%%id</p>
         </div>
         <form id="one-time-form" method="post" action="./base?%%params&req=set&id=%%id" enctype="multipart/form-data" autocomplete="off" onclick="document.charset='utf-8';">

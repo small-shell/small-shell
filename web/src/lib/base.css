@@ -902,9 +902,8 @@ a {
 }
 
 .form-box .description h1 {
-  font-size: 180%;
-  color: #434246;
-  font-style : italic;
+  font-size: 140%;
+  color: #696969;
 }
 
 .form-box .description p {
@@ -1190,8 +1189,7 @@ a {
 
 .md-form-box .description h1 {
   font-size: 180%;
-  color: #434246;
-  font-style : italic;
+  color: #696969; 
 }
 
 .md-form-box .description p {

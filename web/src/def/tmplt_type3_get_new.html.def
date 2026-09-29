@@ -23,7 +23,7 @@
 
       <div class="form-box">
         <div class="description">
-          <h1>#%%databox.data</h1>
+          <h1>New record / %%databox</h1>
           <p>id:%%id</p>
         </div>
         <form id="one-time-form" method="post" action="./%%app?%%params&req=set&id=%%id" autocomplete="off" onclick="document.charset='utf-8';">
