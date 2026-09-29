@@ -138,8 +138,10 @@ elif [ "$form_chk" = "multipart" ];then
 fi
 
 # replace view for specific databox
-if [ "$databox" = "%%app.events" -a ! "$id" = "new" -a ! "$error_chk"  ];then
-  if [ "$permission"  = "ro" ];then
+if [ "$databox" = "%%app.events" -a ! "$error_chk"  ];then
+  if [ "$id"  = "new" ];then
+    view="events_get_new.html.def" 
+  elif [ "$permission"  = "ro" ];then
     view="events_get_ro.html.def"
   else
     view="events_get_rw.html.def"
