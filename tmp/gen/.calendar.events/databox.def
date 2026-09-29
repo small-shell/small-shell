@@ -21,9 +21,6 @@ col2_type="text"
 # only for select, radio
 col2_key_params=""
 
-# only for pdls
-col2_primary_databox=""
-
 # required
 col2_required="yes"
 #-------------------------------------------
@@ -37,9 +34,6 @@ col3_type="datetime-local"
 
 # only for select, radio
 col3_key_params=""
-
-# only for pdls
-col3_primary_databox=""
 
 # required option
 col3_required="yes"
@@ -55,9 +49,6 @@ col4_type="datetime-local"
 # only for select, radio
 col4_key_params=""
 
-# only for pdls
-col4_primary_databox=""
-
 # required option
 col4_required="no"
 #-------------------------------------------
@@ -72,9 +63,6 @@ col5_type="select"
 # only for select, radio
 col5_key_params="blue,green,purple,black"
 
-# only for pdls
-col5_primary_databox=""
-
 # required option
 col5_required=""
 #-------------------------------------------
@@ -88,9 +76,6 @@ col6_type="textarea"
 
 # only for select, radio
 col6_key_params=""
-
-# only for pdls
-col6_primary_databox=""
 
 # required option
 col6_required="no"
