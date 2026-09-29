@@ -16,9 +16,6 @@ fi
 SCRIPT_DIR=$(dirname $0)
  . ${SCRIPT_DIR}/../../.env
 
-# web/basee load
-. ${ROOT}/web/base
-
 # error handling
 if [ ! "$databox" ];then
   echo "error: databox name is null" 
@@ -30,12 +27,15 @@ if [ ! -d ${ROOT}/databox/${databox} ];then
   exit 1
 fi
 
-chk_app=$(grep "databox=${databox}" ${www}/bin/*_get.sh  | xargs basename -a  2>/dev/null | $AWK -F "_get.sh" '{print $1}' \
-| $SED -z "s/\n/,/g" | $SED "s/,$//g")
+if [ -f $IROOT}/web/base ];then
+  . ${ROOT}/web/base
+  chk_app=$(grep "databox=${databox}" ${www}/bin/*_get.sh  | xargs basename -a  2>/dev/null | $AWK -F "_get.sh" '{print $1}' \
+  | $SED -z "s/\n/,/g" | $SED "s/,$//g")
 
-if [ "$chk_app" ];then
-  echo "warn: ${databox} is used by Custom App {$chk_app}, please delete app first by using del_app.sh"
-  exit 1
+  if [ "$chk_app" ];then
+    echo "warn: ${databox} is used by Custom App {$chk_app}, please delete app first by using del_app.sh"
+    exit 1
+  fi
 fi
 
 # delete databox
