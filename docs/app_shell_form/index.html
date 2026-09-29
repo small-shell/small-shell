@@ -157,7 +157,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="form">Form</h1>
-<p>You can easily create dedicated web forms.</p>
+<p>You can easily create external web forms.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 2    
 # Dialog will be started, You can define keys which will be inserted to the form in the dialog.
@@ -174,7 +174,7 @@ Type of App (1.BASE | 2.FORM | 3.CUSTOM): 2
 <h2 id="create-a-databox">Create a Databox</h2>
 <p>For the first step, need to create survey databox to push data through form.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
-Databox Name: survey.box
+Databox Name: survey.db
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -182,7 +182,7 @@ Databox Name: survey.box
 <p>&gt;&gt; primary_key(col1): hashid</p>
 </div>
 <h6 id="result-of-dialog">Result of dialog</h6>
-<pre><code>Databox Name:survey.box
+<pre><code>Databox Name:survey.db
 #primary_key
 name=&quot;hashid&quot;
 label=&quot;#ID&quot;
@@ -193,7 +193,7 @@ option=&quot;required&quot;
 name=&quot;impression&quot;
 label=&quot;Impression of this product&quot;
 type=&quot;radio&quot;
-params=&quot;Good,Average,Bad&quot;
+params=&quot;Good,Average,Poor&quot;
 option=&quot;required&quot;
 
 #key(col3)
@@ -208,14 +208,14 @@ option=&quot;&quot;
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 2  
 Form Name: survey
 </code></pre>
-<h5 id="result-of-dialog_1">Result of dialog.</h5>
-<p>In this example, some keys of survey.box are excluded.</p>
+<p>This is an example of dialog result.</p>
 <pre><code>The Form will be generated in the following order, please check it.
 -----------------------------------------------------------------
 
 App Type: 2.FORM
 Form Name: survey
-Target Databox: survey.box
+Form Title: Internal Survey
+Target Databox: survey.db
 Description: This is an internal survey of product A
 Included keys: impression,comment
 Access URL: https://${your_server_FQDN}/survey
@@ -235,7 +235,7 @@ Access URL: https://${your_server_FQDN}/survey
 Please setup <a href="../python_tour/">pyshell</a> beforehand.
 Following is an example of making graph.</p>
 <h6 id="make-november-28th-2022-as-snapshot">Make November 28th 2022 as snapshot.</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box \
+<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db \
 key:impression filters:Good,Average,Bad type:pie title:2022-11-28_survey_result frequency:snapshot
 </code></pre>
 <p>please input #stats to console box on Base App.</p>
@@ -256,25 +256,31 @@ key:impression filters:Good,Average,Bad type:pie title:2022-11-28_survey_result 
     &lt;meta charset=&quot;UTF-8&quot; /&gt;
     &lt;title&gt;survey.new&lt;/title&gt;
     &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no&quot;&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;./survey_css&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;http://localhost/survey.css&quot;&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;div class=&quot;container&quot;&gt;
       &lt;div class=&quot;form-box&quot;&gt;
         &lt;div class=&quot;description&quot;&gt;
-          &lt;h1&gt;#survey&lt;/h1&gt;
-          &lt;p&gt;This is a an internal survey of product A&lt;/p&gt;
+          &lt;h1&gt;Internal Survey&lt;/h1&gt;
+          &lt;p&gt;This is an internal survey of product A&lt;/p&gt;
           &lt;hr&gt;
           &lt;br&gt;
         &lt;/div&gt;
-        &lt;form method=&quot;post&quot; action=&quot;./survey?req=set&amp;id=%%id&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
+        &lt;form id=&quot;one-time-form&quot; method=&quot;post&quot; action=&quot;./survey?req=set&amp;id=%%id&quot; autocomplete=&quot;off&quot; onclick=&quot;document.charset='utf-8';&quot;&gt;
         &lt;ul&gt;
          %%dataset
         &lt;/ul&gt;
-        &lt;button class=&quot;button&quot; type=&quot;submit&quot;&gt;SUBMIT&lt;/button&gt;
+        &lt;button class=&quot;button&quot; id=&quot;one-time-button&quot; type=&quot;submit&quot;&gt;SUBMIT&lt;/button&gt;
         &lt;/form&gt;
       &lt;/div&gt;
     &lt;/div&gt;
+    &lt;script&gt;
+      // handle one time button
+      document.getElementById('one-time-form').addEventListener('submit', function() {
+        document.getElementById('one-time-button').disabled = true;
+      });
+    &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 -------
