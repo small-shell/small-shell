@@ -9,7 +9,7 @@
     <div class="container">
       <div class="form-box">
         <div class="description">
-          <h1>#%%app</h1>
+          <h1>%%title</h1>
           <p>%%description</p>
           <hr>
           <br>

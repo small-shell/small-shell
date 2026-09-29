@@ -405,14 +405,14 @@ a {
 
 @media screen and (min-width: 641px){ 
   .form-box .description h1 {
-    font-size: 180%;
+    font-size: 160%;
     color: #434246;
 }
 }
 
 @media screen and (max-width: 640px){ 
   .form-box .description h1 {
-    font-size: 180%;
+    font-size: 160%;
     color: #444444;
     line-height: 1.0em;
 }
@@ -429,6 +429,7 @@ a {
 .form-box .description p {
   font-size: 80%;
   color: #696969;
+  padding: 2px 4px;
 }
 
 .form-box .log {
