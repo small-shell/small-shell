@@ -760,6 +760,7 @@ if [ "$param" = "-addcol" ];then
   # start dialog
   echo -n "Databox Name: "
   read databox
+  databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g")
 
   ls ${ROOT}/databox/${databox} >/dev/null 2>&1
   if [ $? -eq 0 ];then
@@ -1062,6 +1063,8 @@ if [ "$param" = "-delcol" ];then
   # start dialog
   echo -n "Databox Name: "
   read databox
+  databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
+
 
   ls ${ROOT}/databox/${databox} >/dev/null 2>&1
   if [ $? -eq 0 ];then
@@ -1078,6 +1081,7 @@ if [ "$param" = "-delcol" ];then
     fi
     echo -n "Databox Name: "
     read databox
+    databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
 
     ls ${ROOT}/databox/${databox} >/dev/null 2>&1
     if [ $? -eq 0 ];then
@@ -2113,14 +2117,32 @@ if [ "$param" = "-app" ];then
       -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
     done
 
+    echo -n "Form Title: "
+    read form_title
+    html_tag_chk=$(echo "$form_title" | grep -e "<" -e ">")
+
+    while [ "$html_tag_chk" -o ! "$form_title" ]
+    do
+      if [ "$html_tag_chk" ];then
+        echo "error: you can not use < or > to avoid to conflict HTML tag"
+      fi
+      echo -n "Please input form title: "
+      read form_title
+      html_tag_chk=$(echo "$form_title" | grep -e "<" -e ">")
+    done
+
+
     echo -n "Target Databox: "
     read databox
+    databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
+
 
     while [ ! "$databox" -o ! -d ${ROOT}/databox/${databox} ]
     do
       echo "error: databox name seems wrong, please try again"
       echo -n "Target Databox: "
       read databox
+      databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
     done 
 
     primary_key=$(cat ${ROOT}/databox/${databox}/def/col1 | grep name= | $SED "s/name=//g"  | $SED "s/\"//g")
@@ -2130,8 +2152,19 @@ if [ "$param" = "-app" ];then
       exit 1
     fi
 
-    echo -n "Description of the Form : "
-    read description 
+    echo -n "Description of the Form: "
+    read form_description 
+    html_tag_chk=$(echo "$form_description" | grep -e "<" -e ">")
+
+    while [ "$html_tag_chk" -o ! "$form_description" ]
+    do
+      if [ "$html_tag_chk" ];then
+        echo "error: you can not use < or > to avoid to conflict HTML tag"
+      fi
+      echo -n "Please input description: "
+      read form_description
+      html_tag_chk=$(echo "$form_description" | grep -e "<" -e ">")
+    done
 
     clear
     datas=$(cat ${ROOT}/databox/${databox}/def/col* | grep name=\" | grep -v $primary_key | $AWK -F "name=" '{print $2}' \
@@ -2201,8 +2234,9 @@ if [ "$param" = "-app" ];then
     echo ""
     echo "App Type: $apptype"
     echo "Form Name: $form_name"
+    echo "Form Title: $form_title"
     echo "Target Databox: $databox"
-    echo "Description: $description"
+    echo "Description: $form_description"
     echo "Included keys: $keys"
     echo "Access URL: ${static_url}${form_name}"
     echo ""
@@ -2265,8 +2299,9 @@ if [ "$param" = "-app" ];then
       for src in $(ls ${ROOT}/web/src/def | grep tmplt_type2 | xargs basename -a)
       do
         html_def=$(echo "$src" | $SED "s/tmplt_type2_//g")
-        cat ${ROOT}/web/src/def/${src} | $SED "s/%%app/${form_name}/g" | $SED "s/%%description/${description}/g" \
-        | $SED "s#%%static_url/#${static_url}#g" | $SED "s/%%databox/${databox}/g" > ${www}/def/${form_name}_${html_def}
+        cat ${ROOT}/web/src/def/${src} | $SED "s/%%app/${form_name}/g" | $SED "s/%%description/${form_description}/g" \
+        | $SED "s#%%static_url/#${static_url}#g" | $SED "s/%%databox/${databox}/g" \
+        | $SED "s/%%title/${form_title}/g" > ${www}/def/${form_name}_${html_def}
         chmod 755 ${www}/def/${form_name}_${html_def}
       done
 
@@ -2397,6 +2432,8 @@ if [ "$param" = "-app" ];then
       echo -n "Subapp Databox: "
     fi
     read databox
+    databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
+
 
     if [ ! "$databox" = "null" -a ! "$databox" = "none" ];then
       while [[ ! "$databox" || ! -d ${ROOT}/databox/${databox} ]] && [[ ! "$databox" == "null" && ! "$databox" == "none" ]]
@@ -2404,6 +2441,7 @@ if [ "$param" = "-app" ];then
         echo "error: databox name seems wrong, please try again"
         echo -n "Target Databox: "
         read databox
+        databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
       done
     fi
 
