@@ -21,9 +21,6 @@ col2_type="file"
 # only for select, checkbox
 col2_key_params=""
 
-# only for pdls
-col2_primary_databox=""
-
 # required
 col2_required="no"
 #-------------------------------------------
@@ -37,9 +34,6 @@ col3_type="text"
 
 # only for select, checkbox
 col3_key_params=""
-
-# only for pdls
-col3_primary_databox=""
 
 # required
 col3_required="no"
