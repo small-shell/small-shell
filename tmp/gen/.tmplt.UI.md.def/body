@@ -101,3 +101,11 @@ text
 :::
 ````
 
+## Custom syntax
+This is a custom syntax for inserting a calendar into the main page. By adding the %%calendar macro to the body field, your team can share a calendar on the main page.
+
+%%calendar
+
+````
+\%\%calendar
+````
