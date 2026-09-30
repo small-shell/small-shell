@@ -19,7 +19,6 @@ if (%%cluster) {
   const app = express();
   const port = %%port;
   const body = require('body-parser');
-  const url = require('url');
   const fs = require('fs');
   const www = "/var/www";
   
@@ -196,7 +195,7 @@ if (%%cluster) {
       remoteAddr = proxyClientAddr;
     }
     remoteAddr = remoteAddr.replace(/^::ffff:/g, "");
-    let uri = url.parse(req.url).pathname;
+    let uri = req.path;
     let path = www + "/html" + uri;
   
     let indexChk = uri.match( /.*\/$/ );
