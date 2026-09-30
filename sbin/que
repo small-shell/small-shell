@@ -44,8 +44,8 @@ fi
 
 # check lock file
 lock=no
-exec 4>${ROOT}/tmp/exec/lock
-$FLOCK -n 4
+exec 9>${ROOT}/tmp/exec/lock
+$FLOCK -n 9
 if [ $? -eq 0 ];then
   lock=yes  
 fi

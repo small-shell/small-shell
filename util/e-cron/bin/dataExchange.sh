@@ -21,8 +21,8 @@ tmp_que=${ROOT}/util/e-cron/que/tmp/${job}
 file_que=${ROOT}/util/e-cron/que/file
 
 # resource lock
-exec 10>${tmp_que}
-$FLOCK -n 10
+exec 9>${tmp_que}
+$FLOCK -n 9
 if [ $? -ne 0 ]; then
   echo "$(date +%Y-%m-%d) $(date +%T) job is already running" >> ${job_log}
   exit 1
