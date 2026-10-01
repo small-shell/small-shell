@@ -54,7 +54,7 @@ count=0
 while [ "$lock" = "no" ]
 do
  sleep 0.1
- $FLOCK -n 4
+ $FLOCK -n 9
  if [ $? -eq 0 ];then
    lock=yes  
  fi
