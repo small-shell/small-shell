@@ -1609,3 +1609,18 @@ input[type="file"] {
     display: none;
   }
 }
+
+.nodb-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding-bottom: 80px;
+}
+
+.nodb-wrapper .description h1 {
+  text-align: center;
+  font-size: 140%;
+  color: #696969;
+}

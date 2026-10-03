@@ -128,7 +128,7 @@ fi
 
 # null handling
 if [ "$databox" = "null" -o ! "$databox" ];then
-  echo "<h1>NO DATABOX, please create databox first</h1>"
+  cat %%www/def/nodb_err.html.def 
   exit 1
 fi
 

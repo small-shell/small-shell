@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>warn</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="%%static_url/base.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="nodb-wrapper">
+        <div class="description">
+          <h1>Oops No Databox, please create databox first.</h1>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // handle menu
+      const btn = document.querySelector('.even-btn');
+      const nav = document.querySelector('nav');
+
+      document.addEventListener('click', (e) => {
+        if(e.target.closest('.even-btn')) {
+          nav.classList.toggle('open-menu')
+          if (btn.innerHTML === '=') {
+            btn.innerHTML = '-';
+          } else {
+            btn.innerHTML = '=';
+          }
+        }else{
+          nav.classList.remove('open-menu')
+          btn.innerHTML = '=';
+        }
+      });
+
+    </script>
+  </body>
+</html>
