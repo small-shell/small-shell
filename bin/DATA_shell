@@ -1336,6 +1336,12 @@ function set_data(){
     fi
   fi
 
+  if [ "$value" = "" -a "$primary_key_check" ];then
+     echo "error: primary key value is null"
+     return 1
+  fi
+
+
   if [ ! "$set_option" = "force" ];then
     if [ ! "$flg" = "new" ];then
       org_value=$(cat ${ROOT}/databox/${databox}/data/${id}/${key} 2>/dev/null | $SHASUM | $AWK '{print $1}')
@@ -1784,7 +1790,10 @@ if [ "$action" ];then
           result=$(set_data "$id" "$key" "$value" "$input_dir" "$flag" "$set_option")
           if [ $? -eq 0 ];then
             updated_keys="$key,$updated_keys"
+	  elif [ "$result" = "error: primary key value is null" ];then
+	    exit 1
           fi
+
           echo "$result"
 
         else
