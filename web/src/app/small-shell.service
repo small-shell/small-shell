@@ -1,5 +1,5 @@
 [Unit]
-Description=small-shell.app by using  Node.js 
+Description="small-shell.app with Node.js"
 
 [Service]
 WorkingDirectory=%%www/app
