@@ -1191,6 +1191,11 @@ function get_data(){
     | $SED "s/_%%enter_$//g")
     echo "${key}:${value}"
 
+    if [ "$type" = "file" ];then
+      file_name=$(echo "$value" | $SED -r "s/ #size(.*)//g")
+      echo "file_name:${value}"
+    fi
+
   fi
   return 0
 }
