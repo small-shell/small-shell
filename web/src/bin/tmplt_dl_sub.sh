@@ -35,8 +35,8 @@ fi
 DATA_SHELL="${small_shell_path}/bin/DATA_shell session:$session pin:$pin"
 
 # load filename
-file_name=$($DATA_SHELL databox:$databox action:get key:$key id:$id format:none \
-|grep ^file_name: | $SED "s/${key}://g" | $AWK -F " #" '{print $1}')
+file_name=$($DATA_SHELL databox:$databox action:get keys:all id:$id format:none \
+|grep ^file_name: | $SED "s/file_name://g" | $AWK -F " #" '{print $1}')
 
 # -----------------
 # render contents
