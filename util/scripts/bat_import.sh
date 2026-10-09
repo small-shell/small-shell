@@ -38,6 +38,21 @@ if [ ! -f $import_file ];then
   exit 1
 fi
 
+# mk tmpdir
+rand=$RANDOM
+tmp_dir=${ROOT}/util/scripts/tmp/bat_import_${rand}
+while [ -d $tmp_dir ]
+do
+  rand=$RANDOM
+  tmp_dir=${ROOT}/util/scripts/tmp/bat_import_${rand}
+done
+mkdir $tmp_dir
+
+# remove win enter code
+cat $import_file | tr -d '\r' > ${tmp_dir}/import
+import_file=${tmp_dir}/import
+
+
 # authentication
 if [ "$authkey" ];then
   auth_req=$(${ROOT}/bin/auth key_auth:${authkey} remote_addr:localhost user_agent:bat_import)

@@ -23,8 +23,8 @@ if [ "$type" = "urlenc" ];then
       param_name=null
     fi
 
-    param_value=$(echo "$line" | $AWK -F "_%%equal_" '{print $2}')
-    echo "$param_value" |  tr -d \\\r | $SED "s/_%%enter_/\n/g" >> %%www/tmp/${session}/${param_name}
+    param_value=$(echo "$line" | $AWK -F "_%%equal_" '{print $2}' | tr -d '\r' )
+    echo "$param_value" |  $SED "s/_%%enter_/\n/g" >> %%www/tmp/${session}/${param_name}
   done < %%www/tmp/${session}/params
 
   rm -rf %%www/tmp/${session}/input
@@ -58,17 +58,17 @@ if [ "$type" = "multipart" ];then
     binary_line_start=$(grep "filename=" %%www/tmp/${session}/temp1 | $AWK -F ":" '{print $1}')
     binary_line_end=$(grep -A 1 "filename="  %%www/tmp/${session}/temp1 | grep "$boundary" | $AWK -F ":" '{print $1}')
     binary_file_name=$(grep -a "Content-Disposition: form-data; name=" %%www/tmp/${session}/temp1 | grep filename= \
-    | $AWK -F "filename=" '{print $2}' | $AWK -F "\"" '{print $2}'| tr -d \\\r)
+    | $AWK -F "filename=" '{print $2}' | $AWK -F "\"" '{print $2}'| tr -d '\r')
 
     input_name=$(grep -a "Content-Disposition: form-data; name=" %%www/tmp/${session}/temp1 | grep filename= \
-    | $AWK -F "name=" '{print $2}' | $AWK -F "\"" '{print $2}'| tr -d \\\r)
+    | $AWK -F "name=" '{print $2}' | $AWK -F "\"" '{print $2}'|  tr -d '\r')
 
     binary_line_start=$(expr $binary_line_start + 3)
     binary_line_end=$(expr $binary_line_end - 1)
 
     # detouch text line
     $SED ${binary_line_start},${binary_line_end}d  %%www/tmp/${session}/input \
-    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" | tr -d \\\r  > %%www/tmp/${session}/temp2
+    | $PHP -r "echo preg_quote(file_get_contents('php://stdin'));" |  tr -d '\r'  > %%www/tmp/${session}/temp2
     input=%%www/tmp/${session}/temp2
 
     # binary data parse
@@ -109,13 +109,13 @@ if [ "$type" = "multipart" ];then
 
     if [ "$sub_line_num" -gt 3 ];then
       if [ ! "$file" = "yes" ];then
-        echo "$line" | tr -d \\\r  >> %%www/tmp/${session}/${name}
+        echo "$line" >> %%www/tmp/${session}/${name}
       else
         file=no
       fi
     fi
 
-  done < $input
+  done < <(tr -d '\r' < "$input")
 
   rm -rf %%www/tmp/${session}/temp*
   rm -rf %%www/tmp/${session}/input
