@@ -1189,11 +1189,12 @@ function get_data(){
 
     value=$(cat ${ROOT}/databox/${databox}/data/${id}/${key} 2>/dev/null | $SED -z "s/\n/_%%enter_/g" | $SED "s/^ //g" | $SED "s/ $//g" \
     | $SED "s/_%%enter_$//g")
-    echo "${key}:${value}"
-
-    if [ "$type" = "file" ];then
+    if [ ! "$type" = "file" ];then
+      echo "${key}:${value}"
+    else
       file_name=$(echo "$value" | $SED -r "s/ #size(.*)//g")
-      echo "file_name:${value}"
+      echo "file_name:${file_name}"
+      echo "Download:<a href=\"./${app}?%%params&req=file&id=${id}\" download=\"${file_name}\">$value</a>"
     fi
 
   fi

@@ -38,7 +38,7 @@ do
 
        img_id=$(echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g")
        file_type=$($DATA_SHELL databox:images.db id:${img_id} remote_addr:localhost key:image action:get format:none \
-       | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g")
+       | grep ^file_name: | $SED "s/file_name://g" | $AWK -F "." '{print $NF}' | $SED "s/ //g")
        echo "$line" | $SED "s#../images/${img_id}#../images/${img_id}.${file_type}#g" >> ${tmp}/body.tmp
        $DL databox:images.db id:${img_id} remote_addr:localhost > %%www/html/images/${img_id}.${file_type}
 
@@ -329,11 +329,17 @@ logo_img=$($DATA_SHELL databox:${databox} action:get id:$id key:logo format:none
 if [ "$logo_img" ];then
   logo_id=$(echo "$logo_img" | $AWK -F "images/" '{print $2}' | $AWK -F ">" '{print $1}' | $SED "s/\"//g")
   file_type=$($DATA_SHELL databox:images.db id:${logo_id} remote_addr:localhost key:image action:get format:none \
-  | $SED "s/image://g" | $AWK -F "#" '{print $1}' | $AWK -F "." '{print $NF}' | $SED "s/ //g")
+  | grep ^file_name |  $SED "s/file_name://g" | $AWK -F "." '{print $NF}' | $SED "s/ //g")
 
   $DL databox:images.db id:${logo_id} remote_addr:localhost > %%www/html/images/${logo_id}.${file_type}
   echo "<a href=\"./${app}?%%params\"><img src=\"../images/${logo_id}.${file_type}\" width=\"75%\"></a>" > ${tmp}/logo.tmp
-  $SED -e "1i $(cat ${tmp}/logo.tmp)" ${tmp}/leftnav.tmp > ${tmp}/leftnav.tmp.1
+
+  if [ -f  ${tmp}/leftnav.tmp  ];then
+    $SED -e "1i $(cat ${tmp}/logo.tmp)" ${tmp}/leftnav.tmp > ${tmp}/leftnav.tmp.1
+  else
+    cat ${tmp}/logo.tmp  > ${tmp}/leftnav.tmp.1
+  fi
+
   cat ${tmp}/leftnav.tmp.1 > ${tmp}/leftnav.tmp
 fi 
 

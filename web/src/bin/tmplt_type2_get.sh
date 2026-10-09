@@ -45,7 +45,9 @@ if [ $id = "new" ];then
 else
 
   # gen read only contents
-  $DATA_SHELL databox:%%databox action:get id:$id keys:%%keys format:none > %%www/tmp/${session}/dataset.0.1
+  $DATA_SHELL databox:%%databox action:get id:$id keys:%%keys format:none | grep -v ^Download: \
+  | grep -v ^file_key > %%www/tmp/${session}/dataset.0.1
+
   cat %%www/tmp/${session}/dataset.0.1 | $SED "s/^/<li><label>/g" | $SED "s/:/<\/label><pre>/1" | $SED "s/$/<\/pre><\/li>/g" \
   | $SED "s/<pre><\/pre>/<pre>-<\/pre>/g" | $SED "s/_%%enter_/\n/g" > %%www/tmp/${session}/dataset
 
