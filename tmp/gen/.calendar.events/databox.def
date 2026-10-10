@@ -30,7 +30,7 @@ col2_required="yes"
 #-------------------------------------------
 col3_key_name="start"
 col3_key_label="Start"
-col3_type="datetime-local"
+col3_type="date-time"
 
 # only for select, radio
 col3_values=""
@@ -44,7 +44,7 @@ col3_required="yes"
 #-------------------------------------------
 col4_key_name="end"
 col4_key_label="End"
-col4_type="datetime-local"
+col4_type="date-time"
 
 # only for select, radio
 col4_values=""
