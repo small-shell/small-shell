@@ -218,10 +218,10 @@
 <tr>
 <td><a href="../app_shell_form/">Form</a></td>
 <td>No auth</td>
-<td>form</td>
+<td>external form</td>
 <td>Specific Databox</td>
 <td>Editable</td>
-<td>Just push new data through dedicated Form</td>
+<td>Just push new data through external form</td>
 </tr>
 <tr>
 <td><a href="../app_shell_custom/">Custom App</a></td>
@@ -273,7 +273,7 @@ option=&quot;required&quot;
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>"Data Type" is same as HTML type attribute and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
+<p>"Data Type" is same as HTML elements and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
 <p><b>type: select and radio</b>  <br />
 You can define parameters in the dialog. It will be required option as default. parameters and required definition can be changed anytime later manually.</p>
 <p><b>type: pdls #hidden option</b><br />
@@ -713,6 +713,11 @@ If you click the tag, search result will be shown.
 </code></pre>
 <h4 id="access-to-command-api">Access to command API</h4>
 <p>Please access command API from external system, you can access the data using curl very easily.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you watn to push data to the databox, please change rw permission on host.  <br />
+sudo /usr/local/small-shell/adm/ops set.attr:api{rw}</p>
+</div>
 <h4 id="from-linux-shell-with-curl">From Linux shell with curl</h4>
 <pre><code>api_authkey="XXXX"
 command_api="https://XXXX/cgi-bin/api"
@@ -726,7 +731,6 @@ id="0283da60063abfb3a87f1aed845d17fe2d9ba8c780b478dc4ae048f5ee97a6d5" #input id 
 curl -X GET "${command_api}?databox=$databox&amp;keys=all&amp;id=$id" -H "X-small-shell-authkey:$api_authkey"
 
 (e.g.) push DATA
-sudo /usr/local/small-shell/adm/ops set.attr:api{rw}
 id="new" #input id that you want to set    
 curl -X POST "${command_api}?databox=$databox&amp;id=$id" -H "X-small-shell-authkey:$api_authkey" -H "Content-Type: application/json" -d '{"item_name":"item1", "description":"test"}'
 </code></pre>

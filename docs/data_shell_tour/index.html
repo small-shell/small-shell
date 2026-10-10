@@ -515,9 +515,9 @@ usage: sudo -u small-shell bat_import.sh $authkey $databox $import_file
 usage: sudo -u small-shell del_datasets.sh $authkey $databox $list_file
 </code></pre>
 <h2 id="gen-databox-by-batch">Gen databox by batch</h2>
-<p>You can define data structure using db.def template, util/scripts/bat_gen.sh can generate databox without dialog if you use db.def. template sample is here.</p>
+<p>You can define data structure using db.def template, util/scripts/gen_db.sh can generate databox without dialog if you use db.def. template sample is here.</p>
 <h4 id="dbdef-template">db.def Template</h4>
-<p>please freely add column by using "+addcol" declaration.</p>
+<p>Please freely add column by using "+addcol" declaration. If you don't need to define primary key, please set "hashid" to "primary_key".</p>
 <pre><code>#---------------------------------------------------------------
 # db definition
 #---------------------------------------------------------------
@@ -527,6 +527,7 @@ databox=&quot;&quot;
 
 # col1
 #-------------------------------------------
+# If you will not need to define primary key, please just set &quot;hashid&quot; to primary_key
 primary_key=&quot;&quot;
 primary_key_label=&quot;&quot;
 #-------------------------------------------
@@ -536,12 +537,14 @@ primary_key_label=&quot;&quot;
 #-------------------------------------------
 col2_key_name=&quot;&quot;
 col2_key_label=&quot;&quot;
+
+# Type means HTML input type 
 col2_type=&quot;&quot;
 
-# only for radio, select. you must use comma as separator
-col2_key_params=&quot;&quot;
+# Only for radio, select. you must use comma as separator
+col2_values=&quot;&quot;
 
-# set yes or no.
+# Please set yes or no.
 col2_required=&quot;&quot;
 #-------------------------------------------
 
@@ -550,19 +553,21 @@ col2_required=&quot;&quot;
 #-------------------------------------------
 col3_key_name=&quot;&quot;
 col3_key_label=&quot;&quot;
+
+# Available types ( text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file )
 col3_type=&quot;&quot;
 
-# only for radio, select. you must use comma as separator
-col3_key_params=&quot;&quot;
+# Only for radio, select. you must use comma as separator
+col3_values=&quot;&quot;
 
-# set yes or no.
+# Set yes or no.
 col3_required=&quot;&quot;
 #-------------------------------------------
 </code></pre>
-<h4 id="generate-databox-by-bat_gensh">Generate Databox by bat_gen.sh</h4>
-<p>Command example is here. In this example we use /tmp as temporary directory. bat_gen.sh will generate databox promptly.</p>
+<h4 id="generate-databox-by-gen_dbsh">Generate Databox by gen_db.sh</h4>
+<p>Command example is here. In this example we use /tmp as temporary directory. gen_db.sh will generate databox promptly.</p>
 <pre><code>vi /tmp/db.def #please writedown definition
-sudo /usr/local/small-shell/util/scripts/bat_gen.sh /tmp/db.def
+sudo /usr/local/small-shell/util/scripts/gen_db.sh /tmp/db.def
 </code></pre>
 <h2 id="import-export-data">Import / Export data</h2>
 <p>You can import data through Web App or batch command. csv format can be downloaded from Base App table #csv tag or import form.</p>

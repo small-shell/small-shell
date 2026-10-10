@@ -185,12 +185,12 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="custom-app">Custom App</h1>
-<p>This page guides you through creating custom apps, editing code, and modifying the main page quickly. The below table outlines the four available types of Custom Apps.</p>
+<p>This page guides you through creating custom apps, editing code, and modifying the main page quickly. The below table outlines the four available auth types of Custom Apps.</p>
 <table>
 <thead>
 <tr>
-<th>Type</th>
-<th>Auth</th>
+<th>Auth Type</th>
+<th>Detail</th>
 <th>Function</th>
 <th>Data  source</th>
 <th>Code</th>
@@ -199,33 +199,33 @@
 </thead>
 <tbody>
 <tr>
-<td>Shared Pass App</td>
+<td>1. Shared Pass</td>
 <td>Shared Pass Code</td>
-<td>main-page,table,form,log</td>
+<td>auth-form,main-page,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Controllable per group</td>
 </tr>
 <tr>
-<td>Key App</td>
-<td>Base64 Encrypted Key</td>
-<td>main-page,table,form,log</td>
+<td>2. User Key</td>
+<td>Use unique Base64-encoded keys for each user</td>
+<td>auth-form,main-page,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Controllable per user</td>
 </tr>
 <tr>
-<td>Other</td>
+<td>3. Other</td>
 <td>Any</td>
-<td>main-page,table,form,log</td>
+<td>auth-form,main-page,table,form,log</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Customize everything</td>
 </tr>
 <tr>
-<td>No auth App</td>
+<td>4. No auth</td>
 <td>No Authentication</td>
-<td>main-page,table,form</td>
+<td>main-page,table,show-record(ro)</td>
 <td>specific databox</td>
 <td>editable</td>
 <td>Read only, it can be used as static site</td>
@@ -321,9 +321,9 @@ sudo vi /var/www/def/test_table.html.def
 </code></pre>
 <h4 id="use-member-list">Use member list</h4>
 <p>If you want to import user list on your App's form. please select "mls" as data type in the gen dialog of data box creation. mls can import user list of your Custom App. Following is an example.</p>
-<pre><code>key(col2) name: assignee
-key(col2) label: Assignee
-data type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): mls
+<pre><code>Col2 Key Name: assignee
+Col2 Key Label: Assignee
+Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): mls
 </code></pre>
 <h2 id="tagging-on-custom-app">Tagging on Custom App</h2>
 <p>You can add search tag to the table by ops command</p>

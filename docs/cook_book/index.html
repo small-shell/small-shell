@@ -590,6 +590,7 @@ $server.core.tar.xz  $server.ssh.tar.xz  $server.www.tar.xz
 <h4 id="restore">Restore</h4>
 <p>For restoring backup file, please install small-shell from git and launch Base App first. and rstr command option must be directory where backup files are copied from backup node.</p>
 <pre><code>@restore_node
+sudo /usr/local/small-shell/adm/gen -app #Plese define Base App again
 sudo /usr/local/small-shell/adm/rstr $dir
 </code></pre>
 <h2 id="dictionary-create-lang-pack">Dictionary (create lang pack)</h2>
@@ -598,6 +599,10 @@ sudo /usr/local/small-shell/adm/rstr $dir
 git clone https://github.com/naruoken/small-shell-apps
 cd small-shell-apps/dictionary/template
 </code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If server will use same FQDN and port, user key will be inserted on client browser after restoring. But if FQDN will be changed, please re-generate user keys.</p>
+</div>
 <h4 id="usage-of-keywords-file">Usage of keywords file</h4>
 <p>"keywords" file will be used for translating words to your language. please update them. by the way {%%%%%%} is a separator that is used instead of comma.</p>
 <pre><code># at small-shell-apps/dictionary/template
