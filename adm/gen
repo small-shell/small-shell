@@ -36,7 +36,7 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
   cp ${SCRIPT_DIR}/../global.conf ${SCRIPT_DIR}/../.env
   chmod 755 ${SCRIPT_DIR}/../.env
   . ${SCRIPT_DIR}/../.env
-  sudo chown -R small-shell:small-shell $ROOT
+  chown -R small-shell:small-shell $ROOT
   chmod 755 ${ROOT}/util/scripts/*
   chmod 755 ${ROOT}/util/e-cron/bin/*
   chmod 755 ${ROOT}/util/pyshell/pygraph.sh
@@ -102,13 +102,6 @@ if [ ! -f ${SCRIPT_DIR}/../.env ];then
       rm -f ${SCRIPT_DIR}/../.env
       exit 1
     fi 
-
-    which crontab >/dev/null 2>&1
-    if [ ! $? -eq 0 ];then
-      echo "error: please install cron first"
-      rm -f ${SCRIPT_DIR}/../.env
-      exit 1
-    fi
 
     echo "SHASUM=\"$(which sha256sum)\"" >> ${SCRIPT_DIR}/../.env
     echo "BASE64_ENC=\"$(which base64) -w 0\"" >> ${SCRIPT_DIR}/../.env
@@ -300,7 +293,7 @@ fi
 # GENERATE DATA BOX 
 if [ "$param" = "-databox" ];then
 
-  if [ $2 ];then
+  if [ "$2" ];then
     bat_chk=$2
     if [ "$bat_chk" = "-bat" ];then
       bat_flag=yes
@@ -308,14 +301,14 @@ if [ "$param" = "-databox" ];then
   fi
 
   # command check for databox 
-  (cd ${ROOT}/tmp && sudo -u small-shell echo "\n" | $SED -z "s/\n//g" >/dev/null 2>&1)
+  (cd ${ROOT}/tmp && echo "\n" | $SED -z "s/\n//g" >/dev/null 2>&1)
   if [ ! $? -eq 0 ];then
     echo "error: please install $SED command which can use -z option #above version 4.2.2"
     rm -rf $tmp_dir
     exit 1
   fi
 
-  (cd ${ROOT}/tmp && sudo -u small-shell echo "Create" | $AWK 'IGNORECASE = 1;/^create/;' >/dev/null 2>&1)
+  (cd ${ROOT}/tmp && echo "Create" | $AWK 'IGNORECASE = 1;/^create/;' >/dev/null 2>&1)
   if [ ! $? -eq 0 ];then
     echo "error: please install $AWK command which can use INNORECASE option"
     rm -rf $tmp_dir
@@ -537,8 +530,8 @@ if [ "$param" = "-databox" ];then
 
     echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
     read type
-    data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
-    -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+    data_chk_result=$(echo "$type" | grep -e "^text$" -e "^select$" -e "^radio$" -e "^checkbox$" \
+    -e "^email$" -e "^date$"  -e "^date-time$" -e "^num$" -e "^tel$"  -e "^url$" -e "^textarea$" -e "^file$" -e "^pdls$" -e "^mls$")
 
     if [ "$type" = "file" ];then
       grep "type=\"file\"" ${tmp_dir}/col* >/dev/null 2>&1
@@ -564,8 +557,8 @@ if [ "$param" = "-databox" ];then
 
       echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
       read type
-      data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
-      -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+      data_chk_result=$(echo "$type" | grep -e "^text$" -e "^select$" -e "^radio$" -e "^checkbox$" \
+      -e "^email$" -e "^date$"  -e "^date-time$" -e "^num$" -e "^tel$"  -e "^url$" -e "^textarea$" -e "^file$" -e "^pdls$" -e "^mls$")
 
       data_chk_flg=""
       if [ "$type" = "file" ];then
@@ -873,8 +866,8 @@ if [ "$param" = "-addcol" ];then
 
     echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
     read type
-    data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
-     -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+    data_chk_result=$(echo "$type" | grep -e "^text$" -e "^select$" -e "^radio$" -e "^checkbox$" \
+    -e "^email$" -e "^date$"  -e "^date-time$" -e "^num$" -e "^tel$"  -e "^url$" -e "^textarea$" -e "^file$" -e "^pdls$" -e "^mls$")
 
     if [ "$type" = "file" ];then
       grep "type=\"file\"" ${ROOT}/databox/${databox}/def/col* >/dev/null 2>&1
@@ -898,8 +891,8 @@ if [ "$param" = "-addcol" ];then
 
       echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
       read type
-      data_chk_result=$(echo "$type" | grep -e "text" -e "select" -e "radio" -e "checkbox" \
-       -e "email" -e "date"  -e "date-time" -e "num" -e "tel"  -e "url" -e "textarea" -e "file" -e "pdls" -e "mls")
+      data_chk_result=$(echo "$type" | grep -e "^text$" -e "^select$" -e "^radio$" -e "^checkbox$" \
+      -e "^email$" -e "^date$"  -e "^date-time$" -e "^num$" -e "^tel$"  -e "^url$" -e "^textarea$" -e "^file$" -e "^pdls$" -e "^mls$")
 
       data_chk_flg=""
       if [ "$type" = "file" ];then
@@ -1252,6 +1245,23 @@ fi
 # GENERATE App
 if [ "$param" = "-app" ];then
 
+  if [ "$2" ];then
+    container_chk=$2
+    if [ "$container_chk" = "-container" ];then
+      container_flag=yes
+    fi
+  fi 
+
+  if [ ! -f ${ROOT}/web/base ];then
+    if [ ! "$mac_chk" -a ! "$container_flag" ];then
+      which crontab >/dev/null 2>&1
+      if [ ! $? -eq 0 ];then
+        echo "error: please install cron first for enabling utility"
+        rm -f ${SCRIPT_DIR}/../.env
+      fi
+    fi
+  fi
+
   # env check
   selinux_chk=$(sestatus 2>/dev/null | grep enforcing) 
   if [ "$selinux_chk" ];then
@@ -1424,9 +1434,8 @@ if [ "$param" = "-app" ];then
 
     echo -n "Protocol (http | https): "
     read protocol
-
     while [ ! "$protocol" = "http" -a ! "$protocol" = "https" ]
-    do
+    do 
       echo "error: please set http or https as protocol"
       echo -n "Protocol (http | https): "
       read protocol
@@ -1514,14 +1523,6 @@ if [ "$param" = "-app" ];then
 
     fi
 
-    # command check for cgi
-    (cd ${ROOT}/tmp && sudo -u small-shell echo "$HOME" >/dev/null 2>&1)
-    if [ ! $? -eq 0 ];then
-      echo "error: please add small-shell as linux user"
-      rm -rf $tmp_dir
-      exit 1
-    fi
-
     if [ "$protocol" = "http" -o "$use_existing_cert" = "no" -o ! "$server" ];then
       echo -n "Web Server FQDN or IP addr (e.g. 192.168.10.1): "
       read server
@@ -1532,6 +1533,13 @@ if [ "$param" = "-app" ];then
 
       while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" -o ! "$server" ]
       do
+
+        if [ "$container_flag" ];then
+          echo "error: server name is wrong"
+          rm -rf $tmp_dir
+          exit 1
+        fi
+
         if [ ! "$server" ];then
           echo "error: please input FQDN or IP addr of web server"
         else
@@ -1547,11 +1555,18 @@ if [ "$param" = "-app" ];then
       if [[ $server == *:* ]];then
         server="[${server}]"
       fi
-  
+
     fi
 
-    base_url="${protocol}://${server}/cgi-bin/"
-    static_url="${protocol}://${server}/"
+    if [ ! "$container_flag" ];then
+      base_url="${protocol}://${server}/cgi-bin/"
+      static_url="${protocol}://${server}/"
+    else
+      echo -n "port: "
+      read port
+      base_url="${protocol}://${server}:${port}/cgi-bin/"
+      static_url="${protocol}://${server}:${port}/"
+    fi
 
     if [ "$srv_type" = "other" ];then
       echo -n "CGI base URL for Web App is ${base_url}, is it OK? (yes | no): "
@@ -1684,17 +1699,13 @@ if [ "$param" = "-app" ];then
           fi
         fi
 
-        if [ "$protocol" = "http" ];then
-           port=80
-        else
-           port=443
+        if [ ! "$container_flag" ];then
+          if [ "$protocol" = "http" ];then
+            port=80
+          else
+            port=443
+          fi
         fi
-
-	# adjust parameter for chromeos and wsl
-	if [ -d /mnt/chromeos -o -d /mnt/wsl ];then
-	 $SED -i '/process.setuid/d' $ROOT/web/src/app/index.js 
-	 sudo_flag=yes
-	fi
 
 	# node version chek
         node_version=$(node --version | $SED "s/v//g" | $AWK -F "." '{print $1}')
@@ -1703,6 +1714,16 @@ if [ "$param" = "-app" ];then
 	else
           (cd ${www}/app;npm init -y;npm install express@4) 
 	fi
+
+        if [ "$mac_chk" -o "$container_flag" ];then
+          enable_node_cron=yes
+          # install node-cron
+          if [ "$node_version" -ge 20 ];then
+            (cd ${www}/app;npm install node-cron@4)
+          else
+            (cd ${www}/app;npm install node-cron@3)
+          fi
+        fi
 
         if [ "$mac_chk" ];then
           chown -R $SUDO_USER:$SUDO_GID ~/.npm 
@@ -1745,16 +1766,15 @@ if [ "$param" = "-app" ];then
            cluster="cluster.isMaster"
         fi
           
+        # gen index.js
         if [ "$protocol" = "https" ];then
           if [ ! "$chain_cert" ];then
             cat ${ROOT}/web/src/app/index.js | $SED "s/%%protocol/${protocol}/g" | $SED "s/%%port/${port}/g" \
-            | $SED "s#%%sed#${SED}#g" | $SED "s#// https ##g" | $SED "s#/\* forward option start##g" \
-            | $SED "s#option end \*/##g" | $SED "s/%%cluster/${cluster}/g" \
-	    | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
+            | $SED "s#%%sed#${SED}#g" | $SED "s#// https ##g"  | $SED "s/%%cluster/${cluster}/g" \
+            | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
           else
             cat ${ROOT}/web/src/app/index.js | $SED "s/%%protocol/${protocol}/g" | $SED "s/%%port/${port}/g" \
             | $SED "s#%%sed#${SED}#g" | $SED "s#// https ##g" | $SED "s#// https_chain ##g" \
-            | $SED "s#/\* forward option start##g" | $SED "s#option end \*/##g"  \
             | $SED "s/%%cluster/${cluster}/g" | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
           fi
         else
@@ -1762,13 +1782,34 @@ if [ "$param" = "-app" ];then
           | $SED "s#%%sed#${SED}#g" | $SED "s/%%cluster/${cluster}/g" \
 	  | $SED "s#%%any_routing#${any_routing}#g" > ${www}/app/index.js
         fi
+       
+        # enable forward option
+        if [ "$protocol" = "https" -a ! "$container_flag" ];then
+          $SED -i '/\/\* forward option start/d' ${www}/app/index.js
+          $SED -i '/forward option end \*\//d' ${www}/app/index.js
+        fi
+
+        # enable seuuid option for mac
+        if [ "$mac_chk" ];then
+          $SED -i '/\/\* setuid option start/d' ${www}/app/index.js
+          $SED -i '/setuid option end \*\//d' ${www}/app/index.js
+        fi
+
+        # enable node cron for mac,container
+        if [ "$enable_node_cron" = "yes" ];then
+          $SED -i '/\/\* cron option for mac and contaner start/d' ${www}/app/index.js
+          $SED -i '/cron option end \*\//d' ${www}/app/index.js
+          cat ${ROOT}/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
+          > ${www}/app/util.sh
+          chmod 755 ${www}/app/util.sh
+        fi
 
         NODE=$(which node)
         cat ${ROOT}/web/src/app/app.sh | $SED "s#%%node#${NODE}#g" \
         | $SED "s#%%sed#${SED}#g" > ${www}/app/app.sh
         chmod 755 ${www}/app/app.sh
 
-        if [ ! "$mac_chk" ];then
+        if [ ! "$mac_chk" -a ! "$container_flag" ];then
 
           apache2_chk=$(ps -ef | grep apache2 | grep -v grep)
           if [ "$apache2_chk" ];then
@@ -1783,6 +1824,12 @@ if [ "$param" = "-app" ];then
             systemctl start small-shell 
             sleep 2
           else
+            user_chk=$(cat /etc/systemd/system/small-shell.service | grep User | grep small-shell)
+            if [ ! "$user_chk" ];then 
+              cat ${ROOT}/web/src/app/small-shell.service | $SED "s#%%www#${www}#g" \
+              > /etc/systemd/system/small-shell.service  
+              systemctl daemon-reload
+            fi
             systemctl restart small-shell
             enable_chk=$(systemctl is-enabled small-shell)
             if [ "$enable_chk" != "enabled" ];then
@@ -1790,7 +1837,7 @@ if [ "$param" = "-app" ];then
             fi
             sleep 2
           fi
-        else
+        elif [ "$mac_chk" ];then
 
           httpd_chk=$(launchctl list | grep httpd)
           if [ "$httpd_chk" ];then
@@ -1801,22 +1848,13 @@ if [ "$param" = "-app" ];then
 
             cat ${ROOT}/web/src/app/org.small-shell.node.plist | $SED "s#%%www#${www}#g" \
             > /Library/LaunchDaemons/org.small-shell.node.plist
-
-            cat ${ROOT}/web/src/app/org.small-shell.util.plist | $SED "s#%%www#${www}#g" \
-            > /Library/LaunchDaemons/org.small-shell.util.plist
-
-            cat ${ROOT}/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
-            > ${www}/app/util.sh
-            chmod 755 ${www}/app/util.sh
- 
             launchctl load /Library/LaunchDaemons/org.small-shell.node.plist
-            launchctl load /Library/LaunchDaemons/org.small-shell.util.plist
             launchctl start org.small-shell.node
-            launchctl start org.small-shell.util
+
 
           else
-            launchctl stop org.small-shell.node
-            launchctl start org.small-shell.node
+            launchctl kickstart -k system/org.small-shell.node 
+
           fi
         fi
 
@@ -1964,7 +2002,7 @@ if [ "$param" = "-app" ];then
       chown -R ${cgi_usr}:${cgi_usr} ${www}/def/*
       chown -R ${cgi_usr}:${cgi_usr} ${www}/bin/*
 
-      if [ "$srv_type" = "default" -a ! "$sudo_flag" ];then
+      if [ "$srv_type" = "default"  ];then
         echo "small_shell_path=\"$ROOT\"" >  ${def_dir}/.env
         echo "server=\"default\"" >>  ${def_dir}/.env
       else
@@ -1982,7 +2020,7 @@ if [ "$param" = "-app" ];then
       cat ${ROOT}/.env | grep -v ROOT >> ${def_dir}/.env
       chmod 755 ${def_dir}/.env
 
-      if [ ! "$mac_chk" ];then
+      if [ ! "$mac_chk" -a ! "$container_flag" ];then
         # enable standard jobs
         if [ ! -f ${ROOT}/util/e-cron/def/del_session.def ];then
           (cd $tmp_dir && sudo -u small-shell echo "SCHEDULE:* * * * *" > ${ROOT}/util/e-cron/def/del_session.def)
@@ -2047,32 +2085,42 @@ if [ "$param" = "-app" ];then
         test_url=$base_url
       fi
 
-      get_test=$($CURL -k ${test_url}shelltest.cgi | grep OK)
+      if [ ! "$container_flag" ];then
+        get_test=$($CURL -k ${test_url}shelltest.cgi | grep OK)
 
-      if [ "$get_test" ];then
-        clear
-        if [ ! "$upgrade" = "yes" ];then
-          echo "-----------------------------------------------------------------"
-          echo "Base App has been successfully generated"
-          echo "Access URL: ${static_url}base"
-          echo "-----------------------------------------------------------------"
-          echo "Please add user using ops command."
-          echo "-> sudo ${ROOT}/adm/ops add.usr:\$user"
+        if [ "$get_test" ];then
+          clear
+          if [ ! "$upgrade" = "yes" ];then
+            echo "-----------------------------------------------------------------"
+            echo "Base App has been successfully generated"
+            echo "Access URL: ${static_url}base"
+            echo "-----------------------------------------------------------------"
+            echo "Please add user using ops command."
+            echo "-> sudo ${ROOT}/adm/ops add.usr:\$user"
+          else
+            echo "Base App has been upgraded. please access to the App using existing key"
+          fi
         else
-          echo "Base App has been upgraded. please access to the App using existing key"
+          if [ "$srv_type" = "default" ];then
+            echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
+            rm -rf $tmp_dir
+            exit 1
+          else
+            echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
+            echo "please check web server setting and url setting, you should start web server beforehand"
+            rm -rf $tmp_dir
+            exit 1
+          fi
         fi
       else
-        if [ "$srv_type" = "default" ];then
-          echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
-          rm -rf $tmp_dir
-          exit 1
-        else
-          echo "error: it seems something is wrong,tried to get ${base_url}shelltest.cgi and it's failed." 
-          echo "please check web server setting and url setting, you should start web server beforehand"
-          rm -rf $tmp_dir
-          exit 1
-        fi
+        echo "-----------------------------------------------------------------"
+        echo "Base App for container has been successfully generated"
+        echo "Access URL: ${static_url}base"
+        echo "-----------------------------------------------------------------"
+        echo "Please add user using ops command."
+        echo "-> sudo ${ROOT}/adm/ops add.usr:\$user"
       fi
+
     else
       echo "please try again from the begining #gen -app"
       rm -rf $tmp_dir
@@ -2109,6 +2157,12 @@ if [ "$param" = "-app" ];then
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
     do
+
+      if [ "$container_flag" ];then
+        echo "error: form name is wrong"
+        exit 1
+      fi
+
       echo "error: Form name must be ascii text and you can't use meta charactor including space, please try again"
       echo -n "Form Name: "
       read form_name
@@ -2368,6 +2422,12 @@ if [ "$param" = "-app" ];then
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
     do
+
+      if [ "$container_flag" ];then
+        echo "error: app name is wrong"
+        exit 1
+      fi
+
       echo "error: App name must be ascii text and you can't use meta charactor including space, please try again"
       echo -n "App Name: "
       read app
@@ -2868,7 +2928,7 @@ if [ "$param" = "-app" ];then
 
         # create databox for images, UI.md.def and claendar
         if [ ! -d ${ROOT}/databox/images.db ];then
-          ${ROOT}/util/scripts/bat_gen.sh ${ROOT}/tmp/gen/.images.db/databox.def
+          ${ROOT}/util/scripts/gen_db.sh ${ROOT}/tmp/gen/.images.db/databox.def
           if [ ! -d ${www}/html/images ];then
             mkdir ${www}/html/images
             chown $cgi_usr:$cgi_usr ${www}/html/images
@@ -2876,7 +2936,7 @@ if [ "$param" = "-app" ];then
         fi
 
         cat ${ROOT}/tmp/gen/.tmplt.UI.md.def/databox.def | $SED "s/%%app/${app}/g" > ${tmp_dir}/${app}.tmplt.UI.md.def
-        ${ROOT}/util/scripts/bat_gen.sh ${tmp_dir}/${app}.tmplt.UI.md.def
+        ${ROOT}/util/scripts/gen_db.sh ${tmp_dir}/${app}.tmplt.UI.md.def
         mkdir ${tmp_dir}/data
 
 
@@ -2890,12 +2950,22 @@ if [ "$param" = "-app" ];then
           cat ${tmp_dir}/data/.righth > ${tmp_dir}/data/righth
           rm ${tmp_dir}/data/.righth
         fi
+
         if [ ! "$auth_method" = "none" ];then
           echo "Log Out: ./${app}?req=logout" >> ${tmp_dir}/data/righth
         fi
 
+        if [ "$databox" = "none" ];then
+          cat ${tmp_dir}/data/righth | grep -v "Table: "> ${tmp_dir}/data/.righth
+          cat ${tmp_dir}/data/.righth > ${tmp_dir}/data/righth
+          rm ${tmp_dir}/data/.righth
+          cat ${tmp_dir}/data/body | $SED "s#./${app}?req=table##g" > ${tmp_dir}/data/.body
+          cat ${tmp_dir}/data/.body > ${tmp_dir}/data/body
+          rm ${tmp_dir}/data/.body
+        fi
+
         cat ${ROOT}/tmp/gen/.calendar.events/databox.def | $SED "s/%%app/${app}/g" > ${tmp_dir}/${app}.events.def
-        ${ROOT}/util/scripts/bat_gen.sh ${tmp_dir}/${app}.events.def
+        ${ROOT}/util/scripts/gen_db.sh ${tmp_dir}/${app}.events.def
 
         cat ${ROOT}/databox/${app}.events/def/col5 | $SED "s/option=\"required\"/option=\"\"/g" > ${tmp_dir}/col5.tmp
         cat ${tmp_dir}/col5.tmp > ${ROOT}/databox/${app}.events/def/col5
@@ -2903,15 +2973,17 @@ if [ "$param" = "-app" ];then
         # push template datas
         . ${ROOT}/util/scripts/.authkey
         permission=$(${ROOT}/bin/meta get.attr:sys)
-        if [ "$permission" = "ro" ];then
-          ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
-          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
-          ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
-        else
-          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
-          action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
-        fi
+	if [ ! "$container_flag" ];then
+          if [ "$permission" = "ro" ];then
+            ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+            action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
+            ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+          else
+            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${app}.UI.md.def \
+            action:set id:new keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
+          fi
+	fi
 
         clear
         echo "------------------------------------------------------------"

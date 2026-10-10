@@ -19,7 +19,7 @@ col2_key_label="image"
 col2_type="file"
 
 # only for select, checkbox
-col2_key_params=""
+col2_values=""
 
 # required
 col2_required="no"
@@ -33,7 +33,7 @@ col3_key_label="Description"
 col3_type="text"
 
 # only for select, checkbox
-col3_key_params=""
+col3_values=""
 
 # required
 col3_required="no"

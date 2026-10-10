@@ -2,9 +2,13 @@
 Description="small-shell.app with Node.js"
 
 [Service]
+User=small-shell
+Group=small-shell
 WorkingDirectory=%%www/app
 ExecStart=%%www/app/app.sh
 Restart=always
+
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 [Install]
 WantedBy=multi-user.target

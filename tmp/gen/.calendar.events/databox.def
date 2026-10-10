@@ -19,7 +19,7 @@ col2_key_label="Event Title"
 col2_type="text"
 
 # only for select, radio
-col2_key_params=""
+col2_values=""
 
 # required
 col2_required="yes"
@@ -33,7 +33,7 @@ col3_key_label="Start"
 col3_type="datetime-local"
 
 # only for select, radio
-col3_key_params=""
+col3_values=""
 
 # required option
 col3_required="yes"
@@ -47,7 +47,7 @@ col4_key_label="End"
 col4_type="datetime-local"
 
 # only for select, radio
-col4_key_params=""
+col4_values=""
 
 # required option
 col4_required="no"
@@ -61,7 +61,7 @@ col5_key_label="Color"
 col5_type="select"
 
 # only for select, radio
-col5_key_params="blue,green,purple,black"
+col5_values="blue,green,purple,black"
 
 # required option
 col5_required=""
@@ -75,7 +75,7 @@ col6_key_label="Description"
 col6_type="textarea"
 
 # only for select, radio
-col6_key_params=""
+col6_values=""
 
 # required option
 col6_required="no"

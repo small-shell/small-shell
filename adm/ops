@@ -52,8 +52,8 @@
 #----------------------------------------------------------
 
 WHOAMI=$(whoami)
-if [ ! "$WHOAMI" = "root" ];then
-  echo "error: user must be root"
+if [ ! "$WHOAMI" = "root" -a ! "$WHOAMI" = "small-shell" ];then
+  echo "error: user must be root or small-shell"
   exit 1
 fi
 
