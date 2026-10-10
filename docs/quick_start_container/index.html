@@ -184,7 +184,6 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 RUN useradd -s /sbin/nologin small-shell
 COPY --chown=small-shell:small-shell ./db.def /workspace/db.def
 COPY --chown=small-shell:small-shell ./app.def /workspace/app.def
-COPY --chown=small-shell:small-shell ./small-shell /usr/local/small-shell
 WORKDIR /usr/local
 RUN git clone https://github.com/small-shell/small-shell.git
 RUN chmod 755 /usr/local/small-shell/adm/gen
