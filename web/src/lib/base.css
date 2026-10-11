@@ -563,7 +563,7 @@ a {
 
 .console-box input:focus {
   outline: 1px solid #3b82f6;
-  outline-offset: -1px;
+  outline-offset: -2px;
   border-radius: 4px;
 }
 
