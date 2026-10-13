@@ -184,6 +184,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 RUN useradd -s /sbin/nologin small-shell
 COPY --chown=small-shell:small-shell ./db.def /workspace/db.def
 COPY --chown=small-shell:small-shell ./app.def /workspace/app.def
+
 WORKDIR /usr/local
 RUN git clone https://github.com/small-shell/small-shell.git
 RUN chmod 755 /usr/local/small-shell/adm/gen
@@ -228,6 +229,10 @@ col2_required=&quot;no&quot;
 #-------------------------------------------
 
 </code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to make several databoxes, please make multiple db.def files like db1.def db2.def.. and please add line to Docker file to execute gen_db.sh additionally. You can use any name to db.def</p>
+</div>
 <h5 id="3appdef">3.app.def</h5>
 <p>In the following example, only Base App will be generated. please change server and port param to available server FQDN and port. If you want to enable ssl, please uncomment "ssl_cert_path" and "ssl_privatekey_path". For more details of Apps, please see the <a href="../app_shell_tour/">APP Shell</a> documentation. please set "server" and "port" param at least. </p>
 <pre><code># Base App
@@ -249,6 +254,10 @@ databox_for_custom_app=&quot;&quot;
 # If auth type is 1, please uncomment shared_pass.
 #shared_pass=&quot;&quot;
 
+# If you want to add databoxes to the Custom,
+# Please uncomment and separate databoxes with a comma.
+#additional_databoxes=&quot;&quot;
+
 # External Form
 form_name=&quot;&quot;
 form_title=&quot;&quot;
@@ -256,10 +265,6 @@ databox_for_external_form=&quot;&quot;
 description=&quot;&quot;
 # Please specify the keys separated by commas.
 keys=&quot;&quot;
-
-# Sub App
-parent_app=&quot;&quot;
-databox_for_sub_app=&quot;&quot;
 </code></pre>
 <h2 id="run-a-docker-image">Run a docker image</h2>
 <p>Once files are created, let's generate small-shell image.</p>
