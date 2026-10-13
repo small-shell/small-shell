@@ -249,21 +249,17 @@ if [ "$app_name" ];then
   echo "yes" >> $gen_def
   cat $gen_def | ${ROOT}/adm/gen -app -container
   cat ${ROOT}/util/scripts/.post_processing_module_for_container | $SED "s/%%app_type/3/g" \
-  | $SED "s/%%app_name/$app_name/g" | $SED "s/%%auth_type/$auth_type/g" > /var/tmp/post_processing.sh
+  | $SED "s/%%app_name/$app_name/g" | $SED "s/%%auth_type/$auth_type/g" \
+  | $SED "s/%%databox_for_custom_app/$databox_for_custom_app/g" \
+  > /var/tmp/post_processing.sh
   chmod 755 /var/tmp/post_processing.sh
 fi
 
 # gen Sub App
-if [ "$parent_app" ];then
-  echo "3" > $gen_def
-
-  if [ ! "$databox_for_sub_app" ];then
-    echo "error: please set databox for sub app"
-    exit 1
-  fi
-
-  if [ ! -d ${ROOT}/databox/${databox_for_sub_app} ];then
-    echo "error: there is no databox:${databox_for_sub_app}"
+if [ "$additional_databoxes" ];then
+  parent_app=$app_name
+  if [ ! "$app_name" ];then
+    echo "please set app name"
     exit 1
   fi
 
@@ -279,16 +275,47 @@ if [ "$parent_app" ];then
     exit 1
   fi
 
-  sub_app_name="sub_${RANDOM}.${parent_app}"
-  while [ -d ${www}/bin/${sub_app_name}_bin_get.sh ]
-  do
-    sub_app_name="sub_${RANDOM}.${parent_app}"
-  done 
-  echo "${sub_app_name}@${parent_app}" >> $gen_def
-  echo "${databox_for_sub_app}" >> $gen_def
-  echo "yes" >> $gen_def
-  cat $gen_def | ${ROOT}/adm/gen -app -container
-fi
 
+  sub_app_names=""
+  for databox_for_sub_app in $( echo $additional_databoxes | $SED "s/,/ /g" )
+  do 
+    if [ ! -d ${ROOT}/databox/${databox_for_sub_app} ];then
+      echo "error: there is no databox:${databox_for_sub_app}"
+      exit 1
+    fi
+
+    sub_app_name="sub_${RANDOM}.${parent_app}"
+    while [ -d ${www}/bin/${sub_app_name}_bin_get.sh ]
+    do
+      sub_app_name="sub_${RANDOM}.${parent_app}"
+    done 
+    gen_def_for_sub="${tmp_dir}/${sub_app_name}.def"
+    echo "${sub_app_name}:${databox_for_sub_app}" >> /var/tmp/.additional_databoxes
+    echo "3" > $gen_def_for_sub
+    echo "${sub_app_name}@${parent_app}" >> $gen_def_for_sub
+    echo "${databox_for_sub_app}" >> $gen_def_for_sub
+    echo "yes" >> $gen_def_for_sub
+    cat $gen_def_for_sub | ${ROOT}/adm/gen -app -container
+    if [ "$sub_apps" ];then
+      sub_apps="${sub_apps},${sub_app_name}"
+    else
+      sub_apps="${sub_app_name}"
+    fi
+  done
+
+  if [ -f /var/tmp/post_processing.sh ];then
+    sed -i "s/%%sub_apps/$sub_apps/g" /var/tmp/post_processing.sh
+    sed -i "s/%%parent_app/$parent_app/g" /var/tmp/post_processing.sh
+    sed -i "s/sub_app_flag=no/sub_app_flag=yes/g" /var/tmp/post_processing.sh
+  else
+    cat ${ROOT}/util/scripts/.post_processing_module_for_container | $SED "s/%%sub_apps/$sub_apps/g" \
+    | $SED "s/%%parent_app/$parent_app/g" | $SED "s/sub_app_flag=no/sub_app_flag=yes/g" \
+    > /var/tmp/post_processing.sh
+  fi
+
+  chmod 755 /var/tmp/.additional_databoxes
+  chmod 755 /var/tmp/post_processing.sh
+
+fi
 
 exit 0

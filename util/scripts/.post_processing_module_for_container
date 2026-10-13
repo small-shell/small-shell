@@ -6,11 +6,13 @@
 ROOT=/usr/local/small-shell
 tmp_dir=${ROOT}/tmp/gen/${RANDOM}
 app_type=%%app_type
+sub_app_flag=no
 
 
 if [ $app_type -eq 3 ];then
   app=%%app_name
   auth_type=%%auth_type
+  databox_for_custom_app=%%databox_for_custom_app
 
   if [ $auth_type -eq 1 ];then
     auth_method="shared_pass"
@@ -27,7 +29,8 @@ if [ $app_type -eq 3 ];then
 
   for data in body righth lefth footer
   do
-    cat ${ROOT}/tmp/gen/.tmplt.UI.md.def/${data} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" > ${tmp_dir}/data/${data}
+    cat ${ROOT}/tmp/gen/.tmplt.UI.md.def/${data} | $SED "s/%%app/${app}/g" \
+    | $SED "s/%%databox/${databox_for_custom_app}/g" > ${tmp_dir}/data/${data}
   done
     
   if [ "$auth_method" = "key" ];then
@@ -55,6 +58,38 @@ if [ $app_type -eq 3 ];then
   action:set id:new bat:yes keys:body,righth,lefth,footer input_dir:${tmp_dir}/data)
   ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
 
+fi
+
+if [ "$sub_app_flag" = "yes"  ];then
+
+  . ${ROOT}/web/base
+  sub_apps=%%sub_apps
+  parent_app=%%parent_app
+  ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+
+  for sub_app in $(echo $sub_apps | $SED "s/,/ /g")
+  do 
+    target_databox=$(grep ${sub_app}: /var/tmp/.additional_databoxes | $SED "s/${sub_app}://g")
+    id=$(cd $tmp_dir && ${ROOT}/bin/DATA_shell authkey:$authkey \
+    databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')
+
+    (cd $tmp_dir && ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
+    | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu)
+    mkdir ${tmp_dir}/data_${sub_app}
+
+    if [ -f ${cgi_dir}/auth.${parent_app} ];then
+      cat ${tmp_dir}/UI_md_def_menu | $SED -e "/Log Out/i ${target_databox} Table: ./${parent_app}?req=table&subapp=${sub_app}" > ${tmp_dir}/data_${sub_app}/righth
+      (cd $tmp_dir && ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+      action:set id:$id key:righth input_dir:${tmp_dir}/data_${sub_app})
+    else
+      cat ${tmp_dir}/UI_md_def_menu > ${tmp_dir}/data_${sub_app}/righth
+      echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> ${tmp_dir}/data_${sub_app}/righth
+      (cd $tmp_dir && ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+      action:set id:$id key:righth input_dir:${tmp_dir}/data_${sub_app})
+    fi
+  done
+    
+  ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
 fi
 
 echo "post-processing has been done"

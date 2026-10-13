@@ -18,13 +18,10 @@ if [ ! "$WHOAMI" = "root" ];then
 fi
 
 # user check
-cat /etc/passwd | grep small-shell > /dev/null 2>&1
+id "small-shell" >/dev/null 2>&1
 if [ ! $? -eq 0 ];then
-  mac_chk=$(dscl . list /Users 2>/dev/null | grep small-shell 2>/dev/null)
-  if [ ! "$mac_chk" ];then
-    echo "error: small-shell is not existing, please add user beforehand"
-    exit 1
-  fi
+  echo "error: small-shell user is not existing, please add user on your OS"
+  exit 1
 fi
 
 # create .env
@@ -316,7 +313,9 @@ if [ "$param" = "-databox" ];then
   fi
 
   # start dialog 
-  echo -n "Databox Name: "
+  if [ ! "$bat_flag" ];then
+    echo -n "Databox Name: "
+  fi
   read databox
   ascii_chk_result=$(ascii_check $databox)
   meta_chk_result=$(echo "$databox" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
@@ -361,7 +360,9 @@ if [ "$param" = "-databox" ];then
   echo "$databox" > ${tmp_dir}/databox
 
   # define primary key 
-  echo -n "Primary Key Name: "
+  if [ ! "$bat_flag" ];then
+    echo -n "Primary Key Name: "
+  fi
   read primary_key
   reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
   eval $primary_key=test >/dev/null 2>&1
@@ -377,13 +378,15 @@ if [ "$param" = "-databox" ];then
       echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
     fi
 
-    if [ "$bat_flag" = "yes" ];then
+    if [ "$bat_flag" ];then
       echo "#primary_key check error -> failed"
       rm -rf $tmp_dir
       exit 1
     fi
 
-    echo -n "primary_key: "
+    if [ ! "$bat_flag" ];then
+      echo -n "primary_key: "
+    fi
     read primary_key
     reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
     eval $primary_key=test >/dev/null 2>&1
@@ -394,7 +397,9 @@ if [ "$param" = "-databox" ];then
 
   if [ ! "$primary_key" = "hashid" ];then
     
-    echo -n "Primary Key Label: "
+    if [ ! "$bat_flag" ];then
+      echo -n "Primary Key Label: "
+    fi
     read primary_key_label
     char_chk_result=$(charset_check "$primary_key_label")
 
@@ -402,7 +407,7 @@ if [ "$param" = "-databox" ];then
     do
       echo "error: key label charset seems wrong, please use UTF-8 as charset"
 
-      if [ "$bat_flag" = "yes" ];then
+      if [ "$bat_flag" ];then
         echo "#primary_key_label check error -> failed"
         rm -rf $tmp_dir
         exit 1
@@ -426,7 +431,9 @@ if [ "$param" = "-databox" ];then
   echo "option=\"required\"" >> ${tmp_dir}/col1
 
   if [ ! "$primary_key" = "hashid" ];then
-    echo -n "Add more columns to the databox? (yes | no): "
+    if [ ! "$bat_flag" ];then
+      echo -n "Add more columns to the databox? (yes | no): "
+    fi
     read add_col_answer 
   else
     add_col_answer=yes
@@ -452,7 +459,9 @@ if [ "$param" = "-databox" ];then
   while [ "$add_col_answer" = "yes" ]
   do
   clear
-  echo -n "Col${count} Key Name: "
+  if [ ! "$bat_flag" ];then
+    echo -n "Col${count} Key Name: "
+  fi
   read add_key 
   reserved_chk_result=$(echo "$add_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
   eval $add_key=test >/dev/null 2>&1
@@ -483,13 +492,15 @@ if [ "$param" = "-databox" ];then
         echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
       fi
 
-      if [ "$bat_flag" = "yes" ];then
+      if [ "$bat_flag" ];then
         echo "# col${count} key check error -> failed"
         rm -rf $tmp_dir
         exit 1
       fi
 
-      echo -n "Col${count} Key Name: "
+      if [ ! "$bat_flag" ];then
+        echo -n "Col${count} Key Name: "
+      fi 
       read add_key
       reserved_chk_result=$(echo "$add_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
       eval $add_key=test >/dev/null 2>&1
@@ -505,8 +516,10 @@ if [ "$param" = "-databox" ];then
       fi
 
     done
-
-    echo -n "Col${count} Key Label: "
+ 
+    if [ ! "$bat_flag" ];then
+      echo -n "Col${count} Key Label: "
+    fi
     read add_key_label
     char_chk_result=$(charset_check "$add_key_label")
 
@@ -514,7 +527,7 @@ if [ "$param" = "-databox" ];then
     do
       echo "error: key label charset seems wrong, please use UTF-8 as charset"
 
-      if [ "$bat_flag" = "yes" ];then
+      if [ "$bat_flag" ];then
         echo "# col${count} key label check error -> failed"
         rm -rf $tmp_dir
         exit 1
@@ -528,7 +541,9 @@ if [ "$param" = "-databox" ];then
     # escape meta character
     add_key_label=$(echo "$add_key_label" | $SED "s/\"//g")
 
-    echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
+    if [ ! "$bat_flag" ];then
+      echo -n "Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): "
+    fi
     read type
     data_chk_result=$(echo "$type" | grep -e "^text$" -e "^select$" -e "^radio$" -e "^checkbox$" \
     -e "^email$" -e "^date$"  -e "^date-time$" -e "^num$" -e "^tel$"  -e "^url$" -e "^textarea$" -e "^file$" -e "^pdls$" -e "^mls$")
@@ -572,7 +587,9 @@ if [ "$param" = "-databox" ];then
     done   
 
     if [ "$type" = "select" -o "$type" = "radio" ];then
-      echo -n "Please list the values, separated by commas: "
+      if [ ! "$bat_flag" ];then
+        echo -n "Please list the values, separated by commas: "
+      fi
       read params
       char_chk_result=$(charset_check "$params")
       while [ "$char_chk_result" = "ERROR" ]
@@ -604,7 +621,9 @@ if [ "$param" = "-databox" ];then
     fi
 
     if [ "$type" = "pdls" ];then
-      echo -n "please input databox name for making pdls(primary value data list): "
+      if [ ! "$bat_flag" ];then
+        echo -n "please input databox name for making pdls(primary value data list): "
+      fi
       read pdlsbox
       while [ "$pdlsbox" -a ! -d ${ROOT}/databox/${pdlsbox} ]
       do
@@ -614,7 +633,10 @@ if [ "$param" = "-databox" ];then
     fi
 
     if [ ! "$type" = "file" -a ! "$type" = "checkbox" -a ! "$type" = "radio" -a ! "$type" = "select" ];then
-      echo -n "Set this as required? (yes | no): "
+
+      if [ ! "$bat_flag" ];then
+        echo -n "Set this as required? (yes | no): "
+      fi
       read option_answer
       if [ "$option_answer" = "yes" ];then
         option=required
@@ -660,7 +682,9 @@ if [ "$param" = "-databox" ];then
     echo "option=\"${option}\"" >> ${tmp_dir}/col${count}
     
 
-    echo -n "Add more columns to the databox? (yes | no) : "
+    if [ ! "$bat_flag" ];then
+      echo -n "Add more columns to the databox? (yes | no) : "
+    fi
     read add_col_answer 
     while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
     do
@@ -700,7 +724,9 @@ if [ "$param" = "-databox" ];then
 
   echo "-----------------------------------------------------------------"
 
-  echo -n "Is that OK? (yes | no): "
+  if [ ! "$bat_flag" ];then
+    echo -n "Is that OK? (yes | no): "
+  fi
   read fin_answer
   while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
   do
@@ -953,7 +979,9 @@ if [ "$param" = "-addcol" ];then
     fi
 
     if [ ! "$type" = "file" -a ! "$type" = "checkbox" -a ! "$type" = "radio" -a ! "$type" = "select" ];then
-      echo -n "Set this as required? (yes | no): "
+      if [ ! "$container_flag" ];then
+        echo -n "Set this as required? (yes | no): "
+      fi
       read option_answer
       if [ "$option_answer" = "yes" ];then
         option=required
@@ -991,7 +1019,9 @@ if [ "$param" = "-addcol" ];then
 
     echo "option=\"${option}\"" >> ${tmp_dir}/col${count}
 
-    echo -n "Add more columns to the databox? (yes | no) : "
+    if [ ! "$bat_flag" ];then
+      echo -n "Add more columns to the databox? (yes | no) : "
+    fi
     read add_col_answer
     while [ ! "$add_col_answer" = "yes" -a ! "$add_col_answer" = "no" ]
     do
@@ -1281,7 +1311,9 @@ if [ "$param" = "-app" ];then
   fi
 
   # start dialog
-  echo -n "Type of Apo (1.BASE | 2.FORM | 3.CUSTOM): "
+  if [ ! "$container_flag" ];then
+    echo -n "Type of App (1.BASE | 2.FORM | 3.CUSTOM): "
+  fi
   read apptype 
   while [ ! "$apptype" = "1"  -a  ! "$apptype" = "2" -a ! "$apptype" = "3" ]
   do
@@ -1292,7 +1324,9 @@ if [ "$param" = "-app" ];then
   if [ "$apptype" = "1" ];then
     apptype="1.BASE"
 
-    echo -n "Type of Server (1.small-shell Web srv | 2.other Web srv): "
+    if [ ! "$container_flag" ];then
+      echo -n "Type of Server (1.small-shell Web srv | 2.other Web srv): "
+    fi
     read srv_type
     while [ ! "$srv_type" = "1"  -a  ! "$srv_type" = "2" ]
     do
@@ -1432,7 +1466,9 @@ if [ "$param" = "-app" ];then
       done
     fi
 
-    echo -n "Protocol (http | https): "
+    if [ ! "$container_flag" ];then
+      echo -n "Protocol (http | https): "
+    fi
     read protocol
     while [ ! "$protocol" = "http" -a ! "$protocol" = "https" ]
     do 
@@ -1481,7 +1517,9 @@ if [ "$param" = "-app" ];then
         if [ "$use_existing_cert" = "no" ];then
           echo "ok, let's update cert and key. Base App will be upgraded and restarted, please be aware."
         fi
-        echo -n "ssl cert path : "
+        if [ ! "$container_flag" ];then
+          echo -n "ssl cert path : "
+        fi
         read ssl_cert
 
         while [ ! -f $ssl_cert ]
@@ -1490,7 +1528,9 @@ if [ "$param" = "-app" ];then
           read ssl_cert
         done
 
-        echo -n "ssl privare key path : "
+        if [ ! "$container_flag" ];then
+          echo -n "ssl privare key path : "
+        fi
         read private_key
 
         while [ ! -f $private_key ]
@@ -1499,7 +1539,9 @@ if [ "$param" = "-app" ];then
           read private_key
         done
 
-        echo -n "Do you need to use chain certificate? (yes | no): "
+        if [ ! "$container_flag" ];then
+          echo -n "Do you need to use chain certificate? (yes | no): "
+        fi
         read chain_answer
         while [ ! "$chain_answer" = "yes" -a ! "$chain_answer" = "no" ]
         do
@@ -1509,7 +1551,9 @@ if [ "$param" = "-app" ];then
         done
 
         if [ "$chain_answer" = "yes" ];then
-          echo -n "chain cert path : "
+          if [ ! "$container_flag" ];then
+            echo -n "chain cert path : "
+          fi
           read chain_cert
 
           while [ ! -f $chain_cert ]
@@ -1524,7 +1568,9 @@ if [ "$param" = "-app" ];then
     fi
 
     if [ "$protocol" = "http" -o "$use_existing_cert" = "no" -o ! "$server" ];then
-      echo -n "Web Server FQDN or IP addr (e.g. 192.168.10.1): "
+      if [ ! "$container_flag" ];then
+        echo -n "Web Server FQDN or IP addr (e.g. 192.168.10.1): "
+      fi
       read server
 
       ascii_chk_result=$(ascii_check $server)
@@ -1562,7 +1608,6 @@ if [ "$param" = "-app" ];then
       base_url="${protocol}://${server}/cgi-bin/"
       static_url="${protocol}://${server}/"
     else
-      echo -n "port: "
       read port
       base_url="${protocol}://${server}:${port}/cgi-bin/"
       static_url="${protocol}://${server}:${port}/"
@@ -1628,7 +1673,9 @@ if [ "$param" = "-app" ];then
     echo "Access URL: ${static_url}base"
     echo "-----------------------------------------------------------------"
 
-    echo -n "Is that OK? (yes | no): "
+    if [ ! "$container_flag" ];then
+      echo -n "Is that OK? (yes | no): "
+    fi
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
@@ -2140,7 +2187,9 @@ if [ "$param" = "-app" ];then
     fi
 
     apptype="2.FORM"
-    echo -n "Form Name: "
+    if [ ! "$container_flag" ];then
+      echo -n "Form Name: "
+    fi
     read form_name
 
     while [ "$form_name" = "base" -o "$form_name" = "api" -o "$form_name" = "e-cron" ]
@@ -2295,7 +2344,10 @@ if [ "$param" = "-app" ];then
     echo "Access URL: ${static_url}${form_name}"
     echo ""
     echo "-----------------------------------------------------------------"
-    echo -n "Is that OK? (yes | no): "
+
+    if [ ! "$container_flag" ];then
+      echo -n "Is that OK? (yes | no): "
+    fi
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
@@ -2393,7 +2445,9 @@ if [ "$param" = "-app" ];then
     . ${ROOT}/web/base
 
     apptype="3.CUSTOM"
-    echo -n "App Name: "
+    if [ ! "$container_flag" ];then
+      echo -n "App Name: "
+    fi
     read app
 
     while [ "$app" = "base" -o "$app" = "api" -o "$app" = "e-cron" ]
@@ -2450,7 +2504,9 @@ if [ "$param" = "-app" ];then
     done
 
     if [ ! "$parent_app" ];then
-      echo -n "Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): "
+      if [ ! "$container_flag" ];then
+        echo -n "Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): "
+      fi
       read auth_method
       while [ ! "$auth_method" = "1"  -a  ! "$auth_method" = "2" -a ! "$auth_method" = "3" -a ! "$auth_method" = "4" ]
       do
@@ -2486,11 +2542,14 @@ if [ "$param" = "-app" ];then
       auth_method=none
     fi
 
-    if [ ! "$parent_app" ];then
-      echo -n "Primary Databox: "
-    else
-      echo -n "Subapp Databox: "
+    if [ ! "$container_flag" ];then
+      if [ ! "$parent_app" ];then
+        echo -n "Primary Databox: "
+      else
+        echo -n "Subapp Databox: "
+      fi
     fi
+
     read databox
     databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
 
@@ -2538,7 +2597,9 @@ if [ "$param" = "-app" ];then
 
     echo ""
     echo "-----------------------------------------------------------------"
-    echo -n "Is that OK? (yes | no): "
+    if [ ! "$container_flag" ];then
+      echo -n "Is that OK? (yes | no): "
+    fi
     read fin_answer
     while [ ! "$fin_answer" = "yes" -a ! "$fin_answer" = "no" ]
     do
@@ -3082,32 +3143,37 @@ if [ "$param" = "-app" ];then
         . ${ROOT}/util/scripts/.authkey
         permission=$(${ROOT}/bin/meta get.attr:sys)
 	chk_md_def=$(${ROOT}/bin/meta get.databox | grep ${parent_app}.UI.md.def)
+
 	if [ "$chk_md_def" ];then
-          id=$(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey \
-          databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')
 
-          (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
-          | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu)
-          mkdir ${tmp_dir}/data
+          if [ ! "$container_flag" ];then
+            id=$(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey \
+            databox:${parent_app}.UI.md.def command:head_-1 format:none | $AWK -F "," '{print $1}')
 
-          if [ "$permission" = "ro" ];then
-            ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
-            tmp_permission_flg=yes
-          fi
+            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def action:get id:$id key:righth format:none \
+            | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" > ${tmp_dir}/UI_md_def_menu)
+            mkdir ${tmp_dir}/data
 
-          if [ -f ${cgi_dir}/auth.${parent_app} ];then
-            cat ${tmp_dir}/UI_md_def_menu | $SED -e "/Log Out/i ${databox} Table: ./${parent_app}?req=table&subapp=${app}" > ${tmp_dir}/data/righth
-            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-            action:set id:$id key:righth input_dir:${tmp_dir}/data)
-          else
-            cat ${tmp_dir}/UI_md_def_menu > ${tmp_dir}/data/righth
-            echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> ${tmp_dir}/data/righth
-            (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
-            action:set id:$id key:righth input_dir:${tmp_dir}/data)
-          fi
+            if [ "$permission" = "ro" ];then
+              ${ROOT}/adm/ops set.attr:sys{rw} > /dev/null 2>&1
+              tmp_permission_flg=yes
+            fi
 
-          if [ "$tmp_permission_flg" = "yes" ];then
-              ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+            if [ -f ${cgi_dir}/auth.${parent_app} ];then
+              cat ${tmp_dir}/UI_md_def_menu | $SED -e "/Log Out/i ${databox} Table: ./${parent_app}?req=table&subapp=${app}" > ${tmp_dir}/data/righth
+              (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+              action:set id:$id key:righth input_dir:${tmp_dir}/data)
+            else
+              cat ${tmp_dir}/UI_md_def_menu > ${tmp_dir}/data/righth
+              echo "${databox} Table: ./${parent_app}?req=table&subapp=${app}" >> ${tmp_dir}/data/righth
+              (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:$authkey databox:${parent_app}.UI.md.def \
+              action:set id:$id key:righth input_dir:${tmp_dir}/data)
+            fi
+
+            if [ "$tmp_permission_flg" = "yes" ];then
+                ${ROOT}/adm/ops set.attr:sys{ro} > /dev/null 2>&1
+            fi
+
           fi
 
 	fi
