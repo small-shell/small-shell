@@ -200,7 +200,7 @@ WORKDIR /var/www/app
 CMD [&quot;node&quot;, &quot;index.js&quot;]
 </code></pre>
 <h5 id="2dbdef">2.db.def</h5>
-<p>In the following example, item.db will be generated. If you will not define primary key, just set "hashid" to "primary_key". And if you want to add column, please add colN with "+addcol" declaration. For more details, please see the <a href="../data_shell_tour/">DATA Shell</a> documentation.</p>
+<p>In the following example, item.db will be generated. If you will not define primary key, just set "hashid" to "primary_key". And if you want to add column, please add colN with "+addcol" declaration. For more details, please see the <a href="../data_shell_tour/#gen-databox-by-batch">DATA Shell</a> documentation.</p>
 <pre><code># databox
 databox=&quot;item.db&quot;
 
@@ -234,10 +234,10 @@ col2_required=&quot;no&quot;
 server=&quot;test.example.com&quot;
 port=&quot;8080&quot;
 
-# If you want to enable ssl, please uncomment these params
+# If you want to enable ssl, please uncomment these params.
 #ssl_cert_path=&quot;&quot;
 #ssl_private_key_path=&quot;&quot;
-# And if you need to use chain cert, please uncomment this param as well
+# And if you need to use chain cert, please uncomment this param as well.
 #chain_cert_path=&quot;&quot;
 
 # Custom App
@@ -246,7 +246,7 @@ app_name=&quot;&quot;
 # 1:shared pass, 2:user key, 3:other, 4:none 
 auth_type=&quot;&quot;
 databox_for_custom_app=&quot;&quot;
-# If auth type is 1, please uncomment shared_pass
+# If auth type is 1, please uncomment shared_pass.
 #shared_pass=&quot;&quot;
 
 # External Form
@@ -254,6 +254,7 @@ form_name=&quot;&quot;
 form_title=&quot;&quot;
 databox_for_external_form=&quot;&quot;
 description=&quot;&quot;
+# Please specify the keys separated by commas.
 keys=&quot;&quot;
 
 # Sub App
