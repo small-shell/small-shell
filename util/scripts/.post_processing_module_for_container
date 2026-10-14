@@ -43,7 +43,7 @@ if [ $app_type -eq 3 ];then
     echo "Log Out: ./${app}?req=logout" >> ${tmp_dir}/data/righth
   fi
 
-  if [ "$databox" = "none" ];then
+  if [ "$databox_for_custom_app" = "none" ];then
     cat ${tmp_dir}/data/righth | grep -v "Table: "> ${tmp_dir}/data/.righth
     cat ${tmp_dir}/data/.righth > ${tmp_dir}/data/righth
     rm ${tmp_dir}/data/.righth
