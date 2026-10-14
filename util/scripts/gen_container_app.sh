@@ -152,8 +152,8 @@ if [ "$form_name" ];then
   echo "$description" >> $gen_def
 
   # key check
-  keys=$(echo "$keys" | $SED "s/,/\n/g" | sort | uniq | $SED -z "s/\n/ /g" | $SED "s/ $//g")
-  key_count=$(echo "$keys" | $SED "s/ /\n/g" | grep -v hashid | wc -l)
+  keys=$(echo "$keys" | $SED "s/,/\n/g" | sort | grep -v hashid | uniq | $SED -z "s/\n/ /g" | $SED "s/ $//g")
+  key_count=$(echo "$keys" | $SED "s/ /\n/g" | wc -l)
   col_count=$(grep name= ${ROOT}/databox/${databox_for_external_form}/def/* | grep -v hashid | wc -l)
   if [ $key_count -gt $col_count ];then
     echo "error: it seems number of key is too much" 
