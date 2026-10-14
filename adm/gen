@@ -2220,7 +2220,9 @@ if [ "$param" = "-app" ];then
       -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
     done
 
-    echo -n "Form Title: "
+    if [ ! "$container_flag" ];then
+      echo -n "Form Title: "
+    fi
     read form_title
     html_tag_chk=$(echo "$form_title" | grep -e "<" -e ">")
 
@@ -2235,7 +2237,9 @@ if [ "$param" = "-app" ];then
     done
 
 
-    echo -n "Target Databox: "
+    if [ ! "$container_flag" ];then
+      echo -n "Target Databox: "
+    fi
     read databox
     databox=$(echo "$databox" | $SED "s/\*//g" | $SED "s/ //g") 
 
@@ -2255,7 +2259,9 @@ if [ "$param" = "-app" ];then
       exit 1
     fi
 
-    echo -n "Description of the Form: "
+    if [ ! "$container_flag" ];then
+      echo -n "Description of the Form: "
+    fi
     read form_description 
     html_tag_chk=$(echo "$form_description" | grep -e "<" -e ">")
 
@@ -2272,7 +2278,9 @@ if [ "$param" = "-app" ];then
     clear
     datas=$(cat ${ROOT}/databox/${databox}/def/col* | grep name=\" | grep -v $primary_key | $AWK -F "name=" '{print $2}' \
     | $SED "s/\"//g" | $SED -z "s/\n/ | /g" | $SED "s/ | $//g")
-    echo -n "Select key that must be in the Form ($datas) : "
+    if [ ! "$container_flag" ];then
+      echo -n "Select key that must be in the Form ($datas) : "
+    fi
     read key
     
     key_chk=$(grep "name=\"${key}\"" ${ROOT}/databox/${databox}/def/col*)
@@ -2289,7 +2297,9 @@ if [ "$param" = "-app" ];then
 
 
     if [ "$datas" ];then
-      echo -n "Add more keys to the Form? (yes | no): "
+      if [ ! "$container_flag" ];then
+        echo -n "Add more keys to the Form? (yes | no): "
+      fi
       read add_form_answer
       while [ ! "$add_form_answer" = "yes" -a ! "$add_form_answer" = "no" ]
       do
