@@ -113,6 +113,7 @@ fi
 
 # gen Form
 if [ "$form_name" ];then
+  gen_def="${tmp_dir}/app_form.def"
 
   if [ ! -f ${ROOT}/web/base ];then
     echo "error: you need to generate Base App first"
@@ -153,7 +154,7 @@ if [ "$form_name" ];then
   # key check
   keys=$(echo "$keys" | $SED "s/,/\n/g" | sort | uniq | $SED -z "s/\n/ /g" | $SED "s/ $//g")
   key_count=$(echo "$keys" | $SED "s/ /\n/g" | grep -v hashid | wc -l)
-  col_count=$(grep name= ${ROOT}/databox/${databox_for_external_form}/def/* | wc -l)
+  col_count=$(grep name= ${ROOT}/databox/${databox_for_external_form}/def/* | grep -v hashid | wc -l)
   if [ $key_count -gt $col_count ];then
     echo "error: it seems number of key is too much" 
     exit 1
@@ -181,6 +182,9 @@ if [ "$form_name" ];then
     ((count++))
   done
   echo "yes" >> $gen_def
+
+  # gen app
+  cat $gen_def| ${ROOT}/adm/gen -app -container
 
 fi
 
