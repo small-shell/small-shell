@@ -1836,7 +1836,7 @@ if [ "$param" = "-app" ];then
           $SED -i '/forward option end \*\//d' ${www}/app/index.js
         fi
 
-        # enable seuuid option for mac
+        # enable setuid option for mac
         if [ "$mac_chk" ];then
           $SED -i '/\/\* setuid option start/d' ${www}/app/index.js
           $SED -i '/setuid option end \*\//d' ${www}/app/index.js
