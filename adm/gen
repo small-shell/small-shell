@@ -1846,8 +1846,14 @@ if [ "$param" = "-app" ];then
         if [ "$enable_node_cron" = "yes" ];then
           $SED -i '/\/\* cron option for mac and contaner start/d' ${www}/app/index.js
           $SED -i '/cron option end \*\//d' ${www}/app/index.js
-          cat ${ROOT}/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
-          > ${www}/app/util.sh
+
+          if [ ! "$container_flag" ];then
+            cat ${ROOT}/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
+            > ${www}/app/util.sh
+          else
+            cat ${ROOT}/web/src/app/util.sh | $SED "s#%%www#${www}#g" \
+            | grep -v rotate_srvlog.sh > ${www}/app/util.sh
+          fi
           chmod 755 ${www}/app/util.sh
         fi
 
