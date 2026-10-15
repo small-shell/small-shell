@@ -177,7 +177,7 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="quick-start">Quick start</h1>
-<p>This quick start guide will walk you through setting up Small-Shell using the default web server included in the package.</p>
+<p>This quick start guide will walk you through setting up Small-Shell using the built-in Node.js web server included in the package.</p>
 <h2 id="setup-env">Setup Env</h2>
 <p>First of all, add small-shell user to the OS and then install required commands and libraries.
 Required commands and libraries are "curl, bc, cron, npm, php, jq". In this example, will use the apt command on Ubuntu or Debian for installation.</p>
@@ -317,7 +317,7 @@ ls -ltr /var/www/log
 </code></pre>
 <h2 id="update-to-the-latest-version">Update to the latest version</h2>
 <p>You can update small-shell very easily. Here is an example of update procedure. <br />
-Once you clone the latest code, please re-generate Base App.   </p>
+Once you clone the latest code, please re-generate Base App. If you want to upgrade Node js as well, please check <a href="../app_shell_tour/#upgrade-node-js">App Shell</a>.</p>
 <pre><code>cd /var/tmp
 sudo git clone https://github.com/small-shell/small-shell.git
 sudo \cp -Rf small-shell/* /usr/local/small-shell/

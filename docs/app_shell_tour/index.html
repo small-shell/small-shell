@@ -185,6 +185,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#upgrade-node-js" class="nav-link">Upgrade Node js</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-bs-level="2"><a href="#verified-environment" class="nav-link">Verified environment</a>
               <ul class="nav flex-column">
               </ul>
@@ -759,6 +763,25 @@ Type of App (1.BASE | 2.FORM | 3.CUSTOM): 1
 ------------------------------------------------
 -&gt; dialog will be started
 </code></pre>
+<h2 id="upgrade-node-js">Upgrade Node js</h2>
+<p>If you are using the default web server, it depends on your Node.js environment. If a vulnerability is found in Node.js, please upgrade your Node.js environment. And then please restart small-shell.</p>
+<pre><code># check node version
+node --version
+
+# this is exmpale of using apt command
+sudo apt update
+sudo apt install --only-upgrade nodejs
+
+# update libralies
+cd /var/www/app; sudo npm audit fix
+
+# restart small-shell
+sudo systemctl restart small-shell
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you will change major version of Node.js, please re-generate Base App by "/usr/local/small-shell/adm/gen -app" command.</p>
+</div>
 <h2 id="verified-environment">Verified environment</h2>
 <pre><code>OS: Ubuntu 2X (recommnded), Debian 1X, macOS Tahoe, Almalinux 9.X, CentOS 7, RHEL 8
 bash: 4.X
