@@ -53,8 +53,16 @@ if [ ! "$session" ];then
   exit 1
 fi
 
+# charset check
+chk_UTF8=$( php -r "echo (preg_match('//u', file_get_contents('$import_file')) ? 'UTF-8' : 'Not UTF-8') . PHP_EOL;")
+
+if [ "$chk_UTF8" = "Not UTF-8" ];then
+  echo "error: Invalid file charset. Please upload/use a UTF-8 encoded file."
+  exit 1
+fi
+
 # change file format
-file_header=$(head -1 $import_file)
+file_header=$(cat $import_file | tr -d '\r' | head -1)
 header=$(grep "^name=" ${ROOT}/databox/${databox}/def/col* | sort -V \
 | $AWK -F"=" '{print $2}' | $SED "s/\"//g" | tr -d ' ' | $SED -z "s/\n/,/g" | $SED "s/,$//g")
 header_col_num=$(echo "$header" | grep -o ',' | wc -l)
@@ -75,7 +83,7 @@ if [ ! -d "${ROOT}/tmp/import/${session}" ];then
 fi
 
 # remove header
-tail -n +2 $import_file > ${ROOT}/tmp/import/${session}/data.csv
+tail -n +2 $import_file | tr -d '\r' > ${ROOT}/tmp/import/${session}/data.csv
 echo "Import has been successfully started"
 echo "Import_session:$session"
 echo "Import_log:${ROOT}/tmp/log/${session}.log"
@@ -86,7 +94,7 @@ function import(){
  while read line
   do
     count=1
-    line=$(echo "$line" | tr -d \\\r | $SED -z "s/\n//g")
+    line=$(echo "$line" | $SED -z "s/\n//g")
     if [ "$line" ];then
 
       # logging
