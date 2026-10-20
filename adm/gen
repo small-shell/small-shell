@@ -24,6 +24,9 @@ if [ ! $? -eq 0 ];then
   exit 1
 fi
 
+# check environment
+mac_chk=$(dscl . list /Users 2>/dev/null | grep small-shell 2>/dev/null)
+
 # create .env
 SCRIPT_DIR=$(dirname $0)
 
