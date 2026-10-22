@@ -21,7 +21,7 @@ Headline can be defined by using hashtag. Headline 1 and 2 will be inserted to t
 Table is also generated very easily.
 
 |header1|header2|header3|
--------------------------
+|---|---|---|
 |col1text|col2text|col3text|
 |col1text|col2text|col3text|
 |col1text|col2text|col3text|
@@ -29,7 +29,7 @@ Table is also generated very easily.
 
 ````
 |header1|header2|header3|
--------------------------
+|---|---|---|
 |col1text|col2text|col3text|
 |col1text|col2text|col3text|
 |col1text|col2text|col3text|
