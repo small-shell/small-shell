@@ -42,11 +42,6 @@ Link to [external site](https://small-shell.org)
 [external site](https://small-shell.org)
 ````
 
-Link to [Internal table](./%%app?req=table)
-````
-[Internal table](./%%app?req=table)
-````
-
 ## List
 ### Standard List
 Asterisk or Hyphen or plus can be used.
@@ -86,7 +81,7 @@ Code
 Horizontal line can be defined by using 3 hyphens.
 ---
 ````
-\-\-\-
+---
 ````
 
 ## Extension syntax

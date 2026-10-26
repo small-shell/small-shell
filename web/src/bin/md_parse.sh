@@ -23,7 +23,7 @@ source=${tmp}/body.md
 
 # parse markdown
 cat $source | $SED "s/^:::/{%%%}{%%%}{%%%}/g" | $SED "s/\`\`\`\`/%code_block%/g" | $SED "s/\`\`\`/%code_block%/g" \
-| $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" | $SED "s/^---$/%hr_line%/g" \
+| $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" | $SED "s/^---$/%%hr_line/g" \
 > ${tmp}/.body.md
 echo "" >> ${tmp}/.body.md
 source=${tmp}/.body.md
@@ -105,7 +105,7 @@ do
 
    elif [[ "$code_flg" == "yes" ]] && [[ "$tab_4space" == "" ]];then
        echo "$line" | $SED "s/_%%tab_/\\t/g" | $SED "s/_%%space_/ /g" | $SED "s/_%%4space_/    /g" \
-       | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/body.tmp
+       | $SED "s/{%%%}{%%%}{%%%}/:::/g" | $SED "s/%%hr_line/---/g" >> ${tmp}/body.tmp
 
    elif [[ "$line" == %%_tab_* || "$line" == _%%4space_* ]];then 
      if [ ! "$code_flg" ];then 
@@ -138,15 +138,11 @@ do
      fi
 
    elif [[ "$extension_code" == "yes" ]];then
-     echo "$line" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/%%hr_line/---/g" >> ${tmp}/body.tmp
 
    # Horizontal line
-   elif [[ "$line" == "%hr_line%" ]];then
-     if [ ! "$code_flg" -a ! "$extention_code" ];then 
-       echo "<hr>" >> ${tmp}/body.tmp
-     else
-       echo "$line" >> ${tmp}/body.tmp
-     fi
+   elif [[ "$line" == "%%hr_line" ]];then
+     echo "<hr>" >> ${tmp}/body.tmp
 
    #table
    elif [[ "$line" == \|*\|* ]];then
