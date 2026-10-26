@@ -82,6 +82,13 @@ Code
 \`\`\`
 ````
 
+## Horizontal Line
+Horizontal line can be defined by using 3 hyphens.
+---
+````
+\-\-\-
+````
+
 ## Extension syntax
 You can use extension syntax Note or Warning.
 ::: Note

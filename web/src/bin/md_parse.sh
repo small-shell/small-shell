@@ -23,7 +23,8 @@ source=${tmp}/body.md
 
 # parse markdown
 cat $source | $SED "s/^:::/{%%%}{%%%}{%%%}/g" | $SED "s/\`\`\`\`/%code_block%/g" | $SED "s/\`\`\`/%code_block%/g" \
-| $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" > ${tmp}/.body.md
+| $SED "s/\\t/_%%tab_/g" | $SED "s/^    /_%%4space_/g" | $SED "s/^ /_%%space_/g" | $SED "s/^---$/%hr_line%/g" \
+> ${tmp}/.body.md
 echo "" >> ${tmp}/.body.md
 source=${tmp}/.body.md
 
@@ -138,6 +139,14 @@ do
 
    elif [[ "$extension_code" == "yes" ]];then
      echo "$line" >> ${tmp}/body.tmp
+
+   # Horizontal line
+   elif [[ "$line" == "%hr_line%" ]];then
+     if [ ! "$code_flg" -a ! "$extention_code" ];then 
+       echo "<hr>" >> ${tmp}/body.tmp
+     else
+       echo "$line" >> ${tmp}/body.tmp
+     fi
 
    #table
    elif [[ "$line" == \|*\|* ]];then
