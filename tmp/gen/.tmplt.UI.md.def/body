@@ -64,9 +64,9 @@ Asterisk or Hyphen or plus can be used.
 
 ## Bold text
 Bold text can be defined by using asterisk.
-** bold text **
+**bold text**
 ````
-** bold text **
+**bold text**
 ````
 
 ## Code

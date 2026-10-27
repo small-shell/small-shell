@@ -51,16 +51,24 @@ do
 
    # Normal list
    elif echo "$line" | grep -q -e '^- ' -e '^* ' -e '^+ '; then
-     if [ ! "$extention_flg" -a ! "$code_flg" ];then
+     if [ ! "$extension_code" -a ! "$code_flg" ];then
        if [ ! "$normal_list_flg" ];then
          normal_list_flg=yes
          echo "<div class=\"standard-list\">" >> ${tmp}/body.tmp
          echo "<ul>" >> ${tmp}/body.tmp
          echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
-         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
+         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" \
+         | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+         | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+         | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+         >> ${tmp}/body.tmp
        else
          echo  "$line" | $SED "s/^\- /<li>/1" | $SED "s/^\* /<li>/1" | $SED "s/^\* /<li>/1" \
-         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
+         | $SED "s/^\+ /<li>/1" | $SED "s/$/<\/li>/g" \
+         | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+         | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+         | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+         >> ${tmp}/body.tmp
        fi
        next_line=$($SED -n "$(echo "$line_count + 1" | bc)p" $source)
        if [[ ! "$next_line" =~ "^[-*+] " ]] && [[ "$normal_list_flg" == "yes" ]];then
@@ -74,14 +82,22 @@ do
 
    # Number list
    elif echo "$line" | grep -qE "^[0-9]+\. "; then
-     if [ ! "$extention_flg" -a ! "$code_flg" ];then
+     if [ ! "$extension_code" -a ! "$code_flg" ];then
        if [ ! "$number_list_flg" ];then
          number_list_flg=yes
          echo "<div class=\"num-list\">" >> ${tmp}/body.tmp
          echo "<ul>" >> ${tmp}/body.tmp
-         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
+         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" \
+         | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+         | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+         | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+         >> ${tmp}/body.tmp
        else
-         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" >> ${tmp}/body.tmp
+         echo  "$line" | $SED -r "s/^[0-9]+\. /<li>/g" | $SED "s/$/<\/li>/g" \
+         | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+         | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+         | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+         >> ${tmp}/body.tmp
        fi
        next_line=$($SED -n "$(echo "$line_count + 1" | bc)p" $source)
        if [[ ! "$next_line" =~ ^[0-9]+\. ]] && [[ "$number_list_flg" == "yes" ]];then
@@ -138,7 +154,11 @@ do
      fi
 
    elif [[ "$extension_code" == "yes" ]];then
-     echo "$line" | $SED "s/%%hr_line/---/g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/%%hr_line/---/g" \
+     | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+     | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+     | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+     >> ${tmp}/body.tmp
 
    # Horizontal line
    elif [[ "$line" == "%%hr_line" ]];then
@@ -151,12 +171,20 @@ do
        echo "<div class=\"flex-table\">" >> ${tmp}/body.tmp
        echo "<ul>" >> ${tmp}/body.tmp
        echo "<li class=\"flex-table-header\">" >> ${tmp}/body.tmp
-       echo "$line" | $SED "s/|/<p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/\n<\/li>/g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/|/<p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/\n<\/li>/g" \
+       | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+       | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+       | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+       >> ${tmp}/body.tmp
      else
        if [[ "$line" == \|--* ]];then
          echo "" > /dev/null
        else
-         echo "$line" | $SED "s/|/<li><p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/<\/li>/g" >> ${tmp}/body.tmp
+         echo "$line" | $SED "s/|/<li><p>/1" | $SED "s/|/<\/p><p>/g" | $SED "s/<p>$/<\/li>/g" \
+         | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+         | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+         | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+         >> ${tmp}/body.tmp
        fi
      fi
 
@@ -168,70 +196,56 @@ do
       echo "</div>" >> ${tmp}/body.tmp
       table_flg=""
   
-   # link
-   elif [[ "$line" == *\[*\]\(*\)* ]];then
-     element_l=$(echo "$line" | $AWK -F "[" '{print $1}')
-     tag=$(echo "$line" | $AWK -F "[" '{print $2}' | $SED -r "s/](.*)//g")
-     url=$(echo "$line" | $AWK -F "(" '{print $2}' | $SED -r "s/\)(.*)//g")
-     element_r=$(echo "$line" | $AWK -F ")" '{print $2}')
-     echo "<p>$element_l <a href=\"${url}\">$tag</a> $element_r</p>" >> ${tmp}/body.tmp
-
-   # button 
-   elif [[ "$line" == *\[*\]* ]];then
-     echo "$line" | $SED "s/\[/<button>/1" | $SED "s/\]/<\/button>/1" >> ${tmp}/body.tmp
-
-   # bold 
-   elif [[ "$line" == *\*\**\*\** ]];then
-     new_line=$(echo "$line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1")
-
-     while [[ "$new_line" == *\*\** ]]
-     do
-       new_line=$(echo "$new_line" | $SED "s/\*\*/<b>/1" | $SED "s/\*\*/<\/b>/1")
-     done
-     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/body.tmp
-
-   # italic
-   elif [[ "$line" == *\**\** ]];then
-     new_line=$(echo "$line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1")
-
-     while [[ "$new_line" == *\** ]]
-     do
-       new_line=$(echo "$new_line" | $SED "s/\*/<em>/1" | $SED "s/\*/<\/em>/1") 
-     done
-     echo "$new_line" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" >> ${tmp}/body.tmp
-
    #HN
    elif [[ "$line" == \#\#\#\#\#\#* ]];then
-     echo "$line" | $SED "s/###### /######/g" | $SED "s/######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/###### /######/g" | $SED "s/######/<h6>/1" | $SED "s/$/<\/h6>/g" | $SED "s/######//g" \
+     | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+     >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#\#\#\#* ]];then
-     echo "$line" | $SED "s/##### /#####/g" | $SED "s/#####/<h5>/1" | $SED "s/$/<\/h5>/g" |  $SED "s/######//g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/##### /#####/g" | $SED "s/#####/<h5>/1" | $SED "s/$/<\/h5>/g" |  $SED "s/######//g" \
+     | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+     >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#\#\#* ]];then
-     echo "$line" | $SED "s/#### /####/g"  | $SED "s/####/<h4>/1" | $SED "s/$/<\/h4>/g" | $SED "s/####//g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/#### /####/g"  | $SED "s/####/<h4>/1" | $SED "s/$/<\/h4>/g" | $SED "s/####//g" \
+     | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+     >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#\#* ]];then
-     echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" >> ${tmp}/body.tmp
+     echo "$line" | $SED "s/### /###/g" | $SED "s/###/<h3>/1" | $SED "s/$/<\/h3>/g" | $SED "s/###//g" \
+     | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+     >> ${tmp}/body.tmp
 
    elif [[ "$line" == \#\#* ]];then
      if [ ! "$top_flg" ];then
        top_flg=yes
-       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"top\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"top\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" \
+       | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+       >> ${tmp}/body.tmp
        echo "<a href=\"#top\"><p>Top</p></a>" >> ${tmp}/leftnav.tmp
      else
        hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
-       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"${hashlink}\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" >> ${tmp}/body.tmp
-       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/## //g" >> ${tmp}/leftnav.tmp
+       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<h2 id=\"${hashlink}\">/1" | $SED "s/$/<\/h2>/g" | $SED "s/## //g" \
+       | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+       >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/## /##/g" | $SED "s/##/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" \
+       | $SED "s/## //g" \
+       >> ${tmp}/leftnav.tmp
      fi
 
    elif [[ "$line" == \#* ]];then
      if [ ! "$top_flg" ];then
        top_flg=yes
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"top\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"top\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" \
+       | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+       >> ${tmp}/body.tmp
        echo "<a href=\"#top\"><p>Top</p></a>" >> ${tmp}/leftnav.tmp
      else
        hashlink=$(echo "$line" | $SHASUM | $AWK '{print $1}')
-       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" >> ${tmp}/body.tmp
+       echo "$line" | $SED "s/# /#/g" | $SED "s/#/<h1 id=\"${hashlink}\">/1" | $SED "s/$/<\/h1>/g" | $SED "s/# //g" \
+       | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+       >> ${tmp}/body.tmp
        echo "$line" | $SED "s/# /#/g" | $SED "s/#/<a href=\"#${hashlink}\"><p>/1" | $SED "s/$/<\/p><\/a>/g" | $SED "s/# //g" >> ${tmp}/leftnav.tmp
      fi
 
@@ -262,7 +276,11 @@ EOF
    else
      if [ ! "$line" = "" ];then
        echo "$line" | $SED "s/_%%space_/ /g" | $SED "s/^/<p>/g" | $SED "s/$/<\/p>/g" \
-      | $SED "s/{%%%}{%%%}{%%%}/:::/g"  >> ${tmp}/body.tmp
+       | $SED "s/{%%%}{%%%}{%%%}/:::/g" \
+       | $SED -E 's/\[([^]]+)\]\(([^)]+)\)/<a href="\2">\1<\/a>/g' \
+       | $SED -E 's/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g' \
+       | $SED -E 's/\*([^*]+)\*/<em>\1<\/em>/g' \
+       >> ${tmp}/body.tmp
      fi
    fi
 
