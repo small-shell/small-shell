@@ -44,13 +44,13 @@ Link to [external site](https://small-shell.org)
 
 ## List
 ### Standard List
-Asterisk or Hyphen or plus can be used.
-* text
-* text
+Hyphen or Asterisk or plus can be used.
+- text
+- text
 
 ````
-* text
-* text
+- text
+- text
 ````
 
 ### Number list
