@@ -227,34 +227,20 @@ For more details, please see the <a href="../data_shell_tour/">DATA shell</a> do
 <p>You can exit dialog anytime with Ctrl + C</p>
 </div>
 <h5 id="dialog">Dialog</h5>
-<p>In this example, "item_name" is set as primary key.</p>
+<p>In this example, "item_name" will be primary key. If you will not define primary key, please answer "no".</p>
 <pre><code>Databox Name: item.db
+Do you want to define Primary Key? (yes | no): yes
+
 Primary Key Name: item_name
 Primary Key label: Item Name
 Add more columns to the databox? (yes | no): yes
+
 Col2 Key Name: description
 Col2 Key Label: Description
-Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): text
+Data Type (text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file): text^M
+
 Set this as required? (yes | no): yes
 Add more columns to the databox? (yes | no): no
-
-
-The databox will be generated in the following order. Please check it.
------------------------------------------------------------------
-Databox Name:item.db
-#primary_key
-name=&quot;item_name&quot;
-label=&quot;Item Name&quot;
-type=&quot;text&quot;
-option=&quot;required&quot;
-
-#key(col2)
-name=&quot;description&quot;
-label=&quot;Description&quot;
-type=&quot;text&quot;
-option=&quot;required&quot;
------------------------------------------------------------------
-Is that OK? (yes | no): yes
 </code></pre>
 <h2 id="generate-base-app">Generate Base App</h2>
 <p>Once databox is ready, let's generate Base App. For more details of Apps, please see the <a href="../app_shell_tour/">APP Shell</a> documentation.</p>
