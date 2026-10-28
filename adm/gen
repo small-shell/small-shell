@@ -362,44 +362,66 @@ if [ "$param" = "-databox" ];then
   done
   echo "$databox" > ${tmp_dir}/databox
 
+
   # define primary key 
   if [ ! "$bat_flag" ];then
-    echo -n "Primary Key Name: "
+    echo -n "Do you want to define Primary Key? (yes | no): "
   fi
-  read primary_key
-  reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
-  eval $primary_key=test >/dev/null 2>&1
-  load_chk=$?
-  meta_chk_result=$(echo "$primary_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
-  -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+  read primary_key_answer
 
-  while [ "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
+  while [ ! "$primary_key_answer" = "yes" -a ! "$primary_key_answer" = "no" ]
   do
-    if [ "$reserved_chk_result" ];then
-      echo "error: you can't use {input temp binary_file params} as key, because these are reserved"
-    else
-      echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
-    fi
-
-    if [ "$bat_flag" ];then
-      echo "#primary_key check error -> failed"
+    echo "please input yes or no"
+  
+    if [ "$bat_flag" = "yes" ];then
+      echo "#primary key answer check error -> failed"
       rm -rf $tmp_dir
       exit 1
     fi
+  
+    echo -n "Do you need to define Primary Key? (yes | no): "
+  
+    read primary_key_answer
+  done
+
+
+  if [ "$primary_key_answer" = "yes" ];then
 
     if [ ! "$bat_flag" ];then
-      echo -n "primary_key: "
+      echo -n "Primary Key Name: "
     fi
     read primary_key
     reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
     eval $primary_key=test >/dev/null 2>&1
     load_chk=$?
     meta_chk_result=$(echo "$primary_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
-    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
-  done
+    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
 
-  if [ ! "$primary_key" = "hashid" ];then
-    
+    while [ "$reserved_chk_result" -o "$meta_chk_result" -o ! "$load_chk" -eq 0 ]
+    do
+      if [ "$reserved_chk_result" ];then
+        echo "error: you can't use {input temp binary_file params} as key, because these are reserved"
+      else
+        echo "error: key load is failed, it must be  ascii text and you can't use meta charactor or number space, please try again"
+      fi
+
+      if [ "$bat_flag" ];then
+        echo "#primary_key check error -> failed"
+        rm -rf $tmp_dir
+        exit 1
+      fi
+
+      if [ ! "$bat_flag" ];then
+        echo -n "primary_key: "
+      fi
+      read primary_key
+      reserved_chk_result=$(echo "$primary_key" | grep -e "input" -e "temp" -e "binary_file" -e "params" -e "binary.data")
+      eval $primary_key=test >/dev/null 2>&1
+      load_chk=$?
+      meta_chk_result=$(echo "$primary_key" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \|)
+    done
+
     if [ ! "$bat_flag" ];then
       echo -n "Primary Key Label: "
     fi
@@ -421,6 +443,12 @@ if [ "$param" = "-databox" ];then
       char_chk_result=$(charset_check "$primary_key_label")
     done
   else
+    clear
+    if [ ! "$bat_flag" ];then
+      echo "Note: primary key for column 1 will be automatically generated as a hashid."
+      sleep 4
+    fi
+    primary_key="hashid"
     primary_key_label="#ID"
   fi
 

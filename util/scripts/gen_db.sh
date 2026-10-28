@@ -45,14 +45,14 @@ cat $db_def | grep "^databox="  | $SED "s/databox=//g" | $SED "s/\"//g"  > ${tmp
 
 primary_key=$(cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g")
 if [ "$primary_key" = "hashid" ];then
-  #exclude label
-  cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g" >> ${tmp_dir}/db.def
+  # not need to define primary key
+  echo "no" >> ${tmp_dir}/db.def
 else
-  #include label
+  # define primary key
+  echo "yes" >> ${tmp_dir}/db.def
   cat $db_def | grep "^primary_key" | cut -d '=' -f 2- | $SED "s/\"//g" >> ${tmp_dir}/db.def
   echo "yes" >> ${tmp_dir}/db.def
 fi
-
 
 # load cols
 col_num=$(cat $db_def | grep "^+addcol" | wc -l)
