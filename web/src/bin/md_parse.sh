@@ -71,7 +71,7 @@ do
          >> ${tmp}/body.tmp
        fi
        next_line=$($SED -n "$(echo "$line_count + 1" | bc)p" $source)
-       if [[ ! "$next_line" =~ "^[-*+] " ]] && [[ "$normal_list_flg" == "yes" ]];then
+       if [[ ! "$next_line" =~ ^[-*+] ]] && [[ "$normal_list_flg" == "yes" ]];then
          echo "</ul>" >> ${tmp}/body.tmp
          echo "</div>" >> ${tmp}/body.tmp
          normal_list_flg=""
