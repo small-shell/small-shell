@@ -358,13 +358,15 @@ option=""
 Following is an example that can show how you can utilize pdls.
 In this example, primary datalist of inventory.db will be imported.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
+Databox Name: order.db
+Do you want to define Primary Key? (yes | no): no
 
 # result of dialog
 -----------------------------------------------------------------
 databox_name:order.db
 #primary_key
 name=&quot;hashid&quot;
-label=&quot;hashid&quot;
+label=&quot;#ID&quot;
 type=&quot;text&quot;
 option=&quot;required&quot;
 

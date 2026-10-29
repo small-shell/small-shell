@@ -493,7 +493,7 @@ usage: sudo -u small-shell del_datasets.sh $authkey $databox $list_file
 <h2 id="gen-databox-by-batch">Gen databox by batch</h2>
 <p>You can define data structure using db.def template, util/scripts/gen_db.sh can generate databox without dialog if you use db.def. template sample is here.</p>
 <h4 id="dbdef-template">db.def Template</h4>
-<p>Please freely add column by using "+addcol" declaration. If you don't need to define primary key, please set "hashid" to "primary_key".</p>
+<p>Please freely add column by using "+addcol" declaration. If you don't need to define primary key, please set "hashid" to "primary_key" and "primary_key_label".</p>
 <pre><code>#---------------------------------------------------------------
 # db definition
 #---------------------------------------------------------------
@@ -549,7 +549,7 @@ sudo /usr/local/small-shell/util/scripts/gen_db.sh /tmp/db.def
 <p>You can import data through Web App or batch command. csv format can be downloaded from Base App table #csv tag or import form.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you are using hashid for primary key, please input value as "new". if you are not use hashid as primary key, you can input any value to the key.</p>
+<p>When adding new data, if you haven't defined a primary key and are just using a hash ID (#ID), please enter "new" in the ID field. </p>
 </div>
 <h4 id="import-through-base-app">Import through Base App</h4>
 <p>You can import data from Base App "Data Import" menu. Import format can be download on the page.
