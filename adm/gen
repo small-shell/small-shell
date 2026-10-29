@@ -445,8 +445,16 @@ if [ "$param" = "-databox" ];then
   else
     clear
     if [ ! "$bat_flag" ];then
-      echo "Note: primary key for column 1 will be automatically generated as a hashid."
-      sleep 4
+      echo -n "Note: primary key for column 1 will be automatically generated as a hashid."
+      sleep 1
+      clear
+      echo -n "Note: primary key for column 1 will be automatically generated as a hashid.."
+      sleep 1
+      clear
+      echo -n "Note: primary key for column 1 will be automatically generated as a hashid..."
+      sleep 1
+      clear
+      echo -n "Note: primary key for column 1 will be automatically generated as a hashid...."
     fi
     primary_key="hashid"
     primary_key_label="#ID"
