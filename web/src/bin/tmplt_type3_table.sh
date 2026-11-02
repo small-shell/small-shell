@@ -207,7 +207,7 @@ fi
 $META get.tag:%%app{$databox} > %%www/tmp/${session}/tags
 for tag in $(cat %%www/tmp/${session}/tags)
 do
- echo "<p><a href=\"./%%app?%%params&req=table&table_command=${tag}\">#$tag&nbsp;</a></p>" > %%www/tmp/${session}/tag &
+ echo "<p><a href=\"./%%app?%%params&req=table&table_command=${tag}\">#$tag&nbsp;</a></p>" >> %%www/tmp/${session}/tag &
 done
 
 # load permission
