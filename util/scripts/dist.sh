@@ -74,7 +74,7 @@ do
   id=$(echo "$line" | $AWK -F "images/" '{print $2}' | $AWK -F "." '{print $1}')
   file_name=$(cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} \
   databox:images.db id:${id} remote_addr:localhost key:image action:get format:none \
-  | $SED "s/image://g" | $AWK -F " #" '{print $1}')
+  | grep file_name: | $SED "s/file_name://g")
   file_type=$(echo "$file_name" | awk -F "." '{print $NF}')
 
   (cd ${tmp_dir} && sudo -u small-shell ${ROOT}/bin/dl authkey:${authkey} databox:images.db id:${id} remote_addr:localhost > ${file_name})
