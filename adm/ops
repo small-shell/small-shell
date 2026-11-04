@@ -400,6 +400,11 @@ if [[ $action == add.tag* ]];then
   else
    tdir=${app}.${databox}
    meta_param=${app}{$databox}
+
+    if [ ! -f ${cgi_dir}/${app} ];then
+      echo "error:there is no app $app"
+      exit 1
+    fi
   fi
 
   grep "^$filter$" ${ROOT}/tmp/tag/${tdir}/* >/dev/null 2>&1
@@ -431,6 +436,10 @@ if [[ $action == del.tag* ]];then
    tdir=$databox
   else
    tdir=${app}.${databox}
+   if [ ! -f ${cgi_dir}/${app} ];then
+     echo "error:there is no app $app"
+     exit 1
+   fi
   fi
 
   grep "^$filter$" ${ROOT}/tmp/tag/${tdir}/* >/dev/null 2>&1
