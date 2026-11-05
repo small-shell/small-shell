@@ -172,9 +172,6 @@ elif [ "$frequency" = "monthly" ];then
 
 elif [ "$frequency" = "snapshot" ];then
    output=${SCRIPT_DIR}/../statistics/rawdata/sumup_db_${databox}_s_${year}${month}${day}
-  if [ -f "${output}.csv" ];then
-    rm ${output}.csv
-  fi
 fi
 
 
@@ -202,6 +199,11 @@ else
   fi
 fi
 
+if [ "$frequency" = "snapshot" ];then
+  if [ -f "${output}.csv" ];then
+    rm ${output}.csv
+  fi
+fi
 
 if [ "$filter_key" -a "$filters" ];then
 
@@ -394,7 +396,7 @@ if [ "$graph" = "yes" ];then
         "hourly" ) X_label="X_label:${year}-${month}-${day}" ;;
       esac
     else
-      X_label="X_label:snapshot.$titlestamp"
+      X_label=""
     fi
   else
     X_label="X_label:$X_label"
