@@ -3470,8 +3470,9 @@ if [ "$param" = "-job" ];then
           exec_command="$(pwd)/${exec_command}"
         fi
 
-        exec_chk=$(cd $tmp_dir && sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)
       fi
+
+      exec_chk=$(cd $tmp_dir && sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)
 
       if [ ! "$exec_command" ];then
         echo -n "please input exec command or batch script: "
