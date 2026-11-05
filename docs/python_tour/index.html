@@ -183,7 +183,13 @@
 <h1 id="statistics">Statistics</h1>
 <p>"Pyshell" is designed for python integration. it can call python libraries {matplotlib, numpy, pandas} for analyzing data and generating png graph.</p>
 <h2 id="setup-env-ubuntudebian">Setup Env @ubuntu/debian</h2>
-<p>Here is an example of install python3.9.</p>
+<p>Here is an example of install python3.12</p>
+<h5 id="make-home-directory-for-python-library">Make home directory for python library</h5>
+<pre><code>sudo mkdir -p /home/small-shell
+sudo chown small-shell:small-shell /home/small-shell
+sudo chmod 700 /home/small-shell
+sudo usermod -d /home/small-shell small-shell
+</code></pre>
 <h5 id="install-libraries-for-compiling-python3">Install libraries for compiling python3</h5>
 <pre><code>sudo apt update
 sudo apt install build-essential libbz2-dev libdb-dev \
@@ -394,30 +400,26 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/${utilscript} para
 <p>Please set following commands as exec_command in "#sudo gen -job" dialog. <br />
 Or you can execute the script manually. then you can confirm result on console of Base App.</p>
 <h5 id="countup">Countup</h5>
-<pre><code>e.g.) just countup survey result that is stored at survey.box   
-sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box type:bar frequency:daily
+<pre><code>e.g.) just countup survey result that is stored at survey.db   
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db type:bar frequency:daily
 </code></pre>
 <p><img alt="Screenshot" src="../img/countup_num.png" /></p>
-<h5 id="target-databox-for-analytics">Target Databox for analytics</h5>
-<p><a href="../app_shell_form/">survey.box</a></p>
 <h5 id="countup-with-filtering">Countup with filtering</h5>
-<pre><code>e.g.) countup survey result which have "Good" or "Average" or "Bad" as feedback in impression key column.
-
-sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box key:impression filters:Good,Average,Bad \
+<p>This is an example of generating graph for survey.db which have "Good" or "Average" or "Pooor" as feedback in impression field.</p>
+<pre><code># bar graph
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db key:impression filters:Good,Average,Poor \
 type:bar frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph.png" /></p>
-<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.box \
-key:impression filters:Good,Average,Bad type:pie title:2024-11-28_survey_result frequency:snapshot
+<pre><code># pie graph 
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db \
+key:impression filters:Good,Average,Poor type:pie frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
-<h5 id="sumup-scenario">Sumup Scenario</h5>
-<p>Create monthly graph of inventory.db by sumup each type of inventory.</p>
-<h6 id="target-databox-for-analytics_1">Target Databox for analytics]</h6>
-<pre><code>inventory.db {item_name:text, category:select, num:num}
-</code></pre>
+<h5 id="sumup-numbers">Sumup numbers</h5>
+<p>You can also generate graph which sumup num field. In this example, sumup.sh will sumup inventory.db that has 3 field {item_name:text, category:select, num:num}.</p>
 <h6 id="sumup-with-filtering">Sumup with filtering</h6>
-<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/sumup.sh databox:inventory.db type:bar filter_key:category filter:PC,network_device,audio_visual,furniture,other sumup_key:num frequency:snapshot
+<pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/sumup.sh databox:inventory.db type:bar filter_key:category filter:PC,network_device,other_device sumup_key:num frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/sumup_inventory_type.png" /></p>
 <h2 id="delete-rawdata-and-graph">Delete rawdata and graph</h2>
