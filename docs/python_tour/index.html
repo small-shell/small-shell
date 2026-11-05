@@ -268,34 +268,11 @@ countup_num_of_record successfully completed
 <img alt="Screenshot" src="../img/countup_item.png" /></p>
 <h2 id="utilscripts">Utilscripts</h2>
 <p>You can use util scripts for statistics.</p>
-<pre><code>ls /usr/local/small-shell/util/scripts
+<pre><code>ls /usr/local/small-shell/util/scripts/countup.sh
+ls /usr/local/small-shell/util/scripts/sumup.sh
 </code></pre>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>utilscripts should be executed small-shell privilege.  <br />
-e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/${utilscript} param1:$param1 param2:$param2</p>
-</div>
-<h4 id="list-of-utilscripts">List of utilscripts</h4>
-<table>
-<thead>
-<tr>
-<th>script</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>countup.sh</td>
-<td>countup number of data, if you don't set filter words, it will count lines of databox. if you set filter word, it will count number of data per filter. in that case, filter word will be label of graph</td>
-</tr>
-<tr>
-<td>sumup.sh</td>
-<td>sumup specific column data, if you set filters , it will sumup data of filtered array of column data. in that case, filter word will be label of graph</td>
-</tr>
-</tbody>
-</table>
 <h4 id="parameters-for-util-scirpts">Parameters for util scirpts</h4>
-<table>
+<table translate="no">
 <thead>
 <tr>
 <th>param</th>
@@ -393,28 +370,19 @@ e.g.) sudo -u small-shell /usr/local/small-shell/util/scripts/${utilscript} para
 </ol>
 </div>
 <h4 id="usage">Usage</h4>
-<p>Please set following commands as exec_command in "#sudo gen -job" dialog. <br />
-Or you can execute the script manually. then you can confirm result on console of Base App.</p>
-<h5 id="countup">Countup</h5>
-<pre><code>e.g.) just countup survey result that is stored at survey.db   
-sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db type:bar frequency:daily
-</code></pre>
-<p><img alt="Screenshot" src="../img/countup_num.png" /></p>
+<p>You can execute script manually. please check folowing examples.</p>
 <h5 id="countup-with-filtering">Countup with filtering</h5>
 <p>This is an example of generating graph for survey.db which have "Good" or "Average" or "Pooor" as feedback in impression field.</p>
 <pre><code># bar graph
-sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db key:impression filters:Good,Average,Poor \
-type:bar frequency:snapshot
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db key:impression filters:Good,Average,Poor type:bar frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph.png" /></p>
 <pre><code># pie graph 
-sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db \
-key:impression filters:Good,Average,Poor type:pie frequency:snapshot
+sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db key:impression filters:Good,Average,Poor type:pie frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
-<h5 id="sumup-numbers">Sumup numbers</h5>
+<h5 id="sumup-with-filtering">Sumup with filtering</h5>
 <p>You can also generate graph which sumup num field. In this example, sumup.sh will sumup inventory.db that has 3 field {item_name:text, category:select, num:num}.</p>
-<h6 id="sumup-with-filtering">Sumup with filtering</h6>
 <pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/sumup.sh databox:inventory.db type:bar filter_key:category filter:PC,network_device,other_device sumup_key:num frequency:snapshot
 </code></pre>
 <p><img alt="Screenshot" src="../img/sumup_inventory_type.png" /></p>
@@ -481,7 +449,9 @@ font_family="IPAexGothic" #modify
 --------
 
 # remove cache
-sudo -u small-shell rm /home/small-shell/.cache/matplotlib/fontlist-*.json
+sudo -u small-shell ls /home/small-shell/.cache/matplotlib
+fontlist-v3.11.0.json
+sudo -u small-shell rm /home/small-shell/.cache/matplotlib/fontlist-v3.11.0.json
 </code></pre>
 <h4 id="macos">macOS</h4>
 <pre><code>sudo vi /usr/local/small-shell/util/pyshell/pyenv
