@@ -265,12 +265,9 @@ Default main page image is here.</p>
 <h2 id="add-user-to-the-app">Add user to the App</h2>
 <p>If you select Key App, please add user for the App. Then you can get URL that can generate key for the end user.</p>
 <pre><code>sudo /usr/local/small-shell/adm/ops app:$your_app_name add.usr:$user_name
-
-e.g.) add &quot;test_user&quot; user for key App name &quot;test&quot;
-sudo /usr/local/small-shell/adm/ops app:test add.usr:test_user 
--------------------------------------------------------------------------------
-This is the URL for key initialization and generation for test on Base App
--------------------------------------------------------------------------------
+</code></pre>
+<p>This exmple is add "test_user" user for App name "test"</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops app:test add.usr:test_user 
 https://${your_server_FQDN}/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7801da7267c802c4109a7126be47d5049cd7d5c440,6bc0917d9510ae794ab5cb5d1e65834c09ad11fbd3d78db881a656c591d1604a
 </code></pre>
 <h4 id="connect-to-the-app">Connect to the App</h4>
@@ -316,7 +313,7 @@ keys=item_name,description
 sudo vi /var/www/def/test_table.html.def
 </code></pre>
 <h4 id="meta-link">Meta link</h4>
-<p>You can generate links that can be used in the App html.def. </p>
+<p>meta command can generate links that can be used in the App html.def. </p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$your_app_name
 </code></pre>
 <h2 id="tagging-on-custom-app">Tagging on Custom App</h2>
