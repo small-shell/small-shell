@@ -184,12 +184,6 @@
 <p>"Pyshell" is designed for python integration. it can call python libraries {matplotlib, numpy, pandas} for analyzing data and generating png graph.</p>
 <h2 id="setup-env-ubuntudebian">Setup Env @ubuntu/debian</h2>
 <p>Here is an example of install python3.12</p>
-<h5 id="make-home-directory-for-python-library">Make home directory for python library</h5>
-<pre><code>sudo mkdir -p /home/small-shell
-sudo chown small-shell:small-shell /home/small-shell
-sudo chmod 700 /home/small-shell
-sudo usermod -d /home/small-shell small-shell
-</code></pre>
 <h5 id="install-libraries-for-compiling-python3">Install libraries for compiling python3</h5>
 <pre><code>sudo apt update
 sudo apt install build-essential libbz2-dev libdb-dev \
@@ -223,6 +217,8 @@ sudo /usr/local/bin/pip3.12 install matplotlib
 sudo mkdir -p /home/small-shell/.config/matplotlib
 sudo mkdir -p /home/small-shell/.cache/matplotlib    
 sudo chown -R small-shell:small-shell /home/small-shell
+sudo chmod 700 /home/small-shell
+sudo usermod -d /home/small-shell small-shell
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
