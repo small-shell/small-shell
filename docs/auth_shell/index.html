@@ -202,9 +202,9 @@
 <h2 id="pin-and-session-token">PIN and Session Token</h2>
 <p>Session itself is temporary hash that will be generated using random PIN (not stored anywhere) and user name. And session file will contain user name, client remote address and user-agent. Besides session hash will be changed when accessing new pages. Fraudulent access could be eliminated based on enough length of session key. Also Web App will check change of IP address and user-agent.</p>
 <h2 id="basic-authentication-binauth">Basic Authentication (bin/auth)</h2>
-<p>Basic authentication will be done bin/auth script. It will be used by Base App mainly.</p>
-<pre><code># CLI 
-sudo /usr/local/small-shell/bin/auth action:target{param}
+<p>Basic authentication will be done bin/auth. It will be used by Base App mainly.</p>
+<pre><code># path
+/usr/local/small-shell/bin/auth
 </code></pre>
 <h6 id="parameters">Parameters</h6>
 <pre><code>#  COMMON
@@ -229,9 +229,10 @@ sudo /usr/local/small-shell/bin/auth action:target{param}
 </code></pre>
 <h2 id="extension-auth">Extension auth</h2>
 <p>Extension auth is used for authentication of custom App.</p>
-<pre><code># for Custom App
-sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
+<pre><code># path
+/usr/local/small-shell/bin/extension_auth
 </code></pre>
+<h6 id="parameters_1">Parameters</h6>
 <pre><code>#-----------------------------------------------------------------------
 #  COMMON
 #-----------------------------------------------------------------------
@@ -310,7 +311,7 @@ sudo /usr/local/small-shell/bin/extension_auth action:target{param} app:${app}
 <table>
 <thead>
 <tr>
-<th>Param</th>
+<th>Action</th>
 <th>Description</th>
 </tr>
 </thead>
