@@ -193,7 +193,7 @@ RUN /usr/local/small-shell/util/scripts/gen_db.sh /workspace/db.def
 RUN /usr/local/small-shell/util/scripts/gen_container_app.sh /workspace/app.def
 
 USER small-shell
-# post_processing.sh will be generated gen process of small-shell app on container
+# post_processing.sh will be generated in gen process of small-shell app on container
 RUN /var/tmp/post_processing.sh
 VOLUME /usr/local/small-shell/users /usr/local/small-shell/databox /var/www/def
 WORKDIR /var/www/app
@@ -207,7 +207,7 @@ databox=&quot;item.db&quot;
 
 # col1
 #-------------------------------------------
-# If you don't need to define primary key, please just set &quot;hashid&quot; to both primary_key and label.
+# If you do not need to define primary key, please just set &quot;hashid&quot; to both primary_key and label.
 primary_key=&quot;item_name&quot;
 primary_key_label=&quot;Item Name&quot;
 #-------------------------------------------
