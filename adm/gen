@@ -446,11 +446,11 @@ if [ "$param" = "-databox" ];then
     clear
     if [ ! "$bat_flag" ];then
       echo -n "Note: primary key for column 1 will be automatically generated as a hashid."
-        for i in {1..4}
-        do
-          sleep 1
-          echo -n "."
-        done
+      for i in {1..4}
+      do
+        sleep 1
+        echo -n "."
+      done
       echo ""
     fi
     primary_key="hashid"
@@ -3442,14 +3442,12 @@ if [ "$param" = "-job" ];then
     echo -n "Exec command or batch script: "
     read exec_command
 
-    
-    while [ ! "$exec_command" -o ! -x "$solo_command" -o ! "$exec_chk" ]
+    while [ ! "$exec_command" -o ! -f "$solo_command" ]
     do
       solo_command=$(echo "$exec_command" | $AWK '{print $1}')
       basename_chk=$(echo "$exec_command" | $AWK '{print $1}' | xargs basename -a | grep $solo_command)
 
       if [ "$basename_chk" ];then
-
         if [ -f ${ROOT}/util/scripts/${solo_command} ];then
           solo_command="${ROOT}/util/scripts/${solo_command}"
           command_path=$(echo ${ROOT}/util/scripts/ | $SED "s/\//{%%%%%%%}/g")
@@ -3469,24 +3467,26 @@ if [ "$param" = "-job" ];then
           solo_command="$(pwd)/${solo_command}"
           exec_command="$(pwd)/${exec_command}"
         fi
-
       fi
 
-      exec_chk=$(cd $tmp_dir && sudo -u small-shell file $solo_command | grep -i -e executable -e gnu)
-
-      if [ ! "$exec_command" ];then
-        echo -n "please input exec command or batch script: "
-        read exec_command
-      elif [  ! -x "$solo_command" ];then
-        echo "seems $solo_command is not executable, please input full path for the command"
-        echo -n "please input exec command or batch script: "
-        read exec_command
-      elif [ ! "$exec_chk" ];then
-        echo "seems $solo_command is not executable by small-shell"
+      if [ ! -f "$solo_command" ];then
+        echo "warn: can not find $solo_command"
         echo -n "please input exec command or batch script: "
         read exec_command
       fi
+
     done
+
+    exec_chk=$(cd $tmp_dir && sudo -u small-shell file -L $solo_command | grep -i -e executable -e gnu)
+    if [ ! -x "$solo_command" -o ! "$exec_chk" ];then
+      clear
+      echo -n "warn: it seems $solo_command is not executable by small-shell, please check permission before enabling job."
+      for i in {1..4}
+      do
+        sleep 1
+        echo -n "."
+      done
+    fi
 
     echo "exec_command=\"$(echo "$exec_command" | $SED "s/'/{%%%%%%}/g"\
     | php -r "echo addslashes(file_get_contents('php://stdin'));"\
@@ -3501,7 +3501,7 @@ if [ "$param" = "-job" ];then
     echo "hub_api=\"\"" >> ${tmp_dir}/${job}.def
     echo "api_authkey=\"\"" >> ${tmp_dir}/${job}.def
 
-    #clear
+    clear
     echo "The job will be generated in the following order. Please check it."
     echo "-----------------------------------------------------------------"
     echo ""
