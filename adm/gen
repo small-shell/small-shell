@@ -2749,7 +2749,7 @@ if [ "$param" = "-app" ];then
           do
             menu=$(echo "$src" | $SED "s/tmplt_//g" | $SED "s/type3_//g")
             cat ${ROOT}/web/src/def/common_parts/${src} | $SED "s/%%app/${app}/g" | $SED "s/%%databox/${databox}/g" \
-            | $SED "s/ #%%user//g" > ${www}/def/common_parts/${app}_${menu}
+            | $SED "s/ (%%user)//g" > ${www}/def/common_parts/${app}_${menu}
             chmod 755 ${www}/def/common_parts/${app}_${menu}
           done
 
