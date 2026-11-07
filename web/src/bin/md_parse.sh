@@ -288,16 +288,24 @@ EOF
 
 done  < $source
 
-# handle right header of portal
+# handle right header of main
 righth=$($META chk.null:${databox}{$id} | grep righth | $AWK -F ":" '{print $2}')
 if [ $righth -eq 1 ];then
   echo "<div class=\"navbar-right-menu\">" > ${tmp}/righth.tmp
   echo "<button class=\"even-btn\">=</button>" >> ${tmp}/righth.tmp
   echo "<nav>" >> ${tmp}/righth.tmp
   echo "<ul>" >> ${tmp}/righth.tmp
-  $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \
-  | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" | $SED "s/Log Out:/Log Out #%%user:/g" \
-  > ${tmp}/righth_raw.data
+
+  key_auth_chk=$(grep " #%%user" %%www/def/common_parts/${app}_common_menu)
+  if [ "$key_auth_chk" ];then
+    $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \
+    | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" | $SED "s/Log Out:/Log Out #%%user:/g" \
+    > ${tmp}/righth_raw.data
+  else
+    $DATA_SHELL databox:${databox} action:get id:$id key:righth format:none \
+    | $SED "s/righth://g" | $SED "s/_%%enter_/\n/g" \
+    > ${tmp}/righth_raw.data
+  fi
 
   while read r_line
   do
@@ -332,7 +340,7 @@ else
   echo "<!-- no right header-->" > ${tmp}/righth.tmp
 fi
 
-# handle left header of portal page
+# handle left header of main page
 lefth=$($META chk.null:${databox}{$id} | grep lefth | $AWK -F ":" '{print $2}')
 if [ $lefth -eq 1 ];then
   $DATA_SHELL databox:${databox} action:get id:$id key:lefth format:none \
