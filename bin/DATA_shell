@@ -999,7 +999,7 @@ function get_data(){
     fi
 
     if [ "$type" = "radio" ];then
-      echo "<li>"
+      echo "<li class=\"radio-item\">"
       echo "<label>$label</label>"
 
       for param in $(echo "$params" | $SED "s/ /%%space/g" | $SED "s/,/ /g")
@@ -1017,7 +1017,7 @@ function get_data(){
     fi
 
     if [ "$type" = "checkbox" ];then
-      echo "<li>"
+      echo "<li class=\"checkbox-item\">"
       echo "<input type=\"hidden\" name=\"$name\" value=\"null\">"
       if [ "$value" = "yes" ];then
         echo "<input type=\"checkbox\" name=\"${name}\" value=\"yes\" checked=\"checked\">"
