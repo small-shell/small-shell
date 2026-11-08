@@ -123,6 +123,20 @@ do
       echo "error: col${count} please define required yes or no"
       exit 1
     fi
+  elif [ "$required" = "no" ];then
+    if [ "$type" = "radio" -o "$type" = "select" ];then
+      echo "warn: $type will be required as default. if you want to change it, please edit ${ROOT}/databox/${databox}/def/col${count} directly"
+      sleep 4
+    fi
+  elif [ "$required" = "yes" ];then
+    if [ "$type" = "file" ];then
+      echo "warn: you can not define required option for file type"
+      sleep 4
+    fi
+    if [ "$type" = "checkbox" ];then
+      echo "warn: It's best not to force users to check the box. making it optional by default would be better."
+      sleep 4
+    fi
   fi
 
   value_chk=$(cat ${tmp_dir}/.col${count} | grep -A 1 "type=\"${type}\"" \
@@ -135,6 +149,9 @@ do
   else
     if [ "$value_chk" ];then
       echo "error: $type could not define values"
+      if [ "$type" = "checkbox" ];then
+        echo "note that selects and radios accept custom values, but checkboxes don't—they just become "yes" when checked."
+      fi
       exit 1
     fi
   fi

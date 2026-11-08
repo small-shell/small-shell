@@ -700,6 +700,8 @@ if [ "$param" = "-databox" ];then
       done
     elif [ "$type" = "radio" -o "$type" = "select" ];then
       option=required
+    else
+      option=""
     fi
   
     # dump add_key
