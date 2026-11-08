@@ -41,6 +41,37 @@ cat $db_def | tr -d '\r' > ${tmp_dir}/.db.def
 db_def=${tmp_dir}/.db.def
 
 # gen tmp/db.def
+count=1
+while read line
+do
+
+  if [ "$line" = "+addcol" ];then
+    ((count++))
+    checked_line=$line
+  else
+    if [[ "$line" =~ ^[[:space:]]*(#|$) ]];then
+      checked_line=$line
+    else
+      if [ $count -gt 1 ];then
+        if [[ $line =~ ^col[0-9]+_ ]];then
+          if [[ $line == col${count}_* ]];then
+            checked_line=$line
+          else
+            checked_line=$(echo "$line" | $SED "s/^col[0-9][0-9]*_/col${count}_/")
+          fi
+        else
+          checked_line=$(echo "$line" | $SED "s/^/col${count}_/g")
+        fi
+      else
+        checked_line=$line
+      fi
+    fi
+  fi
+
+  echo "$checked_line"  >> ${tmp_dir}/.db.def.checked
+
+done < $db_def
+db_def=${tmp_dir}/.db.def.checked
 cat $db_def | grep "^databox="  | $SED "s/databox=//g" | $SED "s/\"//g"  > ${tmp_dir}/db.def
 
 primary_key=$(cat $db_def | grep "^primary_key=" | cut -d '=' -f 2- | $SED "s/\"//g")
@@ -64,7 +95,7 @@ do
   cat $db_def | grep "^col${count}_" | $SED "s/col${count}_//g" > ${tmp_dir}/.col${count}
   line_num=$(cat ${tmp_dir}/.col${count} | wc -l)
   if [ $line_num -gt 6 ];then
-    echo "col${count} seems too much definition"
+    echo "col${count} seems too much definition, please check +addcol declaration"
     exit 1
   fi
 
