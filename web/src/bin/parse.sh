@@ -91,7 +91,7 @@ if [ "$type" = "multipart" ];then
     if [ "$(echo "$line" | grep "Content-Disposition: form-data")" ];then
       for param in $(cat %%www/tmp/${session}/params)
       do
-        if [ "$(echo "$line" | grep "${param}")" ];then
+        if [ "$(echo "$line" | grep \"${param}\")" ];then
           name=$param
           meta_chk_result=$(echo "$name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
            -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
