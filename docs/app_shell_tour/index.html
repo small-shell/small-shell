@@ -271,24 +271,23 @@ option=&quot;required&quot;
 
 -----------------------------------------------------------------
 </code></pre>
+<h5 id="supported-html-input-types">Supported HTML input types</h5>
+<p>These types are supported. you can select type in gen dialog.</p>
+<pre><code> ( text | select | radio | checkbox | email | num | tel | date | date-time | url | textarea | file )
+</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>"Data Type" is same as HTML elements and you can change parameter easily. besides there is special type that's defined for small-shell Web application framework.</p>
-<p><b>type: select and radio</b>  <br />
-You can define values in the dialog. It will be required option as default. parameters and required definition can be changed anytime later manually.</p>
-<p><b>type: checkbox</b>  <br />
-Selects and radios accept custom values, but checkboxes don't—they just become "yes" when checked.</p>
-<p><b>type: pdls #hidden option</b><br />
-"pdls" means data list of primary key value. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog. see detail on <a href="./#insert-data-list-to-form">pdls</a></p>
-<p><b>type: mls #hidden option</b> <br />
-"mls" means member list. If you want to import user who already created in small-shell, please use mls.</p>
+<p>Values for "select" and "radio" types can be defined in the dialog using commas. By default, these will be required, but this setting can be manually changed later at any time. In contrast to "select" and "radio", the value for "checkbox" cannot be defined because it defaults to "yes" when checked, and the "required" option is not allowed. and you can not define required option for file type as well.</p>
 </div>
+<h5 id="created-form">Created Form</h5>
 <p>Here is the image of the form for the databox. 
 <img alt="Screenshot" src="../img/created_form.png" /></p>
-<p>Parameters that defined in the dialog will be inserted like below.
+<p>Values that defined in the dialog will be inserted like below.
 <img alt="Screenshot" src="../img/select_image.png" /></p>
+<h5 id="hidden-option">Hidden option</h5>
+<p>There are some hidden types "pdls" and "mls". "pdls" means data list of primary key value. If you want to import primary key values as datalist from other databox, please set type as pdls in the dialog. see detail on <a href="./#insert-data-list-to-form">pdls</a>. "mls" means member list. If you want to import user who already created in small-shell, please use mls.</p>
 <h2 id="generate-base-app">Generate Base App</h2>
-<p>Once OS setup has been done, let's start to generate Base App through gen command.</p>
+<p>Once databox has been created, let's start to generate Base App through gen command.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app 
 #-&gt; dialog will be started
 </code></pre>
@@ -334,7 +333,7 @@ type="text"
 option=""
 --------
 </code></pre>
-<h5 id="change-other-defenitions">Change other defenitions</h5>
+<h5 id="change-other-definitions">Change other definitions</h5>
 <p>You can change other definitions such like params, option. Following example is updating params and option of select type col definition.</p>
 <pre><code>(e.g.) change inventory.db col3
 sudo vi /usr/local/small-shell/databox/inventory.db/def/col3
