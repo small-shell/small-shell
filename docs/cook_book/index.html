@@ -161,6 +161,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#oauth-integration" class="nav-link">Oauth integration</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -188,7 +192,7 @@ Primary Databox: none
 <p><img alt="Screenshot" src="../img/static_site.png" /></p>
 <p>You can use both markdown and HTML. 
 please check the markdown grammer <a href="https://www.21it.org/markdown.html">here</a>. 
-Also you can update "menu" "logo" and "footer" on the same admin page.    </p>
+Also you can update "menu", "logo" and "footer" on the same page.    </p>
 <p><img alt="Screenshot" src="../img/update_static_site.png" /></p>
 <table>
 <thead>
@@ -227,12 +231,14 @@ Also you can update "menu" "logo" and "footer" on the same admin page.    </p>
 </tbody>
 </table>
 <h3 id="add-image">Add image</h3>
-<p>You can upload logo or images to images.db. And then you can get link of img tag that can be utilized on body or logo field on ${your_app_name}.UI.md.def page.</p>
+<p>You can upload a logo or images to 'images.db', which is automatically generated when a Custom App is created. Then, you can get the <img> tag link to use in the body or logo field on ${your_app_name}.UI.md.def page.</p>
 <p><img alt="Screenshot" src="../img/custom_app_logo.png" /></p>
 <h3 id="use-calendar">Use calendar</h3>
-<p>If you write down %%calendar in "Body", you can insert calendar to the Custom App.
-Calendar events will be saved on ${your_app_name}.events databox that will be generated automatically when you create Custom App.
+<p>If you write down %%calendar in "Body" field, you can insert calendar to the Custom App.
+Calendar events will be saved on ${your_app_name}.events databox that will be generated automatically when you create the Custom App.
 <img alt="Screenshot" src="../img/calendar.png" /></p>
+<h3 id="distribute-the-main-page-as-a-static-site">Distribute the main page as a static site</h3>
+<p>You can export the main page, edited in Markdown, as a static site. please check <a href="../app_shell_custom/#distribute-app-as-static-site">custome app</a></p>
 <h3 id="htmlcss-grammar">HTML/CSS Grammar</h3>
 <p>Another way of updating main page is just editing hml.def directly, target file will be ${your_app_name}_main.html.def. </p>
 <pre><code>sudo vi /var/www/def/static_site_main.html.def
@@ -353,10 +359,6 @@ Calendar events will be saved on ${your_app_name}.events databox that will be ge
 # Change table header of main
 .main .flex-table-header
 #----------------------------------------#
-</code></pre>
-<h3 id="distribute-app-as-static-site">Distribute App as static site</h3>
-<p>You can export main page as static site. </p>
-<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $App $EXPORT_DIR
 </code></pre>
 <h2 id="automate-ssl-cert-deployment">Automate SSL cert deployment</h2>
 <p>In this cook, you can learn how to automate cert deployment by using Let's Encrypt as ssl certificate provider. Please install certbot first.</p>
@@ -675,7 +677,80 @@ hub_api=&quot;&quot;
 api_authkey=&quot;&quot;
 </code></pre>
 <h4 id="confirm-result">Confirm result</h4>
-<p>Job will push the result to the databox named as web_analyzer. Log analytics target is srvdump.log.1 it means 1 day ago log. You can check the graph on console using #stats command.</p></div>
+<p>Job will push the result to the databox named as web_analyzer. Log analytics target is srvdump.log.1 it means 1 day ago log. You can check the graph on console using #stats command.</p>
+<h2 id="oauth-integration">Oauth integration</h2>
+<p>If you want to use Oauth, it's recommended to select other type App.</p>
+<pre><code>sudo /usr/local/small-shell/adm/gen -app
+Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3  
+app_name: oauth_test
+Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 3
+</code></pre>
+<p>We made sample script that can be integrated with Oauth provider, 
+please get each parameter from Oauth provider beforehand.</p>
+<pre><code># input small-shell app name
+app=&quot;oauth_test&quot;
+echo $app
+
+cd /var/tmp
+git clone https://github.com/naruoken/small-shell-apps
+
+# select provider
+provider=&quot;gcp&quot;
+
+cd small-shell-apps/oauth_sample/authorization_code
+
+# UPDATE PARAMA
+vi ./cgi-bin/${provider}_auth
+#------------------------------------------------
+# target params
+exchange_token_uri=&quot;&quot;
+user_info_req_uri=&quot;&quot;
+redirect_uri=&quot;&quot;
+client_id=&quot;&quot;
+client_secret=&quot;&quot;
+target_claim=&quot;&quot;
+#-------------------------------------------------
+
+# sample input
+#------------------------------------------------
+#exchange_token_uri=&quot;https://oauth2.googleapis.com/token&quot;
+#user_info_req_uri=&quot;https://www.googleapis.com/oauth2/v1/userinfo?&quot;
+#redirect_uri=&quot;http://XXX/cgi-bin/auth.oauth_test&quot;
+#client_id=&quot;XXX.apps.googleusercontent.com&quot;
+#client_secret=&quot;XXXX&quot;
+#target_claim=&quot;email&quot;
+
+vi ./def/${provider}_oauth_form.html.def
+#------------------------------------------------
+# target params
+  var CLIENT_ID = '';
+  var REDIRECT_URI = '';
+  var OAUTH_END_POINT = '';
+  var SCOPE = '';
+  var STATE = '';
+#-------------------------------------------------
+
+# sample input
+#------------------------------------------------
+#  var CLIENT_ID = 'XXXX.apps.googleusercontent.com';
+#  var REDIRECT_URI = 'http://XXXX/cgi-bin/auth.oauth_test';
+#  var OAUTH_END_POINT = 'https://accounts.google.com/o/oauth2/v2/auth';
+#  var SCOPE = 'https://www.googleapis.com/auth/userinfo.email';
+#  var STATE = 'statee';
+#------------------------------------------------ 
+
+# DEPLOY
+authkey=$(grep authkey= /var/www/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;)
+echo $authkey
+cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/${authkey}/g&quot; | sed &quot;s/%%app/${app}/g&quot; &gt; .auth.$app
+sudo cp .auth.$app /var/www/cgi-bin/auth.$app
+. /usr/local/small-shell/web/base 
+cat ./def/${provider}_oauth_form.html.def | sed &quot;s#%%static_url/#$static_url#g&quot; | sed &quot;s/%%app/${app}/g&quot; &gt; .${app}_auth_form.html.def
+sudo cp .${app}_auth_form.html.def /var/www/def/${app}_auth_form.html.def
+sudo chmod 755 /var/www/cgi-bin/auth.$app
+</code></pre>
+<p>Then you can try to connect App through Oauth. <br />
+https://${fqdn}/cgi-bin/auth.oauth_test</p></div>
             </div>
         </div>
 

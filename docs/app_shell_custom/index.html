@@ -157,11 +157,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#import-app-from-template" class="nav-link">Import App from template</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#oauth-integration" class="nav-link">Oauth integration</a>
+            <li class="nav-item" data-bs-level="2"><a href="#distribute-app-as-static-site" class="nav-link">Distribute App as static site</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -170,6 +166,10 @@
               </ul>
             </li>
             <li class="nav-item" data-bs-level="2"><a href="#technical-tips" class="nav-link">Technical Tips</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#import-app-from-template" class="nav-link">Import App from template</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -260,7 +260,7 @@ Primary databox: item.db
 </div>
 <h3 id="update-main-page">Update main page</h3>
 <p>You can update your application main page on Base App or edit code directly, please check detail on <a href="../cook_book/#edit-main-page">Cook book</a>.
-Default main page image is here.</p>
+Image of the default main page is here.</p>
 <p><img alt="Screenshot" src="../img/default_page.png" /></p>
 <h2 id="add-user-to-the-app">Add user to the App</h2>
 <p>If you select Key App, please add user for the App. Then you can get URL that can generate key for the end user.</p>
@@ -348,151 +348,10 @@ sudo cat /var/www/cgi-bin/test
 # cat /var/www/def/common_parts/${parent_app_common_menu}
 cat /var/www/def/common_parts/test_common_menu
 </code></pre>
-<h2 id="import-app-from-template">Import App from template</h2>
-<p>Creating App template is sub project of small-shell. You can import App template from GitHub.</p>
-<h3 id="team-app">Team App</h3>
-<p>This App template could manage not only Team events, but also tasks, shared drive, bookmarks and inquiries. </p>
-<h6 id="team-app-funcions">Team App funcions</h6>
-<table>
-<thead>
-<tr>
-<th>Function</th>
-<th>type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Calendar</td>
-<td>main</td>
-<td>Manage team events in main page</td>
-</tr>
-<tr>
-<td>Announcements</td>
-<td>sub-app</td>
-<td>Share announcement to the team</td>
-</tr>
-<tr>
-<td>Tasks</td>
-<td>sub-app</td>
-<td>Manage team tasks {assignment,status,deadline,sync_calendar}</td>
-</tr>
-<tr>
-<td>Inquiries</td>
-<td>sub-app</td>
-<td>Manage inquiryes from external users</td>
-</tr>
-<tr>
-<td>Drive</td>
-<td>sub-app</td>
-<td>Provide storage that have optional link to share file to external users</td>
-</tr>
-<tr>
-<td>Bookmarks</td>
-<td>sub-app</td>
-<td>Manage bookmarks</td>
-</tr>
-<tr>
-<td>Inquiry</td>
-<td>form</td>
-<td>Inquiry Form to the Team</td>
-</tr>
-</tbody>
-</table>
-<h6 id="link-to-code-is-here">Link to code is <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
-<pre><code>cd /var/tmp
-git clone https://github.com/naruoken/small-shell-apps
-cd small-shell-apps/team_app
-
-# Deploy Team App
-sudo ./deploy.sh
+<h2 id="distribute-app-as-static-site">Distribute App as static site</h2>
+<p>You can export the main page, edited in Markdown, as a static site.</p>
+<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $App $EXPORT_DIR
 </code></pre>
-<h6 id="add-user-to-team-app">Add user to Team App</h6>
-<p>Please add user to the App, then you can get key to access team main.</p>
-<pre><code>sudo /usr/local/small-shell/adm/ops app:team add.usr:test
-</code></pre>
-<p><img alt="Screenshot" src="../img/team.png" /></p>
-<h5 id="access-url-of-team-app">Access URL of Team App</h5>
-<p>There is 2 URL for using Team App, 1 is for App user, 1 is external user for inquiry. please try to use.</p>
-<pre><code># Team App 
-https://${FQDN}/team
-
-# Inquiry Form
-https://${FQDN}/inquiry
-</code></pre>
-<h2 id="oauth-integration">Oauth integration</h2>
-<p>If you want to use Oauth, it's recommended to select other type App.</p>
-<pre><code>sudo /usr/local/small-shell/adm/gen -app
-Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3  
-app_name: oauth_test
-Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none): 3
-</code></pre>
-<p>We made sample script that can be integrated with Oauth provider, 
-please get each parameter from Oauth provider beforehand.</p>
-<pre><code># input small-shell app name
-app=&quot;oauth_test&quot;
-echo $app
-
-cd /var/tmp
-git clone https://github.com/naruoken/small-shell-apps
-
-# select provider
-provider=&quot;gcp&quot;
-
-cd small-shell-apps/oauth_sample/authorization_code
-
-# UPDATE PARAMA
-vi ./cgi-bin/${provider}_auth
-#------------------------------------------------
-# target params
-exchange_token_uri=&quot;&quot;
-user_info_req_uri=&quot;&quot;
-redirect_uri=&quot;&quot;
-client_id=&quot;&quot;
-client_secret=&quot;&quot;
-target_claim=&quot;&quot;
-#-------------------------------------------------
-
-# sample input
-#------------------------------------------------
-#exchange_token_uri=&quot;https://oauth2.googleapis.com/token&quot;
-#user_info_req_uri=&quot;https://www.googleapis.com/oauth2/v1/userinfo?&quot;
-#redirect_uri=&quot;http://XXX/cgi-bin/auth.oauth_test&quot;
-#client_id=&quot;XXX.apps.googleusercontent.com&quot;
-#client_secret=&quot;XXXX&quot;
-#target_claim=&quot;email&quot;
-
-vi ./def/${provider}_oauth_form.html.def
-#------------------------------------------------
-# target params
-  var CLIENT_ID = '';
-  var REDIRECT_URI = '';
-  var OAUTH_END_POINT = '';
-  var SCOPE = '';
-  var STATE = '';
-#-------------------------------------------------
-
-# sample input
-#------------------------------------------------
-#  var CLIENT_ID = 'XXXX.apps.googleusercontent.com';
-#  var REDIRECT_URI = 'http://XXXX/cgi-bin/auth.oauth_test';
-#  var OAUTH_END_POINT = 'https://accounts.google.com/o/oauth2/v2/auth';
-#  var SCOPE = 'https://www.googleapis.com/auth/userinfo.email';
-#  var STATE = 'statee';
-#------------------------------------------------ 
-
-# DEPLOY
-authkey=$(grep authkey= /var/www/cgi-bin/auth.$app | sed &quot;s/authkey=\&quot;//g&quot; | sed &quot;s/\&quot;//g&quot;)
-echo $authkey
-cat ./cgi-bin/${provider}_auth | sed &quot;s/%%authkey/${authkey}/g&quot; | sed &quot;s/%%app/${app}/g&quot; &gt; .auth.$app
-sudo cp .auth.$app /var/www/cgi-bin/auth.$app
-. /usr/local/small-shell/web/base 
-cat ./def/${provider}_oauth_form.html.def | sed &quot;s#%%static_url/#$static_url#g&quot; | sed &quot;s/%%app/${app}/g&quot; &gt; .${app}_auth_form.html.def
-sudo cp .${app}_auth_form.html.def /var/www/def/${app}_auth_form.html.def
-sudo chmod 755 /var/www/cgi-bin/auth.$app
-</code></pre>
-<p>Then you can try to connect App through Oauth. <br />
-https://${fqdn}/cgi-bin/auth.oauth_test</p>
 <h2 id="delete-custom-app">Delete Custom App</h2>
 <p>You can delete your custom App by using util script as following.</p>
 <pre><code>usage: sudo /usr/local/small-shell/util/scripts/del_app.sh $app
@@ -571,6 +430,78 @@ if [ &quot;$req&quot; = &quot;main&quot; ];then
   req=table
 fi
 --------
+</code></pre>
+<h2 id="import-app-from-template">Import App from template</h2>
+<p>Creating App template is sub project of small-shell. You can import App template from GitHub.</p>
+<h3 id="team-app">Team App</h3>
+<p>This App template could manage not only Team events, but also tasks, shared drive, bookmarks and inquiries. </p>
+<h6 id="team-app-funcions">Team App funcions</h6>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calendar</td>
+<td>main</td>
+<td>Manage team events in main page</td>
+</tr>
+<tr>
+<td>Announcements</td>
+<td>sub-app</td>
+<td>Share announcement to the team</td>
+</tr>
+<tr>
+<td>Tasks</td>
+<td>sub-app</td>
+<td>Manage team tasks {assignment,status,deadline,sync_calendar}</td>
+</tr>
+<tr>
+<td>Inquiries</td>
+<td>sub-app</td>
+<td>Manage inquiryes from external users</td>
+</tr>
+<tr>
+<td>Drive</td>
+<td>sub-app</td>
+<td>Provide storage that have optional link to share file to external users</td>
+</tr>
+<tr>
+<td>Bookmarks</td>
+<td>sub-app</td>
+<td>Manage bookmarks</td>
+</tr>
+<tr>
+<td>Inquiry</td>
+<td>form</td>
+<td>Inquiry Form to the Team</td>
+</tr>
+</tbody>
+</table>
+<h6 id="link-to-code-is-here">Link to code is <a href="https://github.com/naruoken/small-shell-apps">here</a></h6>
+<pre><code>cd /var/tmp
+git clone https://github.com/naruoken/small-shell-apps
+cd small-shell-apps/team_app
+
+# Deploy Team App
+sudo ./deploy.sh
+</code></pre>
+<h5 id="add-user-to-team-app">Add user to Team App</h5>
+<p>Please add user to the App, then you can get key to access team main.</p>
+<pre><code>sudo /usr/local/small-shell/adm/ops app:team add.usr:test
+</code></pre>
+<p><img alt="Screenshot" src="../img/team.png" /></p>
+<h5 id="access-url-of-team-app">Access URL of Team App</h5>
+<p>There is 2 URL for using Team App, 1 is for App user, 1 is external user for inquiry. please try to use.</p>
+<pre><code># Team App 
+https://${FQDN}/team
+
+# Inquiry Form
+https://${FQDN}/inquiry
 </code></pre></div>
             </div>
         </div>
