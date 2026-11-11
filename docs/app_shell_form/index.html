@@ -37,6 +37,9 @@
                             <li class="nav-item">
                                 <a href=".." class="nav-link">Home</a>
                             </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/small-shell/small-shell" class="nav-link">GitHub</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Quick Start</a>
                                 <ul class="dropdown-menu">
@@ -237,15 +240,12 @@ Access URL: https://${your_server_FQDN}/survey
 <h2 id="make-snapshot-graph">Make snapshot graph</h2>
 <p>You can visualize survey results by generating graph. 
 Please setup <a href="../python_tour/">pyshell</a> beforehand.
-Following is an example of making graph.</p>
-<h6 id="make-snapshot-graph_1">Make snapshot graph.</h6>
+Following is an example of making snapshot graph.</p>
 <pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db \
 key:impression filters:Good,Average,Poor type:pie frequency:snapshot
 </code></pre>
-<p>please input #stats to console box on Base App.</p>
-<blockquote>
-<p>Base App &gt; Console [#stats]</p>
-</blockquote>
+<p>Then please input #stats to console box on Base App console.   <br />
+The graph will pop up when you click the link.</p>
 <p><img alt="Screenshot" src="../img/stats_graph.png" /></p>
 <p><img alt="Screenshot" src="../img/survey_graph_pie.png" /></p>
 <h2 id="change-view">Change View</h2>
