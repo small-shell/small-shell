@@ -238,9 +238,9 @@ Access URL: https://${your_server_FQDN}/survey
 <p>You can visualize survey results by generating graph. 
 Please setup <a href="../python_tour/">pyshell</a> beforehand.
 Following is an example of making graph.</p>
-<h6 id="make-november-28th-2022-as-snapshot">Make November 28th 2022 as snapshot.</h6>
+<h6 id="make-snapshot-graph_1">Make snapshot graph.</h6>
 <pre><code>sudo -u small-shell /usr/local/small-shell/util/scripts/countup.sh databox:survey.db \
-key:impression filters:Good,Average,Bad type:pie title:2022-11-28_survey_result frequency:snapshot
+key:impression filters:Good,Average,Poor type:pie frequency:snapshot
 </code></pre>
 <p>please input #stats to console box on Base App.</p>
 <blockquote>
@@ -260,13 +260,13 @@ key:impression filters:Good,Average,Bad type:pie title:2022-11-28_survey_result 
     &lt;meta charset=&quot;UTF-8&quot; /&gt;
     &lt;title&gt;survey.new&lt;/title&gt;
     &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no&quot;&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;http://localhost/survey.css&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;http://161.34.0.111/survey.css&quot;&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;div class=&quot;container&quot;&gt;
       &lt;div class=&quot;form-box&quot;&gt;
         &lt;div class=&quot;description&quot;&gt;
-          &lt;h1&gt;Internal Survey&lt;/h1&gt;
+          &lt;h1&gt;internal Survey&lt;/h1&gt;
           &lt;p&gt;This is an internal survey of product A&lt;/p&gt;
           &lt;hr&gt;
           &lt;br&gt;
