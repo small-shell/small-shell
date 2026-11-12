@@ -497,6 +497,7 @@ a {
 
 .auth-form .wrapper input[type="text"] {
   flex: 1 1 auto;
+  max-width: 148px;
   font-weight: 300;
   letter-spacing: .09em;
   font-size: 80%;

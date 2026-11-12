@@ -305,6 +305,7 @@ a {
 .auth-form .wrapper input[type="text"],
 .auth-form .wrapper input[type="password"] {
   flex: 1 1 auto;
+  max-width: 148px;
   font-weight: 300;
   letter-spacing: .09em;
   font-size: 80%;
