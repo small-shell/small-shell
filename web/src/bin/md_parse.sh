@@ -310,7 +310,9 @@ if [ $righth -eq 1 ];then
   while read r_line
   do
     tag=$(echo "$r_line" |$AWK -F ":" '{print $1}')
-    url=$(echo "$r_line" |cut -f 2- -d ":" | $SED "s/ //g")
+    url=$(echo "$r_line" |cut -f 2- -d ":" | $SED "s/ //g" | $SED "s/\"//g" \
+         | $SED -E "s/'(https?:\/\/([^']|'')*)'/\1/g; s/''/'/g")
+
     if [ "$tag" = "ExportKey" -a "$url" = "yes" ];then
       export_key=yes
     else
@@ -326,8 +328,8 @@ if [ $righth -eq 1 ];then
     echo "<li><button class=\"inside-menu-button\" onclick=\"duplicateKey()\">Export access key</button></li>" \
     >> ${tmp}/righth.tmp
   fi
-  echo "</nav>" >> ${tmp}/righth.tmp
   echo "</ul>" >> ${tmp}/righth.tmp
+  echo "</nav>" >> ${tmp}/righth.tmp
   echo "</div>" >> ${tmp}/righth.tmp
 
   if [ "$export_key" = "yes" ];then
@@ -348,7 +350,9 @@ if [ $lefth -eq 1 ];then
   while read l_line
   do
     tag=$(echo "$l_line" |$AWK -F ":" '{print $1}')
-    url=$(echo "$l_line" |cut -f 2- -d ":" | $SED "s/ //g")
+    url=$(echo "$l_line" |cut -f 2- -d ":" | $SED "s/ //g" | $SED "s/\"//g" \
+         | $SED -E "s/'(https?:\/\/([^']|'')*)'/\1/g; s/''/'/g")
+
     echo "<h2><a href=\"${url}\">$tag</a></h2>" >> ${tmp}/lefth.tmp
   done < ${tmp}/lefth_raw.data
 else
