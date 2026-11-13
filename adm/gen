@@ -1387,7 +1387,7 @@ if [ "$param" = "-app" ];then
       if [ ! "$mac_chk" ];then
         nvm_chk=$(which node | grep '/\.' )
         if [ "$nvm_chk" ];then
-          echo "error: node managed via nvm isn't suitable for running as a daemon. Please install the official packages system-wide instead."
+          echo "error: node managed via nvm isn't suitable for running as a daemon. please install the official packages system-wide instead."
           rm -rf $tmp_dir
           exit 1
         fi
