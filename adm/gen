@@ -1383,6 +1383,15 @@ if [ "$param" = "-app" ];then
         rm -rf $tmp_dir
         exit 1
       fi
+
+      if [ ! "$mac_chk" ];then
+        nvm_chk=$(which node | grep '/\.' )
+        if [ "$nvm_chk" ];then
+          echo "error: node managed via nvm isn't suitable for running as a daemon. Please install the official packages system-wide instead."
+          rm -rf $tmp_dir
+          exit 1
+        fi
+      fi
     else
       srv_type=other
     fi
@@ -2244,8 +2253,16 @@ if [ "$param" = "-app" ];then
     done
 
     ascii_chk_result=$(ascii_check $form_name)
-    meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
-    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+
+    if [ ! "$mac_chk" ];then
+      meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+    else
+      # .app is not allowed on Mac OS
+      meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<" \
+      -e '\.app$' -e '\.App$' -e '\.APP$')
+    fi
 
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
@@ -2260,8 +2277,15 @@ if [ "$param" = "-app" ];then
       echo -n "Form Name: "
       read form_name
       ascii_chk_result=$(ascii_check $form_name)
-      meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
-      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+      if [ ! "$mac_chk" ];then
+        meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+        -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+      else
+        # .app is not allowed on Mac OS
+        meta_chk_result=$(echo "$form_name" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+        -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<" \
+        -e '\.app$' -e '\.App$' -e '\.APP$')
+      fi
     done
 
     if [ ! "$container_flag" ];then
@@ -2525,8 +2549,15 @@ if [ "$param" = "-app" ];then
     fi
    
     ascii_chk_result=$(ascii_check $app)
-    meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
-    -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+    if [ ! "$mac_chk" ];then
+      meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+    else
+      # .app is not allowed on Mac OS
+      meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<" \
+      -e '\.app$' -e '\.App$' -e '\.APP$')
+    fi
 
     while [ "$ascii_chk_result" = "ERROR" -o "$meta_chk_result" ]
     do
@@ -2553,8 +2584,15 @@ if [ "$param" = "-app" ];then
         fi
       fi
       ascii_chk_result=$(ascii_check $app)
-      meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
-      -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e ">" -e "<")
+      if [ ! "$mac_chk" ];then
+        meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+        -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<")
+      else
+        # .app is not allowed on Mac OS
+        meta_chk_result=$(echo "$app" | grep -e " " -e "," -e "\!" -e "\*" -e "=" -e "(" -e ")" -e "\\\\" -e "/" \
+        -e ":" -e ";" -e "&" -e "\"" -e "\\$" -e "%" -e "'" -e "\`" -e "#" -e "~" -e \| -e "@" -e ">" -e "<" \
+        -e '\.app$' -e '\.App$' -e '\.APP$')
+      fi
     done
 
     if [ ! "$parent_app" ];then
