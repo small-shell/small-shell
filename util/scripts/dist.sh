@@ -84,7 +84,7 @@ do
 done < ${tmp_dir}/.images
 
 # calendar check
-calendar_chk=$(grep "<div id=\"my-calendar\">" ${tmp_dir}/index.html)
+calendar_chk=$(grep "<div id=\"simple-calendar\">" ${tmp_dir}/index.html)
 if [ "$calendar_chk" ];then 
   (cd $tmp_dir && sudo -u small-shell ${ROOT}/bin/DATA_shell authkey:${authkey} databox:${app}.events command:show_all format:json \
   | $SED "s/{%%%%%%%%%%%%%%%%%}/'/g"\
