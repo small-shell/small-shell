@@ -1,5 +1,5 @@
 # Small-Shell
-**Small-Shell** is an open-source Web application generator that creates lightweight Web apps, data stores, and automated jobs instantly using only shell scripts (`bash`). 
+**Small-Shell** is the No-AI Web application generator that creates lightweight Web apps, data stores, and automated jobs instantly using almost only shell scripts (`bash`).
 
 It is designed for engineers who want to build internal web tools, form gateways, or data exchange hubs without setting up heavy web frameworks or complex databases. Since the core application logic is written 100% in Bash, it features almost zero external dependencies, immediate execution feedback, and a super-lightweight footprint.
 
