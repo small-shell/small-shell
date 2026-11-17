@@ -140,6 +140,14 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#generate-app" class="nav-link">Generate App</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#update-main-page" class="nav-link">Update main page</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-bs-level="2"><a href="#add-user-to-the-app" class="nav-link">Add user to the App</a>
               <ul class="nav flex-column">
               </ul>
@@ -243,8 +251,8 @@
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
-<h3 id="generate-app">Generate App</h3>
-<p>Once databox is ready let's generate custom app. In this example app name is "test" and it will use key for authentication. Note that you can use any name you prefer for the app name. </p>
+<h2 id="generate-app">Generate App</h2>
+<p>Once databox is ready let's generate custom app. In this example app name is "test" and it will use user key for authentication.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3
 App Name: test                                                              
@@ -258,8 +266,8 @@ Primary databox: item.db
 <li>{your_app_name}.UI.md.def : Used for updating the main page definition.</li>
 <li>{your_app_name}.events : Used for registering calendar events of your app.</li>
 </ul>
-<h3 id="update-main-page">Update main page</h3>
-<p>You can update your application's main page on Base App or edit the code directly. Please see the <a href="../cook_book/#edit-main-page">cookbook</a> for details. Here is an image of the default main page.</p>
+<h2 id="update-main-page">Update main page</h2>
+<p>You can update your application's main page on Base App or edit the code directly. Please see <a href="../cook_book/#edit-main-page">cookbook</a> for details. Here is an image of the default main page.</p>
 <p><img alt="Screenshot" src="../img/default_page.png" /></p>
 <h2 id="add-user-to-the-app">Add user to the App</h2>
 <p>If you select Key App, please add user for the App. Then you can get URL that can generate key for the end user.</p>
@@ -285,15 +293,7 @@ https://${your_server_FQDN}/cgi-bin/auth.test?initialize=cd5e7330e5fb92b4999f2a7
 <pre><code>sudo vi /usr/local/small-shell/web/${your_app_name}.code
 </code></pre>
 <h3 id="update-codes-optional">Update codes (optional)</h3>
-<p>Then App will be generated to directory that you already defined in Base App dialog. you can update codes freely.
-As for small-shell framework please check <a href="../app_shell_tour/#mvc-model">MVC model</a></p>
-<h4 id="target-codes">Target codes</h4>
-<pre><code># actionscripts
-$bin (/var/www/bin)
-
-# HTML defs
-$def(/var/www/def)
-</code></pre>
+<p>You can update the code freely based on <a href="../app_shell_tour/#mvc-model">MVC model</a>.</p>
 <h4 id="parameter-change-of-binscripts">Parameter change of bin/scripts</h4>
 <p>In this example, accesible key of databox is changed. 
 In the default permission, end user can access all keys of databox from the custom app.</p>
@@ -305,15 +305,6 @@ sudo vi /var/www/bin/test_get.sh
 #keys=all
 keys=item_name,description
 --------
-</code></pre>
-<h4 id="html-def">HTML def</h4>
-<p>You can edit HTML directly.</p>
-<pre><code>sudo vi /var/www/def/test_main.html.def
-sudo vi /var/www/def/test_table.html.def
-</code></pre>
-<h4 id="meta-link">Meta link</h4>
-<p>meta command can generate links that can be used in the App html.def. </p>
-<pre><code>sudo -u small-shell /usr/local/small-shell/bin/meta get.link:$your_app_name
 </code></pre>
 <h2 id="tagging-on-custom-app">Tagging on Custom App</h2>
 <p>You can add search tag to the table by ops command</p>
