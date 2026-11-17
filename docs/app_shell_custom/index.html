@@ -160,10 +160,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#distribute-app-as-static-site" class="nav-link">Distribute App as static site</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-bs-level="2"><a href="#delete-custom-app" class="nav-link">Delete Custom App</a>
               <ul class="nav flex-column">
               </ul>
@@ -231,8 +227,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="required">Required</h4>
-<p>Please setup Base App beforehand refering to <a href="../quick_start_linux/">Quick Start</a>.</p>
+<p><strong>Required</strong>: Please setup Base App beforehand refering to <a href="../quick_start_linux/">Quick Start</a>.</p>
 <h2 id="common-setup-steps">Common Setup Steps</h2>
 <p>Each type of custom app has a common set of steps, the main difference lies in the authentication method.</p>
 <ol>
@@ -243,27 +238,28 @@
 <li>Update bin/scripts #optional</li>
 <li>Add subApp #optional</li>
 </ol>
-<p>Following is example of generating custom App.</p>
-<h4 id="generate-databox">Generate Databox</h4>
-<p>Please generate databox that will be used for Custom App first. </p>
+<h3 id="generate-databox">Generate Databox</h3>
+<p>Please generate databox that will be used for Custom App first. For more details of datastore, please see the <a href="../data_shell_tour/">Data shell</a> documentation.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
 <h3 id="generate-app">Generate App</h3>
-<p>Once databox is ready let's generate custom App. In this example App name is test and it will use base64 key for authentication. Note that you can use any name you prefer for the App Name. </p>
+<p>Once databox is ready let's generate custom App. In this example App name is "test" and it will use key for authentication. Note that you can use any name you prefer for the App Name. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3
 App Name: test                                                              
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):  2
 Primary databox: item.db
 </code></pre>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you want to use Custom App as static site, please input "none" to primary databox, see details on <a href="../cook_book/#create-a-static-site">cookbook</a>. </p>
-</div>
+<h5 id="auto-generated-management-databases">Auto-generated Management Databases</h5>
+<p>The following databases are automatically generated for management purposes when you create a custom app.</p>
+<ul>
+<li>images.db : Used for uploading image files.</li>
+<li>{your_app_name}.UI.md.def : Used for updating the main page definition.</li>
+<li>{your_app_name}.events : Used for registering calendar events of your app.</li>
+</ul>
 <h3 id="update-main-page">Update main page</h3>
-<p>You can update your application main page on Base App or edit code directly, please check detail on <a href="../cook_book/#edit-main-page">cookbook</a>.
-Image of the default main page is here.</p>
+<p>You can update your application's main page on Base App or edit the code directly. Please see the <a href="../cook_book/#edit-main-page">cookbook</a> for details. Here is an image of the default main page.</p>
 <p><img alt="Screenshot" src="../img/default_page.png" /></p>
 <h2 id="add-user-to-the-app">Add user to the App</h2>
 <p>If you select Key App, please add user for the App. Then you can get URL that can generate key for the end user.</p>
@@ -350,10 +346,6 @@ sudo cat /var/www/cgi-bin/test
 # menu
 # cat /var/www/def/common_parts/${parent_app_common_menu}
 cat /var/www/def/common_parts/test_common_menu
-</code></pre>
-<h2 id="distribute-app-as-static-site">Distribute App as static site</h2>
-<p>You can export the main page, edited in Markdown, as a static site.</p>
-<pre><code>sudo /usr/local/small-shell/util/scripts/dist.sh $App $EXPORT_DIR
 </code></pre>
 <h2 id="delete-custom-app">Delete Custom App</h2>
 <p>You can delete your custom App by using util script as following.</p>
