@@ -239,20 +239,20 @@
 <li>Add subApp #optional</li>
 </ol>
 <h3 id="generate-databox">Generate Databox</h3>
-<p>Please generate databox that will be used for Custom App first. For more details of datastore, please see the <a href="../data_shell_tour/">Data shell</a> documentation.</p>
+<p>Please generate databox that will be used for custom app first. For more details of datastore, please see the <a href="../data_shell_tour/">Data shell</a> documentation.</p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -databox
 # -&gt; dialog will be started
 </code></pre>
 <h3 id="generate-app">Generate App</h3>
-<p>Once databox is ready let's generate custom App. In this example App name is "test" and it will use key for authentication. Note that you can use any name you prefer for the App Name. </p>
+<p>Once databox is ready let's generate custom app. In this example app name is "test" and it will use key for authentication. Note that you can use any name you prefer for the app name. </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3
 App Name: test                                                              
 Type of Authentication (1.shared pass | 2.user key | 3.other | 4.none):  2
 Primary databox: item.db
 </code></pre>
-<h5 id="auto-generated-management-databases">Auto-generated Management Databases</h5>
-<p>The following databases are automatically generated for management purposes when you create a custom app.</p>
+<h5 id="auto-generated-management-databoxes">Auto-generated Management Databoxes</h5>
+<p>The following databoxes are automatically generated for management purposes when you create a custom app.</p>
 <ul>
 <li>images.db : Used for uploading image files.</li>
 <li>{your_app_name}.UI.md.def : Used for updating the main page definition.</li>
@@ -296,7 +296,7 @@ $def(/var/www/def)
 </code></pre>
 <h4 id="parameter-change-of-binscripts">Parameter change of bin/scripts</h4>
 <p>In this example, accesible key of databox is changed. 
-In the default permission, end user can access all keys of databox from the Custom App.</p>
+In the default permission, end user can access all keys of databox from the custom app.</p>
 <pre><code>e.g) restrict data keys
 sudo vi /var/www/bin/test_get.sh
 
@@ -332,7 +332,7 @@ sudo /usr/local/small-shell/adm/ops set.attr:$user_name{ro} app:$your_app_name
 sudo /usr/local/small-shell/adm/ops set.attr:$user_name{rw} app:$your_app_name
 </code></pre>
 <h2 id="add-databox-to-the-app">Add databox to the app</h2>
-<p>Basically Custom App connect to only 1 databox. "Sub App" is the way to add databox to your Custom App additionally. Here is an example to add databox "inventory.db" to Custom App "test". </p>
+<p>Basically custom app connect to only 1 databox. "Sub App" is the way to add databox to your custom app additionally. Here is an example to add databox "inventory.db" to custom app "test". </p>
 <pre><code>sudo /usr/local/small-shell/adm/gen -app
 Type of App (1.BASE | 2.FORM | 3.CUSTOM): 3
 App Name: inventory@test
